@@ -7,8 +7,10 @@
 
 int AEAP_ALAP_improve(Kernel_INFO *kernel, int Tr, int i, int Pa, Node ** Pro_free_list, Node **Kernel_queue) {
 
+#if DEBUG_MESSAGES
 	printf("\n||---AEAP_ALAP_IMPROVE--> ALAP IMPROVED scheduling\n");
 	printf("\n||---AEAP_ALAP_IMPROVE--> TR: %d\n", Tr);
+#endif
 
 	Node *temp = *Kernel_queue;
 

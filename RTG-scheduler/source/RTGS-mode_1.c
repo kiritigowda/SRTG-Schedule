@@ -6,116 +6,96 @@
 #include"RTGS.h"
 
 /**********************************************************************************************************
-Main function to execute the Program
+RTGS Mode 1 - - Simple GPU Schedulers
 ***********************************************************************************************************/
-int Scheduler_main_mode_1(char *kernel_file, char *Releasetime_file)
+int RTGS_mode_1(char *kernel_file, char *Releasetime_file)
 {
 	Kernel_INFO kernel[MAX_KERNELS];
 	Node *Pro_free_list = NULL; //*Pro_release_list=NULL;
 	Node *Kernel_queue = NULL;  //Kernel queued for future executions
 
 	int Pa = MAX_GPU_PROCESSOR;
-	int c, Nkr = 0;
+	int c = 0, Nkr = 0;
 	int rt = 0, KN = 0, k1, k2;
 	count = 0;
 	CPU_Kernel = 0;
 	alap = NULL;
 
-	while (1)
+	Nkr = Get_kernel_information(kernel, kernel_file);                 				// Read Kernel.TXT
+	rt = Get_kernel_release_times(Releasetime_file);                   				// Read Release_time.TXT
+#if DEBUG_MESSAGES
+	printf("\nThe GPU Scheduler will Schedule %d Kernels\n\n", Nkr);				// Scheduler Begins
+#endif
+
+	int64_t stime = RTGS_GetClockCounter();
+	for (int i = 0; i < rt; i++)
 	{
-		printf("\nEnter your choice for the Scheduler:\n 0. Exit Mode 1\n 1. Load the Kernels and the Release Times\n 2. Schedule the Kernels\n\n");
-		scanf_s("%d", &c);
+		Pa = Retrieve_processors(i, Pa, &Pro_free_list);     // Freeing-up processors
+		Pa = Dispatch_queued_kernels(i, Pa, &Kernel_queue, &Pro_free_list);     // Freeing-up processors
 
-		switch (c)
+		if (RT[i] == 1)
 		{
-		case 0:
-			return RTGS_SUCCESS;
+#if DEBUG_MESSAGES
+			printf("\n-->>Total processors Available at time %d = %d\n\n ", i, Pa);
+			printf("Kernels:%d has been released\n", KN);
+#endif
 
-		case 1:
-			Nkr = Get_kernel_information(kernel, kernel_file);                 				// Read Kernel.TXT
-			rt = Get_kernel_release_times(Releasetime_file);                   				// Read Release_time.TXT
-			printf("\nThe GPU Scheduler will Schedule %d Kernels\n\n", Nkr);				// Scheduler Begins
-			printf("Please press 2 to schedule these Kernels\n\n");
-			break;
+			Pa = Mode_1_book_keeper(kernel, KN, Pa, i, &Pro_free_list); // handling the released kernel by the book-keeper
+			KN++;
+		}
 
-		case 2:
+		else if (RT[i] == 2)
 		{
 
+			k1 = KN;KN++;
+			k2 = KN;KN++;
 
-			int64_t stime = RTGS_GetClockCounter();
-			for (int i = 0; i < rt; i++)
+#if DEBUG_MESSAGES
+			printf("\n-->>Total processors Available at time %d = %d\n\n ", i, Pa);
+			printf("Kernels:%d has been released\n", k1);
+			printf("Kernels:%d has been released\n", k2);
+#endif
+			
+			if (kernel[k1].Td <= kernel[k2].Td)
 			{
-				Pa = Retrieve_processors(i, Pa, &Pro_free_list);     // Freeing-up processors
-				Pa = Dispatch_queued_kernels(i, Pa, &Kernel_queue, &Pro_free_list);     // Freeing-up processors
-
-				if (RT[i] == 1)
-				{
-					printf("\n-->>Total processors Available at time %d = %d\n\n ", i, Pa);
-					printf("Kernels:%d has been released\n", KN);
-
-					Pa = Mode_1_book_keeper(kernel, KN, Pa, i, &Pro_free_list, &Kernel_queue); // handling the released kernel by the book-keeper
-					KN++;
-				}
-
-				else if (RT[i] == 2)
-				{
-					printf("\n-->>Total processors Available at time %d = %d\n\n ", i, Pa);
-					k1 = KN;
-					printf("Kernels:%d has been released\n", KN);
-					KN++;
-					k2 = KN;
-					printf("Kernels:%d has been released\n", KN);
-					KN++;
-
-
-					if (kernel[k1].Td <= kernel[k2].Td)
-					{
-						Pa = Mode_1_book_keeper(kernel, k1, Pa, i, &Pro_free_list, &Kernel_queue); // handling the released kernel by the book-keeper
-						Pa = Mode_1_book_keeper(kernel, k2, Pa, i, &Pro_free_list, &Kernel_queue); // handling the released kernel by the book-keeper
-					}
-
-					else
-					{
-						Pa = Mode_1_book_keeper(kernel, k2, Pa, i, &Pro_free_list, &Kernel_queue); // handling the released kernel by the book-keeper
-						Pa = Mode_1_book_keeper(kernel, k1, Pa, i, &Pro_free_list, &Kernel_queue); // handling the released kernel by the book-keeper
-					}
-				}
-			}
-
-			Pro_free_list = clean_node(Pro_free_list);
-			alap = clean_list(alap);
-
-			if (rt != 0)
-			{
-				printf("\n\n$$$ All Kernels Scheduled or Sent to CPU Successfully - Processors Available: %d -->AEAP Kernels: %d $$$\n\n", Pa, count); //End of Scheduler
-				printf("\n\n$$$ Kernels sent Back to CPU: %d $$$\n\n", CPU_Kernel); //End of Scheduler
-				printf("$$$ Please press 0 to exit the scheduler $$$\n\n");
-
-				for (int j = 0; j <= Nkr; j++)
-				{
-					kernel[j].Pn = kernel[j].Td = kernel[j].Texe = kernel[j].Tls = 0;
-				}
-				Nkr = 0;
-				rt = 0;
-				KN = 0;
-				count = 0;
-				CPU_Kernel = 0;
+				Pa = Mode_1_book_keeper(kernel, k1, Pa, i, &Pro_free_list); // handling the released kernel by the book-keeper
+				Pa = Mode_1_book_keeper(kernel, k2, Pa, i, &Pro_free_list); // handling the released kernel by the book-keeper
 			}
 
 			else
-				printf("Please press 1 to load Kernels to be scheduled\n\n");
-
-			print(Pro_free_list);
-			break;
-
+			{
+				Pa = Mode_1_book_keeper(kernel, k2, Pa, i, &Pro_free_list); // handling the released kernel by the book-keeper
+				Pa = Mode_1_book_keeper(kernel, k1, Pa, i, &Pro_free_list); // handling the released kernel by the book-keeper
+			}
 		}
-		default: printf("\n\nPlease enter a valid choice for the scheduler\n\n");
-
-		}
-
 	}
+
 	Pro_free_list = clean_node(Pro_free_list);
-	printf("\n\n"); //End of Scheduler
+	alap = clean_list(alap);
+
+	if (rt != 0)
+	{
+#if DEBUG_MESSAGES
+		printf("\n\n$$$ All Kernels Scheduled or Sent to CPU Successfully - Processors Available: %d -->AEAP Kernels: %d $$$\n\n", Pa, count); //End of Scheduler
+		printf("\n\n$$$ Kernels sent Back to CPU: %d $$$\n\n", CPU_Kernel); //End of Scheduler
+#endif
+
+		for (int j = 0; j <= Nkr; j++)
+		{
+			kernel[j].Pn = kernel[j].Td = kernel[j].Texe = kernel[j].Tls = 0;
+		}
+		Nkr = 0;
+		rt = 0;
+		KN = 0;
+		count = 0;
+		CPU_Kernel = 0;
+	}
+
+#if DEBUG_MESSAGES
+	print(Pro_free_list);
+#endif
+	Pro_free_list = clean_node(Pro_free_list);
+
 	return RTGS_SUCCESS;
 }
 
@@ -124,7 +104,9 @@ int Mode_1_book_keeper(struct Kernels* kernel, int KN, int Pa, int i, Node** Pro
 
 	int Pf, Tf, Pt = i, SA = 99;
 
+#if DEBUG_MESSAGES
 	printf("\n ^^ Kernel[%d].Pn = %d, Texe = %d, Td = %d, Tls= %d ^^\n", KN, kernel[KN].Pn, kernel[KN].Texe, kernel[KN].Td, kernel[KN].Tls);
+#endif
 
 	if (kernel[KN].Pn <= Pa) // If processors available is greater than the required processors by the kernel
 	{
@@ -141,7 +123,9 @@ int Mode_1_book_keeper(struct Kernels* kernel, int KN, int Pa, int i, Node** Pro
 		}
 		else
 		{
+#if DEBUG_MESSAGES
 			printf("\n\n@@ Kernel-%d will not complete before it's deadline, Job REJECTED @@\n\n", KN);
+#endif
 			CPU_Kernel++;
 		}
 
@@ -150,7 +134,9 @@ int Mode_1_book_keeper(struct Kernels* kernel, int KN, int Pa, int i, Node** Pro
 
 	else
 	{
+#if DEBUG_MESSAGES
 		printf("\n\n!!@@ Kernel-%d is sent to CPU for execution @@!!\n\n", KN);
+#endif
 		CPU_Kernel++;
 	}
 

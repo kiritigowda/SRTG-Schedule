@@ -43,9 +43,9 @@ int AEAP(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node
 				}
 
 				P_Given_list = clean_list(P_Given_list);
-				printf(
-					"\n\n||---AEAP-->The Kernel:%d Cannot be scheduled AEAP*****|",
-					KN);
+#if DEBUG_MESSAGES
+				printf("\n\n||---AEAP-->The Kernel:%d Cannot be scheduled AEAP*****|", KN);
+#endif
 
 				CPU_Kernel++;
 				//Return Kernel to CPU - Function to send Kernel to CPU execution
@@ -69,9 +69,9 @@ int AEAP(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node
 					int Pt = i;
 					int SA = 1;
 
-					printf(
-						"\n||---AEAP-->The Kernel:%d scheduled AEAP -->---||",
-						KN);
+#if DEBUG_MESSAGES
+					printf("\n||---AEAP-->The Kernel:%d scheduled AEAP -->---||", KN);
+#endif
 
 					Queue_kernel_execution(Pf, Tf, Pt, SA, KN, Pro_free_list);
 
@@ -123,9 +123,9 @@ int AEAP(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node
 				}
 
 				P_Given_list = clean_list(P_Given_list);
-				printf(
-					"\n\n||---AEAP-->The Kernel:%d Cannot be scheduled AEAP*****|",
-					KN);
+#if DEBUG_MESSAGES
+				printf("\n\n||---AEAP-->The Kernel:%d Cannot be scheduled AEAP*****|", KN);
+#endif
 
 				CPU_Kernel++;
 				//Return Kernel to CPU - Function to send Kernel to CPU execution
@@ -153,9 +153,9 @@ int AEAP(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node
 						temp->P_f_g = Pro - kernel[KN].Pn;
 						P_Given_list = clean_list(P_Given_list);
 
-						printf(
-							"\n||---AEAP with ALAP Condition-2 -->The Kernel:%d scheduled AEAP -->---||",
-							KN);
+#if DEBUG_MESSAGES
+						printf("\n||---AEAP with ALAP Condition-2 -->The Kernel:%d scheduled AEAP -->---||", KN);
+#endif
 						Queue_kernel_execution(Pf, Tf, Pt, SA, KN,
 							Pro_free_list);
 						Kernel_queue_handler(Pf, Tr, Pt, SA, KN, Kernel_queue);
@@ -198,10 +198,10 @@ int AEAP(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node
 								count++;
 							}
 							P_Given_list = clean_list(P_Given_list);
-							printf(
-								"\n||---AEAP with ALAP-->Backup processors reloaded-->\n");
+#if DEBUG_MESSAGES
+							printf("\n||---AEAP with ALAP-->Backup processors reloaded-->\n");
+#endif
 						}
-
 
 
 						Pa = AEAP_Flagged(kernel, KN, i, Pa, Pro_free_list,
@@ -209,7 +209,7 @@ int AEAP(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node
 
 
 
-					}
+						}
 
 					else if ((kernel[KN].Pn + given) <= Pl
 						&& (temp->next == NULL)) {
@@ -218,9 +218,9 @@ int AEAP(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node
 						P_Given_list = clean_list(P_Given_list);
 						given = kernel[KN].Pn;
 
-						printf(
-							"\n||---AEAP with ALAP Condition-1 &  -->The Kernel:%d scheduled AEAP -->---||",
-							KN);
+#if DEBUG_MESSAGES
+						printf("\n||---AEAP with ALAP Condition-1 &  -->The Kernel:%d scheduled AEAP -->---||", KN);
+#endif
 						Queue_kernel_execution(Pf, Tf, Pt, SA, KN,
 							Pro_free_list);
 						Kernel_queue_handler(Pf, Tr, Pt, SA, KN, Kernel_queue);
@@ -236,9 +236,9 @@ int AEAP(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node
 							P_Given_list = clean_list(P_Given_list);
 							given = kernel[KN].Pn;
 
-							printf(
-								"\n||---AEAP with ALAP Condition-1 &  -->The Kernel:%d scheduled AEAP -->---||",
-								KN);
+#if DEBUG_MESSAGES
+							printf("\n||---AEAP with ALAP Condition-1 &  -->The Kernel:%d scheduled AEAP -->---||", KN);
+#endif
 							Queue_kernel_execution(Pf, Tf, Pt, SA, KN,
 								Pro_free_list);
 							Kernel_queue_handler(Pf, Tr, Pt, SA, KN,
@@ -279,12 +279,11 @@ int AEAP(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node
 											P_Given_list_t);
 
 										//Kernel has to be sent to CPU
-										printf(
-											"\n!!!---AEAP FLAGGED with ALAP is not Possible for the Kernel:%d-->---!!!",
-											KN);
-										printf(
-											"\n!!!---KERNEK:%d SENT BACK TO CPU -->---!!!",
-											KN);
+#if DEBUG_MESSAGES
+										printf("\n!!!---AEAP FLAGGED with ALAP is not Possible for the Kernel:%d-->---!!!", KN);
+										printf("\n!!!---KERNEK:%d SENT BACK TO CPU -->---!!!", KN);
+#endif
+
 										CPU_Kernel++;
 										break;
 
@@ -302,10 +301,9 @@ int AEAP(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node
 										int Tf = Tr + kernel[KN].Texe;
 										int Pt = i;
 										int SA = 1;
-
-										printf(
-											"\n||---AEAP-->The Kernel:%d scheduled AEAP -->---||",
-											KN);
+#if DEBUG_MESSAGES
+										printf("\n||---AEAP-->The Kernel:%d scheduled AEAP -->---||", KN);
+#endif
 
 										Queue_kernel_execution(Pf, Tf, Pt, SA,
 											KN, Pro_free_list);
@@ -344,8 +342,9 @@ int AEAP(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node
 										count++;
 									}
 									P_Given_list = clean_list(P_Given_list);
-									printf(
-										"\n||---AEAP with ALAP-->Backup processors reloaded-->\n");
+#if DEBUG_MESSAGES
+									printf("\n||---AEAP with ALAP-->Backup processors reloaded-->\n");
+#endif
 								}
 
 								Pa = ALAP_Flagged(kernel, KN, i, Pa,
@@ -360,7 +359,7 @@ int AEAP(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node
 
 					break;
 
-				} //End Pro >= kernel[KN].Pn
+					} //End Pro >= kernel[KN].Pn
 
 				else if (Pro < kernel[KN].Pn) {
 
@@ -369,10 +368,10 @@ int AEAP(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node
 					temp = temp->next;
 				}
 
-			} //End of else
-		} //End of while
+				} //End of else
+			} //End of while
 
-	} //End of alap != NULL
+		} //End of alap != NULL
 
 	if (P_Given_list != NULL) {
 
@@ -395,9 +394,10 @@ int AEAP(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node
 			count++;
 		}
 		P_Given_list = clean_list(P_Given_list);
+#if DEBUG_MESSAGES
 		printf("\n||---AEAP with ALAP-->Backup processors reloaded-->\n");
+#endif
 	}
 
 	return Pa;
-}
-
+	}

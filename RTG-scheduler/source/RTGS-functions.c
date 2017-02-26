@@ -12,8 +12,9 @@ int Kernel_book_keeper(Kernel_INFO* kernel, int KN, int Pa, int i, Node **Pro_fr
 	int Pf, Tf, Pt = i, SA = 99;
 	static int FLAG = 0, FLAG_V = 0, given = 0;
 
-	printf("\n ^^ Kernel[%d].Pn = %d, Texe = %d, Td = %d, Tls= %d ^^\n", KN,
-		kernel[KN].Pn, kernel[KN].Texe, kernel[KN].Td, kernel[KN].Tls);
+#if DEBUG_MESSAGES
+	printf("\n ^^ Kernel[%d].Pn = %d, Texe = %d, Td = %d, Tls= %d ^^\n", KN, kernel[KN].Pn, kernel[KN].Texe, kernel[KN].Td, kernel[KN].Tls);
+#endif
 
 	if (kernel[KN].Pn <= Pa) // If processors available is greater than the required processors by the kernel
 	{
@@ -35,7 +36,9 @@ int Kernel_book_keeper(Kernel_INFO* kernel, int KN, int Pa, int i, Node **Pro_fr
 				}
 
 				else {
+#if DEBUG_MESSAGES
 					printf("\n\n@@ Kernel-%d will not complete before it's deadline, Job REJECTED Send to CPU @@\n\n", KN);
+#endif
 
 					CPU_Kernel++;
 
@@ -44,9 +47,9 @@ int Kernel_book_keeper(Kernel_INFO* kernel, int KN, int Pa, int i, Node **Pro_fr
 			}
 
 			else if (kernel[KN].Pn >= PROCESSOR_LIMIT) { // Processors needed greater or equal than the limit
-				printf(
-					"\n>>>>>Kernel:%d is compute intensive, sent for ALAP execution\n",
-					KN);
+#if DEBUG_MESSAGES
+				printf(	"\n>>>>>Kernel:%d is compute intensive, sent for ALAP execution\n",	KN);
+#endif
 				Pa = ALAP(kernel, KN, i, Pa, Pro_free_list, Kernel_queue);
 
 			}
@@ -65,9 +68,9 @@ int Kernel_book_keeper(Kernel_INFO* kernel, int KN, int Pa, int i, Node **Pro_fr
 
 				if (kernel[KN].Pn <= Pl && (Pt + kernel[KN].Texe) <= alap->data) { // Condition 1
 
-					printf(
-						"\n||---ALAP is set!! -->The Kernel:%d SATISFIED CONDITION 1 && 2",
-						KN);
+#if DEBUG_MESSAGES
+					printf(	"\n||---ALAP is set!! -->The Kernel:%d SATISFIED CONDITION 1 && 2",	KN);
+#endif
 
 					if (kernel[KN].Texe + Pt <= kernel[KN].Td) {
 
@@ -79,18 +82,18 @@ int Kernel_book_keeper(Kernel_INFO* kernel, int KN, int Pa, int i, Node **Pro_fr
 							Pro_free_list); // Kernel call for the GPU to handle the given Kernels and number of blocks//
 					}
 					else {
-						printf(
-							"\n\n@@ Kernel-%d will not complete before it's deadline, Job REJECTED @@\n\n",
-							KN);
+#if DEBUG_MESSAGES
+						printf(	"\n\n@@ Kernel-%d will not complete before it's deadline, Job REJECTED @@\n\n",	KN);
+#endif
 						CPU_Kernel++;
 					}
 				}
 
 				else if (kernel[KN].Pn > Pl && (Pt + kernel[KN].Texe) <= alap->data) { // Condition 2
 
-					printf(
-						"\n||---ALAP is set!! -->The Kernel:%d SATISFIED CONDITION 2",
-						KN);
+#if DEBUG_MESSAGES
+					printf(	"\n||---ALAP is set!! -->The Kernel:%d SATISFIED CONDITION 2",	KN);
+#endif
 
 					if (kernel[KN].Texe + Pt <= kernel[KN].Td) {
 
@@ -103,9 +106,9 @@ int Kernel_book_keeper(Kernel_INFO* kernel, int KN, int Pa, int i, Node **Pro_fr
 					}
 
 					else {
-						printf(
-							"\n\n@@ Kernel-%d will not complete before it's deadline, Job REJECTED @@\n\n",
-							KN);
+#if DEBUG_MESSAGES
+						printf(	"\n\n@@ Kernel-%d will not complete before it's deadline, Job REJECTED @@\n\n",	KN);
+#endif
 						CPU_Kernel++;
 					}
 				}
@@ -123,9 +126,9 @@ int Kernel_book_keeper(Kernel_INFO* kernel, int KN, int Pa, int i, Node **Pro_fr
 						given = 0;
 					}
 
-					printf(
-						"\n||---ALAP is set!! -->The Kernel:%d SATISFIED CONDITION 1 with FLAG",
-						KN);
+#if DEBUG_MESSAGES
+					printf(	"\n||---ALAP is set!! -->The Kernel:%d SATISFIED CONDITION 1 with FLAG",KN);
+#endif
 
 					if (kernel[KN].Texe + Pt <= kernel[KN].Td) {
 
@@ -138,9 +141,9 @@ int Kernel_book_keeper(Kernel_INFO* kernel, int KN, int Pa, int i, Node **Pro_fr
 					}
 
 					else {
-						printf(
-							"\n\n@@ Kernel-%d will not complete before it's deadline, Job REJECTED @@\n\n",
-							KN);
+#if DEBUG_MESSAGES
+						printf(	"\n\n@@ Kernel-%d will not complete before it's deadline, Job REJECTED @@\n\n",	KN);
+#endif
 						CPU_Kernel++;
 					}
 				}
@@ -150,8 +153,10 @@ int Kernel_book_keeper(Kernel_INFO* kernel, int KN, int Pa, int i, Node **Pro_fr
 				else if (Pa >= kernel[alap->KN].Pn) {
 
 					/// NEW FUNCTION NEEDED
+#if DEBUG_MESSAGES
 					printf("\n\n\n RELEASE ALAP KERNEL NOW TO INCREASE SYSTEM TIME\n\n");
 					printf("\nPA : %d   ALAP_Pg : %d\n", Pa, kernel[alap->KN].Pn);
+#endif
 					Pa = ALAP_improve(kernel, alap->KN, i, Pa, Pro_free_list, Kernel_queue);
 					Pa = AEAP(kernel, KN, i, Pa, Pro_free_list, Kernel_queue);
 					count++;
@@ -204,16 +209,18 @@ int Processors_unavailable(Kernel_INFO *kernel, int KN, int i, int Pa,
 
 	else if (kernel[KN].Pn >= PROCESSOR_LIMIT && alap == NULL) {
 
+#if DEBUG_MESSAGES
 		printf("\n>>>>>Kernel:%d sent for ALAP execution\n", KN);
-
+#endif
 		Pa = ALAP(kernel, KN, i, Pa, Pro_free_list, Kernel_queue);
 
 	}
 
 
 	else if (kernel[KN].Pn >= PROCESSOR_LIMIT && alap != NULL) {
-
+#if DEBUG_MESSAGES
 		printf("\n>>>>>Kernel:%d sent for ALAP execution\n", KN);
+#endif
 
 		Pa = ALAP_Flagged(kernel, KN, i, Pa, Pro_free_list, Kernel_queue);
 

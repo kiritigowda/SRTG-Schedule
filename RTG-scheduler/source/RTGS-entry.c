@@ -5,7 +5,7 @@
 
 #include"RTGS.h"
 // version
-#define RTGS_VERSION "0.9.0"
+#define RTGS_VERSION "0.9.1"
 
 /**********************************************************************************************************
 Help Function and usage information
@@ -18,9 +18,9 @@ void show_usage()
 	printf("\n");
 	printf("Usage:\n\n");
 	printf("Windows:\n");
-	printf("SCHEDULER.EXE [options] Kernels <Kernel_file.txt> ReleaseTime <Release_Time_file.txt>  Mode <Option>\n");
+	printf("SCHEDULER.EXE [options] -K <Kernel_file.txt> -RT <Release_Time_file.txt>  -M <Option>\n");
 	printf("Linux:\n");
-	printf("./SCHEDULER [options] Kernels <Kernel_file.txt> ReleaseTime <Release_Time_file.txt>  Mode <Option>\n");
+	printf("./SCHEDULER [options] -K <Kernel_file.txt> -RT <Release_Time_file.txt>  -M <Option>\n");
 	printf("\n");
 	printf("\n\nScheduler [options] Supported\n\n");
 	printf("  -h/-help\n");
@@ -64,15 +64,12 @@ int main(int argc, char * argv[])
 
 	for (int arg = 1; arg < argc; arg++)
 	{
-		if (argv[arg][0] == '-')
+		if (!_stricmp(argv[arg], "-h") || !_stricmp(argv[arg], "-help"))
 		{
-			if (!_stricmp(argv[arg], "-h") || !_stricmp(argv[arg], "-help"))
-			{
-				show_usage();
-				exit(status);
-			}
+			show_usage();
+			exit(status);
 		}
-		else if (!_stricmp(argv[arg], "Kernels"))
+		else if (!_stricmp(argv[arg], "Kernels") || !_stricmp(argv[arg], "-K"))
 		{
 			if ((arg + 1) == argc)
 			{
@@ -85,7 +82,7 @@ int main(int argc, char * argv[])
 			Kernel = (argv[arg]);
 			error++;
 		}
-		else if (!_stricmp(argv[arg], "ReleaseTime"))
+		else if (!_stricmp(argv[arg], "ReleaseTime") || !_stricmp(argv[arg], "-RT"))
 		{
 			if ((arg + 1) == argc)
 			{
@@ -99,11 +96,12 @@ int main(int argc, char * argv[])
 			ReleaseTime = (argv[arg]);
 			error++;
 		}
-		else if (!_stricmp(argv[arg], "Mode"))
+		else if (!_stricmp(argv[arg], "Mode") || !_stricmp(argv[arg], "-M"))
 		{
 			if ((arg + 1) == argc)
 			{
 				printf("\n\nMissing Mode Value on command-line. Default Mode will be Executed\n");
+				printf("Mode 5::AEAP / ALAP BP with APLAP improver mode->AEAP / ALAP BP Improve\n");
 				Mode = 5;
 			}
 			else {
@@ -132,8 +130,9 @@ int main(int argc, char * argv[])
 		int64_t freq = RTGS_GetClockFrequency();
 		float factor = 1000.0f / (float)freq; // to convert clock counter to ms
 		float Scheduler_time = (float)((end_t - start_t) * factor);
+		printf("RTG-Scheduler Sucessful\n");
 		printf("Total Time Taken to Schedule  -> %0.2f ms\n", Scheduler_time);
 	}
-	
+
 	return status;
 }

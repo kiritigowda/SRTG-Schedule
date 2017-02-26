@@ -64,7 +64,9 @@ backup_list* position_delete_list(backup_list* head) {
 	temp = head;
 
 	if (temp == NULL) {
+#if DEBUG_MESSAGES
 		printf("The List is empty\n");
+#endif
 		return (head);
 	}
 
@@ -385,9 +387,10 @@ Node* position_delete(Node* head, int p) {
 
 
 	if (temp == NULL) {
+#if DEBUG_MESSAGES
 		printf("The List is empty\n");
+#endif
 		return (head);
-
 	}
 
 
@@ -494,23 +497,18 @@ void print(Node* head) {
 
 //Print the list in reverse order
 void R_print(Node *p) {
-
 	if (p == NULL)return;
 
 	R_print(p->next);
 	printf("%d->", p->data);
-
 	return;
 }
 
 
 //Print the list
 void Kernel_queue_print(Node* head) {
-
 	Node* temp;
-
 	temp = head;
-
 	printf("\n\nKernels Scheduled for EXE::->");
 	while (temp != NULL) {
 		printf("(T-%d--P-%d--KN-%d)->", temp->data, temp->P_f_g, temp->KN);

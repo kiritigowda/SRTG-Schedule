@@ -16,8 +16,9 @@ int Retrieve_processors(int i, int Pa, Node** Pro_free_list) {
 		if (temp->data == i) {
 			//printf("\n\n\n--Dispatch----->TIME: %d\n",i);
 			Pa = Pa + temp->P_f_g;
+#if DEBUG_MESSAGES
 			printf("\n\n\n--Dispatch----->TIME: %d  -- PA = %d\n", i, Pa);
-
+#endif
 			if (temp->Kernel_next != NULL) {
 				Node *t1, *t2;
 				t1 = temp->Kernel_next;
@@ -25,19 +26,21 @@ int Retrieve_processors(int i, int Pa, Node** Pro_free_list) {
 				while (t1 != NULL) {
 
 					t2 = t1->Kernel_next;
-					printf(
-						"\n\n--TIME: %d Dispatch--## Kernel -- %d data sent back ##\n",
-						i, t1->KN);
+#if DEBUG_MESSAGES
+					printf(	"\n\n--TIME: %d Dispatch--## Kernel -- %d data sent back ##\n",	i, t1->KN);
+#endif
 					free(t1);
 					t1 = t2;
 
 				}
 			}
 
-			else
-				printf(
-				"\n\n--TIME: %d Dispatch--## Kernel -- %d data sent back ##\n",
-				i, temp->KN);
+			else {
+#if DEBUG_MESSAGES
+				printf("\n\n--TIME: %d Dispatch--## Kernel -- %d data sent back ##\n", i, temp->KN);
+#endif
+			}
+
 
 			temp = position_delete(*Pro_free_list, 1);
 			*Pro_free_list = temp;
@@ -79,26 +82,26 @@ int Dispatch_queued_kernels(int i, int Pa, Node** Kernel_queue,
 							}
 
 							else {
-								printf(
-									"\n\n!!!!ERROR At TIME: %d<--Dispatch--Kernel -- %d-->!!!\n",
-									i, t1->KN);
+#if DEBUG_MESSAGES
+								printf("\n\n!!!!ERROR At TIME: %d<--Dispatch--Kernel -- %d-->!!!\n",i, t1->KN);
+#endif
 								return Pa;
 							}
 
 						}
 						Pa = Pa - t1->P_f_g;
-						printf(
-							"\n\nTIME: %d<--Dispatch-- SA:2 --Kernel -- %d sent to GPU for EXECUTION-->\n",
-							i, t1->KN);
+#if DEBUG_MESSAGES
+						printf(	"\n\nTIME: %d<--Dispatch-- SA:2 --Kernel -- %d sent to GPU for EXECUTION-->\n",	i, t1->KN);
+#endif
 						Queue_kernel_execution(ALAP_Pg, t1->Tf, i, t1->SA,
 							t1->KN, Pro_free_list);
 
 					}
 
 					else {
-						printf(
-							"\n\nTIME: %d<--Dispatch-- SA:1 --Kernel -- %d sent to GPU for EXECUTION-->\n",
-							i, t1->KN);
+#if DEBUG_MESSAGES
+						printf(	"\n\nTIME: %d<--Dispatch-- SA:1 --Kernel -- %d sent to GPU for EXECUTION-->\n",	i, t1->KN);
+#endif
 					}
 
 					free(t1);
@@ -121,25 +124,25 @@ int Dispatch_queued_kernels(int i, int Pa, Node** Kernel_queue,
 							alap = position_delete_list(alap);
 						}
 						else {
-							printf(
-								"\n\n!!!!ERROR At TIME: %d<--Dispatch--Kernel -- %d-->!!!\n",
-								i, temp->KN);
+#if DEBUG_MESSAGES
+							printf("\n\n!!!!ERROR At TIME: %d<--Dispatch--Kernel -- %d-->!!!\n",i, temp->KN);
+#endif
 							return Pa;
 						}
 					}
 
 					Pa = Pa - temp->P_f_g;
-					printf(
-						"\n\nTIME: %d<--Dispatch-- SA:2 --Kernel -- %d sent to GPU for EXECUTION-->\n",
-						i, temp->KN);
+#if DEBUG_MESSAGES
+					printf(	"\n\nTIME: %d<--Dispatch-- SA:2 --Kernel -- %d sent to GPU for EXECUTION-->\n",	i, temp->KN);
+#endif
 					Queue_kernel_execution(ALAP_Pg, temp->Tf, i, temp->SA,
 						temp->KN, Pro_free_list);
 				}
 
 				else {
-					printf(
-						"\n\nTIME: %d<--Dispatch-- SA:1 --Kernel -- %d sent to GPU for EXECUTION-->\n",
-						i, temp->KN);
+#if DEBUG_MESSAGES
+					printf("\n\nTIME: %d<--Dispatch-- SA:1 --Kernel -- %d sent to GPU for EXECUTION-->\n",i, temp->KN);
+#endif
 				}
 
 			}

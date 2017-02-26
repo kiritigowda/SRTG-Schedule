@@ -7,9 +7,9 @@
 
 int AEAP_Flagged(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node **Kernel_queue) {
 
-	printf(
-		"\n||---AEAP_FLAGGED-->Kernel->%d is verified for ALAP Flagged scheduling\n",
-		KN);
+#if DEBUG_MESSAGES
+	printf("\n||---AEAP_FLAGGED-->Kernel->%d is verified for ALAP Flagged scheduling\n", KN);
+#endif
 
 	int Pro = 0, Tr;
 
@@ -65,12 +65,10 @@ int AEAP_Flagged(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_li
 							P_Given_list = clean_list(P_Given_list);
 
 							//Kernel has to be sent to CPU
-							printf(
-								"\n!!!---AEAP FLAGGED with ALAP is not Possible for the Kernel:%d-->---!!!",
-								KN);
-							printf(
-								"\n!!!---KERNEK:%d SENT BACK TO CPU -->---!!!",
-								KN);
+#if DEBUG_MESSAGES
+							printf("\n!!!---AEAP FLAGGED with ALAP is not Possible for the Kernel:%d-->---!!!", KN);
+							printf("\n!!!---KERNEK:%d SENT BACK TO CPU -->---!!!", KN);
+#endif
 							CPU_Kernel++;
 							return Pa;
 
@@ -86,9 +84,9 @@ int AEAP_Flagged(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_li
 							int Pt = i;
 							int SA = 1;
 
-							printf(
-								"\n||---AEAP_FLAGGED-->The Kernel:%d scheduled AEAP -->---||",
-								KN);
+#if DEBUG_MESSAGES
+							printf("\n||---AEAP_FLAGGED-->The Kernel:%d scheduled AEAP -->---||", KN);
+#endif
 
 							P_Given_list = clean_list(P_Given_list);
 							Queue_kernel_execution(Pf, Tf, Pt, SA, KN,
@@ -123,9 +121,9 @@ int AEAP_Flagged(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_li
 					int Pt = i;
 					int SA = 1;
 
-					printf(
-						"\n||---AEAP-->The Kernel:%d scheduled AEAP -->---||",
-						KN);
+#if DEBUG_MESSAGES
+					printf("\n||---AEAP-->The Kernel:%d scheduled AEAP -->---||", KN);
+#endif
 					Queue_kernel_execution(Pf, Tf, Pt, SA, KN, Pro_free_list);
 					Kernel_queue_handler(Pf, Tr, Pt, SA, KN, Kernel_queue);
 
@@ -191,12 +189,10 @@ int AEAP_Flagged(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_li
 									P_Given_list = clean_list(P_Given_list);
 
 									//Kernel has to be sent to CPU
-									printf(
-										"\n!!!---AEAP FLAGGED with ALAP is not Possible for the Kernel:%d-->---!!!",
-										KN);
-									printf(
-										"\n!!!---KERNEK:%d SENT BACK TO CPU -->---!!!",
-										KN);
+#if DEBUG_MESSAGES
+									printf("\n!!!---AEAP FLAGGED with ALAP is not Possible for the Kernel:%d-->---!!!", KN);
+									printf("\n!!!---KERNEK:%d SENT BACK TO CPU -->---!!!", KN);
+#endif
 									CPU_Kernel++;
 									return Pa;
 
@@ -212,9 +208,9 @@ int AEAP_Flagged(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_li
 									int Pt = i;
 									int SA = 1;
 
-									printf(
-										"\n||---AEAP_FLAGGED-->The Kernel:%d scheduled AEAP -->---||",
-										KN);
+#if DEBUG_MESSAGES
+									printf("\n||---AEAP_FLAGGED-->The Kernel:%d scheduled AEAP -->---||", KN);
+#endif
 
 									P_Given_list = clean_list(P_Given_list);
 									Queue_kernel_execution(Pf, Tf, Pt, SA, KN,
@@ -240,10 +236,10 @@ int AEAP_Flagged(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_li
 			else {
 
 				//Kernel has to be sent to CPU
-				printf(
-					"\n!!!---AEAP FLAGGED with ALAP is not Possible for the Kernel:%d-->---!!!",
-					KN);
+#if DEBUG_MESSAGES
+				printf("\n!!!---AEAP FLAGGED with ALAP is not Possible for the Kernel:%d-->---!!!", KN);
 				printf("\n!!!---KERNEK:%d SENT BACK TO CPU -->---!!!", KN);
+#endif
 				CPU_Kernel++;
 				return Pa;
 
@@ -305,12 +301,10 @@ int AEAP_Flagged(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_li
 								P_Given_list = clean_list(P_Given_list);
 
 								//Kernel has to be sent to CPU
-								printf(
-									"\n!!!---AEAP FLAGGED with ALAP is not Possible for the Kernel:%d-->---!!!",
-									KN);
-								printf(
-									"\n!!!---KERNEK:%d SENT BACK TO CPU -->---!!!",
-									KN);
+#if DEBUG_MESSAGES
+								printf("\n!!!---AEAP FLAGGED with ALAP is not Possible for the Kernel:%d-->---!!!", KN);
+								printf("\n!!!---KERNEK:%d SENT BACK TO CPU -->---!!!", KN);
+#endif
 								CPU_Kernel++;
 								return Pa;
 
@@ -326,9 +320,9 @@ int AEAP_Flagged(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_li
 								int Pt = i;
 								int SA = 1;
 
-								printf(
-									"\n||---AEAP_FLAGGED-->The Kernel:%d scheduled AEAP -->---||",
-									KN);
+#if DEBUG_MESSAGES
+								printf("\n||---AEAP_FLAGGED-->The Kernel:%d scheduled AEAP -->---||", KN);
+#endif
 
 								P_Given_list = clean_list(P_Given_list);
 								Queue_kernel_execution(Pf, Tf, Pt, SA, KN,
@@ -350,10 +344,10 @@ int AEAP_Flagged(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_li
 			else {
 
 				//Kernel has to be sent to CPU
-				printf(
-					"\n!!!---AEAP FLAGGED with ALAP is not Possible for the Kernel:%d-->---!!!",
-					KN);
+#if DEBUG_MESSAGES
+				printf("\n!!!---AEAP FLAGGED with ALAP is not Possible for the Kernel:%d-->---!!!", KN);
 				printf("\n!!!---KERNEK:%d SENT BACK TO CPU -->---!!!", KN);
+#endif
 				CPU_Kernel++;
 				return Pa;
 
@@ -375,9 +369,9 @@ int AEAP_Flagged(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_li
 					int Pt = i;
 					int SA = 1;
 
-					printf(
-						"\n||---AEAP-->The Kernel:%d scheduled AEAP -->---||",
-						KN);
+#if DEBUG_MESSAGES
+					printf("\n||---AEAP-->The Kernel:%d scheduled AEAP -->---||", KN);
+#endif
 					Queue_kernel_execution(Pf, Tf, Pt, SA, KN, Pro_free_list);
 					Kernel_queue_handler(Pf, Tr, Pt, SA, KN, Kernel_queue);
 
@@ -443,12 +437,10 @@ int AEAP_Flagged(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_li
 									P_Given_list = clean_list(P_Given_list);
 
 									//Kernel has to be sent to CPU
-									printf(
-										"\n!!!---AEAP FLAGGED with ALAP is not Possible for the Kernel:%d-->---!!!",
-										KN);
-									printf(
-										"\n!!!---KERNEK:%d SENT BACK TO CPU -->---!!!",
-										KN);
+#if DEBUG_MESSAGES
+									printf("\n!!!---AEAP FLAGGED with ALAP is not Possible for the Kernel:%d-->---!!!", KN);
+									printf("\n!!!---KERNEK:%d SENT BACK TO CPU -->---!!!", KN);
+#endif
 									CPU_Kernel++;
 									return Pa;
 
@@ -464,9 +456,9 @@ int AEAP_Flagged(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_li
 									int Pt = i;
 									int SA = 1;
 
-									printf(
-										"\n||---AEAP_FLAGGED-->The Kernel:%d scheduled AEAP -->---||",
-										KN);
+#if DEBUG_MESSAGES
+									printf(	"\n||---AEAP_FLAGGED-->The Kernel:%d scheduled AEAP -->---||",	KN);
+#endif
 
 									P_Given_list = clean_list(P_Given_list);
 									Queue_kernel_execution(Pf, Tf, Pt, SA, KN,
@@ -492,10 +484,10 @@ int AEAP_Flagged(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_li
 			else {
 
 				//Kernel has to be sent to CPU
-				printf(
-					"\n!!!---AEAP FLAGGED with ALAP is not Possible for the Kernel:%d-->---!!!",
-					KN);
+#if DEBUG_MESSAGES
+				printf(	"\n!!!---AEAP FLAGGED with ALAP is not Possible for the Kernel:%d-->---!!!",KN);
 				printf("\n!!!---KERNEK:%d SENT BACK TO CPU -->---!!!", KN);
+#endif
 				CPU_Kernel++;
 				return Pa;
 

@@ -7,9 +7,9 @@
 
 int ALAP_Flagged(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node **Kernel_queue) {
 
-	printf(
-		"\n||---ALAP_FLAGGED-->Kernel->%d is verified for AEAP Flagged scheduling\n",
-		KN);
+#if DEBUG_MESSAGES
+	printf("\n||---ALAP_FLAGGED-->Kernel->%d is verified for AEAP Flagged scheduling\n", KN);
+#endif
 
 	int Pro = 0, Tr;
 	Node* temp = *Pro_free_list;
@@ -28,9 +28,9 @@ int ALAP_Flagged(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_li
 			int Pf = kernel[KN].Pn;
 			int Tf = kernel[KN].Td;
 			int SA = 2;
-
-			printf("\n$$---ALAP_FLAGGED-->The Kernel:%d scheduled ALAP-->---$$",
-				KN);
+#if DEBUG_MESSAGES
+			printf("\n$$---ALAP_FLAGGED-->The Kernel:%d scheduled ALAP-->---$$", KN);
+#endif
 
 			alap = insert_ALAP_list(alap, Tr, Tf, Pf, KN);
 			Kernel_queue_handler(Pf, Tr, Tf, SA, KN, Kernel_queue);
@@ -46,9 +46,9 @@ int ALAP_Flagged(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_li
 			int Pf = kernel[KN].Pn;
 			int Tf = kernel[KN].Td;
 			int SA = 2;
-
-			printf("\n$$---ALAP_FLAGGED-->The Kernel:%d scheduled ALAP-->---$$",
-				KN);
+#if DEBUG_MESSAGES
+			printf("\n$$---ALAP_FLAGGED-->The Kernel:%d scheduled ALAP-->---$$",KN);
+#endif
 
 			alap = insert_ALAP_list(alap, Tr, Tf, Pf, KN);
 			Kernel_queue_handler(Pf, Tr, Tf, SA, KN, Kernel_queue);
@@ -63,10 +63,10 @@ int ALAP_Flagged(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_li
 
 				if ((temp->Tf + kernel[KN].Texe) > kernel[KN].Td) {
 
-					printf(
-						"\n!!!---ALAP FLAGGED with ALAP is not Possible for the Kernel:%d-->---!!!",
-						KN);
+#if DEBUG_MESSAGES
+					printf(	"\n!!!---ALAP FLAGGED with ALAP is not Possible for the Kernel:%d-->---!!!",KN);
 					printf("\n!!!---KERNEL:%d SENT BACK TO CPU -->---!!!", KN);
+#endif
 
 					CPU_Kernel++;
 					return Pa;
@@ -88,12 +88,10 @@ int ALAP_Flagged(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_li
 						if ((t1->Tf + kernel[KN].Texe) > kernel[KN].Td) {
 
 							//Kernel has to be sent to CPU
-							printf(
-								"\n!!!---ALAP FLAGGED with ALAP is not Possible for the Kernel:%d-->---!!!",
-								KN);
-							printf(
-								"\n!!!---KERNEL:%d SENT BACK TO CPU -->---!!!",
-								KN);
+#if DEBUG_MESSAGES
+							printf("\n!!!---ALAP FLAGGED with ALAP is not Possible for the Kernel:%d-->---!!!",	KN);
+							printf("\n!!!---KERNEL:%d SENT BACK TO CPU -->---!!!",KN);
+#endif
 							CPU_Kernel++;
 							return Pa;
 
@@ -106,9 +104,9 @@ int ALAP_Flagged(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_li
 							int Tf = kernel[KN].Td;
 							int SA = 2;
 
-							printf(
-								"\n$$---ALAP_FLAGGED-->The Kernel:%d scheduled ALAP-->---$$",
-								KN);
+#if DEBUG_MESSAGES
+							printf(	"\n$$---ALAP_FLAGGED-->The Kernel:%d scheduled ALAP-->---$$",KN);
+#endif
 
 							alap = insert_ALAP_list(alap, Tr, Tf, Pf, KN);
 							Kernel_queue_handler(Pf, Tr, Tf, SA, KN,
@@ -134,10 +132,10 @@ int ALAP_Flagged(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_li
 	else {
 
 		//Kernel has to be sent to CPU
-		printf(
-			"\n!!!---ALAP FLAGGED with ALAP is not Possible for the Kernel:%d-->---!!!",
-			KN);
+#if DEBUG_MESSAGES
+		printf(	"\n!!!---ALAP FLAGGED with ALAP is not Possible for the Kernel:%d-->---!!!",KN);
 		printf("\n!!!---KERNEK:%d SENT BACK TO CPU -->---!!!", KN);
+#endif
 		CPU_Kernel++;
 		return Pa;
 

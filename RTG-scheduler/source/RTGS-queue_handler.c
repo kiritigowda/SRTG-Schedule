@@ -11,8 +11,9 @@
 void Queue_kernel_execution(int Pf, int Tf, int i, int SA, int KN, Node **Pro_free_list) {
 	//printf("\n *** The Processors given :: %d ***\n\n", Pf);
 	*Pro_free_list = ascending_insert(*Pro_free_list, Tf, Tf, Pf, KN, SA);
+#if DEBUG_MESSAGES
 	print(*Pro_free_list);
-
+#endif
 	// Sending Data and Kernels
 
 	return;
@@ -24,13 +25,16 @@ void Kernel_queue_handler(int Pf, int Tr, int Tf, int SA, int KN, Node **Kernel_
 	//printf("\n *** The Processors given :: %d ***\n\n", Pf);
 	if (SA == 2) {
 		*Kernel_queue = ascending_insert(*Kernel_queue, Tr, Tf, Pf, KN, SA);
+#if DEBUG_MESSAGES
 		Kernel_queue_print(*Kernel_queue);
+#endif
 	}
 	else {
 		*Kernel_queue = ascending_insert(*Kernel_queue, Tr, Tr, Pf, KN, SA);
+#if DEBUG_MESSAGES
 		Kernel_queue_print(*Kernel_queue);
+#endif
 	}
-
 	// Sending Data and Kernels
 
 	return;

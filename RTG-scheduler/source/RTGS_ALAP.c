@@ -23,9 +23,9 @@ int ALAP(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node
 
 		int Pf = kernel[KN].Pn;
 		int SA = 2;
-
-		printf("\n$$---ALAP-->The Kernel:%d scheduled ALAP-->---$$",
-			KN);
+#if DEBUG_MESSAGES
+		printf("\n$$---ALAP-->The Kernel:%d scheduled ALAP-->---$$", KN);
+#endif
 
 		alap = insert_ALAP_list(alap, Tr, Tf, Pg, KN);
 		Kernel_queue_handler(Pf, Tr, Tf, SA, KN, Kernel_queue);
@@ -63,9 +63,9 @@ int ALAP(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node
 			}
 
 			P_Given_list = clean_list(P_Given_list);
-			printf(
-				"\n\n$$---ALAP-->The Kernel:%d Cannot be scheduled ALAP*****$$",
-				KN);
+#if DEBUG_MESSAGES
+			printf(	"\n\n$$---ALAP-->The Kernel:%d Cannot be scheduled ALAP*****$$", KN);
+#endif
 
 			CPU_Kernel++;
 			//Return Kernel to CPU - Function to send Kernel to CPU execution
@@ -85,9 +85,9 @@ int ALAP(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node
 
 				int Pf = kernel[KN].Pn;
 				int SA = 2;
-
-				printf("\n$$---ALAP-->The Kernel:%d scheduled ALAP-->---$$",
-					KN);
+#if DEBUG_MESSAGES
+				printf("\n$$---ALAP-->The Kernel:%d scheduled ALAP-->---$$", KN);
+#endif
 
 				alap = insert_ALAP_list(alap, Tr, Tf, Pg, KN);
 				Kernel_queue_handler(Pf, Tr, Tf, SA, KN, Kernel_queue);
@@ -128,7 +128,9 @@ int ALAP(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node
 		}
 
 		P_Given_list = clean_list(P_Given_list);
+#if DEBUG_MESSAGES
 		printf("$$---ALAP-->The Kernel:%d Cannot be scheduled AEAP --$$", KN);
+#endif
 	}
 
 	return Pa;
