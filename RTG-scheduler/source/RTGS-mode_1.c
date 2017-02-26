@@ -55,7 +55,7 @@ int RTGS_mode_1(char *kernel_file, char *Releasetime_file)
 			printf("Kernels:%d has been released\n", k1);
 			printf("Kernels:%d has been released\n", k2);
 #endif
-			
+
 			if (kernel[k1].Td <= kernel[k2].Td)
 			{
 				Pa = Mode_1_book_keeper(kernel, k1, Pa, i, &Pro_free_list); // handling the released kernel by the book-keeper

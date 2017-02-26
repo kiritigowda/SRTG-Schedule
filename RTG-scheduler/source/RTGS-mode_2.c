@@ -15,7 +15,7 @@ int RTGS_mode_2(char *kernel_file, char *Releasetime_file)
 	Node *Kernel_queue = NULL;  //Kernel queued for future executions
 
 	int Pa = MAX_GPU_PROCESSOR;
-	int c, Nkr = 0;
+	int c = 0, Nkr = 0;
 	int rt = 0, KN = 0, k1, k2;
 	count = 0;
 	CPU_Kernel = 0;
@@ -50,7 +50,7 @@ int RTGS_mode_2(char *kernel_file, char *Releasetime_file)
 			k2 = KN;KN++;
 #if DEBUG_MESSAGES
 			printf("\n-->>Total processors Available at time %d = %d\n\n ", i, Pa)
-			printf("Kernels:%d has been released\n", k1);
+				printf("Kernels:%d has been released\n", k1);
 			printf("Kernels:%d has been released\n", k2);
 #endif
 
