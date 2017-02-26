@@ -17,7 +17,7 @@
 #include <assert.h>
 #include <stdint.h>
 
-#define DEBUG_MESSAGES 1 // debug messages
+#define DEBUG_MESSAGES 0 // debug messages
 
 #define MAX_GPU_PROCESSOR 14        // Total streaming multi-processors available on the GPU
 #define MAX_KERNELS 100				// Max Kernels needed to be scheduled
@@ -95,19 +95,23 @@ int CPU_Kernel;
 backup_list* alap;
 
 
-int Scheduler_main_mode_1(char *kernel, char *Releasetime);
+int RTGS_mode_1(char *kernel, char *Releasetime);
 int Mode_1_book_keeper(struct Kernels* kernel, int KN, int Pa, int i, Node** Pro_free_list);
 
-int Scheduler_main_mode_2(char *kernel, char *Releasetime);
+int RTGS_mode_2(char *kernel, char *Releasetime);
 int Mode_2_book_keeper(Kernel_INFO* kernel, int KN, int Pa, int i, Node **Pro_free_list, Node **Kernel_queue);
 int Mode_2_Processors_Unavailable(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node **Kernel_queue);
 int Mode_2_AEAP(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node **Kernel_queue);
 
-int Scheduler_main_mode_3(char *kernel, char *Releasetime);
+int RTGS_mode_3(char *kernel, char *Releasetime);
 int Mode_3_book_keeper(Kernel_INFO* kernel, int KN, int Pa, int i, Node **Pro_free_list, Node **Kernel_queue);
 int Mode_3_Processors_Unavailable(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node **Kernel_queue);
 int Mode_3_AEAP(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node **Kernel_queue);
 int Mode_3_ALAP(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node **Kernel_queue);
+
+int RTGS_mode_4(char *kernel, char *Releasetime);
+
+int RTGS_mode_5(char *kernel, char *Releasetime);
 
 int scheduler_main(char *kernel, char *Releasetime, int mode);
 
