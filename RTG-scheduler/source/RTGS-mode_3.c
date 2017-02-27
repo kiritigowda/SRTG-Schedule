@@ -75,9 +75,9 @@ int RTGS_mode_3(char *kernel_file, char *Releasetime_file)
 
 	if (rt != 0)
 	{
-#if DEBUG_MESSAGES
-		printf("\n\n$$$ All Kernels Scheduled or Sent to CPU Successfully - Processors Available: %d -->Mode_3_AEAP Kernels: %d $$$\n\n", Pa, count); //End of Scheduler
-		printf("\n\n$$$ Kernels sent Back to CPU: %d $$$\n\n", CPU_Kernel); //End of Scheduler
+#if DEBUG_INFO
+		printf("All Kernels Scheduled or Sent to CPU Successfully - Processors Available: %d Mode_2_AEAP Kernels: %d\n", Pa, count);
+		printf("Kernels sent Back to CPU: %d\n", CPU_Kernel);
 #endif
 
 		for (int j = 0; j <= Nkr; j++)
@@ -98,7 +98,9 @@ int RTGS_mode_3(char *kernel_file, char *Releasetime_file)
 	return RTGS_SUCCESS;
 }
 
-/* Book keeping Function, the core function of the scheduler in charge of assigning processors and allocating the future releases */
+/**********************************************************************************************************
+MODE 3 FUNCTION
+***********************************************************************************************************/
 int Mode_3_book_keeper(Kernel_INFO* kernel, int KN, int Pa, int i, Node **Pro_free_list, Node **Kernel_queue) {
 
 	int Pf, Tf, Pt = i, SA = 99;
@@ -181,6 +183,9 @@ int Mode_3_book_keeper(Kernel_INFO* kernel, int KN, int Pa, int i, Node **Pro_fr
 
 }
 
+/**********************************************************************************************************
+MODE 3 FUNCTION
+***********************************************************************************************************/
 int Mode_3_Processors_Unavailable(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node **Kernel_queue) {
 
 	//printf("\nKernel->%d sent for Mode_3_AEAP Scheduling at TIME: %d\n",KN,i);
@@ -206,10 +211,12 @@ int Mode_3_Processors_Unavailable(Kernel_INFO *kernel, int KN, int i, int Pa, No
 	return Pa;
 }
 
+/**********************************************************************************************************
+MODE 3 FUNCTION
+***********************************************************************************************************/
 int Mode_3_AEAP(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node **Kernel_queue)
 {
-	//printf("\n||---Mode_3_AEAP-->Kernel->%d is verified for Mode_3_AEAP scheduling\n",KN);
-	int Pro = 0, Tr;
+	int Pro = 0, Tr = 0;
 	static int given = 0;
 	backup_list *P_Given_list = NULL;
 	Node* temp = *Pro_free_list;
@@ -376,6 +383,9 @@ int Mode_3_AEAP(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_lis
 	return Pa;
 }
 
+/**********************************************************************************************************
+MODE 3 FUNCTION
+***********************************************************************************************************/
 int Mode_3_ALAP(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node **Kernel_queue) {
 	//printf("\n||---AEAP-->Kernel->%d is verified for AEAP scheduling\n",KN);
 	int Pro = 0, Tr, Tf, Pg;

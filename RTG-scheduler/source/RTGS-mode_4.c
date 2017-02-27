@@ -62,9 +62,9 @@ int RTGS_mode_4(char *kernel_file, char *Releasetime_file) {
 	alap = clean_list(alap);
 	if (rt != 0)
 	{
-#if DEBUG_MESSAGES
-		printf("\n\n$$$ All Kernels Scheduled or Sent to CPU Successfully - Processors Available: %d -->Mode_3_AEAP Kernels: %d $$$\n\n", Pa, count); //End of Scheduler
-		printf("\n\n$$$ Kernels sent Back to CPU: %d $$$\n\n", CPU_Kernel); //End of Scheduler
+#if DEBUG_INFO
+		printf("All Kernels Scheduled or Sent to CPU Successfully - Processors Available: %d Mode_2_AEAP Kernels: %d\n", Pa, count);
+		printf("Kernels sent Back to CPU: %d\n", CPU_Kernel);
 #endif
 		for (int j = 0; j <= Nkr; j++)
 		{
@@ -83,7 +83,9 @@ int RTGS_mode_4(char *kernel_file, char *Releasetime_file) {
 	return RTGS_SUCCESS;
 }
 
-/* Book keeping Function, the core function of the scheduler in charge of assigning processors and allocating the future releases */
+/**********************************************************************************************************
+MODE 4 FUNCTION
+***********************************************************************************************************/
 int Mode_4_book_keeper(Kernel_INFO* kernel, int KN, int Pa, int i, Node **Pro_free_list, Node **Kernel_queue)
 {
 
@@ -219,6 +221,9 @@ int Mode_4_book_keeper(Kernel_INFO* kernel, int KN, int Pa, int i, Node **Pro_fr
 
 }
 
+/**********************************************************************************************************
+MODE 4 FUNCTION
+***********************************************************************************************************/
 int Mode_4_Processors_unavailable(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node **Kernel_queue)
 {
 	//printf("\nKernel->%d sent for AEAP Scheduling at TIME: %d\n",KN,i);
@@ -241,6 +246,9 @@ int Mode_4_Processors_unavailable(Kernel_INFO *kernel, int KN, int i, int Pa, No
 	return Pa;
 }
 
+/**********************************************************************************************************
+MODE 4 FUNCTION
+***********************************************************************************************************/
 int Mode_4_AEAP_Flagged(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node **Kernel_queue)
 {
 #if DEBUG_MESSAGES
@@ -742,6 +750,9 @@ int Mode_4_AEAP_Flagged(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_
 	return Pa;
 }
 
+/**********************************************************************************************************
+MODE 4 FUNCTION
+***********************************************************************************************************/
 int Mode_4_AEAP(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node **Kernel_queue)
 {
 	int Pro = 0, Tr;
@@ -1134,8 +1145,9 @@ int Mode_4_AEAP(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_lis
 	return Pa;
 }
 
-
-
+/**********************************************************************************************************
+MODE 4 FUNCTION
+***********************************************************************************************************/
 int Mode_4_ALAP_Flagged(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node **Kernel_queue)
 {
 #if DEBUG_MESSAGES
@@ -1281,6 +1293,9 @@ int Mode_4_ALAP_Flagged(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_
 
 }
 
+/**********************************************************************************************************
+MODE 4 FUNCTION
+***********************************************************************************************************/
 int Mode_4_ALAP(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node **Kernel_queue)
 {
 

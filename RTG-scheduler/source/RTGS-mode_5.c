@@ -69,9 +69,9 @@ int  RTGS_mode_5(char *kernel_file, char *Releasetime_file)
 
 	if (rt != 0)
 	{
-#if DEBUG_MESSAGES
-		printf("\n\n$$$ All Kernels Scheduled or Sent to CPU Successfully - Processors Available: %d -->AEAP Kernels: %d $$$\n\n", Pa, count); //End of Scheduler
-		printf("\n\n$$$ Kernels sent Back to CPU: %d $$$\n\n", CPU_Kernel); //End of Scheduler
+#if DEBUG_INFO
+		printf("All Kernels Scheduled or Sent to CPU Successfully - Processors Available: %d Mode_2_AEAP Kernels: %d\n", Pa, count);
+		printf("Kernels sent Back to CPU: %d\n", CPU_Kernel);
 #endif
 		for (int j = 0; j <= Nkr; j++)
 		{
