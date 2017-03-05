@@ -101,7 +101,7 @@ int main(int argc, char * argv[])
 			if ((arg + 1) == argc)
 			{
 				printf("\n\nMissing Mode Value on command-line. Default Mode will be Executed\n");
-				printf("Mode 5::AEAP / ALAP BP with APLAP improver mode->AEAP / ALAP BP Improve\n");
+				printf("Mode 5::AEAP ALAP BP with APLAP improver mode->AEAP/ALAP BP Improve\n");
 				Mode = 5;
 			}
 			else {

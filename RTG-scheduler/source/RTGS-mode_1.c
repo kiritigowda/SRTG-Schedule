@@ -44,8 +44,8 @@ int RTGS_mode_1(char *kernel_file, char *Releasetime_file)
 		}
 		else if (RT[i] == 2)
 		{
-			k1 = KN;KN++;
-			k2 = KN;KN++;
+			k1 = KN; KN++;
+			k2 = KN; KN++;
 #if DEBUG_MESSAGES
 			printf("\n-->>Total processors Available at time %d = %d\n\n ", i, Pa);
 			printf("Kernels:%d has been released\n", k1);
@@ -55,13 +55,13 @@ int RTGS_mode_1(char *kernel_file, char *Releasetime_file)
 			if (kernel[k1].Td <= kernel[k2].Td) {
 				Pa = Mode_1_book_keeper(kernel, k1, Pa, i, &Pro_free_list); // handling the released kernel by the book-keeper
 				Pa = Mode_1_book_keeper(kernel, k2, Pa, i, &Pro_free_list); // handling the released kernel by the book-keeper
-		}
+			}
 			else {
 				Pa = Mode_1_book_keeper(kernel, k2, Pa, i, &Pro_free_list); // handling the released kernel by the book-keeper
 				Pa = Mode_1_book_keeper(kernel, k1, Pa, i, &Pro_free_list); // handling the released kernel by the book-keeper
 			}
+		}
 	}
-}
 	Pro_free_list = clean_node(Pro_free_list);
 	alap = clean_list(alap);
 
@@ -89,7 +89,7 @@ int RTGS_mode_1(char *kernel_file, char *Releasetime_file)
 /***********************************************************************************************************
 MODE 1 FUNCTIONS
 **********************************************************************************************************/
-int Mode_1_book_keeper(struct Kernels* kernel, int KN, int Pa, int i, Node** Pro_free_list) 
+int Mode_1_book_keeper(struct Kernels* kernel, int KN, int Pa, int i, Node** Pro_free_list)
 {
 	int Pf = 0, Tf = 0, Pt = i, SA = 99;
 #if DEBUG_MESSAGES

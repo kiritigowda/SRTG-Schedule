@@ -39,11 +39,11 @@ int RTGS_mode_4(char *kernel_file, char *Releasetime_file) {
 		}
 		else if (RT[i] == 2)
 		{
-			k1 = KN;KN++;
-			k2 = KN;KN++;
+			k1 = KN; KN++;
+			k2 = KN; KN++;
 #if DEBUG_MESSAGES
-			printf("\n-->>Total processors Available at time %d = %d\n\n ", i, Pa)
-				printf("Kernels:%d has been released\n", k1);
+			printf("\n-->>Total processors Available at time %d = %d\n\n ", i, Pa);
+			printf("Kernels:%d has been released\n", k1);
 			printf("Kernels:%d has been released\n", k2);
 #endif
 			if (kernel[k1].Td <= kernel[k2].Td)
@@ -179,7 +179,7 @@ int Mode_4_book_keeper(Kernel_INFO* kernel, int KN, int Pa, int i, Node **Pro_fr
 
 				else if (kernel[KN].Pn <= Pl
 					&& (Pt + kernel[KN].Texe) > alap->data && FLAG == 0) { // Condition 3
-				   // Control flags to not allow over budgeting of PA
+					// Control flags to not allow over budgeting of PA
 					FLAG = 1;
 					FLAG_V = alap->data;
 #if DEBUG_MESSAGES

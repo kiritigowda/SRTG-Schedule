@@ -47,11 +47,11 @@ int RTGS_mode_3(char *kernel_file, char *Releasetime_file)
 
 		else if (RT[i] == 2)
 		{
-			k1 = KN;KN++;
-			k2 = KN;KN++;
+			k1 = KN; KN++;
+			k2 = KN; KN++;
 #if DEBUG_MESSAGES
-			printf("\n-->>Total processors Available at time %d = %d\n\n ", i, Pa)
-				printf("Kernels:%d has been released\n", k1);
+			printf("\n-->>Total processors Available at time %d = %d\n\n ", i, Pa);
+			printf("Kernels:%d has been released\n", k1);
 			printf("Kernels:%d has been released\n", k2);
 #endif
 
