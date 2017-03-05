@@ -48,7 +48,7 @@ int Kernel_book_keeper(Kernel_INFO* kernel, int KN, int Pa, int i, Node **Pro_fr
 
 			else if (kernel[KN].Pn >= PROCESSOR_LIMIT) { // Processors needed greater or equal than the limit
 #if DEBUG_MESSAGES
-				printf(	"\n>>>>>Kernel:%d is compute intensive, sent for ALAP execution\n",	KN);
+				printf("\n>>>>>Kernel:%d is compute intensive, sent for ALAP execution\n", KN);
 #endif
 				Pa = ALAP(kernel, KN, i, Pa, Pro_free_list, Kernel_queue);
 
@@ -69,7 +69,7 @@ int Kernel_book_keeper(Kernel_INFO* kernel, int KN, int Pa, int i, Node **Pro_fr
 				if (kernel[KN].Pn <= Pl && (Pt + kernel[KN].Texe) <= alap->data) { // Condition 1
 
 #if DEBUG_MESSAGES
-					printf(	"\n||---ALAP is set!! -->The Kernel:%d SATISFIED CONDITION 1 && 2",	KN);
+					printf("\n||---ALAP is set!! -->The Kernel:%d SATISFIED CONDITION 1 && 2", KN);
 #endif
 
 					if (kernel[KN].Texe + Pt <= kernel[KN].Td) {
@@ -83,7 +83,7 @@ int Kernel_book_keeper(Kernel_INFO* kernel, int KN, int Pa, int i, Node **Pro_fr
 					}
 					else {
 #if DEBUG_MESSAGES
-						printf(	"\n\n@@ Kernel-%d will not complete before it's deadline, Job REJECTED @@\n\n",	KN);
+						printf("\n\n@@ Kernel-%d will not complete before it's deadline, Job REJECTED @@\n\n", KN);
 #endif
 						CPU_Kernel++;
 					}
@@ -92,7 +92,7 @@ int Kernel_book_keeper(Kernel_INFO* kernel, int KN, int Pa, int i, Node **Pro_fr
 				else if (kernel[KN].Pn > Pl && (Pt + kernel[KN].Texe) <= alap->data) { // Condition 2
 
 #if DEBUG_MESSAGES
-					printf(	"\n||---ALAP is set!! -->The Kernel:%d SATISFIED CONDITION 2",	KN);
+					printf("\n||---ALAP is set!! -->The Kernel:%d SATISFIED CONDITION 2", KN);
 #endif
 
 					if (kernel[KN].Texe + Pt <= kernel[KN].Td) {
@@ -107,7 +107,7 @@ int Kernel_book_keeper(Kernel_INFO* kernel, int KN, int Pa, int i, Node **Pro_fr
 
 					else {
 #if DEBUG_MESSAGES
-						printf(	"\n\n@@ Kernel-%d will not complete before it's deadline, Job REJECTED @@\n\n",	KN);
+						printf("\n\n@@ Kernel-%d will not complete before it's deadline, Job REJECTED @@\n\n", KN);
 #endif
 						CPU_Kernel++;
 					}
@@ -127,7 +127,7 @@ int Kernel_book_keeper(Kernel_INFO* kernel, int KN, int Pa, int i, Node **Pro_fr
 					}
 
 #if DEBUG_MESSAGES
-					printf(	"\n||---ALAP is set!! -->The Kernel:%d SATISFIED CONDITION 1 with FLAG",KN);
+					printf("\n||---ALAP is set!! -->The Kernel:%d SATISFIED CONDITION 1 with FLAG", KN);
 #endif
 
 					if (kernel[KN].Texe + Pt <= kernel[KN].Td) {
@@ -142,7 +142,7 @@ int Kernel_book_keeper(Kernel_INFO* kernel, int KN, int Pa, int i, Node **Pro_fr
 
 					else {
 #if DEBUG_MESSAGES
-						printf(	"\n\n@@ Kernel-%d will not complete before it's deadline, Job REJECTED @@\n\n",	KN);
+						printf("\n\n@@ Kernel-%d will not complete before it's deadline, Job REJECTED @@\n\n", KN);
 #endif
 						CPU_Kernel++;
 					}

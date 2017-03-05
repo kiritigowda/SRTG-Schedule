@@ -209,7 +209,7 @@ int AEAP(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node
 
 
 
-						}
+					}
 
 					else if ((kernel[KN].Pn + given) <= Pl
 						&& (temp->next == NULL)) {
@@ -359,7 +359,7 @@ int AEAP(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node
 
 					break;
 
-					} //End Pro >= kernel[KN].Pn
+				} //End Pro >= kernel[KN].Pn
 
 				else if (Pro < kernel[KN].Pn) {
 
@@ -368,10 +368,10 @@ int AEAP(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node
 					temp = temp->next;
 				}
 
-				} //End of else
-			} //End of while
+			} //End of else
+		} //End of while
 
-		} //End of alap != NULL
+	} //End of alap != NULL
 
 	if (P_Given_list != NULL) {
 
@@ -400,4 +400,4 @@ int AEAP(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node
 	}
 
 	return Pa;
-	}
+}

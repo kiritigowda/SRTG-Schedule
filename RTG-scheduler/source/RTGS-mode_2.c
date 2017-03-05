@@ -118,7 +118,6 @@ MODE 2 FUNCTION
 ***********************************************************************************************************/
 int Mode_2_Processors_Unavailable(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node **Kernel_queue)
 {
-
 	Pa = AEAP(kernel, KN, i, Pa, Pro_free_list, Kernel_queue);
 	count++;
 	return Pa;
