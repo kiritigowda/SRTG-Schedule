@@ -16,7 +16,10 @@ int get_kernel_information(Kernel_INFO* kernel, const char *File)
 
 	FILE * fp;
 	fp = fopen(File, "r");		// read mode
-	if (fp == NULL) { printf("Error while opening the file.\n");	return RTGS_FAILURE; }
+	if (fp == NULL) {
+		printf("ERROR::get_kernel_information - error while opening the file.\n");
+		return RTGS_FAILURE;
+	}
 
 	while (fgets(string, FILE_MAX_KERNELS, fp) != NULL)
 	{
@@ -35,6 +38,10 @@ int get_kernel_information(Kernel_INFO* kernel, const char *File)
 		}
 		if (string[i] == '\0'){
 			kernel_ID = atoi(KERNEL);
+			if (kernel_ID < 0){
+				printf("ERROR::get_kernel_information - KERNEL ID needs to be in the range 0 - N\n");
+				return RTGS_ERROR_INVALID_PARAMETERS;
+			}
 			kernel[kernel_ID].Pn = atoi(num_processor);
 			kernel[kernel_ID].Texe = atoi(execution_time);
 			kernel[kernel_ID].Td = atoi(deadline);
@@ -44,7 +51,7 @@ int get_kernel_information(Kernel_INFO* kernel, const char *File)
 	}
 	fclose(fp);
 
-	return (num_kernels);
+	return num_kernels;
 }
 
 
@@ -56,7 +63,10 @@ int get_kernel_release_times(const char *File)
 
 	FILE * fp;
 	fp = fopen(File, "r");		// read mode
-	if (fp == NULL) { printf("Error while opening the file.\n");	return RTGS_FAILURE; }
+	if (fp == NULL) {
+		printf("ERROR::get_kernel_release_times - error while opening the file.\n");
+		return RTGS_FAILURE;
+	}
 
 	while (fgets(string, 2, fp) != NULL)
 	{
@@ -64,7 +74,8 @@ int get_kernel_release_times(const char *File)
 		else if (string[0] == '1'){ gobalReleaseTime[i] = 1; i++; }
 		else if (string[0] == '2'){ gobalReleaseTime[i] = 2; i++; }
 		else if (string[0] == '3' || string[0] == '4' || string[0] == '5'){
-			printf("ERROR: Release of MAX 2 Kernels Simultanously supported in this release\n"); return RTGS_ERROR_INVALID_PARAMETERS;
+			printf("ERROR::get_kernel_release_times - release of MAX 2 Kernels Simultanously supported in this release\n");
+			return RTGS_ERROR_INVALID_PARAMETERS;
 		}
 	}
 	fclose(fp);
