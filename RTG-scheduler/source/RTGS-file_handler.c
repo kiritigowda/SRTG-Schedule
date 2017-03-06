@@ -5,10 +5,10 @@
 
 #include"RTGS.h"
 
-#define FILE_MAX_KERNELS 60
+#define FILE_MAX_KERNELS 30
 
 /* The Function is for reading the GPU Compatilble Kernel Values */
-int Get_kernel_information(Kernel_INFO* kernel, const char *File)
+int get_kernel_information(Kernel_INFO* kernel, const char *File)
 {
 	char string[FILE_MAX_KERNELS];
 	char num_processor[10], execution_time[10], deadline[10], latest_schedulable[10], KERNEL[10];
@@ -49,9 +49,9 @@ int Get_kernel_information(Kernel_INFO* kernel, const char *File)
 
 
 /* The Function is to read the time frames in which these Kernels are released */
-int Get_kernel_release_times(const char *File)
+int get_kernel_release_times(const char *File)
 {
-	char string[FILE_MAX_KERNELS]; 
+	char string[FILE_MAX_KERNELS];
 	int i = 0;
 
 	FILE * fp;
@@ -60,13 +60,17 @@ int Get_kernel_release_times(const char *File)
 
 	while (fgets(string, 2, fp) != NULL)
 	{
-		if (string[0] == '0'){RT[i] = 0;i++;}
-		else if (string[0] == '1'){	RT[i] = 1;i++;}
-		else if (string[0] == '2'){	RT[i] = 2;i++;}
+		if (string[0] == '0'){ gobalReleaseTime[i] = 0; i++; }
+		else if (string[0] == '1'){ gobalReleaseTime[i] = 1; i++; }
+		else if (string[0] == '2'){ gobalReleaseTime[i] = 2; i++; }
+		else if (string[0] == '3' || string[0] == '4' || string[0] == '5'){
+			printf("ERROR: Release of MAX 2 Kernels Simultanously supported in this release\n"); return RTGS_ERROR_INVALID_PARAMETERS;
+		}
 	}
 	fclose(fp);
+	int MaxRunTime = i;
 
-	return i;
+	return MaxRunTime;
 }
 
 

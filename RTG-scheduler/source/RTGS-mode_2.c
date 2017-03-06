@@ -18,8 +18,8 @@ int RTGS_mode_2(char *kernel_file, char *Releasetime_file)
 	int c = 0, Nkr = 0, rt = 0, KN = 0, k1 = -1, k2 = -1;
 	count = 0;	CPU_Kernel = 0; alap = NULL;
 
-	Nkr = Get_kernel_information(kernel, kernel_file);                 				// Read Kernel.TXT
-	rt = Get_kernel_release_times(Releasetime_file);                   				// Read Release_time.TXT
+	Nkr = get_kernel_information(kernel, kernel_file);                 				// Read Kernel.TXT
+	rt = get_kernel_release_times(Releasetime_file);                   				// Read Release_time.TXT
 #if DEBUG_MESSAGES
 	printf("\nThe GPU Scheduler will Schedule %d Kernels\n\n", Nkr);				// Scheduler Begins
 #endif
@@ -30,7 +30,7 @@ int RTGS_mode_2(char *kernel_file, char *Releasetime_file)
 		Pa = Retrieve_processors(i, Pa, &Pro_free_list);						// Freeing-up processors
 		Pa = Dispatch_queued_kernels(i, Pa, &Kernel_queue, &Pro_free_list);     // Freeing-up processors
 
-		if (RT[i] == 1) {
+		if (gobalReleaseTime[i] == 1) {
 #if DEBUG_MESSAGES
 			printf("\n-->>Total processors Available at time %d = %d\n\n ", i, Pa);
 			printf("Kernels:%d has been released\n", KN);
@@ -38,7 +38,7 @@ int RTGS_mode_2(char *kernel_file, char *Releasetime_file)
 			Pa = Mode_2_book_keeper(kernel, KN, Pa, i, &Pro_free_list, &Kernel_queue); // handling the released kernel by the book-keeper
 			KN++;
 		}
-		else if (RT[i] == 2)
+		else if (gobalReleaseTime[i] == 2)
 		{
 			k1 = KN; KN++;
 			k2 = KN; KN++;

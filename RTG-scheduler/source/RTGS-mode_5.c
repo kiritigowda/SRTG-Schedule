@@ -21,8 +21,8 @@ int  RTGS_mode_5(char *kernel_file, char *Releasetime_file)
 	CPU_Kernel = 0;
 	alap = NULL;
 
-	Nkr = Get_kernel_information(kernel, kernel_file);                 				// Read Kernel.TXT
-	rt = Get_kernel_release_times(Releasetime_file);                   				// Read Release_time.TXT
+	Nkr = get_kernel_information(kernel, kernel_file);                 				// Read Kernel.TXT
+	rt = get_kernel_release_times(Releasetime_file);                   				// Read Release_time.TXT
 
 #if DEBUG_MESSAGES
 	printf("\nThe GPU Scheduler will Schedule %d Kernels\n\n", Nkr);				// Scheduler Begins
@@ -33,7 +33,7 @@ int  RTGS_mode_5(char *kernel_file, char *Releasetime_file)
 		Pa = Retrieve_processors(i, Pa, &Pro_free_list);						// Freeing-up processors
 		Pa = Dispatch_queued_kernels(i, Pa, &Kernel_queue, &Pro_free_list);     // Freeing-up processors
 
-		if (RT[i] == 1)
+		if (gobalReleaseTime[i] == 1)
 		{
 #if DEBUG_MESSAGES
 			printf("\n-->>Total processors Available at time %d = %d\n\n ", i, Pa);
@@ -43,7 +43,7 @@ int  RTGS_mode_5(char *kernel_file, char *Releasetime_file)
 			KN++;
 		}
 
-		else if (RT[i] == 2)
+		else if (gobalReleaseTime[i] == 2)
 		{
 			k1 = KN; KN++;
 			k2 = KN; KN++;
