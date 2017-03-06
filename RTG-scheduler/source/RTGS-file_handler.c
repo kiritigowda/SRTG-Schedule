@@ -10,115 +10,59 @@
 /* The Function is for reading the GPU Compatilble Kernel Values */
 int Get_kernel_information(Kernel_INFO* kernel, const char *File)
 {
-	char ch[FILE_MAX_KERNELS];
-	char PN[10], TEXE[10], TD[10], TLS[10], KN[10];
-	int i, j, k, flag, kn, Nkr = 0;
+	char string[FILE_MAX_KERNELS];
+	char num_processor[10], execution_time[10], deadline[10], latest_schedulable[10], KERNEL[10];
+	int kernel_ID, num_kernels = 0;
 
 	FILE * fp;
 	fp = fopen(File, "r");		// read mode
 	if (fp == NULL) { printf("Error while opening the file.\n");	return RTGS_FAILURE; }
 
-	while (fgets(ch, FILE_MAX_KERNELS, fp) != NULL)
+	while (fgets(string, FILE_MAX_KERNELS, fp) != NULL)
 	{
-		KN[0] = 0;
-		PN[0] = 0;
-		TEXE[0] = 0;
-		TD[0] = 0;
-		TLS[0] = 0;
+		int i = 0, j = 0, flag = 0;
+		for (int k = 0; k < 10; k++){ KERNEL[k] = '\0'; num_processor[k] = '\0'; execution_time[k] = '\0'; deadline[k] = '\0'; latest_schedulable[k] = '\0'; }
 
-		for (k = 0; k < 10; k++)
+		while (string[i] != '\0')
 		{
-			KN[k] = '\0';
-			PN[k] = '\0';
-			TEXE[k] = '\0';
-			TD[k] = '\0';
-			TLS[k] = '\0';
-		}
-
-		i = 0;
-		flag = 0;
-		j = 0;
-
-		while (ch[i] != '\0')
-		{
-			if (ch[i] == ' ')
-			{
-				flag = flag + 1;
-				j = 0;
-			}
-			if (ch[i] != ' ' && flag == 0)
-			{
-				KN[j] = ch[i];
-				j++;
-			}
-			if (ch[i] != ' ' && flag == 1)
-			{
-				PN[j] = ch[i];
-				j++;
-			}
-			if (ch[i] != ' ' && flag == 2)
-			{
-				TEXE[j] = ch[i];
-				j++;
-			}
-			if (ch[i] != ' ' && flag == 3)
-			{
-				TD[j] = ch[i];
-				j++;
-			}
-			if (ch[i] != ' ' && flag == 4)
-			{
-				TLS[j] = ch[i];
-				j++;
-			}
+			if (string[i] == ' '){ flag = flag + 1; j = 0; }
+			if (string[i] != ' ' && flag == 0){ KERNEL[j] = string[i]; j++; }
+			if (string[i] != ' ' && flag == 1){ num_processor[j] = string[i]; j++; }
+			if (string[i] != ' ' && flag == 2){ execution_time[j] = string[i]; j++; }
+			if (string[i] != ' ' && flag == 3){ deadline[j] = string[i]; j++; }
+			if (string[i] != ' ' && flag == 4){ latest_schedulable[j] = string[i];	j++; }
 			i++;
 		}
-
-		if (ch[i] == '\0')
-		{
-			kn = atoi(KN);
-			kernel[kn].Pn = atoi(PN);
-			kernel[kn].Texe = atoi(TEXE);
-			kernel[kn].Td = atoi(TD);
-			kernel[kn].Tls = atoi(TLS);
-			Nkr++;
+		if (string[i] == '\0'){
+			kernel_ID = atoi(KERNEL);
+			kernel[kernel_ID].Pn = atoi(num_processor);
+			kernel[kernel_ID].Texe = atoi(execution_time);
+			kernel[kernel_ID].Td = atoi(deadline);
+			kernel[kernel_ID].Tls = atoi(latest_schedulable);
+			num_kernels++;
 		}
 	}
 	fclose(fp);
 
-	return (Nkr);
+	return (num_kernels);
 }
 
 
 /* The Function is to read the time frames in which these Kernels are released */
 int Get_kernel_release_times(const char *File)
 {
-	char ch[FILE_MAX_KERNELS];// file_name[25];
+	char string[FILE_MAX_KERNELS]; 
 	int i = 0;
 
 	FILE * fp;
 	fp = fopen(File, "r");		// read mode
 	if (fp == NULL) { printf("Error while opening the file.\n");	return RTGS_FAILURE; }
 
-	while (fgets(ch, 2, fp) != NULL)
+	while (fgets(string, 2, fp) != NULL)
 	{
-
-		if (ch[0] == '0')
-		{
-			RT[i] = 0;
-			i++;
-		}
-		else if (ch[0] == '1')
-		{
-			RT[i] = 1;
-			i++;
-		}
-		else if (ch[0] == '2')
-		{
-			RT[i] = 2;
-			i++;
-		}
-
+		if (string[0] == '0'){RT[i] = 0;i++;}
+		else if (string[0] == '1'){	RT[i] = 1;i++;}
+		else if (string[0] == '2'){	RT[i] = 2;i++;}
 	}
 	fclose(fp);
 
