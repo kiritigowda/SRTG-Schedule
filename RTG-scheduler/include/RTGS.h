@@ -56,6 +56,8 @@ enum RTGS_status_e {
 */
 typedef RTGS_ENUM RTGS_Status;
 
+#define MAX_RUN_TIME 1000
+int gobalReleaseTime[MAX_RUN_TIME];
 
 // Backup list to revert the processor actions
 struct list {
@@ -90,7 +92,6 @@ typedef struct list backup_list;
 typedef struct Linked_list Node;
 typedef struct Kernels Kernel_INFO;
 
-int RT[MAX_KERNELS];
 int count;
 int CPU_Kernel;
 backup_list* alap;
@@ -122,8 +123,8 @@ int RTGS_mode_5(char *kernel, char *Releasetime);
 
 int scheduler_main(char *kernel, char *Releasetime, int mode);
 
-int Get_kernel_information(Kernel_INFO*, char *File);
-int Get_kernel_release_times(char *File);
+int get_kernel_information(Kernel_INFO*, char *File);
+int get_kernel_release_times(char *File);
 
 int Kernel_book_keeper(Kernel_INFO*, int, int, int, Node**, Node**);
 int Processors_unavailable(Kernel_INFO*, int, int, int, Node**, Node**);
