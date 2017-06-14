@@ -18,9 +18,9 @@ void show_usage()
 	printf("\n");
 	printf("Usage:\n\n");
 	printf("Windows:\n");
-	printf("SCHEDULER.EXE [options] -K <Kernel_file.txt> -gobalReleaseTime <Release_Time_file.txt>  -M <Option>\n");
+	printf("SCHEDULER.EXE [options] -K <Kernel_file.txt> -RT <Release_Time_file.txt>  -M <Option>\n");
 	printf("Linux:\n");
-	printf("./SCHEDULER [options] -K <Kernel_file.txt> -gobalReleaseTime <Release_Time_file.txt>  -M <Option>\n");
+	printf("./SCHEDULER [options] -K <Kernel_file.txt> -RT <Release_Time_file.txt>  -M <Option>\n");
 	printf("\n");
 	printf("\n\nScheduler [options] Supported\n\n");
 	printf("  -h/-help\n");
