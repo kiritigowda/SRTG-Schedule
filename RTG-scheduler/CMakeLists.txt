@@ -13,7 +13,7 @@ include_directories(include)
 set(SOURCES 
 source/RTGS-file_handler.c 
 source/RTGS-functions.c 
-source/RTGS-linked_list.c 
+source/RTGS-helper_functions.c 
 source/RTGS-mode_1.c 
 source/RTGS-mode_2.c 
 source/RTGS-mode_3.c 
