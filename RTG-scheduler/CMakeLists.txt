@@ -3,6 +3,8 @@ cmake_minimum_required(VERSION 3.0)
 
 # project definition
 project(RTG-scheduler)
+
+SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY  ${CMAKE_BINARY_DIR}/bin CACHE PATH "Directory where .exe and .dll files are dumped." FORCE)
  
 # add the include directory for the preprocessor
 include_directories(include)
@@ -31,3 +33,7 @@ source/RTGS-entry.c
 
 # executable target and the source files
 add_executable(RTG-scheduler ${SOURCES})
+
+# Bring in default test data
+FILE(GLOB RTG_TEST_DATA "testData/*.txt")
+file(COPY ${RTG_TEST_DATA} DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/testData/)
