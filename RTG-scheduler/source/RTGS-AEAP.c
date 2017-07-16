@@ -5,172 +5,172 @@
 
 #include"RTGS.h"
 
-int AEAP(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node **Kernel_queue) {
+int AEAP(kernelInfo *kernel_info_list, int kernel_number, int present_time, int processors_available, scheduledNode ** processor_alloc_list, scheduledNode **kernel_queue_list) {
 
-	int Pro = 0, Tr;
+	int Pro = 0, kernel_release_time;
 	static int given = 0;
 	backup_list *P_Given_list = NULL;
 	backup_list *P_Given_list_t = NULL;
-	Node* temp = *Pro_free_list;
+	scheduledNode* temp = *processor_alloc_list;
 
-	if (alap == NULL) {
+	if (GLOBAL_ALAP_LIST == NULL) {
 
-		Pro = Pa;
-		P_Given_list = insert_list(P_Given_list, Pa);
-		Pa = 0;
+		Pro = processors_available;
+		P_Given_list = insert_list(P_Given_list, processors_available);
+		processors_available = 0;
 
 		while (temp != NULL) {
 
-			if ((temp->Tf + kernel[KN].Texe) > kernel[KN].Td) {
+			if ((temp->processor_release_time + kernel_info_list[kernel_number].execution_time) > kernel_info_list[kernel_number].deadline) {
 
-				int count = 0;
-				Node*temp1 = *Pro_free_list;
+				int GLOBAL_GPU_KERNELS = 0;
+				scheduledNode*temp1 = *processor_alloc_list;
 				backup_list* temp2 = P_Given_list;
 				while (temp2 != NULL) {
 
-					if (count == 0) {
-						Pa = temp2->data;
+					if (GLOBAL_GPU_KERNELS == 0) {
+						processors_available = temp2->data;
 						temp2 = temp2->next;
 					}
 
 					else {
-						temp1->P_f_g = temp2->data;
+						temp1->processors_allocated = temp2->data;
 						temp1 = temp1->next;
 						temp2 = temp2->next;
 					}
 
-					count++;
+					GLOBAL_GPU_KERNELS++;
 				}
 
 				P_Given_list = clean_list(P_Given_list);
 #if DEBUG_MESSAGES
-				printf("\n\n||---AEAP-->The Kernel:%d Cannot be scheduled AEAP*****|", KN);
+				printf("\n\n||---AEAP-->The Kernel:%d Cannot be scheduled AEAP*****|", kernel_number);
 #endif
 
-				CPU_Kernel++;
+				GLOBAL_CPU_KERNELS++;
 				//Return Kernel to CPU - Function to send Kernel to CPU execution
 
-				return Pa;
+				return processors_available;
 			}
 
 			else {
 
-				Pro = Pro + temp->P_f_g;
+				Pro = Pro + temp->processors_allocated;
 
-				if (Pro >= kernel[KN].Pn) {
+				if (Pro >= kernel_info_list[kernel_number].processor_req) {
 
-					temp->P_f_g = Pro - kernel[KN].Pn;
-					Tr = temp->Tf;
+					temp->processors_allocated = Pro - kernel_info_list[kernel_number].processor_req;
+					kernel_release_time = temp->processor_release_time;
 
 					P_Given_list = clean_list(P_Given_list);
 
-					int Pf = kernel[KN].Pn;
-					int Tf = Tr + kernel[KN].Texe;
-					int Pt = i;
-					int SA = 1;
+					int processorReleased = kernel_info_list[kernel_number].processor_req;
+					int processor_release_time = kernel_release_time + kernel_info_list[kernel_number].execution_time;
+					int presentTime = present_time;
+					int schedule_method = 1;
 
 #if DEBUG_MESSAGES
-					printf("\n||---AEAP-->The Kernel:%d scheduled AEAP -->---||", KN);
+					printf("\n||---AEAP-->The Kernel:%d scheduled AEAP -->---||", kernel_number);
 #endif
 
-					Queue_kernel_execution(Pf, Tf, Pt, SA, KN, Pro_free_list);
+					Queue_kernel_execution(processorReleased, processor_release_time, presentTime, schedule_method, kernel_number, processor_alloc_list);
 
-					Kernel_queue_handler(Pf, Tr, Pt, SA, KN, Kernel_queue);
+					Kernel_queue_handler(processorReleased, kernel_release_time, presentTime, schedule_method, kernel_number, kernel_queue_list);
 
-					return Pa;
+					return processors_available;
 
 				}
 
-				else if (Pro < kernel[KN].Pn) {
+				else if (Pro < kernel_info_list[kernel_number].processor_req) {
 
-					P_Given_list = insert_list(P_Given_list, temp->P_f_g);
-					temp->P_f_g = 0;
+					P_Given_list = insert_list(P_Given_list, temp->processors_allocated);
+					temp->processors_allocated = 0;
 					temp = temp->next;
 				}
 
 			}
 
 		}
-	} //End of alap == NULL
+	} //End of GLOBAL_ALAP_LIST == NULL
 
-	else if (alap != NULL) {
+	else if (GLOBAL_ALAP_LIST != NULL) {
 
-		Pro = Pa;
-		P_Given_list = insert_list(P_Given_list, Pa);
-		Pa = 0;
+		Pro = processors_available;
+		P_Given_list = insert_list(P_Given_list, processors_available);
+		processors_available = 0;
 
 		while (temp != NULL) {
 
-			if ((temp->Tf + kernel[KN].Texe) > kernel[KN].Td) {
+			if ((temp->processor_release_time + kernel_info_list[kernel_number].execution_time) > kernel_info_list[kernel_number].deadline) {
 
-				int count = 0;
-				Node*temp1 = *Pro_free_list;
+				int GLOBAL_GPU_KERNELS = 0;
+				scheduledNode*temp1 = *processor_alloc_list;
 				backup_list* temp2 = P_Given_list;
 				while (temp2 != NULL) {
 
-					if (count == 0) {
-						Pa = temp2->data;
+					if (GLOBAL_GPU_KERNELS == 0) {
+						processors_available = temp2->data;
 						temp2 = temp2->next;
 					}
 
 					else {
-						temp1->P_f_g = temp2->data;
+						temp1->processors_allocated = temp2->data;
 						temp1 = temp1->next;
 						temp2 = temp2->next;
 					}
 
-					count++;
+					GLOBAL_GPU_KERNELS++;
 				}
 
 				P_Given_list = clean_list(P_Given_list);
 #if DEBUG_MESSAGES
-				printf("\n\n||---AEAP-->The Kernel:%d Cannot be scheduled AEAP*****|", KN);
+				printf("\n\n||---AEAP-->The Kernel:%d Cannot be scheduled AEAP*****|", kernel_number);
 #endif
 
-				CPU_Kernel++;
+				GLOBAL_CPU_KERNELS++;
 				//Return Kernel to CPU - Function to send Kernel to CPU execution
 
-				return Pa;
+				return processors_available;
 			}
 
 			else {
 
-				Pro = Pro + temp->P_f_g;
+				Pro = Pro + temp->processors_allocated;
 
-				if (Pro >= kernel[KN].Pn) {
+				if (Pro >= kernel_info_list[kernel_number].processor_req) {
 
-					Tr = temp->Tf;
+					kernel_release_time = temp->processor_release_time;
 
-					int Pf = kernel[KN].Pn;
-					int Tf = Tr + kernel[KN].Texe;
-					int Pt = i;
-					int SA = 1;
+					int processorReleased = kernel_info_list[kernel_number].processor_req;
+					int processor_release_time = kernel_release_time + kernel_info_list[kernel_number].execution_time;
+					int presentTime = present_time;
+					int schedule_method = 1;
 
-					int Pl = MAX_GPU_PROCESSOR - kernel[alap->KN].Pn;
+					int Pl = MAX_GPU_PROCESSOR - kernel_info_list[GLOBAL_ALAP_LIST->kernel_number].processor_req;
 
-					if (Tf <= alap->data) {
+					if (processor_release_time <= GLOBAL_ALAP_LIST->data) {
 
-						temp->P_f_g = Pro - kernel[KN].Pn;
+						temp->processors_allocated = Pro - kernel_info_list[kernel_number].processor_req;
 						P_Given_list = clean_list(P_Given_list);
 
 #if DEBUG_MESSAGES
-						printf("\n||---AEAP with ALAP Condition-2 -->The Kernel:%d scheduled AEAP -->---||", KN);
+						printf("\n||---AEAP with ALAP Condition-2 -->The Kernel:%d scheduled AEAP -->---||", kernel_number);
 #endif
-						Queue_kernel_execution(Pf, Tf, Pt, SA, KN,
-							Pro_free_list);
-						Kernel_queue_handler(Pf, Tr, Pt, SA, KN, Kernel_queue);
+						Queue_kernel_execution(processorReleased, processor_release_time, presentTime, schedule_method, kernel_number,
+							processor_alloc_list);
+						Kernel_queue_handler(processorReleased, kernel_release_time, presentTime, schedule_method, kernel_number, kernel_queue_list);
 
-						return Pa;
+						return processors_available;
 					}
 
-					else if (kernel[KN].Pn > Pl && Tf > alap->data) {
+					else if (kernel_info_list[kernel_number].processor_req > Pl && processor_release_time > GLOBAL_ALAP_LIST->data) {
 
 
-						if (Pro >= kernel[alap->KN].Pn && Tr < alap->data) {
+						if (Pro >= kernel_info_list[GLOBAL_ALAP_LIST->kernel_number].processor_req && kernel_release_time < GLOBAL_ALAP_LIST->data) {
 
 							//Improve ALAP release time
 
-							Pa = AEAP_ALAP_improve(kernel, Tr, i, Pa, Pro_free_list, Kernel_queue);
+							processors_available = AEAP_ALAP_improve(kernel_info_list, kernel_release_time, present_time, processors_available, processor_alloc_list, kernel_queue_list);
 
 
 						}
@@ -179,23 +179,23 @@ int AEAP(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node
 
 						if (P_Given_list != NULL) {
 
-							int count = 0;
-							Node*temp1 = *Pro_free_list;
+							int GLOBAL_GPU_KERNELS = 0;
+							scheduledNode*temp1 = *processor_alloc_list;
 							backup_list* temp2 = P_Given_list;
 							while (temp2 != NULL) {
 
-								if (count == 0) {
-									Pa = temp2->data;
+								if (GLOBAL_GPU_KERNELS == 0) {
+									processors_available = temp2->data;
 									temp2 = temp2->next;
 								}
 
 								else {
-									temp1->P_f_g = temp2->data;
+									temp1->processors_allocated = temp2->data;
 									temp1 = temp1->next;
 									temp2 = temp2->next;
 								}
 
-								count++;
+								GLOBAL_GPU_KERNELS++;
 							}
 							P_Given_list = clean_list(P_Given_list);
 #if DEBUG_MESSAGES
@@ -204,72 +204,72 @@ int AEAP(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node
 						}
 
 
-						Pa = AEAP_Flagged(kernel, KN, i, Pa, Pro_free_list,
-							Kernel_queue);
+						processors_available = AEAP_Flagged(kernel_info_list, kernel_number, present_time, processors_available, processor_alloc_list,
+							kernel_queue_list);
 
 
 
 					}
 
-					else if ((kernel[KN].Pn + given) <= Pl
+					else if ((kernel_info_list[kernel_number].processor_req + given) <= Pl
 						&& (temp->next == NULL)) {
 
-						temp->P_f_g = Pro - kernel[KN].Pn;
+						temp->processors_allocated = Pro - kernel_info_list[kernel_number].processor_req;
 						P_Given_list = clean_list(P_Given_list);
-						given = kernel[KN].Pn;
+						given = kernel_info_list[kernel_number].processor_req;
 
 #if DEBUG_MESSAGES
-						printf("\n||---AEAP with ALAP Condition-1 &  -->The Kernel:%d scheduled AEAP -->---||", KN);
+						printf("\n||---AEAP with ALAP Condition-1 &  -->The Kernel:%d scheduled AEAP -->---||", kernel_number);
 #endif
-						Queue_kernel_execution(Pf, Tf, Pt, SA, KN,
-							Pro_free_list);
-						Kernel_queue_handler(Pf, Tr, Pt, SA, KN, Kernel_queue);
-						return Pa;
+						Queue_kernel_execution(processorReleased, processor_release_time, presentTime, schedule_method, kernel_number,
+							processor_alloc_list);
+						Kernel_queue_handler(processorReleased, kernel_release_time, presentTime, schedule_method, kernel_number, kernel_queue_list);
+						return processors_available;
 					}
 
-					else if ((kernel[KN].Pn + given) <= Pl
+					else if ((kernel_info_list[kernel_number].processor_req + given) <= Pl
 						&& (temp->next != NULL)) {
-						Node* check = temp->next;
-						if (check->P_f_g + kernel[KN].Pn <= Pl) {
+						scheduledNode* check = temp->next;
+						if (check->processors_allocated + kernel_info_list[kernel_number].processor_req <= Pl) {
 
-							temp->P_f_g = Pro - kernel[KN].Pn;
+							temp->processors_allocated = Pro - kernel_info_list[kernel_number].processor_req;
 							P_Given_list = clean_list(P_Given_list);
-							given = kernel[KN].Pn;
+							given = kernel_info_list[kernel_number].processor_req;
 
 #if DEBUG_MESSAGES
-							printf("\n||---AEAP with ALAP Condition-1 &  -->The Kernel:%d scheduled AEAP -->---||", KN);
+							printf("\n||---AEAP with ALAP Condition-1 &  -->The Kernel:%d scheduled AEAP -->---||", kernel_number);
 #endif
-							Queue_kernel_execution(Pf, Tf, Pt, SA, KN,
-								Pro_free_list);
-							Kernel_queue_handler(Pf, Tr, Pt, SA, KN,
-								Kernel_queue);
-							return Pa;
+							Queue_kernel_execution(processorReleased, processor_release_time, presentTime, schedule_method, kernel_number,
+								processor_alloc_list);
+							Kernel_queue_handler(processorReleased, kernel_release_time, presentTime, schedule_method, kernel_number,
+								kernel_queue_list);
+							return processors_available;
 						}
 
 						else {
 
-							if (kernel[KN].Pn <= Pl) {
+							if (kernel_info_list[kernel_number].processor_req <= Pl) {
 
-								Node *t1 = temp->next;
-								Node *t2 = temp->next; // Back up
+								scheduledNode *t1 = temp->next;
+								scheduledNode *t2 = temp->next; // Back up
 								int Pro_t = 0;
 
 								do {
 
-									Pro_t = Pro_t + t1->P_f_g;
-									t1->P_f_g = 0;
+									Pro_t = Pro_t + t1->processors_allocated;
+									t1->processors_allocated = 0;
 									P_Given_list_t = insert_list(P_Given_list_t,
-										t1->P_f_g);
+										t1->processors_allocated);
 
-									if ((t1->Tf + kernel[KN].Texe)
-						> kernel[KN].Td) {
+									if ((t1->processor_release_time + kernel_info_list[kernel_number].execution_time)
+						> kernel_info_list[kernel_number].deadline) {
 
-										Node* temp1 = t2;
+										scheduledNode* temp1 = t2;
 										backup_list* temp2 = P_Given_list_t;
 
 										while (temp2 != NULL) {
 
-											temp1->P_f_g = temp2->data;
+											temp1->processors_allocated = temp2->data;
 											temp1 = temp1->next;
 											temp2 = temp2->next;
 
@@ -280,37 +280,37 @@ int AEAP(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node
 
 										//Kernel has to be sent to CPU
 #if DEBUG_MESSAGES
-										printf("\n!!!---AEAP FLAGGED with ALAP is not Possible for the Kernel:%d-->---!!!", KN);
-										printf("\n!!!---KERNEK:%d SENT BACK TO CPU -->---!!!", KN);
+										printf("\n!!!---AEAP FLAGGED with ALAP is not Possible for the Kernel:%d-->---!!!", kernel_number);
+										printf("\n!!!---KERNEK:%d SENT BACK TO CPU -->---!!!", kernel_number);
 #endif
 
-										CPU_Kernel++;
+										GLOBAL_CPU_KERNELS++;
 										break;
 
 									}
 
-									else if (Pro_t >= kernel[KN].Pn) {
+									else if (Pro_t >= kernel_info_list[kernel_number].processor_req) {
 
-										t1->P_f_g = Pro_t - kernel[KN].Pn;
-										Tr = t1->Tf;
+										t1->processors_allocated = Pro_t - kernel_info_list[kernel_number].processor_req;
+										kernel_release_time = t1->processor_release_time;
 
 										P_Given_list_t = clean_list(
 											P_Given_list_t);
 
-										int Pf = kernel[KN].Pn;
-										int Tf = Tr + kernel[KN].Texe;
-										int Pt = i;
-										int SA = 1;
+										int processorReleased = kernel_info_list[kernel_number].processor_req;
+										int processor_release_time = kernel_release_time + kernel_info_list[kernel_number].execution_time;
+										int presentTime = present_time;
+										int schedule_method = 1;
 #if DEBUG_MESSAGES
-										printf("\n||---AEAP-->The Kernel:%d scheduled AEAP -->---||", KN);
+										printf("\n||---AEAP-->The Kernel:%d scheduled AEAP -->---||", kernel_number);
 #endif
 
-										Queue_kernel_execution(Pf, Tf, Pt, SA,
-											KN, Pro_free_list);
+										Queue_kernel_execution(processorReleased, processor_release_time, presentTime, schedule_method,
+											kernel_number, processor_alloc_list);
 
-										Kernel_queue_handler(Pf, Tr, Pt, SA, KN,
-											Kernel_queue);
-										//return Pa;
+										Kernel_queue_handler(processorReleased, kernel_release_time, presentTime, schedule_method, kernel_number,
+											kernel_queue_list);
+										//return processors_available;
 										break;
 									}
 
@@ -319,27 +319,27 @@ int AEAP(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node
 
 							}
 
-							if (kernel[KN].Pn > Pl) {
+							if (kernel_info_list[kernel_number].processor_req > Pl) {
 
 								if (P_Given_list != NULL) {
 
-									int count = 0;
-									Node*temp1 = *Pro_free_list;
+									int GLOBAL_GPU_KERNELS = 0;
+									scheduledNode*temp1 = *processor_alloc_list;
 									backup_list* temp2 = P_Given_list;
 									while (temp2 != NULL) {
 
-										if (count == 0) {
-											Pa = temp2->data;
+										if (GLOBAL_GPU_KERNELS == 0) {
+											processors_available = temp2->data;
 											temp2 = temp2->next;
 										}
 
 										else {
-											temp1->P_f_g = temp2->data;
+											temp1->processors_allocated = temp2->data;
 											temp1 = temp1->next;
 											temp2 = temp2->next;
 										}
 
-										count++;
+										GLOBAL_GPU_KERNELS++;
 									}
 									P_Given_list = clean_list(P_Given_list);
 #if DEBUG_MESSAGES
@@ -347,8 +347,8 @@ int AEAP(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node
 #endif
 								}
 
-								Pa = ALAP_Flagged(kernel, KN, i, Pa,
-									Pro_free_list, Kernel_queue);
+								processors_available = ALAP_Flagged(kernel_info_list, kernel_number, present_time, processors_available,
+									processor_alloc_list, kernel_queue_list);
 
 								//******* Schedule after ALAP NEEDED ********
 
@@ -359,39 +359,39 @@ int AEAP(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node
 
 					break;
 
-				} //End Pro >= kernel[KN].Pn
+				} //End Pro >= kernel_info_list[kernel_number].processor_req
 
-				else if (Pro < kernel[KN].Pn) {
+				else if (Pro < kernel_info_list[kernel_number].processor_req) {
 
-					P_Given_list = insert_list(P_Given_list, temp->P_f_g);
-					temp->P_f_g = 0;
+					P_Given_list = insert_list(P_Given_list, temp->processors_allocated);
+					temp->processors_allocated = 0;
 					temp = temp->next;
 				}
 
 			} //End of else
 		} //End of while
 
-	} //End of alap != NULL
+	} //End of GLOBAL_ALAP_LIST != NULL
 
 	if (P_Given_list != NULL) {
 
-		int count = 0;
-		Node*temp1 = *Pro_free_list;
+		int GLOBAL_GPU_KERNELS = 0;
+		scheduledNode*temp1 = *processor_alloc_list;
 		backup_list* temp2 = P_Given_list;
 		while (temp2 != NULL) {
 
-			if (count == 0) {
-				Pa = temp2->data;
+			if (GLOBAL_GPU_KERNELS == 0) {
+				processors_available = temp2->data;
 				temp2 = temp2->next;
 			}
 
 			else {
-				temp1->P_f_g = temp2->data;
+				temp1->processors_allocated = temp2->data;
 				temp1 = temp1->next;
 				temp2 = temp2->next;
 			}
 
-			count++;
+			GLOBAL_GPU_KERNELS++;
 		}
 		P_Given_list = clean_list(P_Given_list);
 #if DEBUG_MESSAGES
@@ -399,5 +399,5 @@ int AEAP(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node
 #endif
 	}
 
-	return Pa;
+	return processors_available;
 }

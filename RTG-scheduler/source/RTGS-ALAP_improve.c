@@ -5,60 +5,60 @@
 
 #include"RTGS.h"
 
-int ALAP_improve(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node **Kernel_queue) {
+int ALAP_improve(kernelInfo *kernel_info_list, int kernel_number, int present_time, int processors_available, scheduledNode ** processor_alloc_list, scheduledNode **kernel_queue_list) {
 
 #if DEBUG_MESSAGES
-	printf("\n||---ALAP_IMPROVE-->Kernel->%d is verified for ALAP IMPROVED scheduling\n", KN);
+	printf("\n||---ALAP_IMPROVE-->Kernel->%d is verified for ALAP IMPROVED scheduling\n", kernel_number);
 #endif
 
-	Node *temp = *Kernel_queue;
+	scheduledNode *temp = *kernel_queue_list;
 
-	if (temp->KN == KN) {
+	if (temp->kernel_number == kernel_number) {
 #if DEBUG_MESSAGES
-		printf("\n||---ALAP_IMPROVE-->Kernel->%d is verified for ALAP IMPROVED scheduling\n", KN);
-		printf("\n||--- alap->data: %d && Kernel_queue: %d\n", alap->data, temp->data);
+		printf("\n||---ALAP_IMPROVE-->Kernel->%d is verified for ALAP IMPROVED scheduling\n", kernel_number);
+		printf("\n||--- GLOBAL_ALAP_LIST->data: %d && kernel_queue_list: %d\n", GLOBAL_ALAP_LIST->data, temp->data);
 #endif
 
-		if (alap->data == temp->data) {
+		if (GLOBAL_ALAP_LIST->data == temp->data) {
 
-			alap->data = temp->data = i;
-			temp->Tf = i + kernel[KN].Texe;
+			GLOBAL_ALAP_LIST->data = temp->data = present_time;
+			temp->processor_release_time = present_time + kernel_info_list[kernel_number].execution_time;
 
-			Pa = Dispatch_queued_kernels(i, Pa, Kernel_queue, Pro_free_list);
+			processors_available = Dispatch_queued_kernels(present_time, processors_available, kernel_queue_list, processor_alloc_list);
 		}
 
 	}
 
 
-	else if (temp->KN == -99) {
+	else if (temp->kernel_number == -99) {
 
-		Node *head = temp;
-		Node *t1, *t2;
-		t1 = temp->Kernel_next;
+		scheduledNode *head = temp;
+		scheduledNode *t1, *t2;
+		t1 = temp->kernel_next;
 
 		while (t1 != NULL) {
 
-			t2 = t1->Kernel_next;
+			t2 = t1->kernel_next;
 
-			if (t1->KN == KN && alap->data == t1->data) {
+			if (t1->kernel_number == kernel_number && GLOBAL_ALAP_LIST->data == t1->data) {
 
-				head->Kernel_next = t2;
+				head->kernel_next = t2;
 
-				alap->data = t1->data = i;
-				t1->Tf = i + kernel[KN].Texe;
+				GLOBAL_ALAP_LIST->data = t1->data = present_time;
+				t1->processor_release_time = present_time + kernel_info_list[kernel_number].execution_time;
 
-				alap = position_delete_list(alap);
-				Pa = Pa - t1->P_f_g;
+				GLOBAL_ALAP_LIST = position_delete_list(GLOBAL_ALAP_LIST);
+				processors_available = processors_available - t1->processors_allocated;
 
 #if DEBUG_MESSAGES
 				printf("\n||---ALAP_IMPROVE-->Kernel-> -99\n");
-				printf("\n\nTIME: %d<--Dispatch-- SA:2 --Kernel -- %d sent to GPU for EXECUTION-->\n", i, t1->KN);
+				printf("\n\nTIME: %d<--Dispatch-- schedule_method:2 --Kernel -- %d sent to GPU for EXECUTION-->\n", present_time, t1->kernel_number);
 #endif
-				Queue_kernel_execution(t1->P_f_g, t1->Tf, i, t1->SA, t1->KN,
-					Pro_free_list);
+				Queue_kernel_execution(t1->processors_allocated, t1->processor_release_time, present_time, t1->schedule_method, t1->kernel_number,
+					processor_alloc_list);
 
 				free(t1);
-				return Pa;
+				return processors_available;
 			}
 
 			else
@@ -71,6 +71,6 @@ int ALAP_improve(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_li
 	}
 
 
-	return Pa;
+	return processors_available;
 }
 

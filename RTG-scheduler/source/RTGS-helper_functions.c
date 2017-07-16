@@ -1,10 +1,11 @@
 /*
-* RTGS-linked_list.c
+* RTGS-helper_functions.c
 *      Author: Kiriti Nagesh Gowda
 */
 
 #include"RTGS.h"
 
+//! \brief clock counter function
 int64_t RTGS_GetClockCounter()
 {
 #if _WIN32
@@ -12,10 +13,11 @@ int64_t RTGS_GetClockCounter()
 	QueryPerformanceCounter(&v);
 	return v.QuadPart;
 #else
-	return chrono::high_resolution_clock::now().time_since_epoch().count();
+	return chrono::high_resolution_clock::now().time_since_epoch().GLOBAL_GPU_KERNELS();
 #endif
 }
 
+//! \brief clock frequency function
 int64_t RTGS_GetClockFrequency()
 {
 #if _WIN32
@@ -28,14 +30,14 @@ int64_t RTGS_GetClockFrequency()
 }
 
 // Backup processor list
-backup_list* insert_ALAP_list(backup_list* head, int Tr, int Tf, int Pg, int KN) {
+backup_list* insert_ALAP_list(backup_list* head, int kernel_release_time, int processor_release_time, int processors_allocated, int kernel_number) {
 
 	backup_list* temp = (backup_list*)malloc(sizeof(backup_list));
-	temp->data = Tr;
-	temp->Tf = Tf;
-	temp->Pg = Pg;
+	temp->data = kernel_release_time;
+	temp->processor_release_time = processor_release_time;
+	temp->processors_allocated = processors_allocated;
 	temp->next = NULL;
-	temp->KN = KN;
+	temp->kernel_number = kernel_number;
 
 	if (head == NULL)
 		head = temp;
@@ -83,8 +85,8 @@ backup_list* insert_list(backup_list* head, int x) {
 	backup_list* temp = (backup_list*)malloc(sizeof(backup_list));
 
 	temp->data = x;
-	temp->Tf = 0;
-	temp->Pg = 0;
+	temp->processor_release_time = 0;
+	temp->processors_allocated = 0;
 	temp->next = NULL;
 
 	if (head == NULL)
@@ -130,31 +132,31 @@ backup_list *clean_list(backup_list * head) {
 
 //Ascending insert function
 
-Node* ascending_insert(Node* head, int x, int Tf, int Pf, int KN, int SA) {
+scheduledNode* ascending_insert(scheduledNode* head, int x, int processor_release_time, int processorReleased, int kernel_number, int schedule_method) {
 
-	Node* temp;
-	int count = 1;
+	scheduledNode* temp;
+	int GLOBAL_GPU_KERNELS = 1;
 	int flag = 0;
 
 	temp = head;
 
-	Node* temp1 = (Node*)malloc(sizeof(Node));
+	scheduledNode* temp1 = (scheduledNode*)malloc(sizeof(scheduledNode));
 
 
 	//Values into the variable
-	temp1->Tr = 0;
+	temp1->kernel_release_time = 0;
 
 	temp1->data = x;
 
 
-	temp1->Tf = Tf;
-	temp1->P_f_g = Pf;
+	temp1->processor_release_time = processor_release_time;
+	temp1->processors_allocated = processorReleased;
 
-	temp1->SA = SA;
-	temp1->KN = KN;
+	temp1->schedule_method = schedule_method;
+	temp1->kernel_number = kernel_number;
 
 	temp1->next = NULL;
-	temp1->Kernel_next = NULL;
+	temp1->kernel_next = NULL;
 
 
 
@@ -177,14 +179,14 @@ Node* ascending_insert(Node* head, int x, int Tf, int Pf, int KN, int SA) {
 		while (temp != NULL) {
 
 			if (x <= temp->data) {
-				head = position_insert(head, temp1, count);
+				head = position_insert(head, temp1, GLOBAL_GPU_KERNELS);
 				head = remove_recurring_node(head);
 				flag = 0;
 				return head;
 			}
 
 			temp = temp->next;
-			count++;
+			GLOBAL_GPU_KERNELS++;
 		}
 
 	}
@@ -200,11 +202,11 @@ Node* ascending_insert(Node* head, int x, int Tf, int Pf, int KN, int SA) {
 
 //Remove recurring variables function
 
-Node* remove_recurring_node(Node* head) {
+scheduledNode* remove_recurring_node(scheduledNode* head) {
 
-	Node *temp, *kernel_check;
+	scheduledNode *temp, *kernel_check;
 
-	Node *temp1;
+	scheduledNode *temp1;
 
 	temp = head;
 
@@ -213,53 +215,53 @@ Node* remove_recurring_node(Node* head) {
 
 		if (temp->data == temp1->data) {
 			//printf("%d is removed from the list\n",temp->data);
-			//printf("Processors Available before removing:1-- %d 2-- %d \n\n",temp->P_f_g, temp1->P_f_g);
+			//printf("Processors Available before removing:1-- %d 2-- %d \n\n",temp->processors_allocated, temp1->processors_allocated);
 
-			Node* t1 = (Node*)malloc(sizeof(Node));
-			Node* t2 = (Node*)malloc(sizeof(Node));
+			scheduledNode* t1 = (scheduledNode*)malloc(sizeof(scheduledNode));
+			scheduledNode* t2 = (scheduledNode*)malloc(sizeof(scheduledNode));
 
 			t1->data = temp->data;
-			t1->Tr = temp->Tr;
-			t1->Tf = temp->Tf;
-			t1->P_f_g = temp->P_f_g;
-			t1->SA = temp->SA;
-			t1->KN = temp->KN;
+			t1->kernel_release_time = temp->kernel_release_time;
+			t1->processor_release_time = temp->processor_release_time;
+			t1->processors_allocated = temp->processors_allocated;
+			t1->schedule_method = temp->schedule_method;
+			t1->kernel_number = temp->kernel_number;
 			t1->next = NULL;
-			t1->Kernel_next = NULL;
+			t1->kernel_next = NULL;
 
 			t2->data = temp1->data;
-			t2->Tr = temp1->Tr;
-			t2->Tf = temp1->Tf;
-			t2->P_f_g = temp1->P_f_g;
-			t2->SA = temp1->SA;
-			t2->KN = temp1->KN;
+			t2->kernel_release_time = temp1->kernel_release_time;
+			t2->processor_release_time = temp1->processor_release_time;
+			t2->processors_allocated = temp1->processors_allocated;
+			t2->schedule_method = temp1->schedule_method;
+			t2->kernel_number = temp1->kernel_number;
 			t2->next = NULL;
-			t2->Kernel_next = temp1->Kernel_next;
+			t2->kernel_next = temp1->kernel_next;
 
 
-			if (t2->Kernel_next == NULL) {
-				temp->Kernel_next = t2;
-				t2->Kernel_next = t1;
+			if (t2->kernel_next == NULL) {
+				temp->kernel_next = t2;
+				t2->kernel_next = t1;
 			}
 
 			else {
 
 				free(t2);
-				temp->Kernel_next = temp1->Kernel_next;
-				kernel_check = temp1->Kernel_next;
-				while (kernel_check->Kernel_next != NULL)
-					kernel_check = kernel_check->Kernel_next;
+				temp->kernel_next = temp1->kernel_next;
+				kernel_check = temp1->kernel_next;
+				while (kernel_check->kernel_next != NULL)
+					kernel_check = kernel_check->kernel_next;
 
-				if (kernel_check->Kernel_next == NULL)
-					kernel_check->Kernel_next = t1;
+				if (kernel_check->kernel_next == NULL)
+					kernel_check->kernel_next = t1;
 			}
 
 
-			temp->P_f_g = temp->P_f_g + temp1->P_f_g;
-			temp->KN = -99;
-			temp->Tr = -99;
+			temp->processors_allocated = temp->processors_allocated + temp1->processors_allocated;
+			temp->kernel_number = -99;
+			temp->kernel_release_time = -99;
 
-			//printf("Processors Available after removing: %d\n\n",temp->P_f_g );
+			//printf("Processors Available after removing: %d\n\n",temp->processors_allocated );
 
 			temp->next = temp1->next;
 
@@ -284,11 +286,11 @@ Node* remove_recurring_node(Node* head) {
 
 //Insert a variable function
 
-Node* insert(Node* head, Node* x) {
+scheduledNode* insert(scheduledNode* head, scheduledNode* x) {
 
-	Node* temp;
+	scheduledNode* temp;
 
-	Node* temp1 = x;
+	scheduledNode* temp1 = x;
 
 	if (head == NULL)
 		head = temp1;
@@ -314,18 +316,18 @@ Node* insert(Node* head, Node* x) {
 
 //Insert a variable in a given position
 
-Node* position_insert(Node* head, Node* x, int p) {
+scheduledNode* position_insert(scheduledNode* head, scheduledNode* x, int p) {
 
 
-	Node* temp;
-	Node* temp1;
-	int count = 1;
+	scheduledNode* temp;
+	scheduledNode* temp1;
+	int GLOBAL_GPU_KERNELS = 1;
 	temp = head;
 
 	temp1 = x;
 
 	if (p == 1) {
-		//printf("The Node should be inserted after %d\n",head->data);
+		//printf("The scheduledNode should be inserted after %d\n",head->data);
 
 		temp1->next = head;
 		head = temp1;
@@ -347,10 +349,10 @@ Node* position_insert(Node* head, Node* x, int p) {
 	while (temp->next != NULL) {
 
 
-		if (count == (p - 1))
+		if (GLOBAL_GPU_KERNELS == (p - 1))
 		{
 
-			//printf("The Node should be inserted after %d\n",temp->data);
+			//printf("The scheduledNode should be inserted after %d\n",temp->data);
 
 
 			temp1->next = temp->next;
@@ -359,11 +361,11 @@ Node* position_insert(Node* head, Node* x, int p) {
 		}
 
 		temp = temp->next;
-		++count;
+		++GLOBAL_GPU_KERNELS;
 
 	}
 
-	if (count == p + 1) {
+	if (GLOBAL_GPU_KERNELS == p + 1) {
 		head = insert(head, x);
 		return (head);
 	}
@@ -374,12 +376,12 @@ Node* position_insert(Node* head, Node* x, int p) {
 
 //Delete a node from the list
 
-Node* position_delete(Node* head, int p) {
+scheduledNode* position_delete(scheduledNode* head, int p) {
 
 
-	Node* temp;
-	Node* temp1;
-	int count = 1;
+	scheduledNode* temp;
+	scheduledNode* temp1;
+	int GLOBAL_GPU_KERNELS = 1;
 
 
 
@@ -406,21 +408,21 @@ Node* position_delete(Node* head, int p) {
 	while (temp->next != NULL) {
 
 
-		if (count == (p - 1))
+		if (GLOBAL_GPU_KERNELS == (p - 1))
 		{
-			//printf("The Node after %d should be deleted\n",temp->data);
+			//printf("The scheduledNode after %d should be deleted\n",temp->data);
 			temp1 = temp->next;
 			temp->next = temp1->next;
 
 			free(temp1);
-			//printf("The Node %d should be connected\n",temp->data);
+			//printf("The scheduledNode %d should be connected\n",temp->data);
 
 			//temp1 = temp2;
 			return (head);
 		}
 
 		temp = temp->next;
-		++count;
+		++GLOBAL_GPU_KERNELS;
 
 	}
 
@@ -433,9 +435,9 @@ Node* position_delete(Node* head, int p) {
 
 
 //clean node
-Node *clean_node(Node * head) {
+scheduledNode *clean_node(scheduledNode * head) {
 
-	Node  *temp1;
+	scheduledNode  *temp1;
 
 	while (head != NULL) {
 
@@ -454,9 +456,9 @@ Node *clean_node(Node * head) {
 
 //Reverese a list
 
-Node* reverse(Node* head) {
+scheduledNode* reverse(scheduledNode* head) {
 
-	Node *current, *prev, *next;
+	scheduledNode *current, *prev, *next;
 
 	current = head;
 
@@ -480,14 +482,14 @@ Node* reverse(Node* head) {
 
 
 //Print the list
-void print(Node* head) {
+void print(scheduledNode* head) {
 
-	Node* temp;
+	scheduledNode* temp;
 	temp = head;
 
 	printf("\nThe List::->");
 	while (temp != NULL) {
-		printf("(T-%d--P-%d)->", temp->data, temp->P_f_g);
+		printf("(T-%d--P-%d)->", temp->data, temp->processors_allocated);
 		temp = temp->next;
 	}
 	printf("NULL\n\n");
@@ -496,7 +498,7 @@ void print(Node* head) {
 }
 
 //Print the list in reverse order
-void R_print(Node *p) {
+void R_print(scheduledNode *p) {
 	if (p == NULL)return;
 
 	R_print(p->next);
@@ -506,12 +508,12 @@ void R_print(Node *p) {
 
 
 //Print the list
-void Kernel_queue_print(Node* head) {
-	Node* temp;
+void Kernel_queue_print(scheduledNode* head) {
+	scheduledNode* temp;
 	temp = head;
 	printf("\n\nKernels Scheduled for EXE::->");
 	while (temp != NULL) {
-		printf("(T-%d--P-%d--KN-%d)->", temp->data, temp->P_f_g, temp->KN);
+		printf("(T-%d--P-%d--kernel_number-%d)->", temp->data, temp->processors_allocated, temp->kernel_number);
 		temp = temp->next;
 	}
 	printf("NULL\n");
