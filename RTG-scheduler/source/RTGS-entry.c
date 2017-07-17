@@ -65,12 +65,12 @@ int main(int argc, char * argv[])
 
 	for (int arg = 1; arg < argc; arg++)
 	{
-		if (!_stricmp(argv[arg], "-h") || !_stricmp(argv[arg], "-help"))
+        if (!strcasecmp(argv[arg], "-h") || !strcasecmp(argv[arg], "-help"))
 		{
 			show_usage();
 			exit(status);
 		}
-		else if (!_stricmp(argv[arg], "Kernels") || !_stricmp(argv[arg], "-K"))
+        else if (!strcasecmp(argv[arg], "Kernels") || !strcasecmp(argv[arg], "-K"))
 		{
 			if ((arg + 1) == argc)
 			{
@@ -83,7 +83,7 @@ int main(int argc, char * argv[])
 			kernelFilename = (argv[arg]);
 			error++;
 		}
-		else if (!_stricmp(argv[arg], "ReleaseTime") || !_stricmp(argv[arg], "-RT"))
+        else if (!strcasecmp(argv[arg], "ReleaseTime") || !strcasecmp(argv[arg], "-RT"))
 		{
 			if ((arg + 1) == argc)
 			{
@@ -96,7 +96,7 @@ int main(int argc, char * argv[])
 			releaseTimeFilename = (argv[arg]);
 			error++;
 		}
-		else if (!_stricmp(argv[arg], "Mode") || !_stricmp(argv[arg], "-M"))
+        else if (!strcasecmp(argv[arg], "Mode") || !strcasecmp(argv[arg], "-M"))
 		{
 			if ((arg + 1) == argc)
 			{

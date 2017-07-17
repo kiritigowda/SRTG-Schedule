@@ -9,7 +9,7 @@
 #if _WIN32
 #include <Windows.h>
 #else
-#include <chrono>
+#include <sys/time.h>
 #endif
 
 #include <math.h>
@@ -17,11 +17,12 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <stdint.h>
+#include <strings.h>
 
 #define DEBUG_MESSAGES 0			// debug messages
 #define DEBUG_INFO 1				// detailed debug messages
 
-#define MAX_GPU_PROCESSOR 14        // total streaming multi-processors available on the GPU
+#define MAX_GPU_PROCESSOR 14                    // total streaming multi-processors available on the GPU
 #define MAX_KERNELS 100				// max Kernels needed to be scheduled
 #define PROCESSOR_LIMIT 10			// ALAP Processor Limit
 #define MAX_RUN_TIME 1000			// MAX RUN TIME TO VERIFY -- TBD
@@ -106,10 +107,10 @@ int RTGS_mode_1(char *kernelFilename, char *releaseTimeFilename);
 int RTGS_mode_2(char *kernelFilename, char *releaseTimeFilename);
 
 //! \brief function to get kernel info from the input file
-int get_kernel_information(kernelInfo *kernelInfoList, char *kernelFilename);
+int get_kernel_information(kernelInfo *kernelInfoList, const char *kernelFilename);
 
 //! \brief function to get kernel release time info from the input file
-int get_kernel_release_times(char *releaseTimeFilename);
+int get_kernel_release_times(const char *releaseTimeFilename);
 
 //! \brief Function to add future kernel_info_list releases and arrange kernel_info_list execution times in ascending order
 void Queue_kernel_execution(int processorReleased, int processorReleaseTime, int presentTime, int scheduleMethod, int kernelNumber, scheduledNode **processorAllocList);

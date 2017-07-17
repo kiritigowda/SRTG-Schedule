@@ -13,7 +13,8 @@ int64_t RTGS_GetClockCounter()
 	QueryPerformanceCounter(&v);
 	return v.QuadPart;
 #else
-	return chrono::high_resolution_clock::now().time_since_epoch().GLOBAL_GPU_KERNELS();
+    //return std::chrono::high_resolution_clock::now().time_since_epoch().GLOBAL_GPU_KERNELS();
+    return 0;
 #endif
 }
 
@@ -25,7 +26,8 @@ int64_t RTGS_GetClockFrequency()
 	QueryPerformanceFrequency(&v);
 	return v.QuadPart;
 #else
-	return chrono::high_resolution_clock::period::den / chrono::high_resolution_clock::period::num;
+    //return std::chrono::high_resolution_clock::period::den / chrono::high_resolution_clock::period::num;
+    return 1;
 #endif
 }
 

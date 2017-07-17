@@ -8,14 +8,14 @@
 #define FILE_MAX_KERNELS 30
 
 /* The Function is for reading the GPU Compatilble Kernel Values */
-int get_kernel_information(kernelInfo* kernel_info_list, const char *File)
+int get_kernel_information(kernelInfo *kernelInfoList, const char *kernelFilename)
 {
 	char string[FILE_MAX_KERNELS];
 	char num_processor[10], execution_time[10], deadline[10], latest_schedulable[10], KERNEL[10];
 	int kernel_ID, num_kernels = 0;
 
 	FILE * fp;
-	fp = fopen(File, "r");		// read mode
+    fp = fopen(kernelFilename, "r");		// read mode
 	if (fp == NULL) {
 		printf("ERROR::get_kernel_information - error while opening the file.\n");
 		return RTGS_FAILURE;
@@ -42,10 +42,10 @@ int get_kernel_information(kernelInfo* kernel_info_list, const char *File)
 				printf("ERROR::get_kernel_information - KERNEL ID needs to be in the range 0 - N\n");
 				return RTGS_ERROR_INVALID_PARAMETERS;
 			}
-			kernel_info_list[kernel_ID].processor_req = atoi(num_processor);
-			kernel_info_list[kernel_ID].execution_time = atoi(execution_time);
-			kernel_info_list[kernel_ID].deadline = atoi(deadline);
-			kernel_info_list[kernel_ID].latest_schedulable_time = atoi(latest_schedulable);
+            kernelInfoList[kernel_ID].processor_req = atoi(num_processor);
+            kernelInfoList[kernel_ID].execution_time = atoi(execution_time);
+            kernelInfoList[kernel_ID].deadline = atoi(deadline);
+            kernelInfoList[kernel_ID].latest_schedulable_time = atoi(latest_schedulable);
 			num_kernels++;
 		}
 	}
@@ -56,13 +56,13 @@ int get_kernel_information(kernelInfo* kernel_info_list, const char *File)
 
 
 /* The Function is to read the time frames in which these Kernels are released */
-int get_kernel_release_times(const char *File)
+int get_kernel_release_times(const char *releaseTimeFilename)
 {
 	char string[FILE_MAX_KERNELS];
 	int present_time = 0;
 
 	FILE * fp;
-	fp = fopen(File, "r");		// read mode
+    fp = fopen(releaseTimeFilename, "r");		// read mode
 	if (fp == NULL) {
 		printf("ERROR::get_kernel_release_times - error while opening the file.\n");
 		return RTGS_FAILURE;
