@@ -202,7 +202,7 @@ int RTGS_mode_2(char *kernelFilename, char *releaseTimeFilename)
 		if (GLOBAL_RELEASE_TIME[present_time] == 1)
 		{
 #if DEBUG_MESSAGES
-			printf("\n-->>Total processors Available at time %d = %d\n\n ", present_time, processors_available);
+			printf("\n-->>Total processors Available at time %d = %d\n\n ", present_time, processorsAvailable);
 			printf("Kernels:%d has been released\n", kernel_number);
 #endif
 			// handling the released kernel_info_list by the book-keeper
@@ -215,7 +215,7 @@ int RTGS_mode_2(char *kernelFilename, char *releaseTimeFilename)
 			int k1 = kernel_number; kernel_number++;
 			int k2 = kernel_number; kernel_number++;
 #if DEBUG_MESSAGES
-			printf("\n-->>Total processors Available at time %d = %d\n\n ", present_time, processors_available);
+			printf("\n-->>Total processors Available at time %d = %d\n\n ", present_time, processorsAvailable);
 			printf("Kernels:%d has been released\n", k1);
 			printf("Kernels:%d has been released\n", k2);
 #endif
