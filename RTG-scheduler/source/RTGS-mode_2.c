@@ -199,7 +199,7 @@ int RTGS_mode_2(char *kernelFilename, char *releaseTimeFilename)
 	int runTimeMax = get_kernel_release_times(releaseTimeFilename);						// Read Release_time.TXT
 
 #if DEBUG_MESSAGES
-	printf("\nThe GPU Scheduler will Schedule %d Kernels\n", kernelMax);				// Scheduler Begins
+	printf("\n**************** The GPU Scheduler will Schedule %d Kernels ****************\n", kernelMax);				// Scheduler Begins
 #endif
 
 	int64_t stime = RTGS_GetClockCounter();
@@ -212,7 +212,7 @@ int RTGS_mode_2(char *kernelFilename, char *releaseTimeFilename)
 		if (GLOBAL_RELEASE_TIME[present_time] == 1)
 		{
 #if DEBUG_MESSAGES
-			printf("RTGS Mode 2:: Total processors Available at time %d = %d\n", present_time, processorsAvailable);
+			printf("\nRTGS Mode 2:: Total processors Available at time %d = %d\n", present_time, processorsAvailable);
 			printf("RTGS Mode 2:: Kernels:%d Released\n", kernel_number);
 #endif
 			// handling the released kernel_info_list by the book-keeper
@@ -225,7 +225,7 @@ int RTGS_mode_2(char *kernelFilename, char *releaseTimeFilename)
 			int k1 = kernel_number; kernel_number++;
 			int k2 = kernel_number; kernel_number++;
 #if DEBUG_MESSAGES
-			printf("RTGS Mode 2:: Total processors Available at time %d = %d\n", present_time, processorsAvailable);
+			printf("\nRTGS Mode 2:: Total processors Available at time %d = %d\n", present_time, processorsAvailable);
 			printf("RTGS Mode 2:: Kernels:%d Released\n", k1);
 			printf("RTGS Mode 2:: Kernels:%d Released\n", k2);
 #endif

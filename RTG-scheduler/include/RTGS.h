@@ -21,13 +21,14 @@
 #include <stdint.h>
 
 
-#define DEBUG_MESSAGES 0			// debug messages
+#define DEBUG_MESSAGES 1			// debug messages
 #define DEBUG_INFO 1				// detailed debug messages
 
 #define MAX_GPU_PROCESSOR 14		// total streaming multi-processors available on the GPU
 #define MAX_KERNELS 100				// max Kernels needed to be scheduled
 #define PROCESSOR_LIMIT 10			// ALAP Processor Limit
 #define MAX_RUN_TIME 1000			// MAX RUN TIME TO VERIFY -- TBD
+#define MULTIPLE_KERNELS_SCHEDULED -99
 
 /*! \brief A formal status type with known fixed size.
 * \see RTGS_status_e

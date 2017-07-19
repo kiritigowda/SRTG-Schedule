@@ -23,8 +23,8 @@ int Retrieve_processors
 			processors_available = processors_available + temp->processors_allocated;
 #if DEBUG_MESSAGES
 			// TBD:: Data return handling needed
-			printf("Retrieve Processors:: GPU Execution Completed-->Kernel: %d Processors Allocated:%d\n", temp->kernel_number, temp->processors_allocated);
-			printf("Retrieve Processors:: Present Time:%d  Processors Available:%d\n\n", present_time, processors_available);		
+			printf("\nRetrieve Processors:: Present Time:%d  Processors Available:%d\n", present_time, processors_available);
+			printf("	Retrieve Processors:: GPU Execution Completed-->Kernel: %d Processors Retrieved:%d\n", temp->kernel_number, temp->processors_allocated);
 #endif
 			if (temp->kernel_next != NULL) 
 			{
@@ -41,10 +41,10 @@ int Retrieve_processors
 			else 
 			{
 #if DEBUG_MESSAGES
-				printf("Retrieve Processors:: ???? Present Time:%d Kernel:%d data sent back\n", present_time, temp->kernel_number);
+				// TBD:: Data return handling needed
+				printf("	Retrieve Processors::Present Time:%d Kernel:%d data sent back\n", present_time, temp->kernel_number);
 #endif
 			}
-
 			temp = position_delete(*processor_alloc_list, 1);
 			*processor_alloc_list = temp;
 		}
@@ -97,26 +97,28 @@ int Dispatch_queued_kernels
 						}
 						processors_available = processors_available - t1->processors_allocated;
 #if DEBUG_MESSAGES
-						printf(	"Dispatch Queued Kernels:: Present Time:%d Dispatched RTGS_SCHEDULE_METHOD_ALAP Kernel:%d ProcAlloc:%d for GPU EXECUTION\n\n\n",	
-							present_time, t1->kernel_number, temp->processors_allocated);
+						printf(	"Dispatch Queued Kernels:: Present Time:%d Dispatched RTGS_SCHEDULE_METHOD_ALAP Kernel:%d ProcAlloc:%d for GPU EXECUTION\n",	
+							present_time, t1->kernel_number, t1->processors_allocated);
 #endif
 						Queue_kernel_execution(ALAP_Pg, t1->processor_release_time, present_time, 
 											t1->schedule_method, t1->kernel_number, processor_alloc_list);
 					}
-					else 
+					else if (temp->schedule_method == RTGS_SCHEDULE_METHOD_AEAP)
 					{
 #if DEBUG_MESSAGES
-						printf(	"Dispatch Queued Kernels:: Present Time:%d Dispatched RTGS_SCHEDULE_METHOD_AEAP Kernel:%d ProcAlloc:%d for GPU EXECUTION\n\n\n",	
-							present_time, t1->kernel_number, temp->processors_allocated);
+						printf(	"Dispatch Queued Kernels:: Present Time:%d Dispatched RTGS_SCHEDULE_METHOD_AEAP Kernel:%d ProcAlloc:%d for GPU EXECUTION\n",	
+							present_time, t1->kernel_number, t1->processors_allocated);
 #endif
 					}
+					else{ printf("Dispatch Queued Kernels -- ERROR NOT IMPLEMENTED"); return RTGS_ERROR_NOT_IMPLEMENTED; }
+
 					free(t1);
 					t1 = t2;
 				}
 			}
 			else 
 			{
-				if (temp->schedule_method == 2) 
+				if (temp->schedule_method == RTGS_SCHEDULE_METHOD_ALAP)
 				{
 					int ALAP_Pg = 0;
 					if (GLOBAL_ALAP_LIST != NULL) 
@@ -137,19 +139,20 @@ int Dispatch_queued_kernels
 					}
 					processors_available = processors_available - temp->processors_allocated;
 #if DEBUG_MESSAGES
-					printf(	"Dispatch Queued Kernels:: Present Time:%d Dispatched RTGS_SCHEDULE_METHOD_ALAP Kernel:%d ProcAlloc:%d for GPU EXECUTION\n\n\n",	
+					printf(	"Dispatch Queued Kernels:: Present Time:%d Dispatched RTGS_SCHEDULE_METHOD_ALAP Kernel:%d ProcAlloc:%d for GPU EXECUTION\n",	
 						present_time, temp->kernel_number, temp->processors_allocated);
 #endif
 					Queue_kernel_execution(ALAP_Pg, temp->processor_release_time, present_time, 
 										temp->schedule_method,temp->kernel_number, processor_alloc_list);
 				}
-				else 
+				else if (temp->schedule_method == RTGS_SCHEDULE_METHOD_AEAP)
 				{
 #if DEBUG_MESSAGES
-					printf("Dispatch Queued Kernels:: Present Time:%d Dispatched RTGS_SCHEDULE_METHOD_AEAP Kernel:%d ProcAlloc:%d for GPU EXECUTION\n\n\n",
+					printf("Dispatch Queued Kernels:: Present Time:%d Dispatched RTGS_SCHEDULE_METHOD_AEAP Kernel:%d ProcAlloc:%d for GPU EXECUTION\n",
 						present_time, temp->kernel_number, temp->processors_allocated);
 #endif
 				}
+				else{ printf("Dispatch Queued Kernels -- ERROR NOT IMPLEMENTED"); return RTGS_ERROR_NOT_IMPLEMENTED; }
 			}
 			temp = position_delete(*kernel_queue_list, 1);
 			*kernel_queue_list = temp;
