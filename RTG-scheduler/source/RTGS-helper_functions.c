@@ -489,12 +489,11 @@ void print(scheduledNode* head) {
 	scheduledNode* temp;
 	temp = head;
 
-	printf("\nThe List::->");
+	printf("Scheduled Kernel List\n");
 	while (temp != NULL) {
-		printf("(T-%d--P-%d)->", temp->data, temp->processors_allocated);
+		printf("	Kernel:%d Completion Time:%d Processors Retrived:%d\n",temp->kernel_number, temp->data, temp->processors_allocated);
 		temp = temp->next;
 	}
-	printf("NULL\n\n");
 
 	return;
 }
@@ -513,12 +512,11 @@ void R_print(scheduledNode *p) {
 void Kernel_queue_print(scheduledNode* head) {
 	scheduledNode* temp;
 	temp = head;
-	printf("\n\nKernels Scheduled for EXE::->");
+	printf("Kernels Scheduled for GPU Execution\n");
 	while (temp != NULL) {
-		printf("(T-%d--P-%d--kernel_number-%d)->", temp->data, temp->processors_allocated, temp->kernel_number);
+		printf("	kernel::%d -- Kernel Release Time::%d Processor Allocated::%d\n", temp->kernel_number, temp->data, temp->processors_allocated );
 		temp = temp->next;
 	}
-	printf("NULL\n");
 
 	return;
 }

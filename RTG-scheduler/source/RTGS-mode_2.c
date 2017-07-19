@@ -45,12 +45,14 @@ static int Mode_2_AEAP
 				}
 				AEAP_count++;
 			}
-#if DEBUG_MESSAGES
-			printf("\n\n||---AEAP-->The Kernel:%d Cannot be scheduled AEAP*****|", kernel_number);
-#endif
 			// TBD:: Return Kernel to CPU - Function to send Kernel to CPU execution 
 			GLOBAL_CPU_KERNELS++;
 			P_Given_list = clean_list(P_Given_list);
+#if DEBUG_MESSAGES
+			printf("MODE-2 AEAP:: The Kernel:%d Cannot be scheduled AEAP\n", kernel_number);
+			printf("MODE-2 AEAP:: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
+#endif
+
 			return processors_available;
 		}
 		else
@@ -66,8 +68,10 @@ static int Mode_2_AEAP
 				int processor_release_time = kernel_release_time + kernel_info_list[kernel_number].execution_time;
 				int presentTime = present_time;
 				int schedule_method = RTGS_SCHEDULE_METHOD_AEAP;
+				GLOBAL_GPU_KERNELS++;
 #if DEBUG_MESSAGES
-				printf("\n||---AEAP-->The Kernel:%d scheduled AEAP -->---||", kernel_number);
+				printf("MODE-2 AEAP:: The Kernel:%d scheduled AEAP\n", kernel_number);
+				printf("MODE-2 AEAP:: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
 #endif
 				Queue_kernel_execution(processorReleased, processor_release_time, presentTime,
 					schedule_method, kernel_number, processor_alloc_list);
@@ -102,11 +106,13 @@ static int Mode_2_AEAP
 			}
 			AEAP_count++;
 		}
-#if DEBUG_MESSAGES
-		printf("||---AEAP-->The Kernel:%d Cannot be scheduled AEAP -->", kernel_number);
-#endif
 		P_Given_list = clean_list(P_Given_list);
 		GLOBAL_CPU_KERNELS++;
+#if DEBUG_MESSAGES
+		printf("MODE-2 AEAP:: The Kernel:%d Cannot be scheduled AEAP\n", kernel_number);
+		printf("MODE-2 AEAP:: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
+#endif
+
 	}
 
 	return processors_available;
@@ -134,7 +140,7 @@ static int Mode_2_book_keeper(kernelInfo* kernel_info_list, int kernel_number, i
 	int presentTime = present_time;
 	int schedule_method = RTGS_SCHEDULE_METHOD_NOT_DEFINED;
 #if DEBUG_MESSAGES
-	printf("\n ^^ Kernel[%d].processor_req = %d, execution_time = %d, deadline = %d, latest_schedulable_time= %d ^^\n", kernel_number, kernel_info_list[kernel_number].processor_req, kernel_info_list[kernel_number].execution_time, kernel_info_list[kernel_number].deadline, kernel_info_list[kernel_number].latest_schedulable_time);
+	printf("Mode-2 Book Keeper:: Kernel::%d --> processor_req:%d execution_time:%d, deadline:%d, latest_schedulable_time:%d\n", kernel_number, kernel_info_list[kernel_number].processor_req, kernel_info_list[kernel_number].execution_time, kernel_info_list[kernel_number].deadline, kernel_info_list[kernel_number].latest_schedulable_time);
 #endif
 	// If processors available is greater than the required processors by the kernel_info_list
 	if (kernel_info_list[kernel_number].processor_req <= processors_available)
@@ -148,12 +154,16 @@ static int Mode_2_book_keeper(kernelInfo* kernel_info_list, int kernel_number, i
 			Queue_kernel_execution(processorReleased, processor_release_time, presentTime, 
 								schedule_method, kernel_number, processor_alloc_list);
 			GLOBAL_GPU_KERNELS++;
+#if DEBUG_MESSAGES
+			printf("Mode-2 Book Keeper:: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
+#endif
 		}
 		else {
-#if DEBUG_MESSAGES
-			printf("\n\n@@ Kernel-%d will not complete before it's deadline, Job REJECTED @@\n\n", kernel_number);
-#endif
 			GLOBAL_CPU_KERNELS++;
+#if DEBUG_MESSAGES
+			printf("Mode-2 Book Keeper:: Kernel-%d will not complete before it's deadline, Job REJECTED\n", kernel_number);
+			printf("Mode-2 Book Keeper:: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
+#endif
 		}
 	}
 	// If processors available is greater than the required processors by the kernel_info_list
@@ -189,7 +199,7 @@ int RTGS_mode_2(char *kernelFilename, char *releaseTimeFilename)
 	int runTimeMax = get_kernel_release_times(releaseTimeFilename);						// Read Release_time.TXT
 
 #if DEBUG_MESSAGES
-	printf("\nThe GPU Scheduler will Schedule %d Kernels\n\n", kernelMax);				// Scheduler Begins
+	printf("\nThe GPU Scheduler will Schedule %d Kernels\n", kernelMax);				// Scheduler Begins
 #endif
 
 	int64_t stime = RTGS_GetClockCounter();
@@ -202,8 +212,8 @@ int RTGS_mode_2(char *kernelFilename, char *releaseTimeFilename)
 		if (GLOBAL_RELEASE_TIME[present_time] == 1)
 		{
 #if DEBUG_MESSAGES
-			printf("\n-->>Total processors Available at time %d = %d\n\n ", present_time, processorsAvailable);
-			printf("Kernels:%d has been released\n", kernel_number);
+			printf("RTGS Mode 2:: Total processors Available at time %d = %d\n", present_time, processorsAvailable);
+			printf("RTGS Mode 2:: Kernels:%d Released\n", kernel_number);
 #endif
 			// handling the released kernel_info_list by the book-keeper
 			processorsAvailable = Mode_2_book_keeper(kernel_info_list, kernel_number, processorsAvailable,
@@ -215,9 +225,9 @@ int RTGS_mode_2(char *kernelFilename, char *releaseTimeFilename)
 			int k1 = kernel_number; kernel_number++;
 			int k2 = kernel_number; kernel_number++;
 #if DEBUG_MESSAGES
-			printf("\n-->>Total processors Available at time %d = %d\n\n ", present_time, processorsAvailable);
-			printf("Kernels:%d has been released\n", k1);
-			printf("Kernels:%d has been released\n", k2);
+			printf("RTGS Mode 2:: Total processors Available at time %d = %d\n", present_time, processorsAvailable);
+			printf("RTGS Mode 2:: Kernels:%d Released\n", k1);
+			printf("RTGS Mode 2:: Kernels:%d Released\n", k2);
 #endif
 			if (kernel_info_list[k1].deadline <= kernel_info_list[k2].deadline) {
 				// handling the released kernel_info_list by the book-keeper
