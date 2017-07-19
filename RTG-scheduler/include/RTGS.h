@@ -108,6 +108,8 @@ int scheduler_main(char *kernelFilename, char *releaseTimeFilename, int schedule
 int RTGS_mode_1(char *kernelFilename, char *releaseTimeFilename);
 //! \brief RTG-scheduler Mode-2 function
 int RTGS_mode_2(char *kernelFilename, char *releaseTimeFilename);
+//! \brief RTG-scheduler Mode-3 function
+int RTGS_mode_3(char *kernelFilename, char *releaseTimeFilename);
 
 //! \brief function to get kernel info from the input file
 int get_kernel_information(kernelInfo *kernelInfoList, const char *kernelFilename);
@@ -117,12 +119,6 @@ int get_kernel_release_times(const char *releaseTimeFilename);
 
 //! \brief Function to add future kernel_info_list releases and arrange kernel_info_list execution times in ascending order
 void Queue_kernel_execution(int processorReleased, int processorReleaseTime, int presentTime, int scheduleMethod, int kernelNumber, scheduledNode **processorAllocList);
-
-int RTGS_mode_3(char *kernel_info_list, char *Releasetime);
-int Mode_3_book_keeper(kernelInfo* kernel_info_list, int kernel_number, int processors_available, int present_time, scheduledNode **processor_alloc_list, scheduledNode **kernel_queue_list);
-int Mode_3_Processors_Unavailable(kernelInfo *kernel_info_list, int kernel_number, int present_time, int processors_available, scheduledNode ** processor_alloc_list, scheduledNode **kernel_queue_list);
-int Mode_3_AEAP(kernelInfo *kernel_info_list, int kernel_number, int present_time, int processors_available, scheduledNode ** processor_alloc_list, scheduledNode **kernel_queue_list);
-int Mode_3_ALAP(kernelInfo *kernel_info_list, int kernel_number, int present_time, int processors_available, scheduledNode ** processor_alloc_list, scheduledNode **kernel_queue_list);
 
 int RTGS_mode_4(char *kernel_info_list, char *Releasetime);
 int Mode_4_book_keeper(kernelInfo* kernel_info_list, int kernel_number, int processors_available, int present_time, scheduledNode **processor_alloc_list, scheduledNode **kernel_queue_list);

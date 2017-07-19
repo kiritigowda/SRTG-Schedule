@@ -134,13 +134,23 @@ static int Mode_2_Processors_Unavailable
 	return processors_available;
 }
 
-static int Mode_2_book_keeper(kernelInfo* kernel_info_list, int kernel_number, int processors_available, int present_time, scheduledNode **processor_alloc_list, scheduledNode **kernel_queue_list)
+static int Mode_2_book_keeper
+(
+	kernelInfo* kernel_info_list, 
+	int kernel_number, 
+	int processors_available, 
+	int present_time,
+	scheduledNode **processor_alloc_list,
+	scheduledNode **kernel_queue_list
+)
 {
 	int processorReleased = 0, processor_release_time = 0;
 	int presentTime = present_time;
 	int schedule_method = RTGS_SCHEDULE_METHOD_NOT_DEFINED;
 #if DEBUG_MESSAGES
-	printf("Mode-2 Book Keeper:: Kernel::%d --> processor_req:%d execution_time:%d, deadline:%d, latest_schedulable_time:%d\n", kernel_number, kernel_info_list[kernel_number].processor_req, kernel_info_list[kernel_number].execution_time, kernel_info_list[kernel_number].deadline, kernel_info_list[kernel_number].latest_schedulable_time);
+	printf("Mode-2 Book Keeper:: Kernel::%d --> processor_req:%d execution_time:%d, deadline:%d, latest_schedulable_time:%d\n", 
+			kernel_number, kernel_info_list[kernel_number].processor_req, kernel_info_list[kernel_number].execution_time, 
+			kernel_info_list[kernel_number].deadline, kernel_info_list[kernel_number].latest_schedulable_time);
 #endif
 	// If processors available is greater than the required processors by the kernel_info_list
 	if (kernel_info_list[kernel_number].processor_req <= processors_available)

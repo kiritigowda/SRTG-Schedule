@@ -381,7 +381,16 @@ void print(scheduledNode* head)
 	temp = head;
 	printf("Scheduled Kernel List\n");
 	while (temp != NULL) {
-		printf("	Kernel:%d Completion Time:%d Processors Retrived:%d\n", temp->kernel_number, temp->data, temp->processors_allocated);
+		if (temp->kernel_number != MULTIPLE_KERNELS_SCHEDULED){
+			printf("	Kernel::%d Completion Time:%d Processors Retrived:%d\n", temp->kernel_number, temp->data, temp->processors_allocated);
+		}
+		else{
+			scheduledNode* temp1 = temp->kernel_next;
+			while (temp1 != NULL){
+				printf("	Kernel::%d Completion Time:%d Processors Retrived:%d\n", temp1->kernel_number, temp1->data, temp1->processors_allocated);
+				temp1 = temp1->kernel_next;
+			}
+		}
 		temp = temp->next;
 	}
 	return;
