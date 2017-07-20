@@ -28,7 +28,8 @@
 #define MAX_KERNELS 100				// max Kernels needed to be scheduled
 #define PROCESSOR_LIMIT 10			// ALAP Processor Limit
 #define MAX_RUN_TIME 1000			// MAX RUN TIME TO VERIFY -- TBD
-#define MULTIPLE_KERNELS_SCHEDULED -99
+
+#define MULTIPLE_KERNELS_SCHEDULED -99 // multiple kerenls scheduled at a given time
 
 /*! \brief A formal status type with known fixed size.
 * \see RTGS_status_e
@@ -44,7 +45,7 @@ enum RTGS_status_e {
 	RTGS_ERROR_NO_RESOURCES = -7,			/*!< \brief Indicates that an internal or implicit resource can not be acquired (not memory). */
 	RTGS_ERROR_NOT_COMPATIBLE = -6,			/*!< \brief Indicates that the attempt to link two parameters together failed due to type incompatibilty. */
 	RTGS_ERROR_NOT_ALLOCATED = -5,			/*!< \brief Indicates to the system that the parameter must be allocated by the system.  */
-	RTGS_ERROR_NOT_SUFFICIENT = -4,			/*!< \brief Indicates that the given graph has failed verification due to an insufficient number of required parameters, which cannot be automatically created.*/
+	RTGS_ERROR_NOT_SUFFICIENT = -4,			/*!< \brief Indicates that the given an insufficient number of required parameters. */
 	RTGS_ERROR_NOT_SUPPORTED = -3,			/*!< \brief Indicates that the requested set of parameters produce a configuration that cannot be supported */
 	RTGS_ERROR_NOT_IMPLEMENTED = -2,		/*!< \brief Indicates that the requested function is missing. */
 	RTGS_FAILURE = -1,						/*!< \brief Indicates a generic error code, used when no other describes the error. */
@@ -110,6 +111,10 @@ int RTGS_mode_1(char *kernelFilename, char *releaseTimeFilename);
 int RTGS_mode_2(char *kernelFilename, char *releaseTimeFilename);
 //! \brief RTG-scheduler Mode-3 function
 int RTGS_mode_3(char *kernelFilename, char *releaseTimeFilename);
+//! \brief RTG-scheduler Mode-4 function
+int RTGS_mode_4(char *kernelFilename, char *releaseTimeFilename);
+//! \brief RTG-scheduler Mode-4 function
+int RTGS_mode_5(char *kernelFilename, char *releaseTimeFilename);
 
 //! \brief function to get kernel info from the input file
 int get_kernel_information(kernelInfo *kernelInfoList, const char *kernelFilename);
@@ -117,36 +122,24 @@ int get_kernel_information(kernelInfo *kernelInfoList, const char *kernelFilenam
 //! \brief function to get kernel release time info from the input file
 int get_kernel_release_times(const char *releaseTimeFilename);
 
+//! \brief function to retrieve processors from kernels which complete thier execution
+int Retrieve_processors(int present_time, int processors_available, scheduledNode** processor_alloc_list);
+
+//! \brief function to release kernels for exection at the scheduled time
+int Dispatch_queued_kernels(int present_time, int processors_available, scheduledNode** kernel_queue_list, scheduledNode **processor_alloc_list);
+
 //! \brief Function to add future kernel_info_list releases and arrange kernel_info_list execution times in ascending order
 void Queue_kernel_execution(int processorReleased, int processorReleaseTime, int presentTime, int scheduleMethod, int kernelNumber, scheduledNode **processorAllocList);
 
-int RTGS_mode_4(char *kernel_info_list, char *Releasetime);
-int Mode_4_book_keeper(kernelInfo* kernel_info_list, int kernel_number, int processors_available, int present_time, scheduledNode **processor_alloc_list, scheduledNode **kernel_queue_list);
-int Mode_4_Processors_unavailable(kernelInfo *kernel_info_list, int kernel_number, int present_time, int processors_available, scheduledNode ** processor_alloc_list, scheduledNode **kernel_queue_list);
-int Mode_4_AEAP(kernelInfo *kernel_info_list, int kernel_number, int present_time, int processors_available, scheduledNode ** processor_alloc_list, scheduledNode **kernel_queue_list);
-int Mode_4_AEAP_Flagged(kernelInfo *kernel_info_list, int kernel_number, int present_time, int processors_available, scheduledNode ** processor_alloc_list, scheduledNode **kernel_queue_list);
-int Mode_4_ALAP(kernelInfo *kernel_info_list, int kernel_number, int present_time, int processors_available, scheduledNode ** processor_alloc_list, scheduledNode **kernel_queue_list);
-int Mode_4_ALAP_Flagged(kernelInfo *kernel_info_list, int kernel_number, int present_time, int processors_available, scheduledNode ** processor_alloc_list, scheduledNode **kernel_queue_list);
-
-int RTGS_mode_5(char *kernel_info_list, char *Releasetime);
-
 int Kernel_book_keeper(kernelInfo*, int, int, int, scheduledNode**, scheduledNode**);
 int Processors_unavailable(kernelInfo*, int, int, int, scheduledNode**, scheduledNode**);
-
 int AEAP(kernelInfo*, int, int, int, scheduledNode**, scheduledNode**);
 int ALAP(kernelInfo*, int, int, int, scheduledNode**, scheduledNode**);
-
 int AEAP_Flagged(kernelInfo*, int, int, int, scheduledNode **, scheduledNode **);
 int ALAP_Flagged(kernelInfo*, int, int, int, scheduledNode **, scheduledNode **);
-
 int ALAP_improve(kernelInfo *, int, int, int, scheduledNode **, scheduledNode **);
 int AEAP_ALAP_improve(kernelInfo *, int, int, int, scheduledNode **, scheduledNode **);
-
-
 void Kernel_queue_handler(int, int, int, int, int, scheduledNode**);
-
-int Retrieve_processors(int, int, scheduledNode **);
-int Dispatch_queued_kernels(int, int, scheduledNode **, scheduledNode**);
 
 /***************************************************************
 					helper functions 

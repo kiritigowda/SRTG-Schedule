@@ -22,7 +22,7 @@ int ALAP(kernelInfo *kernel_info_list, int kernel_number, int present_time, int 
 	if (Pro >= kernel_info_list[kernel_number].processor_req) {
 
 		int processorReleased = kernel_info_list[kernel_number].processor_req;
-		int schedule_method = 2;
+		int schedule_method = RTGS_SCHEDULE_METHOD_ALAP;
 #if DEBUG_MESSAGES
 		printf("\n$$---ALAP-->The Kernel:%d scheduled ALAP-->---$$", kernel_number);
 #endif
@@ -84,7 +84,7 @@ int ALAP(kernelInfo *kernel_info_list, int kernel_number, int present_time, int 
 				P_Given_list = clean_list(P_Given_list);
 
 				int processorReleased = kernel_info_list[kernel_number].processor_req;
-				int schedule_method = 2;
+				int schedule_method = RTGS_SCHEDULE_METHOD_ALAP;
 #if DEBUG_MESSAGES
 				printf("\n$$---ALAP-->The Kernel:%d scheduled ALAP-->---$$", kernel_number);
 #endif

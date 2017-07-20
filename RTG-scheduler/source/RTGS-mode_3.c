@@ -160,7 +160,7 @@ static int Mode_3_AEAP
 				GLOBAL_CPU_KERNELS++;
 #if DEBUG_MESSAGES
 				printf("Mode 3 AEAP: The Kernel:%d Cannot be scheduled\n", kernel_number);
-				printf("MODE 3 AEAP: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
+				printf("Mode 3 AEAP: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
 #endif
 				return processors_available;
 			}
@@ -176,7 +176,7 @@ static int Mode_3_AEAP
 					int processorReleased = kernel_info_list[kernel_number].processor_req;
 					int processor_release_time = kernel_release_time + kernel_info_list[kernel_number].execution_time;
 					int presentTime = present_time;
-					int schedule_method = 1;
+					int schedule_method = RTGS_SCHEDULE_METHOD_AEAP;
 					GLOBAL_GPU_KERNELS++;
 #if DEBUG_MESSAGES
 					printf("Mode 3 AEAP: The Kernel:%d scheduled\n", kernel_number);
@@ -238,7 +238,7 @@ static int Mode_3_AEAP
 					int processorReleased = kernel_info_list[kernel_number].processor_req;
 					int processor_release_time = kernel_release_time + kernel_info_list[kernel_number].execution_time;
 					int presentTime = present_time;
-					int schedule_method = 1;
+					int schedule_method = RTGS_SCHEDULE_METHOD_AEAP;
 					int Pl = MAX_GPU_PROCESSOR - GLOBAL_ALAP_LIST->processors_allocated;
 					if ((kernel_info_list[kernel_number].processor_req + given) <= Pl) 
 					{
@@ -378,7 +378,7 @@ static int Mode_3_book_keeper
 				processors_available = processors_available - kernel_info_list[kernel_number].processor_req;
 				processorReleased = kernel_info_list[kernel_number].processor_req;
 				processor_release_time = kernel_info_list[kernel_number].execution_time + presentTime;
-				schedule_method = 0;
+				schedule_method = RTGS_SCHEDULE_METHOD_IMMEDIATE;
 				// Kernel call for the GPU to handle the given Kernels and number of blocks//
 				Queue_kernel_execution(processorReleased, processor_release_time, presentTime, schedule_method, kernel_number, processor_alloc_list); 	
 				GLOBAL_GPU_KERNELS++;
@@ -449,8 +449,8 @@ RTGS Mode 3 - AEAP with As Late As Possible mode->AEAP/ALAP
 int RTGS_mode_3(char *kernelFilename, char *releaseTimeFilename)
 {
 	kernelInfo kernel_info_list[MAX_KERNELS];
-	scheduledNode *processor_alloc_list = NULL; //*Pro_release_list=NULL;
-	scheduledNode *kernel_queue_list = NULL;  //Kernel queued for future executions
+	scheduledNode *processor_alloc_list = NULL;		
+	scheduledNode *kernel_queue_list = NULL;		//Kernel queued for future executions
 
 	// global variable initialize
 	GLOBAL_GPU_KERNELS = 0;
@@ -464,7 +464,7 @@ int RTGS_mode_3(char *kernelFilename, char *releaseTimeFilename)
 	int runTimeMax = get_kernel_release_times(releaseTimeFilename);						// Read Release_time.TXT
 
 #if DEBUG_MESSAGES
-	printf("\n**************** The GPU Scheduler will Schedule %d Kernels ****************\n", kernelMax);				// Scheduler Begins
+	printf("\n**************** The GPU Scheduler will Schedule %d Kernels ****************\n", kernelMax);
 #endif
 
 	int64_t stime = RTGS_GetClockCounter();

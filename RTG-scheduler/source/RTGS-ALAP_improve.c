@@ -30,7 +30,7 @@ int ALAP_improve(kernelInfo *kernel_info_list, int kernel_number, int present_ti
 	}
 
 
-	else if (temp->kernel_number == -99) {
+	else if (temp->kernel_number == MULTIPLE_KERNELS_SCHEDULED) {
 
 		scheduledNode *head = temp;
 		scheduledNode *t1, *t2;
@@ -51,8 +51,8 @@ int ALAP_improve(kernelInfo *kernel_info_list, int kernel_number, int present_ti
 				processors_available = processors_available - t1->processors_allocated;
 
 #if DEBUG_MESSAGES
-				printf("\n||---ALAP_IMPROVE-->Kernel-> -99\n");
-				printf("\n\nTIME: %d<--Dispatch-- schedule_method:2 --Kernel -- %d sent to GPU for EXECUTION-->\n", present_time, t1->kernel_number);
+				printf("\n||---ALAP_IMPROVE-->Kernel-> MULTIPLE_KERNELS_SCHEDULED\n");
+				printf("\n\nTIME: %d<--Dispatch-- schedule_method:RTGS_SCHEDULE_METHOD_ALAP --Kernel -- %d sent to GPU for EXECUTION-->\n", present_time, t1->kernel_number);
 #endif
 				Queue_kernel_execution(t1->processors_allocated, t1->processor_release_time, present_time, t1->schedule_method, t1->kernel_number,
 					processor_alloc_list);
