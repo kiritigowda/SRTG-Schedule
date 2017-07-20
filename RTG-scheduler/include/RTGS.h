@@ -135,8 +135,8 @@ int Kernel_book_keeper(kernelInfo*, int, int, int, scheduledNode**, scheduledNod
 int Processors_unavailable(kernelInfo*, int, int, int, scheduledNode**, scheduledNode**);
 int AEAP(kernelInfo*, int, int, int, scheduledNode**, scheduledNode**);
 int ALAP(kernelInfo*, int, int, int, scheduledNode**, scheduledNode**);
-int AEAP_Flagged(kernelInfo*, int, int, int, scheduledNode **, scheduledNode **);
-int ALAP_Flagged(kernelInfo*, int, int, int, scheduledNode **, scheduledNode **);
+int AEAP_advanced(kernelInfo*, int, int, int, scheduledNode **, scheduledNode **);
+int ALAP_advanced(kernelInfo*, int, int, int, scheduledNode **, scheduledNode **);
 int ALAP_improve(kernelInfo *, int, int, int, scheduledNode **, scheduledNode **);
 int AEAP_ALAP_improve(kernelInfo *, int, int, int, scheduledNode **, scheduledNode **);
 void Kernel_queue_handler(int, int, int, int, int, scheduledNode**);

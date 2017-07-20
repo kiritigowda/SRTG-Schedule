@@ -204,7 +204,7 @@ int AEAP(kernelInfo *kernel_info_list, int kernel_number, int present_time, int 
 						}
 
 
-						processors_available = AEAP_Flagged(kernel_info_list, kernel_number, present_time, processors_available, processor_alloc_list,
+						processors_available = AEAP_advanced(kernel_info_list, kernel_number, present_time, processors_available, processor_alloc_list,
 							kernel_queue_list);
 
 
@@ -280,7 +280,7 @@ int AEAP(kernelInfo *kernel_info_list, int kernel_number, int present_time, int 
 
 										//Kernel has to be sent to CPU
 #if DEBUG_MESSAGES
-										printf("\n!!!---AEAP FLAGGED with ALAP is not Possible for the Kernel:%d-->---!!!", kernel_number);
+										printf("\n!!!---AEAP advanced with ALAP is not Possible for the Kernel:%d-->---!!!", kernel_number);
 										printf("\n!!!---KERNEK:%d SENT BACK TO CPU -->---!!!", kernel_number);
 #endif
 
@@ -347,7 +347,7 @@ int AEAP(kernelInfo *kernel_info_list, int kernel_number, int present_time, int 
 #endif
 								}
 
-								processors_available = ALAP_Flagged(kernel_info_list, kernel_number, present_time, processors_available,
+								processors_available = ALAP_advanced(kernel_info_list, kernel_number, present_time, processors_available,
 									processor_alloc_list, kernel_queue_list);
 
 								//******* Schedule after ALAP NEEDED ********

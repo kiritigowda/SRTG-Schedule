@@ -166,7 +166,7 @@ int Kernel_book_keeper(kernelInfo* kernel_info_list, int kernel_number, int proc
 
 				else
 				{
-					processors_available = AEAP_Flagged(kernel_info_list, kernel_number, present_time, processors_available, processor_alloc_list, kernel_queue_list);
+					processors_available = AEAP_advanced(kernel_info_list, kernel_number, present_time, processors_available, processor_alloc_list, kernel_queue_list);
 					GLOBAL_GPU_KERNELS++;
 				}
 
@@ -174,7 +174,7 @@ int Kernel_book_keeper(kernelInfo* kernel_info_list, int kernel_number, int proc
 
 			else if (kernel_info_list[kernel_number].processor_req >= PROCESSOR_LIMIT) { // Processors needed greater or equal than the limit
 
-				processors_available = ALAP_Flagged(kernel_info_list, kernel_number, present_time, processors_available, processor_alloc_list,
+				processors_available = ALAP_advanced(kernel_info_list, kernel_number, present_time, processors_available, processor_alloc_list,
 					kernel_queue_list);
 				GLOBAL_GPU_KERNELS++;
 
@@ -222,7 +222,7 @@ int Processors_unavailable(kernelInfo *kernel_info_list, int kernel_number, int 
 		printf("\n>>>>>Kernel:%d sent for ALAP execution\n", kernel_number);
 #endif
 
-		processors_available = ALAP_Flagged(kernel_info_list, kernel_number, present_time, processors_available, processor_alloc_list, kernel_queue_list);
+		processors_available = ALAP_advanced(kernel_info_list, kernel_number, present_time, processors_available, processor_alloc_list, kernel_queue_list);
 
 	}
 

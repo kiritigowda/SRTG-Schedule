@@ -5,10 +5,10 @@
 
 #include"RTGS.h"
 
-int AEAP_Flagged(kernelInfo *kernel_info_list, int kernel_number, int present_time, int processors_available, scheduledNode ** processor_alloc_list, scheduledNode **kernel_queue_list) {
+int AEAP_advanced(kernelInfo *kernel_info_list, int kernel_number, int present_time, int processors_available, scheduledNode ** processor_alloc_list, scheduledNode **kernel_queue_list) {
 
 #if DEBUG_MESSAGES
-	printf("\n||---AEAP_FLAGGED-->Kernel->%d is verified for ALAP Flagged scheduling\n", kernel_number);
+	printf("\n||---AEAP_advanced-->Kernel->%d is verified for ALAP advanced scheduling\n", kernel_number);
 #endif
 
 	int Pro = 0, kernel_release_time;
@@ -66,7 +66,7 @@ int AEAP_Flagged(kernelInfo *kernel_info_list, int kernel_number, int present_ti
 
 							//Kernel has to be sent to CPU
 #if DEBUG_MESSAGES
-							printf("\n!!!---AEAP FLAGGED with ALAP is not Possible for the Kernel:%d-->---!!!", kernel_number);
+							printf("\n!!!---AEAP advanced with ALAP is not Possible for the Kernel:%d-->---!!!", kernel_number);
 							printf("\n!!!---KERNEK:%d SENT BACK TO CPU -->---!!!", kernel_number);
 #endif
 							GLOBAL_CPU_KERNELS++;
@@ -85,7 +85,7 @@ int AEAP_Flagged(kernelInfo *kernel_info_list, int kernel_number, int present_ti
 							int schedule_method = 1;
 
 #if DEBUG_MESSAGES
-							printf("\n||---AEAP_FLAGGED-->The Kernel:%d scheduled AEAP -->---||", kernel_number);
+							printf("\n||---AEAP_advanced-->The Kernel:%d scheduled AEAP -->---||", kernel_number);
 #endif
 
 							P_Given_list = clean_list(P_Given_list);
@@ -190,7 +190,7 @@ int AEAP_Flagged(kernelInfo *kernel_info_list, int kernel_number, int present_ti
 
 									//Kernel has to be sent to CPU
 #if DEBUG_MESSAGES
-									printf("\n!!!---AEAP FLAGGED with ALAP is not Possible for the Kernel:%d-->---!!!", kernel_number);
+									printf("\n!!!---AEAP advanced with ALAP is not Possible for the Kernel:%d-->---!!!", kernel_number);
 									printf("\n!!!---KERNEK:%d SENT BACK TO CPU -->---!!!", kernel_number);
 #endif
 									GLOBAL_CPU_KERNELS++;
@@ -209,7 +209,7 @@ int AEAP_Flagged(kernelInfo *kernel_info_list, int kernel_number, int present_ti
 									int schedule_method = 1;
 
 #if DEBUG_MESSAGES
-									printf("\n||---AEAP_FLAGGED-->The Kernel:%d scheduled AEAP -->---||", kernel_number);
+									printf("\n||---AEAP_advanced-->The Kernel:%d scheduled AEAP -->---||", kernel_number);
 #endif
 
 									P_Given_list = clean_list(P_Given_list);
@@ -237,7 +237,7 @@ int AEAP_Flagged(kernelInfo *kernel_info_list, int kernel_number, int present_ti
 
 				//Kernel has to be sent to CPU
 #if DEBUG_MESSAGES
-				printf("\n!!!---AEAP FLAGGED with ALAP is not Possible for the Kernel:%d-->---!!!", kernel_number);
+				printf("\n!!!---AEAP advanced with ALAP is not Possible for the Kernel:%d-->---!!!", kernel_number);
 				printf("\n!!!---KERNEK:%d SENT BACK TO CPU -->---!!!", kernel_number);
 #endif
 				GLOBAL_CPU_KERNELS++;
@@ -302,7 +302,7 @@ int AEAP_Flagged(kernelInfo *kernel_info_list, int kernel_number, int present_ti
 
 								//Kernel has to be sent to CPU
 #if DEBUG_MESSAGES
-								printf("\n!!!---AEAP FLAGGED with ALAP is not Possible for the Kernel:%d-->---!!!", kernel_number);
+								printf("\n!!!---AEAP advanced with ALAP is not Possible for the Kernel:%d-->---!!!", kernel_number);
 								printf("\n!!!---KERNEK:%d SENT BACK TO CPU -->---!!!", kernel_number);
 #endif
 								GLOBAL_CPU_KERNELS++;
@@ -321,7 +321,7 @@ int AEAP_Flagged(kernelInfo *kernel_info_list, int kernel_number, int present_ti
 								int schedule_method = 1;
 
 #if DEBUG_MESSAGES
-								printf("\n||---AEAP_FLAGGED-->The Kernel:%d scheduled AEAP -->---||", kernel_number);
+								printf("\n||---AEAP_advanced-->The Kernel:%d scheduled AEAP -->---||", kernel_number);
 #endif
 
 								P_Given_list = clean_list(P_Given_list);
@@ -345,7 +345,7 @@ int AEAP_Flagged(kernelInfo *kernel_info_list, int kernel_number, int present_ti
 
 				//Kernel has to be sent to CPU
 #if DEBUG_MESSAGES
-				printf("\n!!!---AEAP FLAGGED with ALAP is not Possible for the Kernel:%d-->---!!!", kernel_number);
+				printf("\n!!!---AEAP advanced with ALAP is not Possible for the Kernel:%d-->---!!!", kernel_number);
 				printf("\n!!!---KERNEK:%d SENT BACK TO CPU -->---!!!", kernel_number);
 #endif
 				GLOBAL_CPU_KERNELS++;
@@ -438,7 +438,7 @@ int AEAP_Flagged(kernelInfo *kernel_info_list, int kernel_number, int present_ti
 
 									//Kernel has to be sent to CPU
 #if DEBUG_MESSAGES
-									printf("\n!!!---AEAP FLAGGED with ALAP is not Possible for the Kernel:%d-->---!!!", kernel_number);
+									printf("\n!!!---AEAP advanced with ALAP is not Possible for the Kernel:%d-->---!!!", kernel_number);
 									printf("\n!!!---KERNEK:%d SENT BACK TO CPU -->---!!!", kernel_number);
 #endif
 									GLOBAL_CPU_KERNELS++;
@@ -457,7 +457,7 @@ int AEAP_Flagged(kernelInfo *kernel_info_list, int kernel_number, int present_ti
 									int schedule_method = 1;
 
 #if DEBUG_MESSAGES
-									printf(	"\n||---AEAP_FLAGGED-->The Kernel:%d scheduled AEAP -->---||",	kernel_number);
+									printf(	"\n||---AEAP_advanced-->The Kernel:%d scheduled AEAP -->---||",	kernel_number);
 #endif
 
 									P_Given_list = clean_list(P_Given_list);
@@ -485,7 +485,7 @@ int AEAP_Flagged(kernelInfo *kernel_info_list, int kernel_number, int present_ti
 
 				//Kernel has to be sent to CPU
 #if DEBUG_MESSAGES
-				printf(	"\n!!!---AEAP FLAGGED with ALAP is not Possible for the Kernel:%d-->---!!!",kernel_number);
+				printf(	"\n!!!---AEAP advanced with ALAP is not Possible for the Kernel:%d-->---!!!",kernel_number);
 				printf("\n!!!---KERNEK:%d SENT BACK TO CPU -->---!!!", kernel_number);
 #endif
 				GLOBAL_CPU_KERNELS++;

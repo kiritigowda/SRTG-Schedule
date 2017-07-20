@@ -5,10 +5,10 @@
 
 #include"RTGS.h"
 
-int ALAP_Flagged(kernelInfo *kernel_info_list, int kernel_number, int present_time, int processors_available, scheduledNode ** processor_alloc_list, scheduledNode **kernel_queue_list) {
+int ALAP_advanced(kernelInfo *kernel_info_list, int kernel_number, int present_time, int processors_available, scheduledNode ** processor_alloc_list, scheduledNode **kernel_queue_list) {
 
 #if DEBUG_MESSAGES
-	printf("\n||---ALAP_FLAGGED-->Kernel->%d is verified for AEAP Flagged scheduling\n", kernel_number);
+	printf("\n||---ALAP_advanced-->Kernel->%d is verified for AEAP advanced scheduling\n", kernel_number);
 #endif
 
 	int Pro = 0, kernel_release_time;
@@ -29,7 +29,7 @@ int ALAP_Flagged(kernelInfo *kernel_info_list, int kernel_number, int present_ti
 			int processor_release_time = kernel_info_list[kernel_number].deadline;
 			int schedule_method = RTGS_SCHEDULE_METHOD_ALAP;
 #if DEBUG_MESSAGES
-			printf("\n$$---ALAP_FLAGGED-->The Kernel:%d scheduled ALAP-->---$$", kernel_number);
+			printf("\n$$---ALAP_advanced-->The Kernel:%d scheduled ALAP-->---$$", kernel_number);
 #endif
 
 			GLOBAL_ALAP_LIST = insert_ALAP_list(GLOBAL_ALAP_LIST, kernel_release_time, processor_release_time, processorReleased, kernel_number);
@@ -47,7 +47,7 @@ int ALAP_Flagged(kernelInfo *kernel_info_list, int kernel_number, int present_ti
 			int processor_release_time = kernel_info_list[kernel_number].deadline;
 			int schedule_method = RTGS_SCHEDULE_METHOD_ALAP;
 #if DEBUG_MESSAGES
-			printf("\n$$---ALAP_FLAGGED-->The Kernel:%d scheduled ALAP-->---$$",kernel_number);
+			printf("\n$$---ALAP_advanced-->The Kernel:%d scheduled ALAP-->---$$",kernel_number);
 #endif
 
 			GLOBAL_ALAP_LIST = insert_ALAP_list(GLOBAL_ALAP_LIST, kernel_release_time, processor_release_time, processorReleased, kernel_number);
@@ -64,7 +64,7 @@ int ALAP_Flagged(kernelInfo *kernel_info_list, int kernel_number, int present_ti
 				if ((temp->processor_release_time + kernel_info_list[kernel_number].execution_time) > kernel_info_list[kernel_number].deadline) {
 
 #if DEBUG_MESSAGES
-					printf(	"\n!!!---ALAP FLAGGED with ALAP is not Possible for the Kernel:%d-->---!!!",kernel_number);
+					printf(	"\n!!!---ALAP advanced with ALAP is not Possible for the Kernel:%d-->---!!!",kernel_number);
 					printf("\n!!!---KERNEL:%d SENT BACK TO CPU -->---!!!", kernel_number);
 #endif
 
@@ -89,7 +89,7 @@ int ALAP_Flagged(kernelInfo *kernel_info_list, int kernel_number, int present_ti
 
 							//Kernel has to be sent to CPU
 #if DEBUG_MESSAGES
-							printf("\n!!!---ALAP FLAGGED with ALAP is not Possible for the Kernel:%d-->---!!!",	kernel_number);
+							printf("\n!!!---ALAP advanced with ALAP is not Possible for the Kernel:%d-->---!!!",	kernel_number);
 							printf("\n!!!---KERNEL:%d SENT BACK TO CPU -->---!!!",kernel_number);
 #endif
 							GLOBAL_CPU_KERNELS++;
@@ -105,7 +105,7 @@ int ALAP_Flagged(kernelInfo *kernel_info_list, int kernel_number, int present_ti
 							int schedule_method = RTGS_SCHEDULE_METHOD_ALAP;
 
 #if DEBUG_MESSAGES
-							printf(	"\n$$---ALAP_FLAGGED-->The Kernel:%d scheduled ALAP-->---$$",kernel_number);
+							printf(	"\n$$---ALAP_advanced-->The Kernel:%d scheduled ALAP-->---$$",kernel_number);
 #endif
 
 							GLOBAL_ALAP_LIST = insert_ALAP_list(GLOBAL_ALAP_LIST, kernel_release_time, processor_release_time, processorReleased, kernel_number);
@@ -133,7 +133,7 @@ int ALAP_Flagged(kernelInfo *kernel_info_list, int kernel_number, int present_ti
 
 		//Kernel has to be sent to CPU
 #if DEBUG_MESSAGES
-		printf(	"\n!!!---ALAP FLAGGED with ALAP is not Possible for the Kernel:%d-->---!!!",kernel_number);
+		printf(	"\n!!!---ALAP advanced with ALAP is not Possible for the Kernel:%d-->---!!!",kernel_number);
 		printf("\n!!!---KERNEK:%d SENT BACK TO CPU -->---!!!", kernel_number);
 #endif
 		GLOBAL_CPU_KERNELS++;

@@ -6,7 +6,7 @@
 /**********************************************************************************************************
 MODE 4 FUNCTION
 ***********************************************************************************************************/
-static int Mode_4_ALAP_Flagged
+static int Mode_4_ALAP_advanced
 (
 	kernelInfo *kernel_info_list, 
 	int kernel_number, 
@@ -17,7 +17,7 @@ static int Mode_4_ALAP_Flagged
 )
 {
 #if DEBUG_MESSAGES
-	printf("Mode 4 ALAP Flagged: Kernel->%d is verified for AEAP Flagged scheduling\n", kernel_number);
+	printf("Mode 4 ALAP advanced: Kernel:%d is verified for AEAP advanced scheduling\n", kernel_number);
 #endif
 
 	int Pro = 0, kernel_release_time;
@@ -37,8 +37,8 @@ static int Mode_4_ALAP_Flagged
 			int schedule_method = RTGS_SCHEDULE_METHOD_ALAP;
 			GLOBAL_GPU_KERNELS++;
 #if DEBUG_MESSAGES
-			printf("Mode 4 ALAP Flagged: The Kernel:%d scheduled\n", kernel_number);
-			printf("Mode 4 ALAP Flagged: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
+			printf("Mode 4 ALAP advanced: The Kernel:%d scheduled\n", kernel_number);
+			printf("Mode 4 ALAP advanced: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
 #endif
 			GLOBAL_ALAP_LIST = insert_ALAP_list(GLOBAL_ALAP_LIST, kernel_release_time, processor_release_time, 
 				processorReleased, kernel_number);
@@ -54,8 +54,8 @@ static int Mode_4_ALAP_Flagged
 			int schedule_method = RTGS_SCHEDULE_METHOD_ALAP;
 			GLOBAL_GPU_KERNELS++;
 #if DEBUG_MESSAGES
-			printf("Mode 4 ALAP Flagged: The Kernel:%d scheduled\n", kernel_number);
-			printf("Mode 4 ALAP Flagged: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
+			printf("Mode 4 ALAP advanced: The Kernel:%d scheduled\n", kernel_number);
+			printf("Mode 4 ALAP advanced: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
 #endif
 			GLOBAL_ALAP_LIST = insert_ALAP_list(GLOBAL_ALAP_LIST, kernel_release_time, processor_release_time, 
 				processorReleased, kernel_number);
@@ -71,8 +71,8 @@ static int Mode_4_ALAP_Flagged
 				{
 					GLOBAL_CPU_KERNELS++;
 #if DEBUG_MESSAGES
-					printf("Mode 4 ALAP Flagged: The Kernel:%d Cannot be scheduled\n", kernel_number);
-					printf("Mode 4 ALAP Flagged: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
+					printf("Mode 4 ALAP advanced: The Kernel:%d Cannot be scheduled\n", kernel_number);
+					printf("Mode 4 ALAP advanced: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
 #endif
 					return processors_available;
 				}
@@ -88,8 +88,8 @@ static int Mode_4_ALAP_Flagged
 						{
 							GLOBAL_CPU_KERNELS++;
 #if DEBUG_MESSAGES
-							printf("Mode 4 ALAP Flagged: The Kernel:%d Cannot be scheduled\n", kernel_number);
-							printf("Mode 4 ALAP Flagged: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
+							printf("Mode 4 ALAP advanced: The Kernel:%d Cannot be scheduled\n", kernel_number);
+							printf("Mode 4 ALAP advanced: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
 #endif
 							return processors_available;
 						}
@@ -101,8 +101,8 @@ static int Mode_4_ALAP_Flagged
 							int schedule_method = RTGS_SCHEDULE_METHOD_ALAP;
 							GLOBAL_GPU_KERNELS++;
 #if DEBUG_MESSAGES
-							printf("Mode 4 ALAP Flagged: The Kernel:%d scheduled\n", kernel_number);
-							printf("Mode 4 ALAP Flagged: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
+							printf("Mode 4 ALAP advanced: The Kernel:%d scheduled\n", kernel_number);
+							printf("Mode 4 ALAP advanced: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
 #endif
 							GLOBAL_ALAP_LIST = insert_ALAP_list(GLOBAL_ALAP_LIST, kernel_release_time, processor_release_time,
 								processorReleased, kernel_number);
@@ -123,8 +123,8 @@ static int Mode_4_ALAP_Flagged
 	{
 		GLOBAL_CPU_KERNELS++;
 #if DEBUG_MESSAGES
-		printf("Mode 4 ALAP Flagged: The Kernel:%d Cannot be scheduled\n", kernel_number);
-		printf("Mode 4 ALAP Flagged: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
+		printf("Mode 4 ALAP advanced: The Kernel:%d Cannot be scheduled\n", kernel_number);
+		printf("Mode 4 ALAP advanced: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
 #endif
 		return processors_available;
 	}
@@ -248,7 +248,7 @@ static int Mode_4_ALAP
 	return processors_available;
 }
 
-static int Mode_4_AEAP_Flagged
+static int Mode_4_AEAP_advanced
 (
 	kernelInfo *kernel_info_list, 
 	int kernel_number, 
@@ -259,7 +259,7 @@ static int Mode_4_AEAP_Flagged
 )
 {
 #if DEBUG_MESSAGES
-	printf("Mode - 4 AEAP Flagged: Kernel->%d is verified for ALAP Flagged scheduling\n", kernel_number);
+	printf("Mode - 4 AEAP advanced: Kernel->%d is verified for ALAP advanced scheduling\n", kernel_number);
 #endif
 
 	int Pro = 0, kernel_release_time = 0;
@@ -305,8 +305,8 @@ static int Mode_4_AEAP_Flagged
 							P_Given_list = clean_list(P_Given_list);
 							GLOBAL_CPU_KERNELS++;
 #if DEBUG_MESSAGES
-							printf("Mode 4 AEAP Flagged: The Kernel:%d Cannot be scheduled\n", kernel_number);
-							printf("Mode 4 AEAP Flagged: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
+							printf("Mode 4 AEAP advanced: The Kernel:%d Cannot be scheduled\n", kernel_number);
+							printf("Mode 4 AEAP advanced: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
 #endif
 							return processors_available;
 						}
@@ -322,8 +322,8 @@ static int Mode_4_AEAP_Flagged
 							P_Given_list = clean_list(P_Given_list);
 							GLOBAL_GPU_KERNELS++;
 #if DEBUG_MESSAGES
-							printf("Mode 4 AEAP flagged: The Kernel:%d scheduled\n", kernel_number);
-							printf("Mode 4 AEAP flagged: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
+							printf("Mode 4 AEAP advanced: The Kernel:%d scheduled\n", kernel_number);
+							printf("Mode 4 AEAP advanced: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
 #endif
 							Queue_kernel_execution(processorReleased, processor_release_time, presentTime,
 												schedule_method, kernel_number, processor_alloc_list);
@@ -351,8 +351,8 @@ static int Mode_4_AEAP_Flagged
 					int schedule_method = RTGS_SCHEDULE_METHOD_AEAP;
 					GLOBAL_GPU_KERNELS++;
 #if DEBUG_MESSAGES
-					printf("Mode 4 AEAP flagged: The Kernel:%d scheduled\n", kernel_number);
-					printf("Mode 4 AEAP flagged: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
+					printf("Mode 4 AEAP advanced: The Kernel:%d scheduled\n", kernel_number);
+					printf("Mode 4 AEAP advanced: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
 #endif
 					Queue_kernel_execution(processorReleased, processor_release_time, presentTime, 
 										schedule_method, kernel_number, processor_alloc_list);
@@ -407,8 +407,8 @@ static int Mode_4_AEAP_Flagged
 									P_Given_list = clean_list(P_Given_list);
 									GLOBAL_CPU_KERNELS++;
 #if DEBUG_MESSAGES
-									printf("Mode 4 AEAP Flagged: The Kernel:%d Cannot be scheduled\n", kernel_number);
-									printf("Mode 4 AEAP Flagged: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
+									printf("Mode 4 AEAP advanced: The Kernel:%d Cannot be scheduled\n", kernel_number);
+									printf("Mode 4 AEAP advanced: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
 #endif
 									return processors_available;
 								}
@@ -423,8 +423,8 @@ static int Mode_4_AEAP_Flagged
 									P_Given_list = clean_list(P_Given_list);
 									GLOBAL_GPU_KERNELS++;
 #if DEBUG_MESSAGES
-									printf("Mode 4 AEAP flagged: The Kernel:%d scheduled\n", kernel_number);
-									printf("Mode 4 AEAP flagged: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
+									printf("Mode 4 AEAP advanced: The Kernel:%d scheduled\n", kernel_number);
+									printf("Mode 4 AEAP advanced: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
 #endif	
 									Queue_kernel_execution(processorReleased, processor_release_time, presentTime, 
 														schedule_method, kernel_number,processor_alloc_list);
@@ -443,8 +443,8 @@ static int Mode_4_AEAP_Flagged
 			{
 				GLOBAL_CPU_KERNELS++;
 #if DEBUG_MESSAGES
-				printf("Mode 4 AEAP Flagged: The Kernel:%d Cannot be scheduled\n", kernel_number);
-				printf("Mode 4 AEAP Flagged: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
+				printf("Mode 4 AEAP advanced: The Kernel:%d Cannot be scheduled\n", kernel_number);
+				printf("Mode 4 AEAP advanced: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
 #endif
 				return processors_available;
 			}
@@ -494,8 +494,8 @@ static int Mode_4_AEAP_Flagged
 								//Kernel has to be sent to CPU
 								GLOBAL_CPU_KERNELS++;
 #if DEBUG_MESSAGES
-								printf("Mode 4 AEAP Flagged: The Kernel:%d Cannot be scheduled\n", kernel_number);
-								printf("Mode 4 AEAP Flagged: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
+								printf("Mode 4 AEAP advanced: The Kernel:%d Cannot be scheduled\n", kernel_number);
+								printf("Mode 4 AEAP advanced: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
 #endif
 								return processors_available;
 							}
@@ -510,8 +510,8 @@ static int Mode_4_AEAP_Flagged
 								P_Given_list = clean_list(P_Given_list);
 								GLOBAL_GPU_KERNELS++;
 #if DEBUG_MESSAGES
-								printf("Mode 4 AEAP flagged: The Kernel:%d scheduled\n", kernel_number);
-								printf("Mode 4 AEAP flagged: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
+								printf("Mode 4 AEAP advanced: The Kernel:%d scheduled\n", kernel_number);
+								printf("Mode 4 AEAP advanced: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
 #endif	
 								
 								Queue_kernel_execution(processorReleased, processor_release_time, presentTime, 
@@ -530,8 +530,8 @@ static int Mode_4_AEAP_Flagged
 			{
 				GLOBAL_CPU_KERNELS++;
 #if DEBUG_MESSAGES
-				printf("Mode 4 AEAP Flagged: The Kernel:%d Cannot be scheduled\n", kernel_number);
-				printf("Mode 4 AEAP Flagged: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
+				printf("Mode 4 AEAP advanced: The Kernel:%d Cannot be scheduled\n", kernel_number);
+				printf("Mode 4 AEAP advanced: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
 #endif
 				return processors_available;
 			}
@@ -551,8 +551,8 @@ static int Mode_4_AEAP_Flagged
 					int schedule_method = RTGS_SCHEDULE_METHOD_AEAP;
 					GLOBAL_GPU_KERNELS++;
 #if DEBUG_MESSAGES
-					printf("Mode 4 AEAP flagged: The Kernel:%d scheduled\n", kernel_number);
-					printf("Mode 4 AEAP flagged: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
+					printf("Mode 4 AEAP advanced: The Kernel:%d scheduled\n", kernel_number);
+					printf("Mode 4 AEAP advanced: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
 #endif	
 					Queue_kernel_execution(processorReleased, processor_release_time, presentTime, 
 						schedule_method, kernel_number, processor_alloc_list);
@@ -608,8 +608,8 @@ static int Mode_4_AEAP_Flagged
 									P_Given_list = clean_list(P_Given_list);
 									GLOBAL_CPU_KERNELS++;
 #if DEBUG_MESSAGES
-									printf("Mode 4 AEAP Flagged: The Kernel:%d Cannot be scheduled\n", kernel_number);
-									printf("Mode 4 AEAP Flagged: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
+									printf("Mode 4 AEAP advanced: The Kernel:%d Cannot be scheduled\n", kernel_number);
+									printf("Mode 4 AEAP advanced: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
 #endif
 									return processors_available;
 								}
@@ -624,8 +624,8 @@ static int Mode_4_AEAP_Flagged
 									P_Given_list = clean_list(P_Given_list);
 									GLOBAL_GPU_KERNELS++;
 #if DEBUG_MESSAGES
-									printf("Mode 4 AEAP flagged: The Kernel:%d scheduled\n", kernel_number);
-									printf("Mode 4 AEAP flagged: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
+									printf("Mode 4 AEAP advanced: The Kernel:%d scheduled\n", kernel_number);
+									printf("Mode 4 AEAP advanced: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
 #endif						
 									Queue_kernel_execution(processorReleased, processor_release_time, presentTime, 
 										schedule_method, kernel_number,	processor_alloc_list);
@@ -643,8 +643,8 @@ static int Mode_4_AEAP_Flagged
 			else {
 				GLOBAL_CPU_KERNELS++;
 #if DEBUG_MESSAGES
-				printf("Mode 4 AEAP Flagged: The Kernel:%d Cannot be scheduled\n", kernel_number);
-				printf("Mode 4 AEAP Flagged: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
+				printf("Mode 4 AEAP advanced: The Kernel:%d Cannot be scheduled\n", kernel_number);
+				printf("Mode 4 AEAP advanced: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
 #endif
 				return processors_available;
 			}
@@ -829,7 +829,7 @@ static int Mode_4_AEAP
 #endif
 						}
 						//TBD:: Schedule after ALAP NEEDED ************************
-						processors_available = Mode_4_AEAP_Flagged(kernel_info_list, kernel_number, present_time, 
+						processors_available = Mode_4_AEAP_advanced(kernel_info_list, kernel_number, present_time, 
 													processors_available, processor_alloc_list, kernel_queue_list);
 					}
 					else if ((kernel_info_list[kernel_number].processor_req + given) <= Pl && (temp->next == NULL)) 
@@ -959,7 +959,7 @@ static int Mode_4_AEAP
 								}
 
 								//TBD:: Schedule after ALAP NEEDED ********
-								processors_available = Mode_4_ALAP_Flagged(kernel_info_list, kernel_number, present_time, 
+								processors_available = Mode_4_ALAP_advanced(kernel_info_list, kernel_number, present_time, 
 														processors_available,processor_alloc_list, kernel_queue_list);
 							}
 						} // temp->next != NULL -- Else end
@@ -1029,7 +1029,7 @@ static int Mode_4_Processors_unavailable
 #if DEBUG_MESSAGES
 		printf("Mode 4 Processors unavailable:: Kernel:%d sent for ALAP execution\n", kernel_number);
 #endif
-		processors_available = Mode_4_ALAP_Flagged(kernel_info_list, kernel_number, present_time,
+		processors_available = Mode_4_ALAP_advanced(kernel_info_list, kernel_number, present_time,
 												processors_available, processor_alloc_list, kernel_queue_list);
 	}
 
@@ -1051,7 +1051,7 @@ static int Mode_4_book_keeper
 	static int FLAG, FLAG_V;
 
 #if DEBUG_MESSAGES
-	printf("Mode-4 Book Keeper:: Kernel::%d --> processor_req:%d execution_time:%d, deadline:%d, latest_schedulable_time:%d\n",
+	printf("Mode 4 Book Keeper:: Kernel::%d --> processor_req:%d execution_time:%d, deadline:%d, latest_schedulable_time:%d\n",
 		kernel_number, kernel_info_list[kernel_number].processor_req, kernel_info_list[kernel_number].execution_time,
 		kernel_info_list[kernel_number].deadline, kernel_info_list[kernel_number].latest_schedulable_time);
 #endif
@@ -1078,15 +1078,15 @@ static int Mode_4_book_keeper
 										schedule_method, kernel_number, processor_alloc_list); 
 					GLOBAL_GPU_KERNELS++;
 #if DEBUG_MESSAGES
-					printf("Mode-4 Book Keeper:: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
+					printf("Mode 4 Book Keeper:: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
 #endif
 				}
 				else 
 				{
 					GLOBAL_CPU_KERNELS++;
 #if DEBUG_MESSAGES
-					printf("Mode-4 Book Keeper:: Kernel-%d will not complete before it's deadline, Job REJECTED\n", kernel_number);
-					printf("Mode-4 Book Keeper:: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
+					printf("Mode 4 Book Keeper:: Kernel-%d will not complete before it's deadline, Job REJECTED\n", kernel_number);
+					printf("Mode 4 Book Keeper:: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
 #endif
 				}
 			}
@@ -1094,7 +1094,7 @@ static int Mode_4_book_keeper
 			else if (kernel_info_list[kernel_number].processor_req >= PROCESSOR_LIMIT) 
 			{ 
 #if DEBUG_MESSAGES
-				printf("Mode-4 Book Keeper:: Kernel:%d is compute intensive, sent for ALAP execution\n", kernel_number);
+				printf("Mode 4 Book Keeper:: Kernel:%d is compute intensive, sent for ALAP execution\n", kernel_number);
 #endif
 				processors_available = Mode_4_ALAP(kernel_info_list, kernel_number, present_time, 
 												processors_available, processor_alloc_list, kernel_queue_list);
@@ -1118,7 +1118,7 @@ static int Mode_4_book_keeper
 				if (kernel_info_list[kernel_number].processor_req <= Pl && (present_time + kernel_info_list[kernel_number].execution_time) <= GLOBAL_ALAP_LIST->data)
 				{
 #if DEBUG_MESSAGES
-					printf("Mode-4 Book Keeper::  ALAP is set, Kernel:%d SATISFIED CONDITION 1", kernel_number);
+					printf("Mode 4 Book Keeper::  ALAP is set, Kernel:%d SATISFIED CONDITION 1", kernel_number);
 #endif
 					if (kernel_info_list[kernel_number].execution_time + present_time <= kernel_info_list[kernel_number].deadline)
 					{
@@ -1132,15 +1132,15 @@ static int Mode_4_book_keeper
 							schedule_method, kernel_number, processor_alloc_list);
 						GLOBAL_GPU_KERNELS++;
 #if DEBUG_MESSAGES
-						printf("Mode-4 Book Keeper:: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
+						printf("Mode 4 Book Keeper:: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
 #endif
 					}
 					else
 					{
 						GLOBAL_CPU_KERNELS++;
 #if DEBUG_MESSAGES
-						printf("Mode-4 Book Keeper:: Kernel-%d will not complete before it's deadline, Job REJECTED\n", kernel_number);
-						printf("Mode-4 Book Keeper:: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
+						printf("Mode 4 Book Keeper:: Kernel-%d will not complete before it's deadline, Job REJECTED\n", kernel_number);
+						printf("Mode 4 Book Keeper:: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
 #endif
 					}
 				}
@@ -1149,7 +1149,7 @@ static int Mode_4_book_keeper
 					&& (present_time + kernel_info_list[kernel_number].execution_time) <= GLOBAL_ALAP_LIST->data) 
 				{ 
 #if DEBUG_MESSAGES
-					printf("Mode-4 Book Keeper::  ALAP is set, Kernel:%d SATISFIED CONDITION 2", kernel_number);
+					printf("Mode 4 Book Keeper::  ALAP is set, Kernel:%d SATISFIED CONDITION 2", kernel_number);
 #endif
 					if (kernel_info_list[kernel_number].execution_time + present_time <= kernel_info_list[kernel_number].deadline) 
 					{
@@ -1162,14 +1162,14 @@ static int Mode_4_book_keeper
 												schedule_method, kernel_number, processor_alloc_list); 
 						GLOBAL_GPU_KERNELS++;
 #if DEBUG_MESSAGES
-						printf("Mode-4 Book Keeper:: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
+						printf("Mode 4 Book Keeper:: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
 #endif
 					}
 					else 
 					{
 						GLOBAL_GPU_KERNELS++;
 #if DEBUG_MESSAGES
-						printf("Mode-4 Book Keeper:: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
+						printf("Mode 4 Book Keeper:: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
 #endif
 					}
 				}
@@ -1181,7 +1181,7 @@ static int Mode_4_book_keeper
 					FLAG = 1;
 					FLAG_V = GLOBAL_ALAP_LIST->data;
 #if DEBUG_MESSAGES
-					printf("Mode-4 Book Keeper:: ALAP is set, Kernel:%d SATISFIED CONDITION 1 with FLAG", kernel_number);
+					printf("Mode 4 Book Keeper:: ALAP is set, Kernel:%d SATISFIED CONDITION 1 with FLAG", kernel_number);
 #endif
 					if (kernel_info_list[kernel_number].execution_time + present_time <= kernel_info_list[kernel_number].deadline) 
 					{
@@ -1194,27 +1194,27 @@ static int Mode_4_book_keeper
 							schedule_method, kernel_number, processor_alloc_list); 
 						GLOBAL_GPU_KERNELS++;
 #if DEBUG_MESSAGES
-						printf("Mode-4 Book Keeper:: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
+						printf("Mode 4 Book Keeper:: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
 #endif
 					}
 					else 
 					{
 						GLOBAL_GPU_KERNELS++;
 #if DEBUG_MESSAGES
-						printf("Mode-4 Book Keeper:: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
+						printf("Mode 4 Book Keeper:: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
 #endif
 					}
 				}
 				else 
 				{
-					processors_available = Mode_4_AEAP_Flagged(kernel_info_list, kernel_number, present_time,
+					processors_available = Mode_4_AEAP_advanced(kernel_info_list, kernel_number, present_time,
 												processors_available, processor_alloc_list, kernel_queue_list);
 				}
 			}
 			// Processors needed greater or equal than the limit
 			else if (kernel_info_list[kernel_number].processor_req >= PROCESSOR_LIMIT) 
 			{ 
-				processors_available = Mode_4_ALAP_Flagged(kernel_info_list, kernel_number, present_time, 
+				processors_available = Mode_4_ALAP_advanced(kernel_info_list, kernel_number, present_time, 
 													processors_available, processor_alloc_list, kernel_queue_list);
 			}
 		}
