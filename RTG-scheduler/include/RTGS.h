@@ -7,162 +7,167 @@
 #define RTGS_H
 
 #if _WIN32
-#include<Windows.h>
+#include <Windows.h>
+#define strcasecmp strcmp
+#else
+#include <sys/time.h>
+#include <strings.h>
 #endif
 
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 #include <assert.h>
 #include <stdint.h>
 
-#define DEBUG_MESSAGES 0 // debug messages
-#define DEBUG_INFO 1 // debug messages
 
-#define MAX_GPU_PROCESSOR 14        // Total streaming multi-processors available on the GPU
-#define MAX_KERNELS 100				// Max Kernels needed to be scheduled
+#define DEBUG_MESSAGES 1			// debug messages
+#define DEBUG_INFO 1				// detailed debug messages
+
+#define MAX_GPU_PROCESSOR 14		// total streaming multi-processors available on the GPU
+#define MAX_KERNELS 100				// max Kernels needed to be scheduled
 #define PROCESSOR_LIMIT 10			// ALAP Processor Limit
+#define MAX_RUN_TIME 1000			// MAX RUN TIME TO VERIFY -- TBD
 
-/*! \brief Sets the standard enumeration type size to be a fixed quantity.
-* \details All enumerable fields must use this type as the container to
-* enforce enumeration ranges and sizeof() operations.
-* \ingroup group_basic_features
+#define MULTIPLE_KERNELS_SCHEDULED -99 // multiple kerenls scheduled at a given time
+
+/*! \brief A formal status type with known fixed size.
+* \see RTGS_status_e
 */
-typedef int RTGS_ENUM;
+typedef int RTGS_Status;
 
 /*! \brief The enumeration of all status codes.
 * \see rtgs_status.
-* \ingroup group_basic_features
 */
 enum RTGS_status_e {
-	RTGS_ERROR_INVALID_MODULE = -11,		/*!< \brief This is returned from <tt>\ref vxLoadKernels</tt> when the module does not contain the entry point. */
-	RTGS_ERROR_INVALID_PARAMETERS = -10,	/*!< \brief Indicates that the supplied parameter information does not match the kernel contract. */
-	RTGS_ERROR_OPTIMIZED_AWAY = -9,			/*!< \brief Indicates that the object refered to has been optimized out of existence. */
-	RTGS_ERROR_NO_MEMORY = -8,				/*!< \brief Indicates that an internal or implicit allocation failed. Typically catastrophic. After detection, deconstruct the context. \see vxVerifyGraph. */
-	RTGS_ERROR_NO_RESOURCES = -7,			/*!< \brief Indicates that an internal or implicit resource can not be acquired (not memory). This is typically catastrophic. After detection, deconstruct the context. \see vxVerifyGraph. */
+	RTGS_ERROR_INVALID_PARAMETERS = -9,		/*!< \brief Indicates that the supplied parameter information does not match the kernel_info_list. */
+	RTGS_ERROR_NO_MEMORY = -8,				/*!< \brief Indicates that an internal or implicit allocation failed. Typically catastrophic. */
+	RTGS_ERROR_NO_RESOURCES = -7,			/*!< \brief Indicates that an internal or implicit resource can not be acquired (not memory). */
 	RTGS_ERROR_NOT_COMPATIBLE = -6,			/*!< \brief Indicates that the attempt to link two parameters together failed due to type incompatibilty. */
 	RTGS_ERROR_NOT_ALLOCATED = -5,			/*!< \brief Indicates to the system that the parameter must be allocated by the system.  */
-	RTGS_ERROR_NOT_SUFFICIENT = -4,			/*!< \brief Indicates that the given graph has failed verification due to an insufficient number of required parameters, which cannot be automatically created. Typically this indicates required atomic parameters. \see vxVerifyGraph. */
-	RTGS_ERROR_NOT_SUPPORTED = -3,			/*!< \brief Indicates that the requested set of parameters produce a configuration that cannot be supported. Refer to the supplied documentation on the configured kernels. \see vx_kernel_e. */
-	RTGS_ERROR_NOT_IMPLEMENTED = -2,		/*!< \brief Indicates that the requested kernel is missing. \see vx_kernel_e vxGetKernelByName. */
+	RTGS_ERROR_NOT_SUFFICIENT = -4,			/*!< \brief Indicates that the given an insufficient number of required parameters. */
+	RTGS_ERROR_NOT_SUPPORTED = -3,			/*!< \brief Indicates that the requested set of parameters produce a configuration that cannot be supported */
+	RTGS_ERROR_NOT_IMPLEMENTED = -2,		/*!< \brief Indicates that the requested function is missing. */
 	RTGS_FAILURE = -1,						/*!< \brief Indicates a generic error code, used when no other describes the error. */
 	RTGS_SUCCESS = 0,						/*!< \brief No error. */
 };
 
-/*! \brief A formal status type with known fixed size.
-* \see vx_status_e
-* \ingroup group_basic_features
+/*! \brief The enumeration of all schedule methods.
 */
-typedef RTGS_ENUM RTGS_Status;
+enum RTGS_schedule_method_e {
+	RTGS_SCHEDULE_METHOD_IMMEDIATE = 0,
+	RTGS_SCHEDULE_METHOD_AEAP = 1,
+	RTGS_SCHEDULE_METHOD_ALAP = 2,
+	RTGS_SCHEDULE_METHOD_NOT_DEFINED = 99,
+};
 
-#define MAX_RUN_TIME 1000
-int gobalReleaseTime[MAX_RUN_TIME];
+/* Kernel Info Structure */
+struct kernel_information {
+	int processor_req;				//Processors needed
+	int execution_time;				//Execution time
+	int deadline;					//Deadline
+	int latest_schedulable_time;	//Latest schedule time
+};
+//! \brief kernel_info_list info structure
+typedef struct kernel_information kernelInfo;
+
+/* scheduled kernel linked list*/
+struct linked_list {
+	int kernel_number;
+	int kernel_release_time;
+	int processor_release_time;
+	int processors_allocated;
+	int schedule_method;
+	int data;
+	struct linked_list* next;
+	struct linked_list* kernel_next;
+};
+//! \brief kernel scheduled info
+typedef struct linked_list scheduledNode;
 
 // Backup list to revert the processor actions
 struct list {
-	int KN;
+	int kernel_number;
 	int data;
-	int Tf;
-	int Pg;
+	int processor_release_time;
+	int processors_allocated;
 	struct list* next;
 };
-
-struct Linked_list {
-	int KN;
-	int Tr;
-	int Tf;
-	int P_f_g;
-	int SA;
-	int data;
-	struct Linked_list* next;
-	struct Linked_list* Kernel_next;
-};
-
-/* Kernel Structure */
-struct Kernels {
-	int Pn;                                        //Processors needed
-	int Texe;                                      //Execution time
-	int Td;                                        //Deadline
-	int Tls;                                       //Latest schedule time
-};
-
-
+//! \brief backup kernel scheduled info
 typedef struct list backup_list;
-typedef struct Linked_list Node;
-typedef struct Kernels Kernel_INFO;
 
-int count;
-int CPU_Kernel;
-backup_list* alap;
+// global variables
+int GLOBAL_GPU_KERNELS;
+int GLOBAL_CPU_KERNELS;
+int GLOBAL_RELEASE_TIME[MAX_RUN_TIME];
+backup_list* GLOBAL_ALAP_LIST;
 
+//! \brief RTG-scheduler main function
+int scheduler_main(char *kernelFilename, char *releaseTimeFilename, int schedulerMode);
 
-int RTGS_mode_1(char *kernel, char *Releasetime);
-int Mode_1_book_keeper(struct Kernels* kernel, int KN, int Pa, int i, Node** Pro_free_list);
+//! \brief RTG-scheduler Mode-1 function
+int RTGS_mode_1(char *kernelFilename, char *releaseTimeFilename);
+//! \brief RTG-scheduler Mode-2 function
+int RTGS_mode_2(char *kernelFilename, char *releaseTimeFilename);
+//! \brief RTG-scheduler Mode-3 function
+int RTGS_mode_3(char *kernelFilename, char *releaseTimeFilename);
+//! \brief RTG-scheduler Mode-4 function
+int RTGS_mode_4(char *kernelFilename, char *releaseTimeFilename);
+//! \brief RTG-scheduler Mode-4 function
+int RTGS_mode_5(char *kernelFilename, char *releaseTimeFilename);
 
-int RTGS_mode_2(char *kernel, char *Releasetime);
-int Mode_2_book_keeper(Kernel_INFO* kernel, int KN, int Pa, int i, Node **Pro_free_list, Node **Kernel_queue);
-int Mode_2_Processors_Unavailable(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node **Kernel_queue);
-int Mode_2_AEAP(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node **Kernel_queue);
+//! \brief function to get kernel info from the input file
+int get_kernel_information(kernelInfo *kernelInfoList, const char *kernelFilename);
 
-int RTGS_mode_3(char *kernel, char *Releasetime);
-int Mode_3_book_keeper(Kernel_INFO* kernel, int KN, int Pa, int i, Node **Pro_free_list, Node **Kernel_queue);
-int Mode_3_Processors_Unavailable(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node **Kernel_queue);
-int Mode_3_AEAP(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node **Kernel_queue);
-int Mode_3_ALAP(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node **Kernel_queue);
+//! \brief function to get kernel release time info from the input file
+int get_kernel_release_times(const char *releaseTimeFilename);
 
-int RTGS_mode_4(char *kernel, char *Releasetime);
-int Mode_4_book_keeper(Kernel_INFO* kernel, int KN, int Pa, int i, Node **Pro_free_list, Node **Kernel_queue);
-int Mode_4_Processors_unavailable(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node **Kernel_queue);
-int Mode_4_AEAP(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node **Kernel_queue);
-int Mode_4_AEAP_Flagged(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node **Kernel_queue);
-int Mode_4_ALAP(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node **Kernel_queue);
-int Mode_4_ALAP_Flagged(Kernel_INFO *kernel, int KN, int i, int Pa, Node ** Pro_free_list, Node **Kernel_queue);
+//! \brief function to retrieve processors from kernels which complete thier execution
+int Retrieve_processors(int present_time, int processors_available, scheduledNode** processor_alloc_list);
 
-int RTGS_mode_5(char *kernel, char *Releasetime);
+//! \brief function to release kernels for exection at the scheduled time
+int Dispatch_queued_kernels(int present_time, int processors_available, scheduledNode** kernel_queue_list, scheduledNode **processor_alloc_list);
 
-int scheduler_main(char *kernel, char *Releasetime, int mode);
+//! \brief Function to add future kernel_info_list releases and arrange kernel_info_list execution times in ascending order
+void Queue_kernel_execution(int processorReleased, int processorReleaseTime, int presentTime, int scheduleMethod, int kernelNumber, scheduledNode **processorAllocList);
 
-int get_kernel_information(Kernel_INFO*, char *File);
-int get_kernel_release_times(char *File);
+int Kernel_book_keeper(kernelInfo*, int, int, int, scheduledNode**, scheduledNode**);
+int Processors_unavailable(kernelInfo*, int, int, int, scheduledNode**, scheduledNode**);
+int AEAP(kernelInfo*, int, int, int, scheduledNode**, scheduledNode**);
+int ALAP(kernelInfo*, int, int, int, scheduledNode**, scheduledNode**);
+int AEAP_advanced(kernelInfo*, int, int, int, scheduledNode **, scheduledNode **);
+int ALAP_advanced(kernelInfo*, int, int, int, scheduledNode **, scheduledNode **);
+int ALAP_improve(kernelInfo *, int, int, int, scheduledNode **, scheduledNode **);
+int AEAP_ALAP_improve(kernelInfo *, int, int, int, scheduledNode **, scheduledNode **);
+void Kernel_queue_handler(int, int, int, int, int, scheduledNode**);
 
-int Kernel_book_keeper(Kernel_INFO*, int, int, int, Node**, Node**);
-int Processors_unavailable(Kernel_INFO*, int, int, int, Node**, Node**);
+/***************************************************************
+					helper functions 
+****************************************************************/
+//! \brief clock counter function
+int64_t RTGS_GetClockCounter();
 
-int AEAP(Kernel_INFO*, int, int, int, Node**, Node**);
-int ALAP(Kernel_INFO*, int, int, int, Node**, Node**);
+//! \brief clock frequency function
+int64_t RTGS_GetClockFrequency();
 
-int AEAP_Flagged(Kernel_INFO*, int, int, int, Node **, Node **);
-int ALAP_Flagged(Kernel_INFO*, int, int, int, Node **, Node **);
-
-int ALAP_improve(Kernel_INFO *, int, int, int, Node **, Node **);
-int AEAP_ALAP_improve(Kernel_INFO *, int, int, int, Node **, Node **);
-
-void Queue_kernel_execution(int, int, int, int, int, Node**);
-void Kernel_queue_handler(int, int, int, int, int, Node**);
-
-int Retrieve_processors(int, int, Node **);
-int Dispatch_queued_kernels(int, int, Node **, Node**);
-
-//Function Prototyping
-Node* insert(Node* head, Node* x);
-Node* ascending_insert(Node* head, int x, int Tf, int Pf, int KN, int SA);
-Node* position_insert(Node* head, Node* x, int p);
-Node* position_delete(Node* head, int p);
-Node* reverse(Node* head);
-Node* remove_recurring_node(Node* head);
-Node* clean_node(Node* head);
-
+// linked list functions
+scheduledNode* insert(scheduledNode* head, scheduledNode* x);
+scheduledNode* ascending_insert(scheduledNode* head, int x, int processor_release_time, int Pf, int kernel_number, int schedule_method);
+scheduledNode* position_insert(scheduledNode* head, scheduledNode* x, int p);
+scheduledNode* position_delete(scheduledNode* head, int p);
+scheduledNode* reverse(scheduledNode* head);
+scheduledNode* remove_recurring_node(scheduledNode* head);
+scheduledNode* clean_node(scheduledNode* head);
+// list edit functions
 backup_list* insert_list(backup_list*, int);
 backup_list* clean_list(backup_list*);
 backup_list* position_delete_list(backup_list*);
 backup_list* insert_ALAP_list(backup_list*, int, int, int, int);
 
-void print(Node* head);
-void Kernel_queue_print(Node* head);
-void R_print(Node* p);
+void print(scheduledNode* head);
+void Kernel_queue_print(scheduledNode* head);
+void R_print(scheduledNode* p);
 
-int64_t RTGS_GetClockCounter();
-int64_t RTGS_GetClockFrequency();
+
 
 #endif /* RTGS_H */

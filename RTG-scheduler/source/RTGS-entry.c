@@ -5,12 +5,12 @@
 
 #include"RTGS.h"
 // version
-#define RTGS_VERSION "0.9.2"
+#define RTGS_VERSION "0.9.3"
 
 /**********************************************************************************************************
-Help Function and usage information
+usage information
 ***********************************************************************************************************/
-void show_usage()
+static void show_usage()
 {
 	printf("\n*********************************************************************************************************\n");
 	printf("\n				Real Time GPU Scheduler -> Scheduler.EXE-%s\n", RTGS_VERSION);
@@ -18,9 +18,9 @@ void show_usage()
 	printf("\n");
 	printf("Usage:\n\n");
 	printf("Windows:\n");
-	printf("SCHEDULER.EXE [options] -K <Kernel_file.txt> -RT <Release_Time_file.txt>  -M <Option>\n");
+	printf("SCHEDULER.EXE [options] -K <Kernel_file.txt> -RT <Release_Time_file.txt> -M <Option>\n");
 	printf("Linux:\n");
-	printf("./SCHEDULER [options] -K <Kernel_file.txt> -RT <Release_Time_file.txt>  -M <Option>\n");
+	printf("./SCHEDULER [options] -K <Kernel_file.txt> -RT <Release_Time_file.txt> -M <Option>\n");
 	printf("\n");
 	printf("\n\nScheduler [options] Supported\n\n");
 	printf("  -h/-help\n");
@@ -59,30 +59,31 @@ Program Entry
 int main(int argc, char * argv[])
 {
 	RTGS_Status status = RTGS_SUCCESS;
-	char *Kernel = NULL, *ReleaseTime = NULL;
-	int Mode = 0, error = 0;
+	char *kernelFilename = NULL, *releaseTimeFilename = NULL;
+	int schedulerMode = 0;
+	int error = 0;
 
 	for (int arg = 1; arg < argc; arg++)
 	{
-		if (!_stricmp(argv[arg], "-h") || !_stricmp(argv[arg], "-help"))
+        if (!strcasecmp(argv[arg], "-h") || !strcasecmp(argv[arg], "-help"))
 		{
 			show_usage();
 			exit(status);
 		}
-		else if (!_stricmp(argv[arg], "Kernels") || !_stricmp(argv[arg], "-K"))
+        else if (!strcasecmp(argv[arg], "Kernels") || !strcasecmp(argv[arg], "-K"))
 		{
 			if ((arg + 1) == argc)
 			{
-				printf("\n\nERROR: missing kernel file name on command-line (see help for details)\n\n\n");
+				printf("\n\nERROR: missing kernel_info_list file name on command-line (see help for details)\n\n\n");
 				show_usage();
 				status = RTGS_ERROR_NOT_SUFFICIENT;
 				exit(status);
 			}
 			arg++;
-			Kernel = (argv[arg]);
+			kernelFilename = (argv[arg]);
 			error++;
 		}
-		else if (!_stricmp(argv[arg], "ReleaseTime") || !_stricmp(argv[arg], "-RT"))
+        else if (!strcasecmp(argv[arg], "ReleaseTime") || !strcasecmp(argv[arg], "-RT"))
 		{
 			if ((arg + 1) == argc)
 			{
@@ -90,23 +91,22 @@ int main(int argc, char * argv[])
 				show_usage();
 				status = RTGS_ERROR_NOT_SUFFICIENT;
 				exit(status);
-
 			}
 			arg++;
-			ReleaseTime = (argv[arg]);
+			releaseTimeFilename = (argv[arg]);
 			error++;
 		}
-		else if (!_stricmp(argv[arg], "Mode") || !_stricmp(argv[arg], "-M"))
+        else if (!strcasecmp(argv[arg], "Mode") || !strcasecmp(argv[arg], "-M"))
 		{
 			if ((arg + 1) == argc)
 			{
 				printf("\n\nMissing Mode Value on command-line. Default Mode will be Executed\n");
 				printf("Mode 5::AEAP ALAP BP with APLAP improver mode->AEAP/ALAP BP Improve\n");
-				Mode = 5;
+				schedulerMode = 5;
 			}
 			else {
 				arg++;
-				Mode = atoi(argv[arg]);
+				schedulerMode = atoi(argv[arg]);
 			}
 		}
 	}
@@ -120,7 +120,7 @@ int main(int argc, char * argv[])
 	}
 
 	int64_t start_t = RTGS_GetClockCounter();
-	status = scheduler_main(Kernel, ReleaseTime, Mode); // calling the scheduler
+	status = scheduler_main(kernelFilename, releaseTimeFilename, schedulerMode); // scheduler call
 	int64_t end_t = RTGS_GetClockCounter();
 
 	if (status != RTGS_SUCCESS) {
