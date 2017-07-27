@@ -7,35 +7,59 @@
 #include"RTGS.h"
 
 
-/* Function to add future kernel releases and arrange kernel execution times in ascending order */
-void Queue_kernel_execution(int Pf, int Tf, int i, int SA, int KN, Node **Pro_free_list) {
-	//printf("\n *** The Processors given :: %d ***\n\n", Pf);
-	*Pro_free_list = ascending_insert(*Pro_free_list, Tf, Tf, Pf, KN, SA);
+/* Function to add future kernel_info_list releases and arrange kernel_info_list execution times in ascending order */
+void Queue_kernel_execution
+(
+	int processorReleased, 
+	int processor_release_time,
+	int present_time, 
+	int schedule_method, 
+	int kernel_number, 
+	scheduledNode **processor_alloc_list
+)
+{
+	// TBD:: Sending Data and Kernels
+	*processor_alloc_list = ascending_insert(*processor_alloc_list, processor_release_time, processor_release_time, 
+											processorReleased, kernel_number, schedule_method);
 #if DEBUG_MESSAGES
-	print(*Pro_free_list);
+	print(*processor_alloc_list);
 #endif
-	// Sending Data and Kernels
 
 	return;
 }
 
-
-/* Function to add future kernel releases and arrange kernel execution times in ascending order */
-void Kernel_queue_handler(int Pf, int Tr, int Tf, int SA, int KN, Node **Kernel_queue) {
-	//printf("\n *** The Processors given :: %d ***\n\n", Pf);
-	if (SA == 2) {
-		*Kernel_queue = ascending_insert(*Kernel_queue, Tr, Tf, Pf, KN, SA);
+/* Function to add future kernel_info_list releases and arrange kernel_info_list execution times in ascending order */
+void Kernel_queue_handler
+(
+int processorReleased,
+int kernel_release_time,
+int processor_release_time,
+int schedule_method,
+int kernel_number,
+scheduledNode **kernel_queue_list
+)
+{
+	// TBD:: Sending Data and Kernels
+	if (schedule_method == RTGS_SCHEDULE_METHOD_ALAP)
+	{
+		*kernel_queue_list = ascending_insert(*kernel_queue_list, kernel_release_time, processor_release_time,
+			processorReleased, kernel_number, schedule_method);
 #if DEBUG_MESSAGES
-		Kernel_queue_print(*Kernel_queue);
+		Kernel_queue_print(*kernel_queue_list);
 #endif
 	}
-	else {
-		*Kernel_queue = ascending_insert(*Kernel_queue, Tr, Tr, Pf, KN, SA);
+	else if (schedule_method == RTGS_SCHEDULE_METHOD_AEAP)
+	{
+		*kernel_queue_list = ascending_insert(*kernel_queue_list, kernel_release_time, kernel_release_time,
+			processorReleased, kernel_number, schedule_method);
 #if DEBUG_MESSAGES
-		Kernel_queue_print(*Kernel_queue);
+		Kernel_queue_print(*kernel_queue_list);
 #endif
 	}
-	// Sending Data and Kernels
+	else
+	{
+		printf("Kernel_queue_handler ERROR NOT IMPLEMENTED");
+	}
 
 	return;
 }
