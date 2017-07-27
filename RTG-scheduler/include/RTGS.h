@@ -20,7 +20,6 @@
 #include <assert.h>
 #include <stdint.h>
 
-
 #define DEBUG_MESSAGES 1			// debug messages
 #define DEBUG_INFO 1				// detailed debug messages
 
@@ -123,23 +122,52 @@ int get_kernel_information(kernelInfo *kernelInfoList, const char *kernelFilenam
 int get_kernel_release_times(const char *releaseTimeFilename);
 
 //! \brief function to retrieve processors from kernels which complete thier execution
-int Retrieve_processors(int present_time, int processors_available, scheduledNode** processor_alloc_list);
+int Retrieve_processors(int present_time, int processors_available, 
+		scheduledNode** processor_alloc_list);
 
 //! \brief function to release kernels for exection at the scheduled time
-int Dispatch_queued_kernels(int present_time, int processors_available, scheduledNode** kernel_queue_list, scheduledNode **processor_alloc_list);
+int Dispatch_queued_kernels(int present_time, int processors_available, 
+		scheduledNode** kernel_queue_list, scheduledNode **processor_alloc_list);
 
 //! \brief Function to add future kernel_info_list releases and arrange kernel_info_list execution times in ascending order
-void Queue_kernel_execution(int processorReleased, int processorReleaseTime, int presentTime, int scheduleMethod, int kernelNumber, scheduledNode **processorAllocList);
+void Queue_kernel_execution(int processorReleased, int processorReleaseTime, int presentTime, 
+		int scheduleMethod, int kernelNumber, scheduledNode **processorAllocList);
 
-int Kernel_book_keeper(kernelInfo*, int, int, int, scheduledNode**, scheduledNode**);
-int Processors_unavailable(kernelInfo*, int, int, int, scheduledNode**, scheduledNode**);
-int AEAP(kernelInfo*, int, int, int, scheduledNode**, scheduledNode**);
-int ALAP(kernelInfo*, int, int, int, scheduledNode**, scheduledNode**);
-int AEAP_advanced(kernelInfo*, int, int, int, scheduledNode **, scheduledNode **);
-int ALAP_advanced(kernelInfo*, int, int, int, scheduledNode **, scheduledNode **);
-int ALAP_improve(kernelInfo *, int, int, int, scheduledNode **, scheduledNode **);
-int AEAP_ALAP_improve(kernelInfo *, int, int, int, scheduledNode **, scheduledNode **);
-void Kernel_queue_handler(int, int, int, int, int, scheduledNode**);
+//! \brief Function to
+int Kernel_book_keeper(kernelInfo* kernel_info_list, int kernel_number, int processors_available, int present_time, 
+		scheduledNode **processor_alloc_list, scheduledNode **kernel_queue_list);
+
+//! \brief Function to
+int Processors_unavailable(kernelInfo *kernel_info_list, int kernel_number, int present_time, int processors_available,
+		scheduledNode ** processor_alloc_list, scheduledNode **kernel_queue_list);
+
+//! \brief Function to
+void Kernel_queue_handler(int processorReleased, int kernel_release_time, int processor_release_time, 
+		int schedule_method, int kernel_number, scheduledNode **kernel_queue_list);
+
+//! \brief Function to
+int AEAP(kernelInfo *kernel_info_list, int kernel_number, int present_time, int processors_available, 
+		scheduledNode ** processor_alloc_list, scheduledNode **kernel_queue_list);
+
+//! \brief Function to
+int AEAP_ALAP_improve(kernelInfo *kernel_info_list, int kernel_release_time, int present_time, int processors_available,
+		scheduledNode ** processor_alloc_list, scheduledNode **kernel_queue_list);
+
+//! \brief Function to
+int AEAP_advanced(kernelInfo *kernel_info_list, int kernel_number, int present_time, int processors_available, 
+		scheduledNode ** processor_alloc_list, scheduledNode **kernel_queue_list);
+
+//! \brief Function to
+int ALAP(kernelInfo *kernel_info_list, int kernel_number, int present_time, int processors_available,
+		scheduledNode ** processor_alloc_list, scheduledNode **kernel_queue_list);
+
+//! \brief Function to
+int ALAP_advanced(kernelInfo *kernel_info_list, int kernel_number, int present_time, int processors_available, 
+		scheduledNode ** processor_alloc_list, scheduledNode **kernel_queue_list);
+
+//! \brief Function to
+int ALAP_improve(kernelInfo *kernel_info_list, int kernel_number, int present_time, int processors_available,
+		scheduledNode ** processor_alloc_list, scheduledNode **kernel_queue_list);
 
 /***************************************************************
 					helper functions 
@@ -150,24 +178,22 @@ int64_t RTGS_GetClockCounter();
 //! \brief clock frequency function
 int64_t RTGS_GetClockFrequency();
 
-// linked list functions
-scheduledNode* insert(scheduledNode* head, scheduledNode* x);
-scheduledNode* ascending_insert(scheduledNode* head, int x, int processor_release_time, int Pf, int kernel_number, int schedule_method);
-scheduledNode* position_insert(scheduledNode* head, scheduledNode* x, int p);
-scheduledNode* position_delete(scheduledNode* head, int p);
+// list functions
+scheduledNode* insert(scheduledNode* head, scheduledNode* data);
+scheduledNode* ascending_insert(scheduledNode* head, int data, int processor_release_time, 
+		int processorReleased, int kernel_number, int schedule_method);
+scheduledNode* position_insert(scheduledNode* head, scheduledNode* data, int position);
+scheduledNode* position_delete(scheduledNode* head, int position);
 scheduledNode* reverse(scheduledNode* head);
 scheduledNode* remove_recurring_node(scheduledNode* head);
 scheduledNode* clean_node(scheduledNode* head);
-// list edit functions
-backup_list* insert_list(backup_list*, int);
-backup_list* clean_list(backup_list*);
-backup_list* position_delete_list(backup_list*);
-backup_list* insert_ALAP_list(backup_list*, int, int, int, int);
-
+backup_list* insert_list(backup_list* head, int data);
+backup_list* clean_list(backup_list* head);
+backup_list* position_delete_list(backup_list* head);
+backup_list* insert_ALAP_list(backup_list* head, int kernel_release_time, 
+		int processor_release_time, int processors_allocated, int kernel_number);
 void print(scheduledNode* head);
 void Kernel_queue_print(scheduledNode* head);
-void R_print(scheduledNode* p);
-
-
+void R_print(scheduledNode* head);
 
 #endif /* RTGS_H */
