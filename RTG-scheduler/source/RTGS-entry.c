@@ -5,7 +5,7 @@
 
 #include"RTGS.h"
 // version
-#define RTGS_VERSION "0.9.3"
+#define RTGS_VERSION "0.9.5"
 
 /**********************************************************************************************************
 usage information
