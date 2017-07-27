@@ -4,6 +4,7 @@
 */
 
 #include"RTGS.h"
+#include"RTGS-profiler.h"
 // version
 #define RTGS_VERSION "0.9.5"
 
@@ -119,9 +120,15 @@ int main(int argc, char * argv[])
 		exit(status);
 	}
 
+	PROFILER_INITIALIZE();
+	PROFILER_START(RTGS_Scheduler, Scheduler);
+
 	int64_t start_t = RTGS_GetClockCounter();
 	status = scheduler_main(kernelFilename, releaseTimeFilename, schedulerMode); // scheduler call
 	int64_t end_t = RTGS_GetClockCounter();
+
+	PROFILER_STOP(RTGS_Scheduler, Scheduler);
+	PROFILER_SHUTDOWN();
 
 	if (status != RTGS_SUCCESS) {
 		printf("The Scheduler Failed with error code ->%d\n", status);
