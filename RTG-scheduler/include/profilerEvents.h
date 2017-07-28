@@ -1,1 +1,0 @@
-PROFILER_DEFINE_EVENT(RTGS_Scheduler, Scheduler)
