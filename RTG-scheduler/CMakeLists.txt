@@ -29,7 +29,6 @@ source/RTGS-ALAP_improve.c
 source/RTG-scheduler.c 
 source/RTGS-dispatch.c 
 source/RTGS-entry.c
-source/RTGS-profiler.cpp
 )
 
 # executable target and the source files
