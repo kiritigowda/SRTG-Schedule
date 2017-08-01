@@ -20,8 +20,8 @@
 #include <assert.h>
 #include <stdint.h>
 
-#define DEBUG_MESSAGES 0			// debug messages
-#define DEBUG_INFO 0				// detailed debug messages
+#define DEBUG_INFO 1				// debug mode information
+#define DEBUG_MESSAGES 0			// detailed debug messages
 
 #define MAX_GPU_PROCESSOR 14		// total streaming multi-processors available on the GPU
 #define MAX_KERNELS 100				// max Kernels needed to be scheduled
