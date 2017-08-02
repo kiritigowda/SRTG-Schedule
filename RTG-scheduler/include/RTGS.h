@@ -30,6 +30,28 @@
 
 #define MULTIPLE_KERNELS_SCHEDULED -99 // multiple kerenls scheduled at a given time
 
+// PROFILER_MODE:
+//   0 - no profiling
+//   1 - default profiling
+#define PROFILER_MODE 1
+#if PROFILER_MODE
+extern void __stdcall PROFILER_INITIALIZE();
+extern void __stdcall PROFILER_SHUTDOWN();
+
+#define PROFILER_DEFINE_EVENT(g,e) ePROFILER_EVENT_ENUM_ ## g ## e,
+enum ProfilerEventEnum {
+	#include "profilerEvents.h"	
+	PROFILER_NUM_EVENTS
+};
+#define PROFILER_START(g,e) _PROFILER_START(ePROFILER_EVENT_ENUM_ ## g ## e);
+#define PROFILER_STOP(g,e)  _PROFILER_STOP(ePROFILER_EVENT_ENUM_ ## g ## e);
+#else
+#define PROFILER_INITIALIZE()
+#define PROFILER_SHUTDOWN()
+#define PROFILER_START(g,e)
+#define PROFILER_STOP(g,e)
+#endif
+
 /*! \brief A formal status type with known fixed size.
 * \see RTGS_status_e
 */
