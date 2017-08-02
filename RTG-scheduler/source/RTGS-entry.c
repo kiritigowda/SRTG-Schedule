@@ -6,10 +6,7 @@
 #include"RTGS.h"
 
 // version
-#define RTGS_VERSION "0.9.5"
-
-extern void __stdcall PROFILER_INITIALIZE();
-extern void __stdcall PROFILER_SHUTDOWN();
+#define RTGS_VERSION "0.9.6"
 
 /**********************************************************************************************************
 usage information
@@ -124,13 +121,15 @@ int main(int argc, char * argv[])
 	}
 
 	PROFILER_INITIALIZE();
+	PROFILER_START(SRTG, Schedule)
 
 	int64_t start_t = RTGS_GetClockCounter();
 	status = scheduler_main(kernelFilename, releaseTimeFilename, schedulerMode); // scheduler call
 	int64_t end_t = RTGS_GetClockCounter();
 
+	PROFILER_STOP(SRTG, Schedule)
 	PROFILER_SHUTDOWN();
-
+	
 	if (status != RTGS_SUCCESS) {
 		printf("The Scheduler Failed with error code ->%d\n", status);
 	}
