@@ -4,6 +4,11 @@
 */
 
 #include"RTGS.h"
+#ifndef _WIN32
+#include <x86intrin.h>
+//#include <chrono>
+static inline __int64 my_rdtsc(){ return __rdtsc(); }
+#endif
 
 //! \brief clock counter function
 int64_t RTGS_GetClockCounter()
@@ -14,7 +19,7 @@ int64_t RTGS_GetClockCounter()
 	return v.QuadPart;
 #else
 	//return std::chrono::high_resolution_clock::now().time_since_epoch().GLOBAL_GPU_KERNELS();
-	return 0;
+	return my_rdtsc();
 #endif
 }
 
@@ -26,8 +31,8 @@ int64_t RTGS_GetClockFrequency()
 	QueryPerformanceFrequency(&v);
 	return v.QuadPart;
 #else
-	//return std::chrono::high_resolution_clock::period::den / chrono::high_resolution_clock::period::num;
-	return 1;
+	//return std::chrono::high_resolution_clock::period::den / std::chrono::high_resolution_clock::period::num;
+	return 100000000;
 #endif
 }
 
