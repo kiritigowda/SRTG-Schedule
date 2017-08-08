@@ -38,7 +38,7 @@ add_executable(RTG-scheduler ${SOURCES})
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
 
 else()
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse4.2 -std=c++11")
 endif()
 
 # Bring in default test data
