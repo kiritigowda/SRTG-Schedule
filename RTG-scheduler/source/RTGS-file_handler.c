@@ -10,6 +10,7 @@
 /* The Function is for reading the GPU Compatilble Kernel Values */
 int get_kernel_information(kernelInfo *kernelInfoList, const char *kernelFilename)
 {
+	PROFILER_START(SRTG, get_kernel_information)
 	char string[FILE_MAX_KERNELS];
 	char num_processor[10], execution_time[10], deadline[10], latest_schedulable[10], KERNEL[10];
 	int kernel_ID, num_kernels = 0;
@@ -50,7 +51,7 @@ int get_kernel_information(kernelInfo *kernelInfoList, const char *kernelFilenam
 		}
 	}
 	fclose(fp);
-
+	PROFILER_STOP(SRTG, get_kernel_information)
 	return num_kernels;
 }
 
@@ -58,6 +59,7 @@ int get_kernel_information(kernelInfo *kernelInfoList, const char *kernelFilenam
 /* The Function is to read the time frames in which these Kernels are released */
 int get_kernel_release_times(const char *releaseTimeFilename)
 {
+	PROFILER_START(SRTG, get_kernel_release_times)
 	char string[FILE_MAX_KERNELS];
 	int present_time = 0;
 
@@ -80,7 +82,7 @@ int get_kernel_release_times(const char *releaseTimeFilename)
 	}
 	fclose(fp);
 	int MaxRunTime = present_time;
-
+	PROFILER_STOP(SRTG, get_kernel_release_times)
 	return MaxRunTime;
 }
 

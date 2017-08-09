@@ -15,6 +15,7 @@ int ALAP_improve
 	scheduledNode **kernel_queue_list
 ) 
 {
+	PROFILER_START(SRTG, ALAP_improve)
 #if DEBUG_MESSAGES
 	printf("ALAP_IMPROVE: Kernel->%d is verified for ALAP IMPROVED scheduling\n", kernel_number);
 #endif
@@ -56,6 +57,7 @@ int ALAP_improve
 					t1->schedule_method, t1->kernel_number, processor_alloc_list);
 
 				free(t1);
+				PROFILER_STOP(SRTG, ALAP_improve)
 				return processors_available;
 			}
 			else
@@ -64,6 +66,7 @@ int ALAP_improve
 			t1 = t2;
 		}
 	}
+	PROFILER_STOP(SRTG, ALAP_improve)
 	return processors_available;
 }
 
