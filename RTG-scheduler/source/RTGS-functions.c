@@ -16,6 +16,7 @@ int Kernel_book_keeper
 	scheduledNode **kernel_queue_list
 ) 
 {
+	PROFILER_START(SRTG, Kernel_book_keeper)
 	int processorReleased = 0, processor_release_time = 0;
 	int schedule_method = RTGS_SCHEDULE_METHOD_NOT_DEFINED;
 	static int FLAG , FLAG_V, given;
@@ -206,6 +207,7 @@ int Kernel_book_keeper
 		processors_available = Processors_unavailable(kernel_info_list, kernel_number, present_time, 
 			processors_available, processor_alloc_list,kernel_queue_list); 
 	}
+	PROFILER_STOP(SRTG, Kernel_book_keeper)
 	return processors_available;
 }
 
@@ -219,6 +221,7 @@ int Processors_unavailable
 	scheduledNode **kernel_queue_list
 )
 {
+	PROFILER_START(SRTG, Processors_unavailable)
 	if (kernel_info_list[kernel_number].processor_req < PROCESSOR_LIMIT)
 	{
 		processors_available = AEAP(kernel_info_list, kernel_number, present_time, 
@@ -234,6 +237,6 @@ int Processors_unavailable
 		processors_available = ALAP_advanced(kernel_info_list, kernel_number, present_time,
 			processors_available, processor_alloc_list, kernel_queue_list);
 	}
-
+	PROFILER_STOP(SRTG, Processors_unavailable)
 	return processors_available;
 }

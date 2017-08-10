@@ -18,13 +18,14 @@ void Queue_kernel_execution
 	scheduledNode **processor_alloc_list
 )
 {
+	PROFILER_START(SRTG, Queue_kernel_execution)
 	// TBD:: Sending Data and Kernels
 	*processor_alloc_list = ascending_insert(*processor_alloc_list, processor_release_time, processor_release_time, 
 											processorReleased, kernel_number, schedule_method);
 #if DEBUG_MESSAGES
 	print(*processor_alloc_list);
 #endif
-
+	PROFILER_STOP(SRTG, Queue_kernel_execution)
 	return;
 }
 
@@ -39,6 +40,7 @@ int kernel_number,
 scheduledNode **kernel_queue_list
 )
 {
+	PROFILER_START(SRTG, Kernel_queue_handler)
 	// TBD:: Sending Data and Kernels
 	if (schedule_method == RTGS_SCHEDULE_METHOD_ALAP)
 	{
@@ -60,6 +62,6 @@ scheduledNode **kernel_queue_list
 	{
 		printf("Kernel_queue_handler ERROR NOT IMPLEMENTED");
 	}
-
+	PROFILER_STOP(SRTG, Kernel_queue_handler)
 	return;
 }

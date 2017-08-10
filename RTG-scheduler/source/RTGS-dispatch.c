@@ -13,6 +13,7 @@ int Retrieve_processors
 	scheduledNode** processor_alloc_list
 ) 
 {
+	PROFILER_START(SRTG, Retrieve_processors)
 	scheduledNode* temp;
 	temp = *processor_alloc_list;
 
@@ -49,7 +50,7 @@ int Retrieve_processors
 			*processor_alloc_list = temp;
 		}
 	}
-
+	PROFILER_STOP(SRTG, Retrieve_processors)
 	return processors_available;
 }
 
@@ -62,6 +63,7 @@ int Dispatch_queued_kernels
 	scheduledNode **processor_alloc_list
 ) 
 {
+	PROFILER_START(SRTG, Dispatch_queued_kernels)
 	scheduledNode* temp;
 	temp = *kernel_queue_list;
 
@@ -158,6 +160,7 @@ int Dispatch_queued_kernels
 			*kernel_queue_list = temp;
 		}
 	}
+	PROFILER_STOP(SRTG, Dispatch_queued_kernels)
 	return processors_available;
 }
 
