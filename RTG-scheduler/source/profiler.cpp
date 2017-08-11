@@ -15,6 +15,7 @@
 #include <chrono>
 #endif
 #include <stdio.h>
+#include "RTGS_Global.h"
 
 #undef PROFILER_DEFINE_EVENT
 #define PROFILER_DEFINE_EVENT(g,e) #g "-" #e,
@@ -99,6 +100,7 @@ char default_profiler_name[1024] = "profiler";
 
 extern "C" void dump_profile_log()
 {
+
 #if _WIN32
 	CreateDirectory("SRTG-Visual-Profile", NULL);
 #else
@@ -108,8 +110,8 @@ extern "C" void dump_profile_log()
 	char profiler[1024] = "SRTG-Visual-Profile/SRTG-profile";
 	char textBuffer[1024];
 	if (ls_getEnvironmentVariable("VISUAL_PROFILER_LOCATION", textBuffer, sizeof(textBuffer))){sprintf(profiler, "%s/SRTG-profile", textBuffer);}
-	char plogfile[1024]; sprintf(plogfile, "%s-data.log", profiler);
-	char phtmfile[1024]; sprintf(phtmfile, "%s-visual.html", profiler);
+	char plogfile[1024]; sprintf(plogfile, "%s-Mode-%d-data.log", profiler, GLOBAL_RTGS_MODE);
+	char phtmfile[1024]; sprintf(phtmfile, "%s-Mode-%d-visual.html", profiler, GLOBAL_RTGS_MODE);
 	FILE * fp = fopen(plogfile, "w"); if (!fp) { printf("ERROR: unable to create '%s'\n", plogfile); return; }
 	FILE * fh = fopen(phtmfile, "w"); if (!fh) { printf("ERROR: unable to create '%s'\n", phtmfile); return; }
 

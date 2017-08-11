@@ -4,6 +4,7 @@
 */
 
 #include"RTGS.h"
+#include"RTGS_Global.h"
 
 // version
 #define RTGS_VERSION "0.9.6"
@@ -63,6 +64,9 @@ int main(int argc, char * argv[])
 	char *kernelFilename = NULL, *releaseTimeFilename = NULL;
 	int schedulerMode = 0;
 	int error = 0;
+	
+	// global vaiable intitialize 
+	GLOBAL_RTGS_MODE = -1;
 
 	for (int arg = 1; arg < argc; arg++)
 	{
@@ -119,7 +123,7 @@ int main(int argc, char * argv[])
 		status = RTGS_ERROR_NOT_SUFFICIENT;
 		exit(status);
 	}
-
+	
 	PROFILER_INITIALIZE();
 	PROFILER_START(SRTG, RTG_Schedule)
 
@@ -128,6 +132,7 @@ int main(int argc, char * argv[])
 	int64_t end_t = RTGS_GetClockCounter();
 
 	PROFILER_STOP(SRTG, RTG_Schedule)
+	GLOBAL_RTGS_MODE = schedulerMode;
 	PROFILER_SHUTDOWN();
 	
 	if (status != RTGS_SUCCESS) {
