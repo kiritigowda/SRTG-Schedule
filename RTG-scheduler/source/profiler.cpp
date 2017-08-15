@@ -25,6 +25,8 @@ const char * ProfilerEventName[] = {
 };
 
 static int profiler_init = 0;
+int GLOBAL_SRTG_MODE = 0;
+char *GLOBAL_SRTG_K_FILE = NULL;
 
 #if PROFILER_MODE
 static int MAX_PROFILER_EVENTS = 0;
@@ -96,8 +98,6 @@ const char * colorlist[] = {
 	"#660099", "#660066", "#660033", "#660000"
 };
 
-char default_profiler_name[1024] = "profiler";
-
 extern "C" void dump_profile_log()
 {
 
@@ -107,11 +107,11 @@ extern "C" void dump_profile_log()
 	struct stat st = {0};
 	if (stat("SRTG-Visual-Profile", &st) == -1) {	mkdir("SRTG-Visual-Profile", 0700); }
 #endif
-	char profiler[1024] = "SRTG-Visual-Profile/SRTG-profile";
+	char profiler[1024] = "SRTG-Visual-Profile/SRTG_PROFILE";
 	char textBuffer[1024];
-	if (ls_getEnvironmentVariable("VISUAL_PROFILER_LOCATION", textBuffer, sizeof(textBuffer))){sprintf(profiler, "%s/SRTG-profile", textBuffer);}
-	char plogfile[1024]; sprintf(plogfile, "%s-Mode-%d-data.log", profiler, GLOBAL_RTGS_MODE);
-	char phtmfile[1024]; sprintf(phtmfile, "%s-Mode-%d-visual.html", profiler, GLOBAL_RTGS_MODE);
+	if (ls_getEnvironmentVariable("VISUAL_PROFILER_LOCATION", textBuffer, sizeof(textBuffer))){sprintf(profiler, "%s/SRTG_PROFILE", textBuffer);}
+	char plogfile[1024]; sprintf(plogfile, "%s-Mode-%d-data.log", profiler, GLOBAL_SRTG_MODE);
+	char phtmfile[1024]; sprintf(phtmfile, "%s-Mode-%d-visual.html", profiler, GLOBAL_SRTG_MODE);
 	FILE * fp = fopen(plogfile, "w"); if (!fp) { printf("ERROR: unable to create '%s'\n", plogfile); return; }
 	FILE * fh = fopen(phtmfile, "w"); if (!fh) { printf("ERROR: unable to create '%s'\n", phtmfile); return; }
 
@@ -292,5 +292,9 @@ extern "C" void __stdcall PROFILER_SHUTDOWN()
 		}
 	}
 }
-
+extern "C" void __stdcall PROFILER_FILE_INITIALIZE(int Mode, char * K_File)
+{
+	GLOBAL_SRTG_MODE = Mode;
+	GLOBAL_SRTG_K_FILE = K_File;
+}
 #endif

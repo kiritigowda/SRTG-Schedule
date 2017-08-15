@@ -21,6 +21,7 @@ enum ProfilerEventEnum {
 };
 extern "C" void __stdcall PROFILER_INITIALIZE();
 extern "C" void __stdcall PROFILER_SHUTDOWN();
+extern "C" void __stdcall PROFILER_FILE_INITIALIZE(int Mode, char * K_File);
 #else
 #define PROFILER_INITIALIZE()
 #define PROFILER_SHUTDOWN()

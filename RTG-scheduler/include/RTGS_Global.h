@@ -10,5 +10,6 @@
 
 // global variables
 int GLOBAL_RTGS_MODE;
+char *GLOBAL_KERNEL_FILE_NAME;
 
 #endif /* RTGS_GLOBAL_H */

@@ -42,6 +42,7 @@
 #endif
 extern void __stdcall PROFILER_INITIALIZE();
 extern void __stdcall PROFILER_SHUTDOWN();
+extern void __stdcall PROFILER_FILE_INITIALIZE(int Mode, char *File);
 #define PROFILER_DEFINE_EVENT(g,e) ePROFILER_EVENT_ENUM_ ## g ## e,
 enum ProfilerEventEnum {
 	#include "profilerEvents.h"	
@@ -50,6 +51,7 @@ enum ProfilerEventEnum {
 #define PROFILER_START(g,e) _PROFILER_START(ePROFILER_EVENT_ENUM_ ## g ## e);
 #define PROFILER_STOP(g,e)  _PROFILER_STOP(ePROFILER_EVENT_ENUM_ ## g ## e);
 #else
+#define PROFILER_FILE_INITIALIZE(g,e)
 #define PROFILER_INITIALIZE()
 #define PROFILER_SHUTDOWN()
 #define PROFILER_START(g,e)
