@@ -1,6 +1,45 @@
 # RTGS
 The current release verion is 0.9 (beta preview).
 
+### Windows
+```
+SCHEDULER.EXE [options] -K <Kernel_file.txt> -RT <Release_Time_file.txt> -M <Option> 
+```
+### Linux
+```
+./SCHEDULER [options] -K <Kernel_file.txt> -RT <Release_Time_file.txt> -M <Option> 
+```
+
+## Scheduler [options] Supported
+#### -h/-help Show full help
+
+#### The Kernel File is the list of Kernels to be scheduled:
+```
+    Kernel Number
+    Processors Needed
+    Execution Time
+    Deadline
+    Lastest Time Schedulable on the GPU
+```
+
+#### The Release Time File has the list of release times of the kernels:
+```
+    0 - No Kernel Released
+    1 - One Kernel Released at the time marked by location
+    2 - Two Kernel Released at the time marked by location
+    N - Extended in the next release
+```
+
+#### The Modes Supported:
+```
+    1 - Simple GPU Scheduler
+    2 - As Early As Possible mode->AEAP
+    3 - AEAP with As Late As Possible mode->AEAP/ALAP
+    4 - AEAP/ALAP Bin Packer mode->AEAP/ALAP Pack
+    5 - AEAP/ALAP BP with APLAP improver mode->AEAP/ALAP BP Improve
+    N - Extended in the next release
+```
+
 ## RTGS USER GUIDE
 
 ### DESCRIPTION
