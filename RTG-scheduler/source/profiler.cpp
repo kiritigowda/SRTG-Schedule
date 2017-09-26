@@ -162,16 +162,16 @@ extern "C" void dump_profile_log()
 			nidlist++;
 		}
 	}
-	int max_time = 10 + (int)((float)(profiler_clock[profiler_count - 1] - profiler_clock[0])*1000.0f / freq);
+	int max_time = 10 + (int)((float)(profiler_clock[profiler_count - 1] - profiler_clock[0])*1000000.0f / freq);
 	for (int k = 0; k <= max_time; k += 20) {
 		int barx = xstart + (int)(k * 10);
-		fprintf(fh, "    d = document.createElement('div'); d.title = '%d ms'; d.className='time0'; d.style.backgroundColor='#FFFFFF'; d.style.top='%dpx'; d.style.left='%dpx'; d.style.width='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
+		fprintf(fh, "    d = document.createElement('div'); d.title = '%d us'; d.className='time0'; d.style.backgroundColor='#FFFFFF'; d.style.top='%dpx'; d.style.left='%dpx'; d.style.width='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
 			k, 40, barx - 1, 1);
-		fprintf(fh, "    d = document.createElement('div'); e = document.createTextNode('%3dms'); d.appendChild(e); d.className='time1'; d.style.backgroundColor='#FFFFFF'; d.style.top='%dpx'; d.style.left='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
+		fprintf(fh, "    d = document.createElement('div'); e = document.createTextNode('%3dus'); d.appendChild(e); d.className='time1'; d.style.backgroundColor='#FFFFFF'; d.style.top='%dpx'; d.style.left='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
 			k, 50, barx + 2);
 	}
 	for (int k = 0; k < profiler_count; k++) {
-		float fclock = (float)(profiler_clock[k] - profiler_clock[0])*1000.0f / freq;
+		float fclock = (float)(profiler_clock[k] - profiler_clock[0])*1000000.0f / freq;
 		int e = profiler_data[k] >> 2;
 		int t = profiler_data[k] & 3;
 		if (t == 0) {
@@ -182,7 +182,7 @@ extern "C" void dump_profile_log()
 					sprintf(data, " DATA[%d,%d]", u.b[0], u.b[1]);
 				}
 				if ((profiler_data[k] ^ profiler_data[j]) == 1) {
-					float fclockj = (float)(profiler_clock[j] - profiler_clock[0])*1000.0f / freq;
+					float fclockj = (float)(profiler_clock[j] - profiler_clock[0])*1000000.0f / freq;
 					float start = fclock, duration = fclockj - fclock; int id = e; const char * name = ProfilerEventName[e];
 					int barx = xstart + (int)(start * 10);
 					int barw = (int)(duration * 10);
