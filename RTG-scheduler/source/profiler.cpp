@@ -163,7 +163,7 @@ extern "C" void dump_profile_log()
 		}
 	}
 	int max_time = 10 + (int)((float)(profiler_clock[profiler_count - 1] - profiler_clock[0])*1000000.0f / freq);
-	for (int k = 0; k <= max_time; k += 20) {
+	for (int k = 0; k <= max_time; k += 10) {
 		int barx = xstart + (int)(k * 10);
 		fprintf(fh, "    d = document.createElement('div'); d.title = '%d us'; d.className='time0'; d.style.backgroundColor='#FFFFFF'; d.style.top='%dpx'; d.style.left='%dpx'; d.style.width='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
 			k, 40, barx - 1, 1);
@@ -191,7 +191,7 @@ extern "C" void dump_profile_log()
 						fprintf(fh, "    d = document.createElement('div'); d.title = '%s'; d.className='time1'; d.style.top='%dpx'; d.style.left='%dpx'; d.style.width='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
 							name, idlist[id][1], idlist[id][0] + 3, barx - idlist[id][0] - 6);
 					}
-					fprintf(fh, "    d = document.createElement('div'); d.title = '%s %5.3fms @%5.3fms%s'; d.className='time0'; d.style.backgroundColor='%s'; d.style.top='%dpx'; d.style.left='%dpx'; d.style.width='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
+					fprintf(fh, "    d = document.createElement('div'); d.title = '%s %5.3fus @%5.3fus%s'; d.className='time0'; d.style.backgroundColor='%s'; d.style.top='%dpx'; d.style.left='%dpx'; d.style.width='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
 						name, duration, start, data, color, idlist[id][1], barx, barw);
 					if (idlist[id][0] < (barx + barw)) {
 						idlist[id][0] = (barx + barw);
