@@ -10,16 +10,21 @@
 /* The Function is for reading the GPU Compatilble Kernel Values */
 int get_kernel_information(kernelInfo *kernelInfoList, const char *kernelFilename)
 {
+	PROFILER_START(SRTG, get_kernel_information)
 	char string[FILE_MAX_KERNELS];
 	char num_processor[10], execution_time[10], deadline[10], latest_schedulable[10], KERNEL[10];
 	int kernel_ID, num_kernels = 0;
 
 	FILE * fp;
-    fp = fopen(kernelFilename, "r");		// read mode
+    fopen_s(&fp,kernelFilename, "r");		// read mode
 	if (fp == NULL) {
-		printf("ERROR::get_kernel_information - error while opening the file.\n");
+		printf("ERROR::get_kernel_information - error while opening the file -- %s\n", kernelFilename);
 		return RTGS_FAILURE;
 	}
+
+#if DEBUG_INFO
+	printf("Kernel Info File -- %s\n", kernelFilename);
+#endif
 
 	while (fgets(string, FILE_MAX_KERNELS, fp) != NULL)
 	{
@@ -50,7 +55,7 @@ int get_kernel_information(kernelInfo *kernelInfoList, const char *kernelFilenam
 		}
 	}
 	fclose(fp);
-
+	PROFILER_STOP(SRTG, get_kernel_information)
 	return num_kernels;
 }
 
@@ -58,15 +63,20 @@ int get_kernel_information(kernelInfo *kernelInfoList, const char *kernelFilenam
 /* The Function is to read the time frames in which these Kernels are released */
 int get_kernel_release_times(const char *releaseTimeFilename)
 {
+	PROFILER_START(SRTG, get_kernel_release_times)
 	char string[FILE_MAX_KERNELS];
 	int present_time = 0;
 
 	FILE * fp;
-    fp = fopen(releaseTimeFilename, "r");		// read mode
+    fopen_s(&fp,releaseTimeFilename, "r");		// read mode
 	if (fp == NULL) {
-		printf("ERROR::get_kernel_release_times - error while opening the file.\n");
+		printf("ERROR::get_kernel_release_times - error while opening the file -- %s\n", releaseTimeFilename);
 		return RTGS_FAILURE;
 	}
+
+#if DEBUG_INFO
+	printf("Release Times Info File -- %s\n", releaseTimeFilename);
+#endif
 
 	while (fgets(string, 2, fp) != NULL)
 	{
@@ -80,7 +90,7 @@ int get_kernel_release_times(const char *releaseTimeFilename)
 	}
 	fclose(fp);
 	int MaxRunTime = present_time;
-
+	PROFILER_STOP(SRTG, get_kernel_release_times)
 	return MaxRunTime;
 }
 

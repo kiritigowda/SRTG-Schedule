@@ -15,7 +15,7 @@ int AEAP_advanced
 	scheduledNode **kernel_queue_list
 )
 {
-
+	PROFILER_START(SRTG, AEAP_advanced)
 #if DEBUG_MESSAGES
 	printf("AEAP_advanced: Kernel->%d is verified for ALAP advanced scheduling\n", kernel_number);
 #endif
@@ -34,6 +34,7 @@ int AEAP_advanced
 			{
 				if ((temp->processor_release_time + kernel_info_list[kernel_number].execution_time) > kernel_info_list[kernel_number].deadline)
 				{
+					PROFILER_STOP(SRTG, AEAP_advanced)
 					return processors_available;
 				}
 				else if (temp->processor_release_time <= GLOBAL_ALAP_LIST->data)
@@ -68,6 +69,7 @@ int AEAP_advanced
 							printf("AEAP Advanced: The Kernel:%d Cannot be scheduled Condition 1 & 2 Fail\n", kernel_number);
 							printf("AEAP Advanced: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
 #endif
+							PROFILER_STOP(SRTG, AEAP_advanced)
 							return processors_available;
 						}
 						else if (Pro >= kernel_info_list[kernel_number].processor_req)
@@ -87,6 +89,7 @@ int AEAP_advanced
 								schedule_method, kernel_number, processor_alloc_list);
 							Kernel_queue_handler(processorReleased, kernel_release_time, presentTime,
 								schedule_method, kernel_number, kernel_queue_list);
+							PROFILER_STOP(SRTG, AEAP_advanced)
 							return processors_available;
 						}
 						t1 = t1->next;
@@ -115,6 +118,7 @@ int AEAP_advanced
 						schedule_method, kernel_number, processor_alloc_list);
 					Kernel_queue_handler(processorReleased, kernel_release_time, presentTime,
 						schedule_method, kernel_number, kernel_queue_list);
+					PROFILER_STOP(SRTG, AEAP_advanced)
 					return processors_available;
 				}
 				else if (GLOBAL_ALAP_LIST->processors_allocated < kernel_info_list[kernel_number].processor_req) 
@@ -122,6 +126,7 @@ int AEAP_advanced
 					while (temp != NULL) {
 						if ((temp->processor_release_time + kernel_info_list[kernel_number].execution_time) > kernel_info_list[kernel_number].deadline)
 						{
+							PROFILER_STOP(SRTG, AEAP_advanced)
 							return processors_available;
 						}
 						else if (temp->processor_release_time <= GLOBAL_ALAP_LIST->processor_release_time)
@@ -167,6 +172,7 @@ int AEAP_advanced
 									printf("AEAP Advanced: The Kernel:%d Cannot be scheduled Condition 1 & 2 Fail\n", kernel_number);
 									printf("AEAP Advanced: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
 #endif
+									PROFILER_STOP(SRTG, AEAP_advanced)
 									return processors_available;
 								}
 								else if (Pro >= kernel_info_list[kernel_number].processor_req) 
@@ -188,6 +194,7 @@ int AEAP_advanced
 										schedule_method, kernel_number, processor_alloc_list);
 									Kernel_queue_handler(processorReleased, kernel_release_time, presentTime,
 										schedule_method, kernel_number, kernel_queue_list);
+									PROFILER_STOP(SRTG, AEAP_advanced)
 									return processors_available;
 								}
 								t1 = t1->next;
@@ -203,6 +210,7 @@ int AEAP_advanced
 				printf("AEAP Advanced: The Kernel:%d Cannot be scheduled Condition 1 & 2 Fail\n", kernel_number);
 				printf("AEAP Advanced: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
 #endif
+				PROFILER_STOP(SRTG, AEAP_advanced)
 				return processors_available;
 			}
 		} //End of else if
@@ -220,6 +228,7 @@ int AEAP_advanced
 				{
 					if ((temp->processor_release_time + kernel_info_list[kernel_number].execution_time) > kernel_info_list[kernel_number].deadline) 
 					{
+						PROFILER_STOP(SRTG, AEAP_advanced)
 						return processors_available;
 					}
 					else if (temp->processor_release_time <= GLOBAL_ALAP_LIST->data) 
@@ -255,6 +264,7 @@ int AEAP_advanced
 								printf("AEAP Advanced: The Kernel:%d Cannot be scheduled Condition 1 & 2 Fail\n", kernel_number);
 								printf("AEAP Advanced: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
 #endif
+								PROFILER_STOP(SRTG, AEAP_advanced)
 								return processors_available;
 							}
 							else if (Pro >= kernel_info_list[kernel_number].processor_req)
@@ -275,6 +285,7 @@ int AEAP_advanced
 									schedule_method, kernel_number, processor_alloc_list);
 								Kernel_queue_handler(processorReleased, kernel_release_time, presentTime,
 									schedule_method, kernel_number, kernel_queue_list);
+								PROFILER_STOP(SRTG, AEAP_advanced)
 								return processors_available;
 							}
 							t1 = t1->next;
@@ -290,6 +301,7 @@ int AEAP_advanced
 				printf("AEAP Advanced: The Kernel:%d Cannot be scheduled Condition 1 & 2 Fail\n", kernel_number);
 				printf("AEAP Advanced: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
 #endif
+				PROFILER_STOP(SRTG, AEAP_advanced)
 				return processors_available;
 			}
 		} //End of if
@@ -406,10 +418,12 @@ int AEAP_advanced
 				printf("AEAP Advanced: The Kernel:%d Cannot be scheduled Condition 1 & 2 Fail\n", kernel_number);
 				printf("AEAP Advanced: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
 #endif
+				PROFILER_STOP(SRTG, AEAP_advanced)
 				return processors_available;
 			}
 		} //End of else if
 	} //End of GLOBAL_ALAP_LIST->next != NULL
+	PROFILER_STOP(SRTG, AEAP_advanced)
 	return processors_available;
 }
 

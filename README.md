@@ -1,4 +1,4 @@
-# Research Work
+# Real Time Scheduler for Graphic Processing Unit
 
 ## Dynamic schedule management framework for soft-real-time jobs on GPU based architectures
 

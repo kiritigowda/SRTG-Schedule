@@ -20,15 +20,43 @@
 #include <assert.h>
 #include <stdint.h>
 
-#define DEBUG_INFO 1				// debug mode information
-#define DEBUG_MESSAGES 0			// detailed debug messages
+#define DEBUG_INFO 1                            // debug mode information
+#define DEBUG_MESSAGES 0                        // detailed debug messages
 
-#define MAX_GPU_PROCESSOR 14		// total streaming multi-processors available on the GPU
-#define MAX_KERNELS 100				// max Kernels needed to be scheduled
-#define PROCESSOR_LIMIT 10			// ALAP Processor Limit
-#define MAX_RUN_TIME 1000			// MAX RUN TIME TO VERIFY -- TBD
+#define MAX_GPU_PROCESSOR 14                    // total streaming multi-processors available on the GPU
+#define MAX_KERNELS 100                         // max Kernels needed to be scheduled
+#define PROCESSOR_LIMIT 10                      // ALAP Processor Limit
+#define MAX_RUN_TIME 1000                       // MAX RUN TIME TO VERIFY -- TBD
 
-#define MULTIPLE_KERNELS_SCHEDULED -99 // multiple kerenls scheduled at a given time
+#define MULTIPLE_KERNELS_SCHEDULED -99          // multiple kerenls scheduled at a given time
+
+// PROFILER_MODE:
+//   0 - no profiling
+//   1 - default profiling
+#define PROFILER_MODE 0
+#if PROFILER_MODE
+#ifndef _WIN32
+#include <inttypes.h>
+#define __stdcall
+#define __int64 int64_t
+#endif
+extern void __stdcall PROFILER_INITIALIZE();
+extern void __stdcall PROFILER_SHUTDOWN();
+extern void __stdcall PROFILER_FILE_INITIALIZE(int Mode, char *File);
+#define PROFILER_DEFINE_EVENT(g,e) ePROFILER_EVENT_ENUM_ ## g ## e,
+enum ProfilerEventEnum {
+	#include "profilerEvents.h"	
+	PROFILER_NUM_EVENTS
+};
+#define PROFILER_START(g,e) _PROFILER_START(ePROFILER_EVENT_ENUM_ ## g ## e);
+#define PROFILER_STOP(g,e)  _PROFILER_STOP(ePROFILER_EVENT_ENUM_ ## g ## e);
+#else
+#define PROFILER_FILE_INITIALIZE(g,e)
+#define PROFILER_INITIALIZE()
+#define PROFILER_SHUTDOWN()
+#define PROFILER_START(g,e)
+#define PROFILER_STOP(g,e)
+#endif
 
 /*! \brief A formal status type with known fixed size.
 * \see RTGS_status_e

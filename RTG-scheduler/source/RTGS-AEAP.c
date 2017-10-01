@@ -15,6 +15,7 @@ int AEAP
 	scheduledNode **kernel_queue_list
 ) 
 {
+	PROFILER_START(SRTG, AEAP)
 	int Pro = 0, kernel_release_time = 0;
 	static int given = 0;
 	backup_list *P_Given_list = NULL;
@@ -54,6 +55,7 @@ int AEAP
 				printf("AEAP: The Kernel:%d Cannot be scheduled Condition 1 & 2 Fail\n", kernel_number);
 				printf("AEAP: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
 #endif
+				PROFILER_STOP(SRTG, AEAP)
 				return processors_available;
 			}
 			else 
@@ -77,6 +79,7 @@ int AEAP
 						schedule_method, kernel_number, processor_alloc_list);
 					Kernel_queue_handler(processorReleased, kernel_release_time, presentTime, 
 						schedule_method, kernel_number, kernel_queue_list);
+					PROFILER_STOP(SRTG, AEAP)
 					return processors_available;
 				}
 				else if (Pro < kernel_info_list[kernel_number].processor_req) 
@@ -120,6 +123,7 @@ int AEAP
 				printf("AEAP: The Kernel:%d Cannot be scheduled Condition 1 & 2 Fail\n", kernel_number);
 				printf("AEAP: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
 #endif
+				PROFILER_STOP(SRTG, AEAP)
 				return processors_available;
 			}
 			else
@@ -146,7 +150,7 @@ int AEAP
 							schedule_method, kernel_number, processor_alloc_list);
 						Kernel_queue_handler(processorReleased, kernel_release_time, presentTime, 
 							schedule_method, kernel_number, kernel_queue_list);
-
+						PROFILER_STOP(SRTG, AEAP)
 						return processors_available;
 					}
 					else if (kernel_info_list[kernel_number].processor_req > Pl && processor_release_time > GLOBAL_ALAP_LIST->data)
@@ -198,6 +202,7 @@ int AEAP
 							schedule_method, kernel_number, processor_alloc_list);
 						Kernel_queue_handler(processorReleased, kernel_release_time, presentTime, 
 							schedule_method, kernel_number, kernel_queue_list);
+						PROFILER_STOP(SRTG, AEAP)
 						return processors_available;
 					}
 					else if ((kernel_info_list[kernel_number].processor_req + given) <= Pl	&& (temp->next != NULL)) 
@@ -215,6 +220,7 @@ int AEAP
 #endif
 							Queue_kernel_execution(processorReleased, processor_release_time, presentTime, schedule_method, kernel_number, processor_alloc_list);
 							Kernel_queue_handler(processorReleased, kernel_release_time, presentTime, schedule_method, kernel_number, kernel_queue_list);
+							PROFILER_STOP(SRTG, AEAP)
 							return processors_available;
 						}
 						else 
@@ -339,5 +345,6 @@ int AEAP
 		printf("AEAP:: Backup processors reloaded-->\n");
 #endif
 	}
+	PROFILER_STOP(SRTG, AEAP)
 	return processors_available;
 }

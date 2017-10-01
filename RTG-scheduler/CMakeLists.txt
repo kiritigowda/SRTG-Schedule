@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.0)
 # project definition
 project(RTG-scheduler)
 
-SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY  ${CMAKE_BINARY_DIR}/bin CACHE PATH "Directory where .exe and .dll files are dumped." FORCE)
+SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY  ${CMAKE_BINARY_DIR}/bin CACHE PATH "Directory where RTG-scheduler executable is generated" FORCE)
  
 # add the include directory for the preprocessor
 include_directories(include)
@@ -29,10 +29,17 @@ source/RTGS-ALAP_improve.c
 source/RTG-scheduler.c 
 source/RTGS-dispatch.c 
 source/RTGS-entry.c
+source/profiler.cpp
 )
 
 # executable target and the source files
 add_executable(RTG-scheduler ${SOURCES})
+
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+
+else()
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse4.2 -std=c++11")
+endif()
 
 # Bring in default test data
 FILE(GLOB RTG_TEST_DATA "testData/*.txt")
