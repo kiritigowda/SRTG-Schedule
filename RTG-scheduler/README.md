@@ -1,17 +1,17 @@
 # RTGS
-The current release verion is 0.9 (beta preview).
+The current release verion is 0.9.6 (beta preview).
 
 ### Windows
 ```
-SCHEDULER.EXE [options] -K <Kernel_file.txt> -RT <Release_Time_file.txt> -M <Option> 
+RTG-scheduler [options] --kernels <Kernel_file.txt> --releaseTimes <Release_Time_file.txt> --mode <Option> 
 ```
 ### Linux
 ```
-./SCHEDULER [options] -K <Kernel_file.txt> -RT <Release_Time_file.txt> -M <Option> 
+./RTG-scheduler [options] --kernels <Kernel_file.txt> --releaseTimes <Release_Time_file.txt> --mode <Option> 
 ```
 
 ## Scheduler [options] Supported
-#### -h/-help Show full help
+#### --h/--help Show full help
 
 #### The Kernel File is the list of Kernels to be scheduled:
 ```
