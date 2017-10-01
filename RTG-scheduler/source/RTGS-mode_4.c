@@ -1247,8 +1247,10 @@ int RTGS_mode_4(char *kernelFilename, char *releaseTimeFilename) {
 	int processorsAvailable = MAX_GPU_PROCESSOR;
 	int kernel_number = 0;
 
-	int kernelMax = get_kernel_information(kernel_info_list, kernelFilename);			// Read Kernel.TXT
-	int runTimeMax = get_kernel_release_times(releaseTimeFilename);						// Read Release_time.TXT
+	int kernelMax = get_kernel_information(kernel_info_list, kernelFilename);// Read Kernel.TXT
+	if (kernelMax <= RTGS_FAILURE) { return  RTGS_FAILURE; }
+	int runTimeMax = get_kernel_release_times(releaseTimeFilename);// Read Release_time.TXT
+	if (runTimeMax <= RTGS_FAILURE) { return  RTGS_FAILURE; }
 
 #if DEBUG_MESSAGES
 	printf("\n**************** The GPU Scheduler will Schedule %d Kernels ****************\n", kernelMax);
