@@ -21,7 +21,7 @@
 #include <stdint.h>
 
 #define DEBUG_INFO 1                            // debug mode information
-#define DEBUG_MESSAGES 1                        // detailed debug messages
+#define DEBUG_MESSAGES 0                        // detailed debug messages
 
 #define MAX_GPU_PROCESSOR 14                    // total streaming multi-processors available on the GPU
 #define MAX_KERNELS 100                         // max Kernels needed to be scheduled
@@ -33,7 +33,7 @@
 // PROFILER_MODE:
 //   0 - no profiling
 //   1 - default profiling
-#define PROFILER_MODE 1
+#define PROFILER_MODE 0
 #if PROFILER_MODE
 #ifndef _WIN32
 #include <inttypes.h>
