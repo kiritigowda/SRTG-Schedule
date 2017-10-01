@@ -9,6 +9,7 @@ Scheduler Main - Mode Selector
 ***********************************************************************************************************/
 int scheduler_main(char *kernelFilename, char *releaseTimeFilename, int schedulerMode)
 {
+	PROFILER_START(SRTG, scheduler_main)
 	RTGS_Status status = RTGS_SUCCESS;
 	switch (schedulerMode) {
 	case 1:
@@ -33,6 +34,6 @@ int scheduler_main(char *kernelFilename, char *releaseTimeFilename, int schedule
 		status = RTGS_mode_5(kernelFilename, releaseTimeFilename);
 		break;
 	}
-
+	PROFILER_STOP(SRTG, scheduler_main)
 	return status;
 }

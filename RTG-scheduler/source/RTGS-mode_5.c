@@ -10,6 +10,7 @@ RTGS Mode 5 - - AEAP/ALAP BP with APLAP improver mode->AEAP/ALAP BP Improve
 ***********************************************************************************************************/
 int  RTGS_mode_5(char *kernelFilename, char *releaseTimeFilename)
 {
+	PROFILER_START(SRTG, RTGS_mode_5)
 	kernelInfo kernel_info_list[MAX_KERNELS];
 	scheduledNode *processor_alloc_list = NULL;
 	scheduledNode *kernel_queue_list = NULL;		//Kernel queued for future executions
@@ -22,8 +23,10 @@ int  RTGS_mode_5(char *kernelFilename, char *releaseTimeFilename)
 	int processorsAvailable = MAX_GPU_PROCESSOR;
 	int kernel_number = 0;
 
-	int kernelMax = get_kernel_information(kernel_info_list, kernelFilename);			// Read Kernel.TXT
-	int runTimeMax = get_kernel_release_times(releaseTimeFilename);						// Read Release_time.TXT
+	int kernelMax = get_kernel_information(kernel_info_list, kernelFilename);// Read Kernel.TXT
+	if (kernelMax <= RTGS_FAILURE) { return  RTGS_FAILURE; }
+	int runTimeMax = get_kernel_release_times(releaseTimeFilename);// Read Release_time.TXT
+	if (runTimeMax <= RTGS_FAILURE) { return  RTGS_FAILURE; }
 
 #if DEBUG_MESSAGES
 	printf("\n**************** The GPU Scheduler will Schedule %d Kernels ****************\n", kernelMax);
@@ -70,7 +73,6 @@ int  RTGS_mode_5(char *kernelFilename, char *releaseTimeFilename)
 		else if (GLOBAL_RELEASE_TIME[present_time] > 2) { return RTGS_ERROR_NOT_IMPLEMENTED; }
 	}
 
-	processor_alloc_list = clean_node(processor_alloc_list);
 	if (runTimeMax != 0) {
 #if DEBUG_INFO
 		printf("\n******* Scheduler Mode 5 *******\n");
@@ -90,6 +92,6 @@ int  RTGS_mode_5(char *kernelFilename, char *releaseTimeFilename)
 #endif
 	processor_alloc_list = clean_node(processor_alloc_list);
 	GLOBAL_ALAP_LIST = clean_list(GLOBAL_ALAP_LIST);
-
+	PROFILER_STOP(SRTG, RTGS_mode_5)
 	return RTGS_SUCCESS;
 }

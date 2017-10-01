@@ -15,6 +15,7 @@ int ALAP
 	scheduledNode **kernel_queue_list
 ) 
 {
+	PROFILER_START(SRTG, ALAP)
 	int Pro = 0, kernel_release_time, processor_release_time = 0, processors_allocated = 0;
 	backup_list *P_Given_list = NULL;
 	processors_allocated = kernel_info_list[kernel_number].processor_req;
@@ -35,7 +36,7 @@ int ALAP
 			processors_allocated, kernel_number);
 		Kernel_queue_handler(processorReleased, kernel_release_time, processor_release_time, 
 			schedule_method, kernel_number, kernel_queue_list);
-
+		PROFILER_STOP(SRTG, ALAP)
 		return processors_available;
 	}
 	P_Given_list = insert_ALAP_list(P_Given_list, kernel_release_time, processor_release_time,
@@ -67,6 +68,7 @@ int ALAP
 			printf("ALAP: The Kernel:%d Cannot be scheduled\n", kernel_number);
 			printf("ALAP: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
 #endif
+			PROFILER_STOP(SRTG, ALAP)
 			return processors_available;
 		}
 		else 
@@ -87,7 +89,7 @@ int ALAP
 					processors_allocated, kernel_number);
 				Kernel_queue_handler(processorReleased, kernel_release_time, processor_release_time, 
 					schedule_method, kernel_number, kernel_queue_list);
-
+				PROFILER_STOP(SRTG, ALAP)
 				return processors_available;
 			}
 			else if (Pro < kernel_info_list[kernel_number].processor_req) 
@@ -120,5 +122,6 @@ int ALAP
 		printf("ALAP: The Kernel:%d Cannot be scheduled AEAP", kernel_number);
 #endif
 	}
+	PROFILER_STOP(SRTG, ALAP)
 	return processors_available;
 }

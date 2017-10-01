@@ -4,9 +4,10 @@
 */
 
 #include"RTGS.h"
+#include"RTGS_Global.h"
 
 // version
-#define RTGS_VERSION "0.9.5"
+#define RTGS_VERSION "0.9.6"
 
 /**********************************************************************************************************
 usage information
@@ -14,17 +15,17 @@ usage information
 static void show_usage()
 {
 	printf("\n*********************************************************************************************************\n");
-	printf("\n				Real Time GPU Scheduler -> Scheduler.EXE-%s\n", RTGS_VERSION);
+	printf("\n				Real Time GPU Scheduler -> RTG-scheduler-%s\n", RTGS_VERSION);
 	printf("\n*********************************************************************************************************\n");
 	printf("\n");
 	printf("Usage:\n\n");
 	printf("Windows:\n");
-	printf("SCHEDULER.EXE [options] -K <Kernel_file.txt> -RT <Release_Time_file.txt> -M <Option>\n");
+	printf("RTG-scheduler.exe [options] --kernels <Kernel_file.txt> --releaseTimes <Release_Time_file.txt> --mode <Option>\n");
 	printf("Linux:\n");
-	printf("./SCHEDULER [options] -K <Kernel_file.txt> -RT <Release_Time_file.txt> -M <Option>\n");
+	printf("./RTG-scheduler [options] --kernels <Kernel_file.txt> --releaseTimes <Release_Time_file.txt> --mode <Option>\n");
 	printf("\n");
 	printf("\n\nScheduler [options] Supported\n\n");
-	printf("  -h/-help\n");
+	printf("  --h/--help\n");
 	printf("   Show full help.\n");
 	printf("\n");
 	printf("The Kernel File is the list of Kernels to be scheduled.\n");
@@ -63,15 +64,19 @@ int main(int argc, char * argv[])
 	char *kernelFilename = NULL, *releaseTimeFilename = NULL;
 	int schedulerMode = 0;
 	int error = 0;
+	
+	// global vaiable intitialize 
+	GLOBAL_RTGS_MODE = -1;
+	GLOBAL_KERNEL_FILE_NAME = NULL;
 
 	for (int arg = 1; arg < argc; arg++)
 	{
-        if (!strcasecmp(argv[arg], "-h") || !strcasecmp(argv[arg], "-help"))
+        if (!strcasecmp(argv[arg], "--h") || !strcasecmp(argv[arg], "--help"))
 		{
 			show_usage();
 			exit(status);
 		}
-        else if (!strcasecmp(argv[arg], "Kernels") || !strcasecmp(argv[arg], "-K"))
+        else if (!strcasecmp(argv[arg], "--kernels") || !strcasecmp(argv[arg], "--K"))
 		{
 			if ((arg + 1) == argc)
 			{
@@ -84,7 +89,7 @@ int main(int argc, char * argv[])
 			kernelFilename = (argv[arg]);
 			error++;
 		}
-        else if (!strcasecmp(argv[arg], "ReleaseTime") || !strcasecmp(argv[arg], "-RT"))
+        else if (!strcasecmp(argv[arg], "--releaseTimes") || !strcasecmp(argv[arg], "--RT"))
 		{
 			if ((arg + 1) == argc)
 			{
@@ -97,7 +102,7 @@ int main(int argc, char * argv[])
 			releaseTimeFilename = (argv[arg]);
 			error++;
 		}
-        else if (!strcasecmp(argv[arg], "Mode") || !strcasecmp(argv[arg], "-M"))
+        else if (!strcasecmp(argv[arg], "--mode") || !strcasecmp(argv[arg], "--M"))
 		{
 			if ((arg + 1) == argc)
 			{
@@ -120,10 +125,20 @@ int main(int argc, char * argv[])
 		exit(status);
 	}
 
+	// profiler  - output name initialize, profiler initialize and shutdown
+	GLOBAL_RTGS_MODE = schedulerMode;
+	GLOBAL_KERNEL_FILE_NAME = kernelFilename;
+	PROFILER_FILE_INITIALIZE(schedulerMode, kernelFilename);
+	PROFILER_INITIALIZE();
+	PROFILER_START(SRTG, RTG_Schedule)
+
 	int64_t start_t = RTGS_GetClockCounter();
 	status = scheduler_main(kernelFilename, releaseTimeFilename, schedulerMode); // scheduler call
 	int64_t end_t = RTGS_GetClockCounter();
 
+	PROFILER_STOP(SRTG, RTG_Schedule)
+	PROFILER_SHUTDOWN();
+	
 	if (status != RTGS_SUCCESS) {
 		printf("The Scheduler Failed with error code ->%d\n", status);
 	}
