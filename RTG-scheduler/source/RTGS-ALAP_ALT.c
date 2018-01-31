@@ -16,8 +16,8 @@ scheduledNode **kernel_queue_list
 ) 
 {
 	PROFILER_START(SRTG, ALAP_advanced)
-#if DEBUG_MESSAGES
-	printf("ALAP Advanced::Kernel->%d is verified for AEAP advanced scheduling\n", kernel_number);
+#if DETAILED_DEBUG_MESSAGES
+	printf("As Late As Possible Advanced (ALAP-A) -- Job-%d is verified for AEAP advanced scheduling\n", kernel_number);
 #endif
 	int Pro = 0, kernel_release_time;
 	scheduledNode* temp = *processor_alloc_list;
@@ -35,9 +35,9 @@ scheduledNode **kernel_queue_list
 			int processor_release_time = kernel_info_list[kernel_number].deadline;
 			int schedule_method = RTGS_SCHEDULE_METHOD_ALAP;
 			GLOBAL_GPU_KERNELS++;
-#if DEBUG_MESSAGES
-			printf("ALAP Advanced: Kernel:%d scheduled\n", kernel_number);
-			printf("ALAP Advanced: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
+#if DETAILED_DEBUG_MESSAGES
+			printf("As Late As Possible Advanced (ALAP-A) -- Job-%d scheduled\n", kernel_number);
+			printf("ALAP-A -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
 #endif
 			GLOBAL_ALAP_LIST = insert_ALAP_list(GLOBAL_ALAP_LIST, kernel_release_time, processor_release_time, 
 				processorReleased, kernel_number);
@@ -53,9 +53,9 @@ scheduledNode **kernel_queue_list
 			int processor_release_time = kernel_info_list[kernel_number].deadline;
 			int schedule_method = RTGS_SCHEDULE_METHOD_ALAP;
 			GLOBAL_GPU_KERNELS++;
-#if DEBUG_MESSAGES
-			printf("ALAP Advanced: Kernel:%d scheduled\n", kernel_number);
-			printf("ALAP Advanced: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
+#if DETAILED_DEBUG_MESSAGES
+			printf("As Late As Possible Advanced (ALAP-A) -- Job-%d scheduled\n", kernel_number);
+			printf("ALAP-A -- Jos ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
 #endif
 			GLOBAL_ALAP_LIST = insert_ALAP_list(GLOBAL_ALAP_LIST, kernel_release_time, processor_release_time, processorReleased, kernel_number);
 			Kernel_queue_handler(processorReleased, kernel_release_time, processor_release_time, schedule_method, kernel_number, kernel_queue_list);
@@ -69,9 +69,9 @@ scheduledNode **kernel_queue_list
 				if ((temp->processor_release_time + kernel_info_list[kernel_number].execution_time) > kernel_info_list[kernel_number].deadline)
 				{
 					GLOBAL_CPU_KERNELS++;
-#if DEBUG_MESSAGES
-					printf("ALAP Advanced: The Kernel:%d Cannot be scheduled\n", kernel_number);
-					printf("ALAP Advanced: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
+#if DETAILED_DEBUG_MESSAGES
+					printf("As Late As Possible Advanced (ALAP-A) -- Job-%d cannot be scheduled\n", kernel_number);
+					printf("ALAP-A -- Jobs REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
 #endif
 					PROFILER_STOP(SRTG, ALAP_advanced)
 					return processors_available;
@@ -89,9 +89,9 @@ scheduledNode **kernel_queue_list
 						if ((t1->processor_release_time + kernel_info_list[kernel_number].execution_time) > kernel_info_list[kernel_number].deadline) 
 						{
 							GLOBAL_CPU_KERNELS++;
-#if DEBUG_MESSAGES
-							printf("ALAP Advanced: The Kernel:%d Cannot be scheduled\n", kernel_number);
-							printf("ALAP Advanced: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
+#if DETAILED_DEBUG_MESSAGES
+							printf("As Late As Possible Advanced (ALAP-A) -- Job-%d cannot be scheduled\n", kernel_number);
+							printf("ALAP-A -- Jobs REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
 #endif
 							PROFILER_STOP(SRTG, ALAP_advanced)
 							return processors_available;
@@ -103,9 +103,9 @@ scheduledNode **kernel_queue_list
 							int processor_release_time = kernel_info_list[kernel_number].deadline;
 							int schedule_method = RTGS_SCHEDULE_METHOD_ALAP;
 							GLOBAL_GPU_KERNELS++;
-#if DEBUG_MESSAGES
-							printf("ALAP Advanced: Kernel:%d scheduled\n", kernel_number);
-							printf("ALAP Advanced: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
+#if DETAILED_DEBUG_MESSAGES
+							printf("As Late As Possible Advanced (ALAP-A) -- Job-%d scheduled\n", kernel_number);
+							printf("ALAP-A -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
 #endif
 							GLOBAL_ALAP_LIST = insert_ALAP_list(GLOBAL_ALAP_LIST, kernel_release_time, processor_release_time,
 								processorReleased, kernel_number);
@@ -125,9 +125,9 @@ scheduledNode **kernel_queue_list
 	else 
 	{
 		GLOBAL_CPU_KERNELS++;
-#if DEBUG_MESSAGES
-		printf("ALAP Advanced: The Kernel:%d Cannot be scheduled\n", kernel_number);
-		printf("ALAP Advanced: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
+#if DETAILED_DEBUG_MESSAGES
+		printf("As Late As Possible Advanced (ALAP-A) -- Job-%d Cannot be scheduled\n", kernel_number);
+		printf("ALAP-A -- Jobs REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
 #endif
 		PROFILER_STOP(SRTG, ALAP_advanced)
 		return processors_available;

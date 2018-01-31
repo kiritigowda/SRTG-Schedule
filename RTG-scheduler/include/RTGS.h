@@ -21,7 +21,8 @@
 #include <stdint.h>
 
 #define DEBUG_INFO 1                            // debug mode information
-#define DEBUG_MESSAGES 0                        // detailed debug messages
+#define DEBUG_MESSAGES 0                        // debug messages with job schedule info
+#define DETAILED_DEBUG_MESSAGES 0               // debug messages detailed with methods used to schedule
 
 #define MAX_GPU_PROCESSOR 14                    // total streaming multi-processors available on the GPU
 #define MAX_KERNELS 100                         // max Kernels needed to be scheduled

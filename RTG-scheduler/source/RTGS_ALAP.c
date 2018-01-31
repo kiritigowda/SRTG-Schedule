@@ -28,9 +28,9 @@ int ALAP
 		int processorReleased = kernel_info_list[kernel_number].processor_req;
 		int schedule_method = RTGS_SCHEDULE_METHOD_ALAP;
 		GLOBAL_GPU_KERNELS++;
-#if DEBUG_MESSAGES
-		printf("ALAP: Kernel:%d scheduled\n", kernel_number);
-		printf("ALAP: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
+#if DETAILED_DEBUG_MESSAGES
+		printf("As Lata As Possible (ALAP) -- Job-%d scheduled\n", kernel_number);
+		printf("ALAP -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
 #endif
 		GLOBAL_ALAP_LIST = insert_ALAP_list(GLOBAL_ALAP_LIST, kernel_release_time, processor_release_time, 
 			processors_allocated, kernel_number);
@@ -64,9 +64,9 @@ int ALAP
 			}
 			P_Given_list = clean_list(P_Given_list);
 			GLOBAL_CPU_KERNELS++;
-#if DEBUG_MESSAGES
-			printf("ALAP: The Kernel:%d Cannot be scheduled\n", kernel_number);
-			printf("ALAP: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
+#if DETAILED_DEBUG_MESSAGES
+			printf("As Lata As Possible (ALAP) -- Job-%d Cannot be scheduled\n", kernel_number);
+			printf("ALAP -- Jobs REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
 #endif
 			PROFILER_STOP(SRTG, ALAP)
 			return processors_available;
@@ -81,9 +81,9 @@ int ALAP
 				int processorReleased = kernel_info_list[kernel_number].processor_req;
 				int schedule_method = RTGS_SCHEDULE_METHOD_ALAP;
 				GLOBAL_GPU_KERNELS++;
-#if DEBUG_MESSAGES
-				printf("ALAP: Kernel:%d scheduled\n", kernel_number);
-				printf("ALAP: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
+#if DETAILED_DEBUG_MESSAGES
+				printf("As Lata As Possible (ALAP) -- Job-%d scheduled\n", kernel_number);
+				printf("ALAP -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
 #endif
 				GLOBAL_ALAP_LIST = insert_ALAP_list(GLOBAL_ALAP_LIST, kernel_release_time, processor_release_time,
 					processors_allocated, kernel_number);
@@ -118,8 +118,8 @@ int ALAP
 			count++;
 		}
 		P_Given_list = clean_list(P_Given_list);
-#if DEBUG_MESSAGES
-		printf("ALAP: The Kernel:%d Cannot be scheduled AEAP", kernel_number);
+#if DETAILED_DEBUG_MESSAGES
+		printf("As Lata As Possible (ALAP) -- Job-%d Cannot be scheduled AEAP", kernel_number);
 #endif
 	}
 	PROFILER_STOP(SRTG, ALAP)
