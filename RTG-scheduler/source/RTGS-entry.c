@@ -7,7 +7,7 @@
 #include"RTGS_Global.h"
 
 // version
-#define RTGS_VERSION "0.9.6"
+#define RTGS_VERSION "0.9.7"
 
 /**********************************************************************************************************
 usage information
@@ -20,27 +20,27 @@ static void show_usage()
 	printf("\n");
 	printf("Usage:\n\n");
 	printf("Windows:\n");
-	printf("RTG-scheduler.exe [options] --kernels <Kernel_file.txt> --releaseTimes <Release_Time_file.txt> --mode <Option>\n");
+	printf("RTG-scheduler.exe [options] --jobs <jobs_file.txt> --releaseTimes <Release_Time_file.txt> --mode <Option>\n");
 	printf("Linux:\n");
-	printf("./RTG-scheduler [options] --kernels <Kernel_file.txt> --releaseTimes <Release_Time_file.txt> --mode <Option>\n");
+	printf("./RTG-scheduler [options] --jobs <jobs_file.txt> --releaseTimes <Release_Time_file.txt> --mode <Option>\n");
 	printf("\n");
 	printf("\n\nScheduler [options] Supported\n\n");
 	printf("  --h/--help\n");
 	printf("   Show full help.\n");
 	printf("\n");
-	printf("The Kernel File is the list of Kernels to be scheduled.\n");
+	printf("The Jobs file is the list of jobs to be scheduled.\n");
 	printf("The arguments:\n");
-	printf("			Kernel Number\n");
+	printf("			Job Number\n");
 	printf("			Processors Needed\n");
 	printf("			Execution Time\n");
 	printf("			Deadline\n");
 	printf("			Lastest Time Schedulable on the GPU\n");
 	printf("\n");
-	printf("The Release Time File has the list of release times of the kernels:\n");
+	printf("The Release Time File has the list of release times of the Jobs:\n");
 	printf("The arguments:\n");
-	printf("			0 - No Kernel Released\n");
-	printf("			1 - One Kernel Released at the time marked by location\n");
-	printf("			2 - Two Kernel Released at the time marked by location\n");
+	printf("			0 - No Jobs Released\n");
+	printf("			1 - One Job Released at the time marked by location\n");
+	printf("			2 - Two Jobs Released at the time marked by location\n");
 	printf("			N - Extended in the next release\n");
 	printf("\n");
 	printf("The Modes Supported:\n");
@@ -76,11 +76,11 @@ int main(int argc, char * argv[])
 			show_usage();
 			exit(status);
 		}
-        else if (!strcasecmp(argv[arg], "--kernels") || !strcasecmp(argv[arg], "--K"))
+        else if (!strcasecmp(argv[arg], "--jobs") || !strcasecmp(argv[arg], "--J"))
 		{
 			if ((arg + 1) == argc)
 			{
-				printf("\n\nERROR: missing kernel_info_list file name on command-line (see help for details)\n\n\n");
+				printf("\n\nERROR: missing jobs_info_list file name on command-line (see help for details)\n\n\n");
 				show_usage();
 				status = RTGS_ERROR_NOT_SUFFICIENT;
 				exit(status);
