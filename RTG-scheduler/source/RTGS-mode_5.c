@@ -29,7 +29,7 @@ int  RTGS_mode_5(char *kernelFilename, char *releaseTimeFilename)
 	if (runTimeMax <= RTGS_FAILURE) { return  RTGS_FAILURE; }
 
 #if DEBUG_MESSAGES
-	printf("\n**************** The GPU Scheduler will Schedule %d Kernels ****************\n", kernelMax);
+	printf("\n**************** The GPU Scheduler will Schedule %d Jobs ****************\n", kernelMax);
 #endif
 
 	for (int present_time = 0; present_time < runTimeMax; present_time++)
@@ -40,8 +40,8 @@ int  RTGS_mode_5(char *kernelFilename, char *releaseTimeFilename)
 		if (GLOBAL_RELEASE_TIME[present_time] == 1)
 		{
 #if DEBUG_MESSAGES
-			printf("\nRTGS Mode 4:: Total processors Available at time %d = %d\n", present_time, processorsAvailable);
-			printf("RTGS Mode 4:: Kernels:%d Released\n", kernel_number);
+			printf("\nRTGS Mode 5 -- Total Processors Available at time %d = %d\n", present_time, processorsAvailable);
+			printf("RTGS Mode 5 -- Job-%d Released\n", kernel_number);
 #endif
 			// handling the released kernel_info_list by the book-keeper
 			processorsAvailable = Kernel_book_keeper(kernel_info_list, kernel_number, processorsAvailable, present_time,
@@ -53,9 +53,9 @@ int  RTGS_mode_5(char *kernelFilename, char *releaseTimeFilename)
 			int k1 = kernel_number; kernel_number++;
 			int k2 = kernel_number; kernel_number++;
 #if DEBUG_MESSAGES
-			printf("\nRTGS Mode 4:: Total processors Available at time %d = %d\n", present_time, processorsAvailable);
-			printf("RTGS Mode 4:: Kernels:%d Released\n", k1);
-			printf("RTGS Mode 4:: Kernels:%d Released\n", k2);
+			printf("\nRTGS Mode 5 -- Total Processors Available at time %d = %d\n", present_time, processorsAvailable);
+			printf("RTGS Mode 5 -- Job-%d Released\n", k1);
+			printf("RTGS Mode 5 -- Job-%d Released\n", k2);
 #endif
 			if (kernel_info_list[k1].deadline <= kernel_info_list[k2].deadline)
 			{
@@ -77,9 +77,9 @@ int  RTGS_mode_5(char *kernelFilename, char *releaseTimeFilename)
 #if DEBUG_INFO
 		printf("\n******* Scheduler Mode 5 *******\n");
 		printf("Processors Available -- %d\n", processorsAvailable);
-		printf("Total Kernels Scheduled -- %d\n", kernelMax);
-		printf("	GPU Scheduled Kernels -- %d\n", GLOBAL_GPU_KERNELS);
-		printf("	CPU Scheduled Kernels -- %d\n", GLOBAL_CPU_KERNELS);
+		printf("Total Jobs Scheduled -- %d\n", kernelMax);
+		printf("	GPU Scheduled Jobs -- %d\n", GLOBAL_GPU_KERNELS);
+		printf("	CPU Scheduled Jobs -- %d\n", GLOBAL_CPU_KERNELS);
 #endif
 		for (int j = 0; j <= kernelMax; j++) {
 			kernel_info_list[j].processor_req = kernel_info_list[j].deadline = kernel_info_list[j].execution_time = kernel_info_list[j].latest_schedulable_time = 0;

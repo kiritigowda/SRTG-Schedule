@@ -5,6 +5,11 @@ cmake_minimum_required(VERSION 3.0)
 project(RTG-scheduler)
 
 SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY  ${CMAKE_BINARY_DIR}/bin CACHE PATH "Directory where RTG-scheduler executable is generated" FORCE)
+
+# Get rid of warning
+if(POLICY CMP0054)
+	cmake_policy(SET CMP0054 OLD)
+endif()
  
 # add the include directory for the preprocessor
 include_directories(include)
