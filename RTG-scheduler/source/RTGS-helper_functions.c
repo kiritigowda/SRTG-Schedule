@@ -6,7 +6,7 @@
 #include"RTGS.h"
 #ifndef _WIN32
 #include <x86intrin.h>
-//#include <chrono>
+#define __int64 int64_t
 static inline __int64 my_rdtsc(){ return __rdtsc(); }
 #endif
 

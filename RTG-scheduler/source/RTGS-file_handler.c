@@ -15,8 +15,7 @@ int get_kernel_information(kernelInfo *kernelInfoList, const char *kernelFilenam
 	char num_processor[10], execution_time[10], deadline[10], latest_schedulable[10], KERNEL[10];
 	int kernel_ID, num_kernels = 0;
 
-	FILE * fp;
-    fopen_s(&fp,kernelFilename, "r");		// read mode
+	FILE * fp = fopen(kernelFilename, "r");		// read mode
 	if (fp == NULL) {
 		printf("ERROR::get_kernel_information - error while opening the file -- %s\n", kernelFilename);
 		return RTGS_FAILURE;
@@ -67,8 +66,7 @@ int get_kernel_release_times(const char *releaseTimeFilename)
 	char string[FILE_MAX_KERNELS];
 	int present_time = 0;
 
-	FILE * fp;
-    fopen_s(&fp,releaseTimeFilename, "r");		// read mode
+	FILE * fp = fopen(releaseTimeFilename, "r");		// read mode
 	if (fp == NULL) {
 		printf("ERROR::get_kernel_release_times - error while opening the file -- %s\n", releaseTimeFilename);
 		return RTGS_FAILURE;
