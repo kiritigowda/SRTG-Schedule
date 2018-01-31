@@ -24,9 +24,9 @@ RTG-scheduler [options] --jobs <jobs_file.txt> --releaseTimes <Release_Time_file
 
 #### The Release Time File has the list of release times of the kernels:
 ```
-    0 - No Kernel Released
-    1 - One Kernel Released at the time marked by location
-    2 - Two Kernel Released at the time marked by location
+    0 - No Jobs Released
+    1 - One Job Released at the time marked by location
+    2 - Two Jobs Released at the time marked by location
     N - Extended in the next release
 ```
 
