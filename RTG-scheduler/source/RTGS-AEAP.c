@@ -51,9 +51,9 @@ int AEAP
 				P_Given_list = clean_list(P_Given_list);
 				// TBD:: Kernel has to be sent to CPU
 				GLOBAL_CPU_KERNELS++;
-#if DEBUG_MESSAGES
-				printf("AEAP: The Kernel:%d Cannot be scheduled Condition 1 & 2 Fail\n", kernel_number);
-				printf("AEAP: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
+#if DETAILED_DEBUG_MESSAGES
+				printf("As Early As Possible (AEAP) -- Job-%d Cannot be scheduled, Condition 1 & 2 Fail\n", kernel_number);
+				printf("AEAP -- Jobs REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
 #endif
 				PROFILER_STOP(SRTG, AEAP)
 				return processors_available;
@@ -71,9 +71,9 @@ int AEAP
 					int presentTime = present_time;
 					int schedule_method = RTGS_SCHEDULE_METHOD_AEAP;
 					GLOBAL_GPU_KERNELS++;
-#if DEBUG_MESSAGES
-					printf("AEAP: Kernel:%d scheduled\n", kernel_number);
-					printf("AEAP: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
+#if DETAILED_DEBUG_MESSAGES
+					printf("As Early As Possible (AEAP) -- Job-%d scheduled\n", kernel_number);
+					printf("AEAP -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
 #endif
 					Queue_kernel_execution(processorReleased, processor_release_time, presentTime, 
 						schedule_method, kernel_number, processor_alloc_list);
@@ -119,9 +119,9 @@ int AEAP
 				P_Given_list = clean_list(P_Given_list);
 				// TBD:: Kernel has to be sent to CPU
 				GLOBAL_CPU_KERNELS++;
-#if DEBUG_MESSAGES
-				printf("AEAP: The Kernel:%d Cannot be scheduled Condition 1 & 2 Fail\n", kernel_number);
-				printf("AEAP: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
+#if DETAILED_DEBUG_MESSAGES
+				printf("As Early As Possible (AEAP) -- Job-%d Cannot be scheduled, Condition 1 & 2 Fail\n", kernel_number);
+				printf("AEAP -- Jobs REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
 #endif
 				PROFILER_STOP(SRTG, AEAP)
 				return processors_available;
@@ -142,9 +142,9 @@ int AEAP
 						temp->processors_allocated = Pro - kernel_info_list[kernel_number].processor_req;
 						P_Given_list = clean_list(P_Given_list);
 						GLOBAL_GPU_KERNELS++;
-#if DEBUG_MESSAGES
-						printf("AEAP: Kernel:%d scheduled\n", kernel_number);
-						printf("AEAP: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
+#if DETAILED_DEBUG_MESSAGES
+						printf("As Early As Possible (AEAP) -- Job-%d scheduled\n", kernel_number);
+						printf("AEAP -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
 #endif
 						Queue_kernel_execution(processorReleased, processor_release_time, presentTime, 
 							schedule_method, kernel_number, processor_alloc_list);
@@ -180,8 +180,8 @@ int AEAP
 								count++;
 							}
 							P_Given_list = clean_list(P_Given_list);
-#if DEBUG_MESSAGES
-							printf("AEAP: AEAP with ALAP-->Backup processors reloaded-->\n");
+#if DETAILED_DEBUG_MESSAGES
+							printf("As Early As Possible (AEAP) -- AEAP with ALAP-->Backup processors reloaded\n");
 #endif
 						}
 						processors_available = AEAP_advanced(kernel_info_list, kernel_number, present_time,
@@ -194,9 +194,9 @@ int AEAP
 						P_Given_list = clean_list(P_Given_list);
 						given = kernel_info_list[kernel_number].processor_req;
 						GLOBAL_GPU_KERNELS++;
-#if DEBUG_MESSAGES
-						printf("AEAP: AEAP with ALAP Condition-1 Kernel:%d scheduled\n", kernel_number);
-						printf("AEAP: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
+#if DETAILED_DEBUG_MESSAGES
+						printf("As Early As Possible (AEAP) -- AEAP with ALAP Condition-1, Job-%d scheduled\n", kernel_number);
+						printf("AEAP -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
 #endif
 						Queue_kernel_execution(processorReleased, processor_release_time, presentTime,
 							schedule_method, kernel_number, processor_alloc_list);
@@ -214,9 +214,9 @@ int AEAP
 							P_Given_list = clean_list(P_Given_list);
 							given = kernel_info_list[kernel_number].processor_req;
 							GLOBAL_GPU_KERNELS++;
-#if DEBUG_MESSAGES
-							printf("AEAP: AEAP with ALAP Condition-1 Kernel:%d scheduled\n", kernel_number);
-							printf("AEAP: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
+#if DETAILED_DEBUG_MESSAGES
+							printf("As Early As Possible (AEAP) -- AEAP with ALAP Condition-1, Job-%d scheduled\n", kernel_number);
+							printf("AEAP -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
 #endif
 							Queue_kernel_execution(processorReleased, processor_release_time, presentTime, schedule_method, kernel_number, processor_alloc_list);
 							Kernel_queue_handler(processorReleased, kernel_release_time, presentTime, schedule_method, kernel_number, kernel_queue_list);
@@ -251,9 +251,9 @@ int AEAP
 										P_Given_list_t = clean_list(P_Given_list_t);
 										// TBD:: Kernel has to be sent to CPU
 										GLOBAL_CPU_KERNELS++;
-#if DEBUG_MESSAGES
-										printf("AEAP: The Kernel:%d Cannot be scheduled Condition 1 & 2 Fail\n", kernel_number);
-										printf("AEAP: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
+#if DETAILED_DEBUG_MESSAGES
+										printf("As Early As Possible (AEAP) -- Job-%d Cannot be scheduled, Condition 1 & 2 Fail\n", kernel_number);
+										printf("AEAP -- Jobs REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
 #endif
 										break;
 									}
@@ -267,9 +267,9 @@ int AEAP
 										int presentTime = present_time;
 										int schedule_method = RTGS_SCHEDULE_METHOD_AEAP;
 										GLOBAL_GPU_KERNELS++;
-#if DEBUG_MESSAGES
-										printf("AEAP: Kernel:%d scheduled\n", kernel_number);
-										printf("AEAP: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
+#if DETAILED_DEBUG_MESSAGES
+										printf("As Early As Possible (AEAP) -- Job-%d scheduled\n", kernel_number);
+										printf("AEAP -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
 #endif
 										Queue_kernel_execution(processorReleased, processor_release_time, presentTime,
 											schedule_method, kernel_number, processor_alloc_list);
@@ -301,8 +301,8 @@ int AEAP
 										count++;
 									}
 									P_Given_list = clean_list(P_Given_list);
-#if DEBUG_MESSAGES
-									printf("AEAP:Backup processors reloaded\n");
+#if DETAILED_DEBUG_MESSAGES
+									printf("As Early As Possible (AEAP) -- Backup processors reloaded\n");
 #endif
 								}
 								//******* Schedule after ALAP NEEDED ********
@@ -341,8 +341,8 @@ int AEAP
 			count++;
 		}
 		P_Given_list = clean_list(P_Given_list);
-#if DEBUG_MESSAGES
-		printf("AEAP:: Backup processors reloaded-->\n");
+#if DETAILED_DEBUG_MESSAGES
+		printf("As Early As Possible (AEAP) -- Backup processors reloaded-->\n");
 #endif
 	}
 	PROFILER_STOP(SRTG, AEAP)

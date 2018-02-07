@@ -16,9 +16,9 @@ int AEAP_ALAP_improve
 ) 
 {
 
-#if DEBUG_MESSAGES
+#if DETAILED_DEBUG_MESSAGES
 	printf("AEAP_ALAP_IMPROVE:ALAP IMPROVED scheduling\n");
-	printf("AEAP_ALAP_IMPROVE: TR: %d\n", kernel_release_time);
+	printf("AEAP_ALAP_IMPROVE: Job Release Time: %d\n", kernel_release_time);
 #endif
 	scheduledNode *temp = *kernel_queue_list;
 	while (temp->kernel_number != GLOBAL_ALAP_LIST->kernel_number && temp->next != NULL)

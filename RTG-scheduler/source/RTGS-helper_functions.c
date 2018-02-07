@@ -384,15 +384,15 @@ void print(scheduledNode* head)
 {
 	scheduledNode* temp;
 	temp = head;
-	printf("Scheduled Kernel List\n");
+	printf("Scheduled Job List\n");
 	while (temp != NULL) {
 		if (temp->kernel_number != MULTIPLE_KERNELS_SCHEDULED){
-			printf("	Kernel::%d Completion Time:%d Processors Retrived:%d\n", temp->kernel_number, temp->data, temp->processors_allocated);
+			printf("	Job-%d	-- Completion Time:%d,	Processors Retrived:%d\n", temp->kernel_number, temp->data, temp->processors_allocated);
 		}
 		else{
 			scheduledNode* temp1 = temp->kernel_next;
 			while (temp1 != NULL){
-				printf("	Kernel::%d Completion Time:%d Processors Retrived:%d\n", temp1->kernel_number, temp1->data, temp1->processors_allocated);
+				printf("	Job-%d	-- Completion Time:%d,	Processors Retrived:%d\n", temp1->kernel_number, temp1->data, temp1->processors_allocated);
 				temp1 = temp1->kernel_next;
 			}
 		}
@@ -415,15 +415,15 @@ void Kernel_queue_print(scheduledNode* head)
 {
 	scheduledNode* temp;
 	temp = head;
-	printf("Kernels Scheduled for GPU Execution\n");
+	printf("Jobs Scheduled for GPU Execution\n");
 	while (temp != NULL) {
 		if (temp->kernel_number != MULTIPLE_KERNELS_SCHEDULED){
-			printf("	kernel::%d -- Kernel Release Time::%d Processor Allocated::%d\n", temp->kernel_number, temp->data, temp->processors_allocated);
+			printf("	Job-%d	-- Job Release Time:%d,	Processor Allocated:%d\n", temp->kernel_number, temp->data, temp->processors_allocated);
 		}
 		else{
 			scheduledNode* temp1 = temp->kernel_next;
 			while (temp1 != NULL){
-				printf("	kernel::%d -- Kernel Release Time::%d Processor Allocated::%d\n", temp1->kernel_number, temp1->data, temp1->processors_allocated);
+				printf("	Job-%d	-- Job Release Time:%d,	Processor Allocated:%d\n", temp1->kernel_number, temp1->data, temp1->processors_allocated);
 				temp1 = temp1->kernel_next;
 			}
 		}

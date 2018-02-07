@@ -22,10 +22,10 @@ int Retrieve_processors
 		if (temp->data == present_time) 
 		{
 			processors_available = processors_available + temp->processors_allocated;
-#if DEBUG_MESSAGES
+#if DETAILED_DEBUG_MESSAGES
 			// TBD:: Data return handling needed
-			printf("\nRetrieve Processors:: Present Time:%d  Processors Available:%d\n", present_time, processors_available);
-			printf("	Retrieve Processors:: GPU Execution Completed-->Kernel: %d Processors Retrieved:%d\n", temp->kernel_number, temp->processors_allocated);
+			printf("\nRetrieve Processors -- Present Time:%d, Processors Available:%d\n", present_time, processors_available);
+			printf("Retrieve Processors -- GPU Execution Completed for Job-%d Processors Retrieved:%d\n", temp->kernel_number, temp->processors_allocated);
 #endif
 			if (temp->kernel_next != NULL) 
 			{
@@ -41,9 +41,9 @@ int Retrieve_processors
 			}
 			else 
 			{
-#if DEBUG_MESSAGES
+#if DETAILED_DEBUG_MESSAGES
 				// TBD:: Data return handling needed
-				printf("	Retrieve Processors::Present Time:%d Kernel:%d data sent back\n", present_time, temp->kernel_number);
+				printf("Retrieve Processors -- Job-%d data sent back\n", temp->kernel_number);
 #endif
 			}
 			temp = position_delete(*processor_alloc_list, 1);
@@ -91,15 +91,15 @@ int Dispatch_queued_kernels
 							}
 							else 
 							{
-#if DEBUG_MESSAGES
-								printf("Dispatch Queued Kernels:: ERROR At TIME: %d while dispatching Kernel:%d\n", present_time, t1->kernel_number);
+#if DETAILED_DEBUG_MESSAGES
+								printf("Dispatch Queued Kernels -- ERROR At TIME: %d while dispatching Job-%d\n", present_time, t1->kernel_number);
 #endif
 								return processors_available;
 							}
 						}
 						processors_available = processors_available - t1->processors_allocated;
-#if DEBUG_MESSAGES
-						printf(	"Dispatch Queued Kernels:: Present Time:%d Dispatched RTGS_SCHEDULE_METHOD_ALAP Kernel:%d ProcAlloc:%d for GPU EXECUTION\n",	
+#if DETAILED_DEBUG_MESSAGES
+						printf(	"Dispatch Queued Kernels -- Present Time:%d Dispatched RTGS_SCHEDULE_METHOD_ALAP Job-%d ProcAlloc:%d for GPU EXECUTION\n",	
 							present_time, t1->kernel_number, t1->processors_allocated);
 #endif
 						Queue_kernel_execution(ALAP_Pg, t1->processor_release_time, present_time, 
@@ -107,8 +107,8 @@ int Dispatch_queued_kernels
 					}
 					else if (temp->schedule_method == RTGS_SCHEDULE_METHOD_AEAP)
 					{
-#if DEBUG_MESSAGES
-						printf(	"Dispatch Queued Kernels:: Present Time:%d Dispatched RTGS_SCHEDULE_METHOD_AEAP Kernel:%d ProcAlloc:%d for GPU EXECUTION\n",	
+#if DETAILED_DEBUG_MESSAGES
+						printf("Dispatch Queued Kernels -- Present Time:%d Dispatched RTGS_SCHEDULE_METHOD_AEAP Job-%d ProcAlloc:%d for GPU EXECUTION\n",	
 							present_time, t1->kernel_number, t1->processors_allocated);
 #endif
 					}
@@ -133,15 +133,15 @@ int Dispatch_queued_kernels
 						}
 						else 
 						{
-#if DEBUG_MESSAGES
-							printf("Dispatch Queued Kernels:: ERROR At TIME:%d Dispatch Kernel %d \n", present_time, temp->kernel_number);
+#if DETAILED_DEBUG_MESSAGES
+							printf("Dispatch Queued Kernels -- ERROR At TIME:%d Dispatch Job-%d \n", present_time, temp->kernel_number);
 #endif
 							return processors_available;
 						}
 					}
 					processors_available = processors_available - temp->processors_allocated;
-#if DEBUG_MESSAGES
-					printf(	"Dispatch Queued Kernels:: Present Time:%d Dispatched RTGS_SCHEDULE_METHOD_ALAP Kernel:%d ProcAlloc:%d for GPU EXECUTION\n",	
+#if DETAILED_DEBUG_MESSAGES
+					printf("Dispatch Queued Kernels -- Present Time:%d Dispatched RTGS_SCHEDULE_METHOD_ALAP Job-%d ProcAlloc:%d for GPU EXECUTION\n",	
 						present_time, temp->kernel_number, temp->processors_allocated);
 #endif
 					Queue_kernel_execution(ALAP_Pg, temp->processor_release_time, present_time, 
@@ -149,8 +149,8 @@ int Dispatch_queued_kernels
 				}
 				else if (temp->schedule_method == RTGS_SCHEDULE_METHOD_AEAP)
 				{
-#if DEBUG_MESSAGES
-					printf("Dispatch Queued Kernels:: Present Time:%d Dispatched RTGS_SCHEDULE_METHOD_AEAP Kernel:%d ProcAlloc:%d for GPU EXECUTION\n",
+#if DETAILED_DEBUG_MESSAGES
+					printf("Dispatch Queued Kernels -- Present Time:%d Dispatched RTGS_SCHEDULE_METHOD_AEAP Job-%d ProcAlloc:%d for GPU EXECUTION\n",
 						present_time, temp->kernel_number, temp->processors_allocated);
 #endif
 				}
