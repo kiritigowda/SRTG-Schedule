@@ -7,7 +7,7 @@
 
 #define LINE_SIZE_MAX 1024
 
-/* The Function is for reading the GPU Compatilble Kernel Values */
+/* The Function is for reading the GPU Compatilble Kernel Values -- jobs & kernels used interchangeably*/
 int get_kernel_information(kernelInfo *kernelInfoList, const char *kernelFilename)
 {
 	PROFILER_START(SRTG, get_kernel_information)
@@ -18,7 +18,7 @@ int get_kernel_information(kernelInfo *kernelInfoList, const char *kernelFilenam
 		return RTGS_FAILURE;
 	}
 #if DEBUG_INFO
-	printf("Kernel Info File -- %s\n", kernelFilename);
+	printf("Jobs Info File -- %s\n", kernelFilename);
 #endif
 
 	char kernelLine[LINE_SIZE_MAX];
@@ -33,8 +33,8 @@ int get_kernel_information(kernelInfo *kernelInfoList, const char *kernelFilenam
 			if (kernelLine[i] == ',' || kernelLine[i] == '\0')
 			{
 				kernelInfo[ctr][j] = '\0';
-				ctr++;  //for next kernel info
-				j = 0;  //for next kernel info, init index to 0
+				ctr++;  //for next job info
+				j = 0;  //for next job info, init index to 0
 			}
 			else
 			{
