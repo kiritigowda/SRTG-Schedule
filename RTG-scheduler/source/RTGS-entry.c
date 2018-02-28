@@ -130,13 +130,13 @@ int main(int argc, char * argv[])
 	GLOBAL_KERNEL_FILE_NAME = kernelFilename;
 	PROFILER_FILE_INITIALIZE(schedulerMode, kernelFilename);
 	PROFILER_INITIALIZE();
-	PROFILER_START(SRTG, RTG_Schedule)
+	//PROFILER_START(SRTG, RTG_Schedule)
 
 	int64_t start_t = RTGS_GetClockCounter();
 	status = scheduler_main(kernelFilename, releaseTimeFilename, schedulerMode); // scheduler call
 	int64_t end_t = RTGS_GetClockCounter();
 
-	PROFILER_STOP(SRTG, RTG_Schedule)
+	//PROFILER_STOP(SRTG, RTG_Schedule)
 	PROFILER_SHUTDOWN();
 	
 	if (status != RTGS_SUCCESS) {
