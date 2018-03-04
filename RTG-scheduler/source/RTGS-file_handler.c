@@ -5,54 +5,73 @@
 
 #include"RTGS.h"
 
-#define FILE_MAX_KERNELS 30
+#define LINE_SIZE_MAX 1024
 
-/* The Function is for reading the GPU Compatilble Kernel Values */
+/* The Function is for reading the GPU Compatilble Kernel Values -- jobs & kernels used interchangeably*/
 int get_kernel_information(kernelInfo *kernelInfoList, const char *kernelFilename)
 {
+<<<<<<< HEAD
 	//PROFILER_START(SRTG, get_kernel_information)
 	char string[FILE_MAX_KERNELS];
 	char num_processor[10], execution_time[10], deadline[10], latest_schedulable[10], KERNEL[10];
 	int kernel_ID, num_kernels = 0;
+=======
+	PROFILER_START(SRTG, get_kernel_information)
+>>>>>>> develop
 
-	FILE * fp = fopen(kernelFilename, "r");		// read mode
+	FILE * fp = fopen(kernelFilename, "r");
 	if (fp == NULL) {
 		printf("ERROR::get_kernel_information - error while opening the file -- %s\n", kernelFilename);
 		return RTGS_FAILURE;
 	}
-
 #if DEBUG_INFO
-	printf("Kernel Info File -- %s\n", kernelFilename);
+	printf("Jobs Info File -- %s\n", kernelFilename);
 #endif
 
-	while (fgets(string, FILE_MAX_KERNELS, fp) != NULL)
-	{
-		int present_time = 0, j = 0, flag = 0;
-		for (int k = 0; k < 10; k++){ KERNEL[k] = '\0'; num_processor[k] = '\0'; execution_time[k] = '\0'; deadline[k] = '\0'; latest_schedulable[k] = '\0'; }
+	char kernelLine[LINE_SIZE_MAX];
+	char kernelInfo[5][10];
+	int kernel_ID = -1, num_kernels = 0;
 
-		while (string[present_time] != '\0')
+	while (fgets(kernelLine, LINE_SIZE_MAX, fp) != NULL)
+	{
+		int j = 0, ctr = 0;
+		for (int i = 0; i <= (strlen(kernelLine)); i++)
 		{
-			if (string[present_time] == ' '){ flag = flag + 1; j = 0; }
-			if (string[present_time] != ' ' && flag == 0){ KERNEL[j] = string[present_time]; j++; }
-			if (string[present_time] != ' ' && flag == 1){ num_processor[j] = string[present_time]; j++; }
-			if (string[present_time] != ' ' && flag == 2){ execution_time[j] = string[present_time]; j++; }
-			if (string[present_time] != ' ' && flag == 3){ deadline[j] = string[present_time]; j++; }
-			if (string[present_time] != ' ' && flag == 4){ latest_schedulable[j] = string[present_time];	j++; }
-			present_time++;
-		}
-		if (string[present_time] == '\0'){
-			kernel_ID = atoi(KERNEL);
-			if (kernel_ID < 0){
-				printf("ERROR::get_kernel_information - KERNEL ID needs to be in the range 0 - N\n");
+			if (kernelLine[i] == ',' || kernelLine[i] == '\0')
+			{
+				kernelInfo[ctr][j] = '\0';
+				ctr++;  //for next job info
+				j = 0;  //for next job info, init index to 0
+			}
+			else
+			{
+				kernelInfo[ctr][j] = kernelLine[i];
+				j++;
+			}
+
+			if (ctr > 5) {
+				printf("ERROR:get_kernel_information - Job Info File ERROR -- RTGS_ERROR_INVALID_PARAMETERS-- count: %d\n", ctr);
 				return RTGS_ERROR_INVALID_PARAMETERS;
 			}
-            kernelInfoList[kernel_ID].processor_req = atoi(num_processor);
-            kernelInfoList[kernel_ID].execution_time = atoi(execution_time);
-            kernelInfoList[kernel_ID].deadline = atoi(deadline);
-            kernelInfoList[kernel_ID].latest_schedulable_time = atoi(latest_schedulable);
-			num_kernels++;
 		}
+
+		if (ctr != 5) {
+			printf("ERROR::get_kernel_information - Job Info File ERROR -- RTGS_ERROR_NOT_SUFFICIENT -- count: %d\n", ctr);
+			return RTGS_ERROR_NOT_SUFFICIENT;
+		}
+
+		kernel_ID = atoi(kernelInfo[0]);
+		if (kernel_ID < 0) {
+			printf("ERROR::get_kernel_information - KERNEL ID needs to be in the range 0 - N\n");
+			return RTGS_ERROR_INVALID_PARAMETERS;
+		}
+		kernelInfoList[kernel_ID].processor_req = atoi(kernelInfo[1]);
+		kernelInfoList[kernel_ID].execution_time = atoi(kernelInfo[2]);
+		kernelInfoList[kernel_ID].deadline = atoi(kernelInfo[3]);
+		kernelInfoList[kernel_ID].latest_schedulable_time = atoi(kernelInfo[4]);
+		num_kernels++;
 	}
+
 	fclose(fp);
 	//PROFILER_STOP(SRTG, get_kernel_information)
 	return num_kernels;
@@ -62,8 +81,8 @@ int get_kernel_information(kernelInfo *kernelInfoList, const char *kernelFilenam
 /* The Function is to read the time frames in which these Kernels are released */
 int get_kernel_release_times(const char *releaseTimeFilename)
 {
-	//PROFILER_START(SRTG, get_kernel_release_times)
-	char string[FILE_MAX_KERNELS];
+	PROFILER_START(SRTG, get_kernel_release_times)
+	char string[LINE_SIZE_MAX];
 	int present_time = 0;
 
 	FILE * fp = fopen(releaseTimeFilename, "r");		// read mode
@@ -88,7 +107,7 @@ int get_kernel_release_times(const char *releaseTimeFilename)
 	}
 	fclose(fp);
 	int MaxRunTime = present_time;
-	//PROFILER_STOP(SRTG, get_kernel_release_times)
+	PROFILER_STOP(SRTG, get_kernel_release_times)
 	return MaxRunTime;
 }
 

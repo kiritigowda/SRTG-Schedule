@@ -3,19 +3,19 @@ The current release verion is 0.9.6 (beta preview).
 
 ### Windows
 ```
-RTG-scheduler [options] --kernels <Kernel_file.txt> --releaseTimes <Release_Time_file.txt> --mode <Option> 
+RTG-scheduler [options] --jobs <jobs_file.txt> --releaseTimes <Release_Time_file.txt> --mode <Option> 
 ```
 ### Linux
 ```
-./RTG-scheduler [options] --kernels <Kernel_file.txt> --releaseTimes <Release_Time_file.txt> --mode <Option> 
+./RTG-scheduler [options] --jobs <jobs_file.txt> --releaseTimes <Release_Time_file.txt> --mode <Option> 
 ```
 
 ## Scheduler [options] Supported
 #### --h/--help Show full help
 
-#### The Kernel File is the list of Kernels to be scheduled:
+#### The Jobs File is the list of Jobs to be scheduled:
 ```
-    Kernel Number
+    Job Number
     Processors Needed
     Execution Time
     Deadline
@@ -24,9 +24,9 @@ RTG-scheduler [options] --kernels <Kernel_file.txt> --releaseTimes <Release_Time
 
 #### The Release Time File has the list of release times of the kernels:
 ```
-    0 - No Kernel Released
-    1 - One Kernel Released at the time marked by location
-    2 - Two Kernel Released at the time marked by location
+    0 - No Jobs Released
+    1 - One Job Released at the time marked by location
+    2 - Two Jobs Released at the time marked by location
     N - Extended in the next release
 ```
 
