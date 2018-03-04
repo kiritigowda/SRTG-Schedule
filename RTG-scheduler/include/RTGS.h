@@ -9,6 +9,7 @@
 #if _WIN32
 #include <Windows.h>
 #define strcasecmp strcmp
+#include <stdbool.h>
 #else
 #include <sys/time.h>
 #include <strings.h>
@@ -135,6 +136,9 @@ int GLOBAL_CPU_KERNELS;
 int GLOBAL_RELEASE_TIME[MAX_RUN_TIME];
 backup_list* GLOBAL_ALAP_LIST;
 
+// debug message setup variable
+int GLOBAL_RTGS_DEBUG_MSG;
+
 //! \brief RTG-scheduler main function
 int scheduler_main(char *kernelFilename, char *releaseTimeFilename, int schedulerMode);
 
@@ -211,6 +215,9 @@ int64_t RTGS_GetClockCounter();
 
 //! \brief clock frequency function
 int64_t RTGS_GetClockFrequency();
+
+//! \brief Get ENV Variable
+bool RTGS_GetEnvironmentVariable(const char * name, char * value, size_t valueSize);
 
 // list functions
 scheduledNode* insert(scheduledNode* head, scheduledNode* data);

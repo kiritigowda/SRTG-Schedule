@@ -17,9 +17,9 @@ int get_kernel_information(kernelInfo *kernelInfoList, const char *kernelFilenam
 		printf("ERROR::get_kernel_information - error while opening the file -- %s\n", kernelFilename);
 		return RTGS_FAILURE;
 	}
-#if DEBUG_INFO
-	printf("Jobs Info File -- %s\n", kernelFilename);
-#endif
+	if (GLOBAL_RTGS_DEBUG_MSG) {
+		printf("Jobs Info File -- %s\n", kernelFilename);
+	}
 
 	char kernelLine[LINE_SIZE_MAX];
 	char kernelInfo[5][10];
@@ -84,9 +84,9 @@ int get_kernel_release_times(const char *releaseTimeFilename)
 		return RTGS_FAILURE;
 	}
 
-#if DEBUG_INFO
-	printf("Release Times Info File -- %s\n", releaseTimeFilename);
-#endif
+	if (GLOBAL_RTGS_DEBUG_MSG) {
+		printf("Release Times Info File -- %s\n", releaseTimeFilename);
+	}
 
 	while (fgets(string, 2, fp) != NULL)
 	{

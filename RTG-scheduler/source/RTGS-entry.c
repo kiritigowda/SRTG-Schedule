@@ -69,6 +69,13 @@ int main(int argc, char * argv[])
 	GLOBAL_RTGS_MODE = -1;
 	GLOBAL_KERNEL_FILE_NAME = NULL;
 
+	// get default debug msg control
+	GLOBAL_RTGS_DEBUG_MSG = 1;
+	char textBuffer[1024];
+	if (RTGS_GetEnvironmentVariable("RTGS_DEBUG_MSG", textBuffer, sizeof(textBuffer))) {
+		GLOBAL_RTGS_DEBUG_MSG = atoi(textBuffer);
+	}
+
 	for (int arg = 1; arg < argc; arg++)
 	{
         if (!strcasecmp(argv[arg], "--h") || !strcasecmp(argv[arg], "--help"))
