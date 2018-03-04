@@ -91,10 +91,15 @@ enum RTGS_schedule_method_e {
 
 /* Kernel Info Structure */
 struct kernel_information {
-	int processor_req;				//Processors needed
-	int execution_time;				//Execution time
-	int deadline;					//Deadline
-	int latest_schedulable_time;	//Latest schedule time
+	int processor_req;				// processors needed
+	int execution_time;				// execution time
+	int deadline;					// deadline
+	int latest_schedulable_time;	// latest schedule time
+	int release_time;				// latest schedule time
+	float schedule_overhead;		// scheduler Overhead
+	int scheduled_execution;		// scheduled for GPU exec
+	int completion_time;			// job completion time
+	int rescheduled_execution;		// job rescheduled for gpu exe
 };
 //! \brief kernel_info_list info structure
 typedef struct kernel_information kernelInfo;
