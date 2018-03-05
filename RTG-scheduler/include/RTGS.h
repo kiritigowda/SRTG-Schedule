@@ -9,7 +9,6 @@
 #if _WIN32
 #include <Windows.h>
 #define strcasecmp strcmp
-#include <stdbool.h>
 #else
 #include <sys/time.h>
 #include <strings.h>
@@ -20,6 +19,8 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <stdint.h>
+#include <stdbool.h>
+#include <string.h>
 
 #define DETAILED_DEBUG_MESSAGES 0               // debug messages detailed with methods used to schedule
 
