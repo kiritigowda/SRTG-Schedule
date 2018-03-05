@@ -21,11 +21,11 @@ int Kernel_book_keeper
 	int schedule_method = RTGS_SCHEDULE_METHOD_NOT_DEFINED;
 	static int FLAG , FLAG_V, given;
 
-#if DEBUG_MESSAGES
-	printf("Kernel Book Keeper -- Job-%d --> processor required:%d, execution time:%d, deadline:%d, latest schedulable time:%d\n",
-		kernel_number, kernel_info_list[kernel_number].processor_req, kernel_info_list[kernel_number].execution_time,
-		kernel_info_list[kernel_number].deadline, kernel_info_list[kernel_number].latest_schedulable_time);
-#endif
+	if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+		printf("Kernel Book Keeper -- Job-%d --> processor required:%d, execution time:%d, deadline:%d, latest schedulable time:%d\n",
+			kernel_number, kernel_info_list[kernel_number].processor_req, kernel_info_list[kernel_number].execution_time,
+			kernel_info_list[kernel_number].deadline, kernel_info_list[kernel_number].latest_schedulable_time);
+	}
 	// If processors available is greater than the required processors by the kernel_info_list
 	if (kernel_info_list[kernel_number].processor_req <= processors_available) 
 	{
@@ -45,9 +45,9 @@ int Kernel_book_keeper
 					processor_release_time = kernel_info_list[kernel_number].execution_time + present_time;
 					schedule_method = RTGS_SCHEDULE_METHOD_IMMEDIATE;
 					GLOBAL_GPU_KERNELS++;
-#if DEBUG_MESSAGES
-					printf("Kernel Book Keeper -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
-#endif
+					if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+						printf("Kernel Book Keeper -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
+					}
 					// Kernel call for the GPU to handle the given Kernels and number of blocks
 					Queue_kernel_execution(processorReleased, processor_release_time, present_time, 
 						schedule_method, kernel_number, processor_alloc_list); 
@@ -56,17 +56,17 @@ int Kernel_book_keeper
 				else 
 				{
 					GLOBAL_CPU_KERNELS++;
-#if DEBUG_MESSAGES
-					printf("Kernel Book Keeper -- Job-%d will not complete before it's deadline, Job REJECTED\n", kernel_number);
-					printf("Kernel Book Keeper -- Jobs REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
-#endif
+					if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+						printf("Kernel Book Keeper -- Job-%d will not complete before it's deadline, Job REJECTED\n", kernel_number);
+						printf("Kernel Book Keeper -- Jobs REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
+					}
 				}
 			}
 			else if (kernel_info_list[kernel_number].processor_req >= PROCESSOR_LIMIT) 
 			{ // Processors needed greater or equal than the limit
-#if DEBUG_MESSAGES
-				printf("Kernel Book Keeper -- Job-%d is compute intensive, sent for ALAP execution\n", kernel_number);
-#endif
+				if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+					printf("Kernel Book Keeper -- Job-%d is compute intensive, sent for ALAP execution\n", kernel_number);
+				}
 				processors_available = ALAP(kernel_info_list, kernel_number, present_time, 
 					processors_available, processor_alloc_list, kernel_queue_list);
 			}
@@ -85,9 +85,9 @@ int Kernel_book_keeper
 			{ // Processors needed lesser than the limit
 				if (kernel_info_list[kernel_number].processor_req <= Pl && (present_time + kernel_info_list[kernel_number].execution_time) <= GLOBAL_ALAP_LIST->data) 
 				{ // Condition 1
-#if DEBUG_MESSAGES
-					printf("Kernel Book Keeper -- ALAP is set, Job-%d SATISFIED CONDITION 1", kernel_number);
-#endif
+					if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+						printf("Kernel Book Keeper -- ALAP is set, Job-%d SATISFIED CONDITION 1", kernel_number);
+					}
 					if (kernel_info_list[kernel_number].execution_time + present_time <= kernel_info_list[kernel_number].deadline) {
 
 						processors_available = processors_available - kernel_info_list[kernel_number].processor_req;
@@ -95,9 +95,9 @@ int Kernel_book_keeper
 						processor_release_time = kernel_info_list[kernel_number].execution_time + present_time;
 						schedule_method = RTGS_SCHEDULE_METHOD_IMMEDIATE;
 						GLOBAL_GPU_KERNELS++;
-#if DEBUG_MESSAGES
-						printf("Kernel Book Keeper -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
-#endif
+						if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+							printf("Kernel Book Keeper -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
+						}
 						// Kernel call for the GPU to handle the given Kernels and number of blocks//
 						Queue_kernel_execution(processorReleased, processor_release_time, present_time, 
 							schedule_method, kernel_number,	processor_alloc_list); 
@@ -105,17 +105,17 @@ int Kernel_book_keeper
 					else 
 					{
 						GLOBAL_CPU_KERNELS++;
-#if DEBUG_MESSAGES
-						printf("Kernel Book Keeper -- Job-%d will not complete before it's deadline, Job REJECTED\n", kernel_number);
-						printf("Kernel Book Keeper -- Jobs REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
-#endif
+						if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+							printf("Kernel Book Keeper -- Job-%d will not complete before it's deadline, Job REJECTED\n", kernel_number);
+							printf("Kernel Book Keeper -- Jobs REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
+						}
 					}
 				}
 				else if (kernel_info_list[kernel_number].processor_req > Pl && (present_time + kernel_info_list[kernel_number].execution_time) <= GLOBAL_ALAP_LIST->data) 
 				{ // Condition 2
-#if DEBUG_MESSAGES
-					printf("Kernel Book Keeper -- ALAP is set, Job-%d SATISFIED CONDITION 2", kernel_number);
-#endif
+					if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+						printf("Kernel Book Keeper -- ALAP is set, Job-%d SATISFIED CONDITION 2", kernel_number);
+					}
 					if (kernel_info_list[kernel_number].execution_time + present_time <= kernel_info_list[kernel_number].deadline) {
 
 						processors_available = processors_available - kernel_info_list[kernel_number].processor_req;
@@ -123,9 +123,9 @@ int Kernel_book_keeper
 						processor_release_time = kernel_info_list[kernel_number].execution_time + present_time;
 						schedule_method = RTGS_SCHEDULE_METHOD_IMMEDIATE;
 						GLOBAL_GPU_KERNELS++;
-#if DEBUG_MESSAGES
-						printf("Kernel Book Keeper -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
-#endif
+						if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+							printf("Kernel Book Keeper -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
+						}
 						// Kernel call for the GPU to handle the given Kernels and number of blocks//
 						Queue_kernel_execution(processorReleased, processor_release_time, present_time,
 							schedule_method, kernel_number, processor_alloc_list);
@@ -133,10 +133,10 @@ int Kernel_book_keeper
 					else 
 					{
 						GLOBAL_CPU_KERNELS++;
-#if DEBUG_MESSAGES
-						printf("Kernel Book Keeper -- Job-%d will not complete before it's deadline, Job REJECTED\n", kernel_number);
-						printf("Kernel Book Keeper -- Jobs REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
-#endif
+						if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+							printf("Kernel Book Keeper -- Job-%d will not complete before it's deadline, Job REJECTED\n", kernel_number);
+							printf("Kernel Book Keeper -- Jobs REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
+						}
 					}
 				}
 				else if ((kernel_info_list[kernel_number].processor_req + given) <= Pl && (present_time + kernel_info_list[kernel_number].execution_time) > GLOBAL_ALAP_LIST->data &&
@@ -149,9 +149,9 @@ int Kernel_book_keeper
 						FLAG_V = GLOBAL_ALAP_LIST->data;
 						given = 0;
 					}
-#if DEBUG_MESSAGES
-					printf("Kernel Book Keeper -- ALAP is set, Job-%d SATISFIED CONDITION 1 with FLAG", kernel_number);
-#endif
+					if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+						printf("Kernel Book Keeper -- ALAP is set, Job-%d SATISFIED CONDITION 1 with FLAG", kernel_number);
+					}
 					if (kernel_info_list[kernel_number].execution_time + present_time <= kernel_info_list[kernel_number].deadline)
 					{
 
@@ -160,9 +160,9 @@ int Kernel_book_keeper
 						processor_release_time = kernel_info_list[kernel_number].execution_time + present_time;
 						schedule_method = RTGS_SCHEDULE_METHOD_IMMEDIATE;
 						GLOBAL_GPU_KERNELS++;
-#if DEBUG_MESSAGES
-						printf("Kernel Book Keeper -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
-#endif
+						if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+							printf("Kernel Book Keeper -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
+						}
 						// Kernel call for the GPU to handle the given Kernels and number of blocks//
 						Queue_kernel_execution(processorReleased, processor_release_time, present_time,
 							schedule_method, kernel_number, processor_alloc_list);
@@ -170,19 +170,19 @@ int Kernel_book_keeper
 					else
 					{
 						GLOBAL_CPU_KERNELS++;
-#if DEBUG_MESSAGES
-						printf("Kernel Book Keeper -- Job-%d will not complete before it's deadline, Job REJECTED\n", kernel_number);
-						printf("Kernel Book Keeper -- Jobs REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
-#endif
+						if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+							printf("Kernel Book Keeper -- Job-%d will not complete before it's deadline, Job REJECTED\n", kernel_number);
+							printf("Kernel Book Keeper -- Jobs REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
+						}
 					}
 				}
 				else if (processors_available >= kernel_info_list[GLOBAL_ALAP_LIST->kernel_number].processor_req) 
 				{
 					/// NEW FUNCTION NEEDED
-#if DEBUG_MESSAGES
-					printf("Kernel Book Keeper -- RELEASE ALAP Job NOW TO INCREASE SYSTEM TIME\n\n");
-					printf("\nPA : %d   ALAP_Pg : %d\n", processors_available, kernel_info_list[GLOBAL_ALAP_LIST->kernel_number].processor_req);
-#endif
+					if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+						printf("Kernel Book Keeper -- RELEASE ALAP Job NOW TO INCREASE SYSTEM TIME\n\n");
+						printf("\nPA : %d   ALAP_Pg : %d\n", processors_available, kernel_info_list[GLOBAL_ALAP_LIST->kernel_number].processor_req);
+					}
 					processors_available = ALAP_improve(kernel_info_list, GLOBAL_ALAP_LIST->kernel_number, present_time,
 						processors_available, processor_alloc_list, kernel_queue_list);
 					processors_available = AEAP(kernel_info_list, kernel_number, present_time,

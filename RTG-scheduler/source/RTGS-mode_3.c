@@ -51,11 +51,11 @@ static int Mode_3_ALAP
 			}
 			P_Given_list = clean_list(P_Given_list);
 			GLOBAL_CPU_KERNELS++;
-#if DEBUG_MESSAGES
-			// TBD:: Return Kernel to CPU - Function to send Kernel to CPU execution
-			printf("Mode 3 ALAP: Kernel:%d Cannot be scheduled", kernel_number);
-			printf("Mode 3 ALAP: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
-#endif
+			if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+				// TBD:: Return Kernel to CPU - Function to send Kernel to CPU execution
+				printf("Mode 3 ALAP: Kernel:%d Cannot be scheduled", kernel_number);
+				printf("Mode 3 ALAP: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
+			}
 			return processors_available;
 		}
 		else
@@ -70,10 +70,10 @@ static int Mode_3_ALAP
 				int processorReleased = kernel_info_list[kernel_number].processor_req;
 				int schedule_method = RTGS_SCHEDULE_METHOD_ALAP;
 				GLOBAL_GPU_KERNELS++;
-#if DEBUG_MESSAGES
-				printf("Mode 3 ALAP: Kernel:%d scheduled", kernel_number);
-				printf("Mode 3 ALAP: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
-#endif
+				if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+					printf("Mode 3 ALAP: Kernel:%d scheduled", kernel_number);
+					printf("Mode 3 ALAP: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
+				}
 				GLOBAL_ALAP_LIST = insert_ALAP_list(GLOBAL_ALAP_LIST, kernel_release_time, processor_release_time, processors_allocated, kernel_number);
 				Kernel_queue_handler(processorReleased, kernel_release_time, processor_release_time, 
 					schedule_method, kernel_number, kernel_queue_list);
@@ -106,9 +106,9 @@ static int Mode_3_ALAP
 			count++;
 		}
 		P_Given_list = clean_list(P_Given_list);
-#if DEBUG_MESSAGES
-		printf("Mode 3 ALAP: Kernel:%d Cannot be scheduled AEAP --$$", kernel_number);
-#endif
+		if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+			printf("Mode 3 ALAP: Kernel:%d Cannot be scheduled AEAP --$$", kernel_number);
+		}
 	}
 	return processors_available;
 }
@@ -158,10 +158,10 @@ static int Mode_3_AEAP
 				P_Given_list = clean_list(P_Given_list);
 
 				GLOBAL_CPU_KERNELS++;
-#if DEBUG_MESSAGES
-				printf("Mode 3 AEAP: The Kernel:%d Cannot be scheduled\n", kernel_number);
-				printf("Mode 3 AEAP: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
-#endif
+				if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+					printf("Mode 3 AEAP: The Kernel:%d Cannot be scheduled\n", kernel_number);
+					printf("Mode 3 AEAP: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
+				}
 				return processors_available;
 			}
 			else 
@@ -178,10 +178,10 @@ static int Mode_3_AEAP
 					int presentTime = present_time;
 					int schedule_method = RTGS_SCHEDULE_METHOD_AEAP;
 					GLOBAL_GPU_KERNELS++;
-#if DEBUG_MESSAGES
-					printf("Mode 3 AEAP: The Kernel:%d scheduled\n", kernel_number);
-					printf("Mode 3 AEAP: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
-#endif
+					if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+						printf("Mode 3 AEAP: The Kernel:%d scheduled\n", kernel_number);
+						printf("Mode 3 AEAP: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
+					}
 					Queue_kernel_execution(processorReleased, processor_release_time, presentTime, schedule_method, kernel_number, processor_alloc_list);
 					Kernel_queue_handler(processorReleased, kernel_release_time, presentTime, schedule_method, kernel_number, kernel_queue_list);
 					return processors_available;
@@ -223,10 +223,10 @@ static int Mode_3_AEAP
 				// TBD:: Return Kernel to CPU - Function to send Kernel to CPU execution 
 				GLOBAL_CPU_KERNELS++;
 				P_Given_list = clean_list(P_Given_list);
-#if DEBUG_MESSAGES
-				printf("Mode 3 AEAP: The Kernel:%d Cannot be scheduled AEAP\n", kernel_number);
-				printf("Mode 3 AEAP: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
-#endif
+				if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+					printf("Mode 3 AEAP: The Kernel:%d Cannot be scheduled AEAP\n", kernel_number);
+					printf("Mode 3 AEAP: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
+				}
 				return processors_available;
 			}
 			else 
@@ -246,10 +246,10 @@ static int Mode_3_AEAP
 						P_Given_list = clean_list(P_Given_list);
 						given = kernel_info_list[kernel_number].processor_req;
 						GLOBAL_GPU_KERNELS++;
-#if DEBUG_MESSAGES
-						printf("Mode 3 AEAP: Condition-1 The Kernel:%d scheduled\n", kernel_number);
-						printf("Mode 3 AEAP: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
-#endif
+						if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+							printf("Mode 3 AEAP: Condition-1 The Kernel:%d scheduled\n", kernel_number);
+							printf("Mode 3 AEAP: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
+						}
 						Queue_kernel_execution(processorReleased, processor_release_time, presentTime,	
 											schedule_method, kernel_number, processor_alloc_list);
 						Kernel_queue_handler(processorReleased, kernel_release_time, presentTime, 
@@ -261,10 +261,10 @@ static int Mode_3_AEAP
 						temp->processors_allocated = Pro - kernel_info_list[kernel_number].processor_req;
 						P_Given_list = clean_list(P_Given_list);
 						GLOBAL_GPU_KERNELS++;
-#if DEBUG_MESSAGES
-						printf("Mode 3 AEAP: Condition-2 The Kernel:%d scheduled\n", kernel_number);
-						printf("Mode 3 AEAP: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
-#endif
+						if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+							printf("Mode 3 AEAP: Condition-2 The Kernel:%d scheduled\n", kernel_number);
+							printf("Mode 3 AEAP: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
+						}
 						Queue_kernel_execution(processorReleased, processor_release_time, presentTime, 
 											schedule_method, kernel_number, processor_alloc_list);
 						Kernel_queue_handler(processorReleased, kernel_release_time, presentTime,
@@ -274,10 +274,10 @@ static int Mode_3_AEAP
 					else 
 					{
 						GLOBAL_CPU_KERNELS++;
-#if DEBUG_MESSAGES
-						printf("Mode 3 AEAP: The Kernel:%d Cannot be scheduled Condition 1 & 2 Fail\n", kernel_number);
-						printf("MODE 3 AEAP: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
-#endif
+						if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+							printf("Mode 3 AEAP: The Kernel:%d Cannot be scheduled Condition 1 & 2 Fail\n", kernel_number);
+							printf("MODE 3 AEAP: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
+						}
 					}
 					break;
 				}
@@ -309,9 +309,9 @@ static int Mode_3_AEAP
 			count++;
 		}
 		P_Given_list = clean_list(P_Given_list);
-#if DEBUG_MESSAGES
-		printf("Mode 3 AEAP with ALAP:Backup processors reloaded\n");
-#endif
+		if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+			printf("Mode 3 AEAP with ALAP:Backup processors reloaded\n");
+		}
 	}
 	return processors_available;
 }
@@ -337,9 +337,9 @@ static int Mode_3_Processors_Unavailable
 	else if (kernel_info_list[kernel_number].processor_req >= PROCESSOR_LIMIT && GLOBAL_ALAP_LIST != NULL) 
 	{
 		GLOBAL_CPU_KERNELS++;
-#if DEBUG_MESSAGES
-		printf("Mode-3 Processors Unavailable: Kernel:%d sent BACK TO CPU as ALAP is already set\n", kernel_number);
-#endif		
+		if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+			printf("Mode-3 Processors Unavailable: Kernel:%d sent BACK TO CPU as ALAP is already set\n", kernel_number);
+		}
 	}
 
 	return processors_available;
@@ -359,11 +359,11 @@ static int Mode_3_book_keeper
 	int presentTime = present_time;
 	int schedule_method = RTGS_SCHEDULE_METHOD_NOT_DEFINED;
 	static int Flag_Processors = 0;
-#if DEBUG_MESSAGES
-	printf("Mode-3 Book Keeper:: Kernel::%d --> processor_req:%d execution_time:%d, deadline:%d, latest_schedulable_time:%d\n", 
-		kernel_number, kernel_info_list[kernel_number].processor_req, kernel_info_list[kernel_number].execution_time,
-		kernel_info_list[kernel_number].deadline, kernel_info_list[kernel_number].latest_schedulable_time);
-#endif
+	if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+		printf("Mode-3 Book Keeper:: Kernel::%d --> processor_req:%d execution_time:%d, deadline:%d, latest_schedulable_time:%d\n",
+			kernel_number, kernel_info_list[kernel_number].processor_req, kernel_info_list[kernel_number].execution_time,
+			kernel_info_list[kernel_number].deadline, kernel_info_list[kernel_number].latest_schedulable_time);
+	}
 
 	// If processors available is greater than the required processors by the kernel_info_list
 	if (kernel_info_list[kernel_number].processor_req <= processors_available) 
@@ -382,17 +382,17 @@ static int Mode_3_book_keeper
 				// Kernel call for the GPU to handle the given Kernels and number of blocks//
 				Queue_kernel_execution(processorReleased, processor_release_time, presentTime, schedule_method, kernel_number, processor_alloc_list); 	
 				GLOBAL_GPU_KERNELS++;
-#if DEBUG_MESSAGES
-				printf("Mode-3 Book Keeper:: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
-#endif
+				if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+					printf("Mode-3 Book Keeper:: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
+				}
 			}
 			else 
 			{
 				GLOBAL_CPU_KERNELS++;
-#if DEBUG_MESSAGES
-				printf("Mode-3 Book Keeper:: Kernel-%d will not complete before it's deadline, Job REJECTED\n", kernel_number);
-				printf("Mode-3 Book Keeper:: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
-#endif
+				if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+					printf("Mode-3 Book Keeper:: Kernel-%d will not complete before it's deadline, Job REJECTED\n", kernel_number);
+					printf("Mode-3 Book Keeper:: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
+				}
 			}
 		}
 		else if (GLOBAL_ALAP_LIST != NULL) 
@@ -401,9 +401,9 @@ static int Mode_3_book_keeper
 			if ((kernel_info_list[kernel_number].processor_req + Flag_Processors) <= Pl || (presentTime + kernel_info_list[kernel_number].execution_time) <= GLOBAL_ALAP_LIST->data) 
 			{
 				Flag_Processors = Flag_Processors + kernel_info_list[kernel_number].processor_req;
-#if DEBUG_MESSAGES
-				printf("Mode-3 Book Keeper:: Kernel:%d SATISFIED CONDITION 1 or 2", kernel_number);
-#endif
+				if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+					printf("Mode-3 Book Keeper:: Kernel:%d SATISFIED CONDITION 1 or 2", kernel_number);
+				}
 				if (kernel_info_list[kernel_number].execution_time + presentTime <= kernel_info_list[kernel_number].deadline)
 				{
 
@@ -416,19 +416,19 @@ static int Mode_3_book_keeper
 				else
 				{
 					GLOBAL_CPU_KERNELS++;
-#if DEBUG_MESSAGES
-					printf("Mode-3 Book Keeper:: Kernel-%d will not complete before it's deadline, Job REJECTED\n", kernel_number);
-					printf("Mode-3 Book Keeper:: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
-#endif
+					if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+						printf("Mode-3 Book Keeper:: Kernel-%d will not complete before it's deadline, Job REJECTED\n", kernel_number);
+						printf("Mode-3 Book Keeper:: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
+					}
 				}
 			}
 			else
 			{
 				GLOBAL_CPU_KERNELS++;
-#if DEBUG_MESSAGES
-				printf("Mode-3 Book Keeper:: Kernel-%d REJECTED ALAP kernel is set\n", kernel_number);
-				printf("Mode-3 Book Keeper:: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
-#endif
+				if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+					printf("Mode-3 Book Keeper:: Kernel-%d REJECTED ALAP kernel is set\n", kernel_number);
+					printf("Mode-3 Book Keeper:: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
+				}
 			}
 		}
 	}
@@ -465,9 +465,9 @@ int RTGS_mode_3(char *kernelFilename, char *releaseTimeFilename)
 	int runTimeMax = get_kernel_release_times(releaseTimeFilename);// Read Release_time.TXT
 	if (runTimeMax <= RTGS_FAILURE) { return  RTGS_FAILURE; }
 
-#if DEBUG_MESSAGES
-	printf("\n**************** The GPU Scheduler will Schedule %d Kernels ****************\n", kernelMax);
-#endif
+	if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+		printf("\n**************** The GPU Scheduler will Schedule %d Kernels ****************\n", kernelMax);
+	}
 
 	int64_t stime = RTGS_GetClockCounter();
 	for (int present_time = 0; present_time < runTimeMax; present_time++)
@@ -478,10 +478,10 @@ int RTGS_mode_3(char *kernelFilename, char *releaseTimeFilename)
 
 		if (GLOBAL_RELEASE_TIME[present_time] == 1)
 		{
-#if DEBUG_MESSAGES
-			printf("\nRTGS Mode 3:: Total processors Available at time %d = %d\n", present_time, processorsAvailable);
-			printf("RTGS Mode 3:: Kernels:%d Released\n", kernel_number);
-#endif
+			if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+				printf("\nRTGS Mode 3:: Total processors Available at time %d = %d\n", present_time, processorsAvailable);
+				printf("RTGS Mode 3:: Kernels:%d Released\n", kernel_number);
+			}
 			// handling the released kernel_info_list by the book-keeper
 			processorsAvailable = Mode_3_book_keeper(kernel_info_list, kernel_number, processorsAvailable, present_time, &processor_alloc_list, &kernel_queue_list);
 			kernel_number++;
@@ -490,11 +490,11 @@ int RTGS_mode_3(char *kernelFilename, char *releaseTimeFilename)
 		{
 			int k1 = kernel_number; kernel_number++;
 			int k2 = kernel_number; kernel_number++;
-#if DEBUG_MESSAGES
-			printf("\nRTGS Mode 3:: Total processors Available at time %d = %d\n", present_time, processorsAvailable);
-			printf("RTGS Mode 3:: Kernels:%d Released\n", k1);
-			printf("RTGS Mode 3:: Kernels:%d Released\n", k2);
-#endif
+			if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+				printf("\nRTGS Mode 3:: Total processors Available at time %d = %d\n", present_time, processorsAvailable);
+				printf("RTGS Mode 3:: Kernels:%d Released\n", k1);
+				printf("RTGS Mode 3:: Kernels:%d Released\n", k2);
+			}
 			if (kernel_info_list[k1].deadline <= kernel_info_list[k2].deadline)
 			{
 				// handling the released kernel_info_list by the book-keeper
@@ -512,22 +512,22 @@ int RTGS_mode_3(char *kernelFilename, char *releaseTimeFilename)
 	}
 
 	if (runTimeMax != 0) {
-#if DEBUG_INFO
-		printf("\n******* Scheduler Mode 3 *******\n");
-		printf("Processors Available -- %d\n", processorsAvailable);
-		printf("Total Kernels Scheduled -- %d\n", kernelMax);
-		printf("	GPU Scheduled Kernels -- %d\n", GLOBAL_GPU_KERNELS);
-		printf("	CPU Scheduled Kernels -- %d\n", GLOBAL_CPU_KERNELS);
-#endif
+		if (GLOBAL_RTGS_DEBUG_MSG) {
+			printf("\n******* Scheduler Mode 3 *******\n");
+			printf("Processors Available -- %d\n", processorsAvailable);
+			printf("Total Kernels Scheduled -- %d\n", kernelMax);
+			printf("	GPU Scheduled Kernels -- %d\n", GLOBAL_GPU_KERNELS);
+			printf("	CPU Scheduled Kernels -- %d\n", GLOBAL_CPU_KERNELS);
+		}
 		for (int j = 0; j <= kernelMax; j++) {
 			kernel_info_list[j].processor_req = kernel_info_list[j].deadline = kernel_info_list[j].execution_time = kernel_info_list[j].latest_schedulable_time = 0;
 		}
 		kernelMax = 0; runTimeMax = 0; kernel_number = 0; GLOBAL_GPU_KERNELS = 0; GLOBAL_CPU_KERNELS = 0;
 	}
 
-#if DEBUG_MESSAGES
-	print(processor_alloc_list);
-#endif
+	if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+		print(processor_alloc_list);
+	}
 	processor_alloc_list = clean_node(processor_alloc_list);
 	GLOBAL_ALAP_LIST = clean_list(GLOBAL_ALAP_LIST);
 

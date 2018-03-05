@@ -21,8 +21,6 @@
 #include <assert.h>
 #include <stdint.h>
 
-#define DEBUG_INFO 1                            // debug mode information
-#define DEBUG_MESSAGES 0                        // debug messages with job schedule info
 #define DETAILED_DEBUG_MESSAGES 0               // debug messages detailed with methods used to schedule
 
 #define MAX_GPU_PROCESSOR 14                    // total streaming multi-processors available on the GPU
@@ -137,7 +135,7 @@ int GLOBAL_RELEASE_TIME[MAX_RUN_TIME];
 backup_list* GLOBAL_ALAP_LIST;
 
 // debug message setup variable
-int GLOBAL_RTGS_DEBUG_MSG;
+int GLOBAL_RTGS_DEBUG_MSG;  // debug mode information: 0 - TurnOff, 1 - Basic Debug Info, 2 - Detailed Debug Info, 3 - extended Debug Information
 
 //! \brief RTG-scheduler main function
 int scheduler_main(char *kernelFilename, char *releaseTimeFilename, int schedulerMode);

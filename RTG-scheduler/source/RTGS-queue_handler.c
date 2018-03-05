@@ -22,9 +22,9 @@ void Queue_kernel_execution
 	// TBD:: Sending Data and Kernels
 	*processor_alloc_list = ascending_insert(*processor_alloc_list, processor_release_time, processor_release_time, 
 											processorReleased, kernel_number, schedule_method);
-#if DEBUG_MESSAGES
-	print(*processor_alloc_list);
-#endif
+	if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+		print(*processor_alloc_list);
+	}
 	PROFILER_STOP(SRTG, Queue_kernel_execution)
 	return;
 }
@@ -46,17 +46,17 @@ scheduledNode **kernel_queue_list
 	{
 		*kernel_queue_list = ascending_insert(*kernel_queue_list, kernel_release_time, processor_release_time,
 			processorReleased, kernel_number, schedule_method);
-#if DEBUG_MESSAGES
-		Kernel_queue_print(*kernel_queue_list);
-#endif
+		if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+			Kernel_queue_print(*kernel_queue_list);
+		}
 	}
 	else if (schedule_method == RTGS_SCHEDULE_METHOD_AEAP)
 	{
 		*kernel_queue_list = ascending_insert(*kernel_queue_list, kernel_release_time, kernel_release_time,
 			processorReleased, kernel_number, schedule_method);
-#if DEBUG_MESSAGES
-		Kernel_queue_print(*kernel_queue_list);
-#endif
+		if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+			Kernel_queue_print(*kernel_queue_list);
+		}
 	}
 	else
 	{

@@ -93,9 +93,9 @@ backup_list* position_delete_list(backup_list* head)
 	backup_list* temp;
 	temp = head;
 	if (temp == NULL) {
-#if DEBUG_MESSAGES
-		printf("The List is empty\n");
-#endif
+		if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+			printf("The List is empty\n");
+		}
 		return head;
 	}
 	head = temp->next;
@@ -334,9 +334,9 @@ scheduledNode* position_delete(scheduledNode* head, int p)
 
 	if (temp == NULL) 
 	{
-#if DEBUG_MESSAGES
-		printf("The List is empty\n");
-#endif
+		if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+			printf("The List is empty\n");
+		}
 		return head;
 	}
 
