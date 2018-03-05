@@ -28,10 +28,10 @@ int ALAP
 		int processorReleased = kernel_info_list[kernel_number].processor_req;
 		int schedule_method = RTGS_SCHEDULE_METHOD_ALAP;
 		GLOBAL_GPU_KERNELS++;
-#if DETAILED_DEBUG_MESSAGES
-		printf("As Lata As Possible (ALAP) -- Job-%d scheduled\n", kernel_number);
-		printf("ALAP -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
-#endif
+        if (GLOBAL_RTGS_DEBUG_MSG > 2) {
+            printf("As Lata As Possible (ALAP) -- Job-%d scheduled\n", kernel_number);
+            printf("ALAP -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
+        }
 		GLOBAL_ALAP_LIST = insert_ALAP_list(GLOBAL_ALAP_LIST, kernel_release_time, processor_release_time, 
 			processors_allocated, kernel_number);
 		Kernel_queue_handler(processorReleased, kernel_release_time, processor_release_time, 
@@ -64,10 +64,10 @@ int ALAP
 			}
 			P_Given_list = clean_list(P_Given_list);
 			GLOBAL_CPU_KERNELS++;
-#if DETAILED_DEBUG_MESSAGES
-			printf("As Lata As Possible (ALAP) -- Job-%d Cannot be scheduled\n", kernel_number);
-			printf("ALAP -- Jobs REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
-#endif
+            if (GLOBAL_RTGS_DEBUG_MSG > 2) {
+                printf("As Lata As Possible (ALAP) -- Job-%d Cannot be scheduled\n", kernel_number);
+                printf("ALAP -- Jobs REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
+            }
 			PROFILER_STOP(SRTG, ALAP)
 			return processors_available;
 		}
@@ -81,10 +81,10 @@ int ALAP
 				int processorReleased = kernel_info_list[kernel_number].processor_req;
 				int schedule_method = RTGS_SCHEDULE_METHOD_ALAP;
 				GLOBAL_GPU_KERNELS++;
-#if DETAILED_DEBUG_MESSAGES
-				printf("As Lata As Possible (ALAP) -- Job-%d scheduled\n", kernel_number);
-				printf("ALAP -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
-#endif
+                if (GLOBAL_RTGS_DEBUG_MSG > 2) {
+                    printf("As Lata As Possible (ALAP) -- Job-%d scheduled\n", kernel_number);
+                    printf("ALAP -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
+                }
 				GLOBAL_ALAP_LIST = insert_ALAP_list(GLOBAL_ALAP_LIST, kernel_release_time, processor_release_time,
 					processors_allocated, kernel_number);
 				Kernel_queue_handler(processorReleased, kernel_release_time, processor_release_time, 
@@ -118,9 +118,9 @@ int ALAP
 			count++;
 		}
 		P_Given_list = clean_list(P_Given_list);
-#if DETAILED_DEBUG_MESSAGES
-		printf("As Lata As Possible (ALAP) -- Job-%d Cannot be scheduled AEAP", kernel_number);
-#endif
+        if (GLOBAL_RTGS_DEBUG_MSG > 2) {
+            printf("As Lata As Possible (ALAP) -- Job-%d Cannot be scheduled AEAP", kernel_number);
+        }
 	}
 	PROFILER_STOP(SRTG, ALAP)
 	return processors_available;

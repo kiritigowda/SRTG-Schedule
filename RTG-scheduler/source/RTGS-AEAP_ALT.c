@@ -16,9 +16,9 @@ int AEAP_advanced
 )
 {
 	PROFILER_START(SRTG, AEAP_advanced)
-#if DETAILED_DEBUG_MESSAGES
+if (GLOBAL_RTGS_DEBUG_MSG > 2) {
 	printf("As Early As Possible Advanced (AEAP-A) -- Job-%d is verified for ALAP Advanced scheduling\n", kernel_number);
-#endif
+}
 
 	int Pro = 0, kernel_release_time;
 	backup_list *P_Given_list = NULL;
@@ -65,10 +65,10 @@ int AEAP_advanced
 							P_Given_list = clean_list(P_Given_list);
 							// TBD:: Kernel has to be sent to CPU
 							GLOBAL_CPU_KERNELS++;
-#if DETAILED_DEBUG_MESSAGES
+if (GLOBAL_RTGS_DEBUG_MSG > 2) {
 							printf("As Early As Possible Advanced (AEAP-A) -- Job-%d Cannot be scheduled, Condition 1 & 2 Fail\n", kernel_number);
 							printf("AEAP-A -- Jobs REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
-#endif
+}
 							PROFILER_STOP(SRTG, AEAP_advanced)
 							return processors_available;
 						}
@@ -81,10 +81,10 @@ int AEAP_advanced
 							int presentTime = present_time;
 							int schedule_method = RTGS_SCHEDULE_METHOD_AEAP;
 							GLOBAL_GPU_KERNELS++;
-#if DETAILED_DEBUG_MESSAGES
+if (GLOBAL_RTGS_DEBUG_MSG > 2) {
 							printf("As Early As Possible Advanced (AEAP-A) -- Job-%d scheduled\n", kernel_number);
 							printf("AEAP-A -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
-#endif
+}
 							Queue_kernel_execution(processorReleased, processor_release_time, presentTime,
 								schedule_method, kernel_number, processor_alloc_list);
 							Kernel_queue_handler(processorReleased, kernel_release_time, presentTime,
@@ -110,10 +110,10 @@ int AEAP_advanced
 					int presentTime = present_time;
 					int schedule_method = RTGS_SCHEDULE_METHOD_AEAP;
 					GLOBAL_GPU_KERNELS++;
-#if DETAILED_DEBUG_MESSAGES
+if (GLOBAL_RTGS_DEBUG_MSG > 2) {
 					printf("As Early As Possible Advanced (AEAP-A) -- Job-%d scheduled\n", kernel_number);
 					printf("AEAP-A -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
-#endif
+}
 					Queue_kernel_execution(processorReleased, processor_release_time, presentTime,
 						schedule_method, kernel_number, processor_alloc_list);
 					Kernel_queue_handler(processorReleased, kernel_release_time, presentTime,
@@ -168,10 +168,10 @@ int AEAP_advanced
 									P_Given_list = clean_list(P_Given_list);
 									// TBD:: Kernel has to be sent to CPU
 									GLOBAL_CPU_KERNELS++;
-#if DETAILED_DEBUG_MESSAGES
+if (GLOBAL_RTGS_DEBUG_MSG > 2) {
 									printf("As Early As Possible Advanced (AEAP-A) -- Job-%d Cannot be scheduled, Condition 1 & 2 Fail\n", kernel_number);
 									printf("AEAP-A -- Jobs REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
-#endif
+}
 									PROFILER_STOP(SRTG, AEAP_advanced)
 									return processors_available;
 								}
@@ -186,10 +186,10 @@ int AEAP_advanced
 									int schedule_method = RTGS_SCHEDULE_METHOD_AEAP;
 									P_Given_list = clean_list(P_Given_list);
 									GLOBAL_GPU_KERNELS++;
-#if DETAILED_DEBUG_MESSAGES
+if (GLOBAL_RTGS_DEBUG_MSG > 2) {
 									printf("As Early As Possible Advanced (AEAP-A) -- Job-%d scheduled\n", kernel_number);
 									printf("AEAP-A -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
-#endif
+}
 									Queue_kernel_execution(processorReleased, processor_release_time, presentTime,
 										schedule_method, kernel_number, processor_alloc_list);
 									Kernel_queue_handler(processorReleased, kernel_release_time, presentTime,
@@ -206,10 +206,10 @@ int AEAP_advanced
 			else {
 				// TBD:: Kernel has to be sent to CPU
 				GLOBAL_CPU_KERNELS++;
-#if DETAILED_DEBUG_MESSAGES
+if (GLOBAL_RTGS_DEBUG_MSG > 2) {
 				printf("As Early As Possible Advanced (AEAP-A) -- Job-%d cannot be scheduled, Condition 1 & 2 Fail\n", kernel_number);
 				printf("AEAP_A -- Jobs REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
-#endif
+}
 				PROFILER_STOP(SRTG, AEAP_advanced)
 				return processors_available;
 			}
@@ -260,10 +260,10 @@ int AEAP_advanced
 								P_Given_list = clean_list(P_Given_list);
 								// TBD:: Kernel has to be sent to CPU
 								GLOBAL_CPU_KERNELS++;
-#if DETAILED_DEBUG_MESSAGES
+if (GLOBAL_RTGS_DEBUG_MSG > 2) {
 								printf("As Early As Possible Advanced (AEAP-A) -- Job-%d cannot be scheduled, Condition 1 & 2 Fail\n", kernel_number);
 								printf("AEAP-A -- Jobs REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
-#endif
+}
 								PROFILER_STOP(SRTG, AEAP_advanced)
 								return processors_available;
 							}
@@ -277,10 +277,10 @@ int AEAP_advanced
 								int schedule_method = RTGS_SCHEDULE_METHOD_AEAP;
 								P_Given_list = clean_list(P_Given_list);
 								GLOBAL_GPU_KERNELS++;
-#if DETAILED_DEBUG_MESSAGES
+if (GLOBAL_RTGS_DEBUG_MSG > 2) {
 								printf("As Early As Possible Advanced (AEAP-A) -- Job-%d scheduled\n", kernel_number);
 								printf("AEAP-A -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
-#endif
+}
 								Queue_kernel_execution(processorReleased, processor_release_time, presentTime,
 									schedule_method, kernel_number, processor_alloc_list);
 								Kernel_queue_handler(processorReleased, kernel_release_time, presentTime,
@@ -297,10 +297,10 @@ int AEAP_advanced
 			{
 				// TBD:: Kernel has to be sent to CPU
 				GLOBAL_CPU_KERNELS++;
-#if DETAILED_DEBUG_MESSAGES
+if (GLOBAL_RTGS_DEBUG_MSG > 2) {
 				printf("As Early As Possible Advanced (AEAP-A) -- Job-%d cannot be scheduled, Condition 1 & 2 Fail\n", kernel_number);
 				printf("AEAP-A -- Jobs REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
-#endif
+}
 				PROFILER_STOP(SRTG, AEAP_advanced)
 				return processors_available;
 			}
@@ -320,10 +320,10 @@ int AEAP_advanced
 					int presentTime = present_time;
 					int schedule_method = RTGS_SCHEDULE_METHOD_AEAP;
 					GLOBAL_GPU_KERNELS++;
-#if DETAILED_DEBUG_MESSAGES
+if (GLOBAL_RTGS_DEBUG_MSG > 2) {
 					printf("As Early As Possible Advanced (AEAP-A) -- Job-%d scheduled\n", kernel_number);
 					printf("AEAP-A -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
-#endif
+}
 					Queue_kernel_execution(processorReleased, processor_release_time, presentTime,
 						schedule_method, kernel_number, processor_alloc_list);
 					Kernel_queue_handler(processorReleased, kernel_release_time, presentTime,
@@ -378,10 +378,10 @@ int AEAP_advanced
 									P_Given_list = clean_list(P_Given_list);
 									// TBD:: Kernel has to be sent to CPU
 									GLOBAL_CPU_KERNELS++;
-#if DETAILED_DEBUG_MESSAGES
+if (GLOBAL_RTGS_DEBUG_MSG > 2) {
 									printf("As Early As Possible Advanced (AEAP-A) -- Job-%d Cannot be scheduled, Condition 1 & 2 Fail\n", kernel_number);
 									printf("AEAP-A -- Jobs REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
-#endif
+}
 									return processors_available;
 								}
 								else if (Pro >= kernel_info_list[kernel_number].processor_req)
@@ -394,10 +394,10 @@ int AEAP_advanced
 									int presentTime = present_time;
 									int schedule_method = RTGS_SCHEDULE_METHOD_AEAP;
 									GLOBAL_GPU_KERNELS++;
-#if DETAILED_DEBUG_MESSAGES
+if (GLOBAL_RTGS_DEBUG_MSG > 2) {
 									printf("As Early As Possible Advanced (AEAP-A) -- Job-%d scheduled\n", kernel_number);
 									printf("AEAP-A -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
-#endif
+}
 									Queue_kernel_execution(processorReleased, processor_release_time, presentTime,
 										schedule_method, kernel_number, processor_alloc_list);
 									Kernel_queue_handler(processorReleased, kernel_release_time, presentTime,
@@ -414,10 +414,10 @@ int AEAP_advanced
 			{
 				// TBD:: Kernel has to be sent to CPU
 				GLOBAL_CPU_KERNELS++;
-#if DETAILED_DEBUG_MESSAGES
+if (GLOBAL_RTGS_DEBUG_MSG > 2) {
 				printf("As Early As Possible Advanced (AEAP-A) -- Job-%d cannot be scheduled, Condition 1 & 2 Fail\n", kernel_number);
 				printf("AEAP-A -- Jobs REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
-#endif
+}
 				PROFILER_STOP(SRTG, AEAP_advanced)
 				return processors_available;
 			}
