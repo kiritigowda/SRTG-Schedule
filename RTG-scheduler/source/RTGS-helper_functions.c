@@ -36,6 +36,7 @@ int64_t RTGS_GetClockFrequency()
 #endif
 }
 
+//! \brief environment variable function
 bool RTGS_GetEnvironmentVariable(const char * name, char * value, size_t valueSize)
 {
 #if _WIN32
@@ -50,6 +51,39 @@ bool RTGS_GetEnvironmentVariable(const char * name, char * value, size_t valueSi
 	}
 	return v ? true : false;
 #endif
+}
+
+int RTGS_PrintScheduleSummary(int mode, int maxKernels, kernelInfo *kernelInfoList)
+{
+#if _WIN32
+	CreateDirectory("RTGS-Summary", NULL);
+#else
+	struct stat st = { 0 };
+	if (stat("RTGS-Summary", &st) == -1) { mkdir("RTGS-Summary", 0700); }
+#endif
+
+	char profiler[1024] = "RTGS-Summary/RTGS";
+
+	char pCSVfile[1024]; sprintf(pCSVfile, "%s-Mode-%d-Job-Summary.csv", profiler, mode);
+
+	FILE * fp = fopen(pCSVfile, "w"); if (!fp) { printf("ERROR: unable to create '%s'\n", pCSVfile); return RTGS_ERROR_NO_RESOURCES; }
+
+	fprintf(fp, "Job,Processors,Execution Time,Deadline,Release Time,Scheduler Overhead,Scheduled At,Rescheduled At,Completion Time,Scheduled Hardware\n");
+	for (int i = 0; i < maxKernels; i++) {
+		fprintf(fp, "%d,%d,%d,%d,%d,%f,%d,%d,%d,%d\n",i,
+			kernelInfoList[i].processor_req,
+			kernelInfoList[i].execution_time,
+			kernelInfoList[i].deadline,
+			kernelInfoList[i].release_time,
+			kernelInfoList[i].schedule_overhead,
+			kernelInfoList[i].scheduled_execution,
+			kernelInfoList[i].rescheduled_execution,
+			kernelInfoList[i].completion_time,
+			kernelInfoList[i].schedule_hardware
+			);
+	}
+	fclose(fp);
+	return RTGS_SUCCESS;
 }
 
 // Backup processor list

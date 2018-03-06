@@ -193,7 +193,8 @@ RTGS Mode 2 - As Early As Possible mode->AEAP
 ***********************************************************************************************************/
 int RTGS_mode_2(char *kernelFilename, char *releaseTimeFilename)
 {
-	kernelInfo kernel_info_list[MAX_KERNELS];
+	kernelInfo kernel_info_list[MAX_KERNELS] = { 0 };
+	kernelReleaseInfo releaseTimeInfo[MAX_KERNELS] = { 0 };
 	scheduledNode *processor_alloc_list = NULL;
 	scheduledNode *kernel_queue_list = NULL;
 
@@ -207,7 +208,7 @@ int RTGS_mode_2(char *kernelFilename, char *releaseTimeFilename)
 
 	int kernelMax = get_kernel_information(kernel_info_list, kernelFilename);// Read Kernel.TXT
 	if (kernelMax <= RTGS_FAILURE) { return  RTGS_FAILURE; }
-	int runTimeMax = get_kernel_release_times(releaseTimeFilename);// Read Release_time.TXT
+	int runTimeMax = get_kernel_release_times(releaseTimeInfo, releaseTimeFilename);// Read Release_time.TXT
 	if (runTimeMax <= RTGS_FAILURE) { return  RTGS_FAILURE; }
 
 	if (GLOBAL_RTGS_DEBUG_MSG > 1) {

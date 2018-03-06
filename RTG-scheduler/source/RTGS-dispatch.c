@@ -64,7 +64,7 @@ int Dispatch_queued_kernels
         )
 {
     PROFILER_START(SRTG, Dispatch_queued_kernels)
-            scheduledNode* temp;
+    scheduledNode* temp;
     temp = *kernel_queue_list;
 
     if (temp != NULL)

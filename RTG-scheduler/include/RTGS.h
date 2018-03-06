@@ -10,6 +10,10 @@
 #include <Windows.h>
 #define strcasecmp strcmp
 #else
+#include <x86intrin.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 #include <sys/time.h>
 #include <strings.h>
 #endif
@@ -25,7 +29,7 @@
 #define MAX_GPU_PROCESSOR 14                    // total streaming multi-processors available on the GPU
 #define MAX_KERNELS 100                         // max Kernels needed to be scheduled
 #define PROCESSOR_LIMIT 10                      // ALAP Processor Limit
-#define MAX_RUN_TIME 1000                       // MAX RUN TIME TO VERIFY -- TBD
+#define MAX_RUN_TIME 1000                       // MAX RUN TIME TO VERIFY
 
 #define MULTIPLE_KERNELS_SCHEDULED -99          // multiple kerenls scheduled at a given time
 
@@ -95,12 +99,23 @@ struct kernel_information {
 	int latest_schedulable_time;	// latest schedule time
 	int release_time;				// latest schedule time
 	float schedule_overhead;		// scheduler Overhead
+	int data_send_time;				// data for the job sent
 	int scheduled_execution;		// scheduled for GPU exec
 	int completion_time;			// job completion time
 	int rescheduled_execution;		// job rescheduled for gpu exe
+	int schedule_hardware;			// job scheduled on 0: ERROR, 1: GPU, 2: CPU
 };
 //! \brief kernel_info_list info structure
 typedef struct kernel_information kernelInfo;
+
+
+/* Kernel Info Structure */
+struct kernel_release_time {
+	int release_time;				// job release time
+	int num_kernel_released;		// num jobs released
+};
+//! \brief kernel_info_list info structure
+typedef struct kernel_release_time kernelReleaseInfo;
 
 /* scheduled kernel linked list*/
 struct linked_list {
@@ -154,7 +169,7 @@ int RTGS_mode_5(char *kernelFilename, char *releaseTimeFilename);
 int get_kernel_information(kernelInfo *kernelInfoList, const char *kernelFilename);
 
 //! \brief function to get kernel release time info from the input file
-int get_kernel_release_times(const char *releaseTimeFilename);
+int get_kernel_release_times(kernelReleaseInfo *releaseTimeInfo, const char *releaseTimeFilename);
 
 //! \brief function to retrieve processors from kernels which complete thier execution
 int Retrieve_processors(int present_time, int processors_available, 
@@ -215,6 +230,9 @@ int64_t RTGS_GetClockFrequency();
 
 //! \brief Get ENV Variable
 bool RTGS_GetEnvironmentVariable(const char * name, char * value, size_t valueSize);
+
+//! \brief print summary
+int RTGS_PrintScheduleSummary(int mode, int maxKernels, kernelInfo *kernelInfoList);
 
 // list functions
 scheduledNode* insert(scheduledNode* head, scheduledNode* data);
