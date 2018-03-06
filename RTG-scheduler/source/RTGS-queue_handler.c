@@ -1,5 +1,5 @@
 /*
-/*
+*
 * RTGS-queue_handler.c
 *      Author: Kiriti Nagesh Gowda
 */
