@@ -125,7 +125,7 @@ int  RTGS_mode_5(char *kernelFilename, char *releaseTimeFilename)
 			printf("	CPU Scheduled Jobs -- %d\n", GLOBAL_CPU_KERNELS);
 		}
 
-		if (RTGS_PrintScheduleSummary(5, kernelMax, kernel_info_list)) {
+        if (RTGS_PrintScheduleSummary(5, kernelMax, kernel_info_list)) {
 			printf("\nSummary Failed\n");
 		}
 

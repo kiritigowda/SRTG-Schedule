@@ -44,6 +44,11 @@ int Kernel_book_keeper
 					processorReleased = kernel_info_list[kernel_number].processor_req;
 					processor_release_time = kernel_info_list[kernel_number].execution_time + present_time;
 					schedule_method = RTGS_SCHEDULE_METHOD_IMMEDIATE;
+
+                    kernel_info_list[kernel_number].schedule_hardware = 1;
+                    kernel_info_list[kernel_number].rescheduled_execution = -1;
+                    kernel_info_list[kernel_number].scheduled_execution = present_time;
+                    kernel_info_list[kernel_number].completion_time = kernel_info_list[kernel_number].execution_time + present_time;
 					GLOBAL_GPU_KERNELS++;
 					if (GLOBAL_RTGS_DEBUG_MSG > 1) {
 						printf("Kernel Book Keeper -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
@@ -55,6 +60,10 @@ int Kernel_book_keeper
 				}
 				else 
 				{
+                    kernel_info_list[kernel_number].schedule_hardware = 2;
+                    kernel_info_list[kernel_number].rescheduled_execution = -1;
+                    kernel_info_list[kernel_number].completion_time = -1;
+                    kernel_info_list[kernel_number].scheduled_execution = -1;
 					GLOBAL_CPU_KERNELS++;
 					if (GLOBAL_RTGS_DEBUG_MSG > 1) {
 						printf("Kernel Book Keeper -- Job-%d will not complete before it's deadline, Job REJECTED\n", kernel_number);
@@ -94,6 +103,10 @@ int Kernel_book_keeper
 						processorReleased = kernel_info_list[kernel_number].processor_req;
 						processor_release_time = kernel_info_list[kernel_number].execution_time + present_time;
 						schedule_method = RTGS_SCHEDULE_METHOD_IMMEDIATE;
+                        kernel_info_list[kernel_number].schedule_hardware = 1;
+                        kernel_info_list[kernel_number].rescheduled_execution = -1;
+                        kernel_info_list[kernel_number].scheduled_execution = present_time;
+                        kernel_info_list[kernel_number].completion_time = kernel_info_list[kernel_number].execution_time + present_time;
 						GLOBAL_GPU_KERNELS++;
 						if (GLOBAL_RTGS_DEBUG_MSG > 1) {
 							printf("Kernel Book Keeper -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
@@ -104,6 +117,10 @@ int Kernel_book_keeper
 					}
 					else 
 					{
+                        kernel_info_list[kernel_number].schedule_hardware = 2;
+                        kernel_info_list[kernel_number].rescheduled_execution = -1;
+                        kernel_info_list[kernel_number].completion_time = -1;
+                        kernel_info_list[kernel_number].scheduled_execution = -1;
 						GLOBAL_CPU_KERNELS++;
 						if (GLOBAL_RTGS_DEBUG_MSG > 1) {
 							printf("Kernel Book Keeper -- Job-%d will not complete before it's deadline, Job REJECTED\n", kernel_number);
@@ -122,6 +139,11 @@ int Kernel_book_keeper
 						processorReleased = kernel_info_list[kernel_number].processor_req;
 						processor_release_time = kernel_info_list[kernel_number].execution_time + present_time;
 						schedule_method = RTGS_SCHEDULE_METHOD_IMMEDIATE;
+
+                        kernel_info_list[kernel_number].schedule_hardware = 1;
+                        kernel_info_list[kernel_number].rescheduled_execution = -1;
+                        kernel_info_list[kernel_number].scheduled_execution = present_time;
+                        kernel_info_list[kernel_number].completion_time = kernel_info_list[kernel_number].execution_time + present_time;
 						GLOBAL_GPU_KERNELS++;
 						if (GLOBAL_RTGS_DEBUG_MSG > 1) {
 							printf("Kernel Book Keeper -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
@@ -132,6 +154,10 @@ int Kernel_book_keeper
 					}
 					else 
 					{
+                        kernel_info_list[kernel_number].schedule_hardware = 2;
+                        kernel_info_list[kernel_number].rescheduled_execution = -1;
+                        kernel_info_list[kernel_number].completion_time = -1;
+                        kernel_info_list[kernel_number].scheduled_execution = -1;
 						GLOBAL_CPU_KERNELS++;
 						if (GLOBAL_RTGS_DEBUG_MSG > 1) {
 							printf("Kernel Book Keeper -- Job-%d will not complete before it's deadline, Job REJECTED\n", kernel_number);
@@ -159,6 +185,11 @@ int Kernel_book_keeper
 						processorReleased = kernel_info_list[kernel_number].processor_req;
 						processor_release_time = kernel_info_list[kernel_number].execution_time + present_time;
 						schedule_method = RTGS_SCHEDULE_METHOD_IMMEDIATE;
+
+                        kernel_info_list[kernel_number].schedule_hardware = 1;
+                        kernel_info_list[kernel_number].rescheduled_execution = -1;
+                        kernel_info_list[kernel_number].scheduled_execution = present_time;
+                        kernel_info_list[kernel_number].completion_time = kernel_info_list[kernel_number].execution_time + present_time;
 						GLOBAL_GPU_KERNELS++;
 						if (GLOBAL_RTGS_DEBUG_MSG > 1) {
 							printf("Kernel Book Keeper -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
@@ -169,6 +200,10 @@ int Kernel_book_keeper
 					}
 					else
 					{
+                        kernel_info_list[kernel_number].schedule_hardware = 2;
+                        kernel_info_list[kernel_number].rescheduled_execution = -1;
+                        kernel_info_list[kernel_number].completion_time = -1;
+                        kernel_info_list[kernel_number].scheduled_execution = -1;
 						GLOBAL_CPU_KERNELS++;
 						if (GLOBAL_RTGS_DEBUG_MSG > 1) {
 							printf("Kernel Book Keeper -- Job-%d will not complete before it's deadline, Job REJECTED\n", kernel_number);

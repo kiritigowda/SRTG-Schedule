@@ -161,6 +161,6 @@ int Dispatch_queued_kernels
         }
     }
     PROFILER_STOP(SRTG, Dispatch_queued_kernels)
-            return processors_available;
+    return processors_available;
 }
 

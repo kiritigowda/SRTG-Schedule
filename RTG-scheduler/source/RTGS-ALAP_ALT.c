@@ -34,6 +34,11 @@ scheduledNode **kernel_queue_list
 			int processorReleased = kernel_info_list[kernel_number].processor_req;
 			int processor_release_time = kernel_info_list[kernel_number].deadline;
 			int schedule_method = RTGS_SCHEDULE_METHOD_ALAP;
+
+            kernel_info_list[kernel_number].schedule_hardware = 1;
+            kernel_info_list[kernel_number].rescheduled_execution = -1;
+            kernel_info_list[kernel_number].scheduled_execution = kernel_release_time;
+            kernel_info_list[kernel_number].completion_time = kernel_info_list[kernel_number].execution_time + kernel_release_time;
 			GLOBAL_GPU_KERNELS++;
             if (GLOBAL_RTGS_DEBUG_MSG > 2) {
                 printf("As Late As Possible Advanced (ALAP-A) -- Job-%d scheduled\n", kernel_number);
@@ -52,6 +57,11 @@ scheduledNode **kernel_queue_list
 			int processorReleased = kernel_info_list[kernel_number].processor_req;
 			int processor_release_time = kernel_info_list[kernel_number].deadline;
 			int schedule_method = RTGS_SCHEDULE_METHOD_ALAP;
+
+            kernel_info_list[kernel_number].schedule_hardware = 1;
+            kernel_info_list[kernel_number].rescheduled_execution = -1;
+            kernel_info_list[kernel_number].scheduled_execution = kernel_release_time;
+            kernel_info_list[kernel_number].completion_time = kernel_info_list[kernel_number].execution_time + kernel_release_time;
 			GLOBAL_GPU_KERNELS++;
             if (GLOBAL_RTGS_DEBUG_MSG > 2) {
                 printf("As Late As Possible Advanced (ALAP-A) -- Job-%d scheduled\n", kernel_number);
@@ -68,6 +78,10 @@ scheduledNode **kernel_queue_list
 			{
 				if ((temp->processor_release_time + kernel_info_list[kernel_number].execution_time) > kernel_info_list[kernel_number].deadline)
 				{
+                    kernel_info_list[kernel_number].schedule_hardware = 2;
+                    kernel_info_list[kernel_number].rescheduled_execution = -1;
+                    kernel_info_list[kernel_number].completion_time = -1;
+                    kernel_info_list[kernel_number].scheduled_execution = -1;
 					GLOBAL_CPU_KERNELS++;
                     if (GLOBAL_RTGS_DEBUG_MSG > 2) {
                         printf("As Late As Possible Advanced (ALAP-A) -- Job-%d cannot be scheduled\n", kernel_number);
@@ -88,6 +102,10 @@ scheduledNode **kernel_queue_list
 
 						if ((t1->processor_release_time + kernel_info_list[kernel_number].execution_time) > kernel_info_list[kernel_number].deadline) 
 						{
+                            kernel_info_list[kernel_number].schedule_hardware = 2;
+                            kernel_info_list[kernel_number].rescheduled_execution = -1;
+                            kernel_info_list[kernel_number].completion_time = -1;
+                            kernel_info_list[kernel_number].scheduled_execution = -1;
 							GLOBAL_CPU_KERNELS++;
                             if (GLOBAL_RTGS_DEBUG_MSG > 2) {
                                 printf("As Late As Possible Advanced (ALAP-A) -- Job-%d cannot be scheduled\n", kernel_number);
@@ -102,6 +120,11 @@ scheduledNode **kernel_queue_list
 							int processorReleased = kernel_info_list[kernel_number].processor_req;
 							int processor_release_time = kernel_info_list[kernel_number].deadline;
 							int schedule_method = RTGS_SCHEDULE_METHOD_ALAP;
+
+                            kernel_info_list[kernel_number].schedule_hardware = 1;
+                            kernel_info_list[kernel_number].rescheduled_execution = -1;
+                            kernel_info_list[kernel_number].scheduled_execution = kernel_release_time;
+                            kernel_info_list[kernel_number].completion_time = kernel_info_list[kernel_number].execution_time + kernel_release_time;
 							GLOBAL_GPU_KERNELS++;
                             if (GLOBAL_RTGS_DEBUG_MSG > 2) {
                                 printf("As Late As Possible Advanced (ALAP-A) -- Job-%d scheduled\n", kernel_number);
@@ -124,6 +147,10 @@ scheduledNode **kernel_queue_list
 	} //End if
 	else 
 	{
+        kernel_info_list[kernel_number].schedule_hardware = 2;
+        kernel_info_list[kernel_number].rescheduled_execution = -1;
+        kernel_info_list[kernel_number].completion_time = -1;
+        kernel_info_list[kernel_number].scheduled_execution = -1;
 		GLOBAL_CPU_KERNELS++;
         if (GLOBAL_RTGS_DEBUG_MSG > 2) {
             printf("As Late As Possible Advanced (ALAP-A) -- Job-%d Cannot be scheduled\n", kernel_number);

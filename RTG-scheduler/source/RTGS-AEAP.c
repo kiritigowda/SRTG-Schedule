@@ -50,6 +50,10 @@ int AEAP
 				}
 				P_Given_list = clean_list(P_Given_list);
 				// TBD:: Kernel has to be sent to CPU
+                kernel_info_list[kernel_number].schedule_hardware = 2;
+                kernel_info_list[kernel_number].rescheduled_execution = -1;
+                kernel_info_list[kernel_number].completion_time = -1;
+                kernel_info_list[kernel_number].scheduled_execution = -1;
 				GLOBAL_CPU_KERNELS++;
                 if (GLOBAL_RTGS_DEBUG_MSG > 2) {
                     printf("As Early As Possible (AEAP) -- Job-%d Cannot be scheduled, Condition 1 & 2 Fail\n", kernel_number);
@@ -70,6 +74,11 @@ int AEAP
 					int processor_release_time = kernel_release_time + kernel_info_list[kernel_number].execution_time;
 					int presentTime = present_time;
 					int schedule_method = RTGS_SCHEDULE_METHOD_AEAP;
+
+                    kernel_info_list[kernel_number].schedule_hardware = 1;
+                    kernel_info_list[kernel_number].rescheduled_execution = -1;
+                    kernel_info_list[kernel_number].scheduled_execution = kernel_release_time;
+                    kernel_info_list[kernel_number].completion_time = kernel_info_list[kernel_number].execution_time + kernel_release_time;
 					GLOBAL_GPU_KERNELS++;
                     if (GLOBAL_RTGS_DEBUG_MSG > 2) {
                         printf("As Early As Possible (AEAP) -- Job-%d scheduled\n", kernel_number);
@@ -118,6 +127,10 @@ int AEAP
 				}
 				P_Given_list = clean_list(P_Given_list);
 				// TBD:: Kernel has to be sent to CPU
+                kernel_info_list[kernel_number].schedule_hardware = 2;
+                kernel_info_list[kernel_number].rescheduled_execution = -1;
+                kernel_info_list[kernel_number].completion_time = -1;
+                kernel_info_list[kernel_number].scheduled_execution = -1;
 				GLOBAL_CPU_KERNELS++;
                 if (GLOBAL_RTGS_DEBUG_MSG > 2) {
                     printf("As Early As Possible (AEAP) -- Job-%d Cannot be scheduled, Condition 1 & 2 Fail\n", kernel_number);
@@ -141,6 +154,11 @@ int AEAP
 					{
 						temp->processors_allocated = Pro - kernel_info_list[kernel_number].processor_req;
 						P_Given_list = clean_list(P_Given_list);
+
+                        kernel_info_list[kernel_number].schedule_hardware = 1;
+                        kernel_info_list[kernel_number].rescheduled_execution = -1;
+                        kernel_info_list[kernel_number].scheduled_execution = kernel_release_time;
+                        kernel_info_list[kernel_number].completion_time = kernel_info_list[kernel_number].execution_time + kernel_release_time;
 						GLOBAL_GPU_KERNELS++;
                         if (GLOBAL_RTGS_DEBUG_MSG > 2) {
                             printf("As Early As Possible (AEAP) -- Job-%d scheduled\n", kernel_number);
@@ -193,6 +211,11 @@ int AEAP
 						temp->processors_allocated = Pro - kernel_info_list[kernel_number].processor_req;
 						P_Given_list = clean_list(P_Given_list);
 						given = kernel_info_list[kernel_number].processor_req;
+
+                        kernel_info_list[kernel_number].schedule_hardware = 1;
+                        kernel_info_list[kernel_number].rescheduled_execution = -1;
+                        kernel_info_list[kernel_number].scheduled_execution = kernel_release_time;
+                        kernel_info_list[kernel_number].completion_time = kernel_info_list[kernel_number].execution_time + kernel_release_time;
 						GLOBAL_GPU_KERNELS++;
                         if (GLOBAL_RTGS_DEBUG_MSG > 2) {
                             printf("As Early As Possible (AEAP) -- AEAP with ALAP Condition-1, Job-%d scheduled\n", kernel_number);
@@ -213,6 +236,11 @@ int AEAP
 							temp->processors_allocated = Pro - kernel_info_list[kernel_number].processor_req;
 							P_Given_list = clean_list(P_Given_list);
 							given = kernel_info_list[kernel_number].processor_req;
+
+                            kernel_info_list[kernel_number].schedule_hardware = 1;
+                            kernel_info_list[kernel_number].rescheduled_execution = -1;
+                            kernel_info_list[kernel_number].scheduled_execution = kernel_release_time;
+                            kernel_info_list[kernel_number].completion_time = kernel_info_list[kernel_number].execution_time + kernel_release_time;
 							GLOBAL_GPU_KERNELS++;
                             if (GLOBAL_RTGS_DEBUG_MSG > 2) {
                                 printf("As Early As Possible (AEAP) -- AEAP with ALAP Condition-1, Job-%d scheduled\n", kernel_number);
@@ -250,6 +278,10 @@ int AEAP
 										}
 										P_Given_list_t = clean_list(P_Given_list_t);
 										// TBD:: Kernel has to be sent to CPU
+                                        kernel_info_list[kernel_number].schedule_hardware = 2;
+                                        kernel_info_list[kernel_number].rescheduled_execution = -1;
+                                        kernel_info_list[kernel_number].completion_time = -1;
+                                        kernel_info_list[kernel_number].scheduled_execution = -1;
 										GLOBAL_CPU_KERNELS++;
                                         if (GLOBAL_RTGS_DEBUG_MSG > 2) {
                                             printf("As Early As Possible (AEAP) -- Job-%d Cannot be scheduled, Condition 1 & 2 Fail\n", kernel_number);
@@ -266,6 +298,11 @@ int AEAP
 										int processor_release_time = kernel_release_time + kernel_info_list[kernel_number].execution_time;
 										int presentTime = present_time;
 										int schedule_method = RTGS_SCHEDULE_METHOD_AEAP;
+
+                                        kernel_info_list[kernel_number].schedule_hardware = 1;
+                                        kernel_info_list[kernel_number].rescheduled_execution = -1;
+                                        kernel_info_list[kernel_number].scheduled_execution = kernel_release_time;
+                                        kernel_info_list[kernel_number].completion_time = kernel_info_list[kernel_number].execution_time + kernel_release_time;
 										GLOBAL_GPU_KERNELS++;
                                         if (GLOBAL_RTGS_DEBUG_MSG > 2) {
                                             printf("As Early As Possible (AEAP) -- Job-%d scheduled\n", kernel_number);

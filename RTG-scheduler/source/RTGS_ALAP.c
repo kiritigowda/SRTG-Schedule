@@ -27,6 +27,11 @@ int ALAP
 	{
 		int processorReleased = kernel_info_list[kernel_number].processor_req;
 		int schedule_method = RTGS_SCHEDULE_METHOD_ALAP;
+
+        kernel_info_list[kernel_number].schedule_hardware = 1;
+        kernel_info_list[kernel_number].rescheduled_execution = -1;
+        kernel_info_list[kernel_number].scheduled_execution = kernel_release_time;
+        kernel_info_list[kernel_number].completion_time = kernel_info_list[kernel_number].execution_time + kernel_release_time;
 		GLOBAL_GPU_KERNELS++;
         if (GLOBAL_RTGS_DEBUG_MSG > 2) {
             printf("As Lata As Possible (ALAP) -- Job-%d scheduled\n", kernel_number);
@@ -63,6 +68,10 @@ int ALAP
 				count++;
 			}
 			P_Given_list = clean_list(P_Given_list);
+            kernel_info_list[kernel_number].schedule_hardware = 2;
+            kernel_info_list[kernel_number].rescheduled_execution = -1;
+            kernel_info_list[kernel_number].completion_time = -1;
+            kernel_info_list[kernel_number].scheduled_execution = -1;
 			GLOBAL_CPU_KERNELS++;
             if (GLOBAL_RTGS_DEBUG_MSG > 2) {
                 printf("As Lata As Possible (ALAP) -- Job-%d Cannot be scheduled\n", kernel_number);
@@ -80,6 +89,11 @@ int ALAP
 				P_Given_list = clean_list(P_Given_list);
 				int processorReleased = kernel_info_list[kernel_number].processor_req;
 				int schedule_method = RTGS_SCHEDULE_METHOD_ALAP;
+
+                kernel_info_list[kernel_number].schedule_hardware = 1;
+                kernel_info_list[kernel_number].rescheduled_execution = -1;
+                kernel_info_list[kernel_number].scheduled_execution = kernel_release_time;
+                kernel_info_list[kernel_number].completion_time = kernel_info_list[kernel_number].execution_time + kernel_release_time;
 				GLOBAL_GPU_KERNELS++;
                 if (GLOBAL_RTGS_DEBUG_MSG > 2) {
                     printf("As Lata As Possible (ALAP) -- Job-%d scheduled\n", kernel_number);

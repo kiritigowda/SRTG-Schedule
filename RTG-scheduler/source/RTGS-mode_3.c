@@ -50,6 +50,10 @@ static int Mode_3_ALAP
 				count++;
 			}
 			P_Given_list = clean_list(P_Given_list);
+            kernel_info_list[kernel_number].schedule_hardware = 2;
+            kernel_info_list[kernel_number].rescheduled_execution = -1;
+            kernel_info_list[kernel_number].completion_time = -1;
+            kernel_info_list[kernel_number].scheduled_execution = -1;
 			GLOBAL_CPU_KERNELS++;
 			if (GLOBAL_RTGS_DEBUG_MSG > 1) {
 				// TBD:: Return Kernel to CPU - Function to send Kernel to CPU execution
@@ -69,6 +73,11 @@ static int Mode_3_ALAP
 
 				int processorReleased = kernel_info_list[kernel_number].processor_req;
 				int schedule_method = RTGS_SCHEDULE_METHOD_ALAP;
+
+                kernel_info_list[kernel_number].schedule_hardware = 1;
+                kernel_info_list[kernel_number].rescheduled_execution = -1;
+                kernel_info_list[kernel_number].scheduled_execution = kernel_release_time;
+                kernel_info_list[kernel_number].completion_time = kernel_info_list[kernel_number].execution_time + kernel_release_time;
 				GLOBAL_GPU_KERNELS++;
 				if (GLOBAL_RTGS_DEBUG_MSG > 1) {
 					printf("Mode 3 ALAP: Kernel:%d scheduled", kernel_number);
@@ -157,6 +166,10 @@ static int Mode_3_AEAP
 				}
 				P_Given_list = clean_list(P_Given_list);
 
+                kernel_info_list[kernel_number].schedule_hardware = 2;
+                kernel_info_list[kernel_number].rescheduled_execution = -1;
+                kernel_info_list[kernel_number].completion_time = -1;
+                kernel_info_list[kernel_number].scheduled_execution = -1;
 				GLOBAL_CPU_KERNELS++;
 				if (GLOBAL_RTGS_DEBUG_MSG > 1) {
 					printf("Mode 3 AEAP: The Kernel:%d Cannot be scheduled\n", kernel_number);
@@ -177,6 +190,11 @@ static int Mode_3_AEAP
 					int processor_release_time = kernel_release_time + kernel_info_list[kernel_number].execution_time;
 					int presentTime = present_time;
 					int schedule_method = RTGS_SCHEDULE_METHOD_AEAP;
+
+                    kernel_info_list[kernel_number].schedule_hardware = 1;
+                    kernel_info_list[kernel_number].rescheduled_execution = -1;
+                    kernel_info_list[kernel_number].scheduled_execution = kernel_release_time;
+                    kernel_info_list[kernel_number].completion_time = kernel_info_list[kernel_number].execution_time + kernel_release_time;
 					GLOBAL_GPU_KERNELS++;
 					if (GLOBAL_RTGS_DEBUG_MSG > 1) {
 						printf("Mode 3 AEAP: The Kernel:%d scheduled\n", kernel_number);
@@ -220,7 +238,11 @@ static int Mode_3_AEAP
 					}
 					count++;
 				}
-				// TBD:: Return Kernel to CPU - Function to send Kernel to CPU execution 
+                // TBD:: Return Kernel to CPU - Function to send Kernel to CPU execution
+                kernel_info_list[kernel_number].schedule_hardware = 2;
+                kernel_info_list[kernel_number].rescheduled_execution = -1;
+                kernel_info_list[kernel_number].completion_time = -1;
+                kernel_info_list[kernel_number].scheduled_execution = -1;
 				GLOBAL_CPU_KERNELS++;
 				P_Given_list = clean_list(P_Given_list);
 				if (GLOBAL_RTGS_DEBUG_MSG > 1) {
@@ -245,6 +267,11 @@ static int Mode_3_AEAP
 						temp->processors_allocated = Pro - kernel_info_list[kernel_number].processor_req;
 						P_Given_list = clean_list(P_Given_list);
 						given = kernel_info_list[kernel_number].processor_req;
+
+                        kernel_info_list[kernel_number].schedule_hardware = 1;
+                        kernel_info_list[kernel_number].rescheduled_execution = -1;
+                        kernel_info_list[kernel_number].scheduled_execution = kernel_release_time;
+                        kernel_info_list[kernel_number].completion_time = kernel_info_list[kernel_number].execution_time + kernel_release_time;
 						GLOBAL_GPU_KERNELS++;
 						if (GLOBAL_RTGS_DEBUG_MSG > 1) {
 							printf("Mode 3 AEAP: Condition-1 The Kernel:%d scheduled\n", kernel_number);
@@ -260,6 +287,11 @@ static int Mode_3_AEAP
 					{
 						temp->processors_allocated = Pro - kernel_info_list[kernel_number].processor_req;
 						P_Given_list = clean_list(P_Given_list);
+
+                        kernel_info_list[kernel_number].schedule_hardware = 1;
+                        kernel_info_list[kernel_number].rescheduled_execution = -1;
+                        kernel_info_list[kernel_number].scheduled_execution = kernel_release_time;
+                        kernel_info_list[kernel_number].completion_time = kernel_info_list[kernel_number].execution_time + kernel_release_time;
 						GLOBAL_GPU_KERNELS++;
 						if (GLOBAL_RTGS_DEBUG_MSG > 1) {
 							printf("Mode 3 AEAP: Condition-2 The Kernel:%d scheduled\n", kernel_number);
@@ -273,6 +305,10 @@ static int Mode_3_AEAP
 					}
 					else 
 					{
+                        kernel_info_list[kernel_number].schedule_hardware = 2;
+                        kernel_info_list[kernel_number].rescheduled_execution = -1;
+                        kernel_info_list[kernel_number].completion_time = -1;
+                        kernel_info_list[kernel_number].scheduled_execution = -1;
 						GLOBAL_CPU_KERNELS++;
 						if (GLOBAL_RTGS_DEBUG_MSG > 1) {
 							printf("Mode 3 AEAP: The Kernel:%d Cannot be scheduled Condition 1 & 2 Fail\n", kernel_number);
@@ -336,6 +372,10 @@ static int Mode_3_Processors_Unavailable
 	}
 	else if (kernel_info_list[kernel_number].processor_req >= PROCESSOR_LIMIT && GLOBAL_ALAP_LIST != NULL) 
 	{
+        kernel_info_list[kernel_number].schedule_hardware = 2;
+        kernel_info_list[kernel_number].rescheduled_execution = -1;
+        kernel_info_list[kernel_number].completion_time = -1;
+        kernel_info_list[kernel_number].scheduled_execution = -1;
 		GLOBAL_CPU_KERNELS++;
 		if (GLOBAL_RTGS_DEBUG_MSG > 1) {
 			printf("Mode-3 Processors Unavailable: Kernel:%d sent BACK TO CPU as ALAP is already set\n", kernel_number);
@@ -380,7 +420,12 @@ static int Mode_3_book_keeper
 				processor_release_time = kernel_info_list[kernel_number].execution_time + presentTime;
 				schedule_method = RTGS_SCHEDULE_METHOD_IMMEDIATE;
 				// Kernel call for the GPU to handle the given Kernels and number of blocks//
-				Queue_kernel_execution(processorReleased, processor_release_time, presentTime, schedule_method, kernel_number, processor_alloc_list); 	
+                Queue_kernel_execution(processorReleased, processor_release_time, presentTime, schedule_method, kernel_number, processor_alloc_list);
+
+                kernel_info_list[kernel_number].schedule_hardware = 1;
+                kernel_info_list[kernel_number].rescheduled_execution = -1;
+                kernel_info_list[kernel_number].scheduled_execution = presentTime;
+                kernel_info_list[kernel_number].completion_time = kernel_info_list[kernel_number].execution_time + presentTime;
 				GLOBAL_GPU_KERNELS++;
 				if (GLOBAL_RTGS_DEBUG_MSG > 1) {
 					printf("Mode-3 Book Keeper:: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
@@ -388,6 +433,10 @@ static int Mode_3_book_keeper
 			}
 			else 
 			{
+                kernel_info_list[kernel_number].schedule_hardware = 2;
+                kernel_info_list[kernel_number].rescheduled_execution = -1;
+                kernel_info_list[kernel_number].completion_time = -1;
+                kernel_info_list[kernel_number].scheduled_execution = -1;
 				GLOBAL_CPU_KERNELS++;
 				if (GLOBAL_RTGS_DEBUG_MSG > 1) {
 					printf("Mode-3 Book Keeper:: Kernel-%d will not complete before it's deadline, Job REJECTED\n", kernel_number);
@@ -415,6 +464,10 @@ static int Mode_3_book_keeper
 				}
 				else
 				{
+                    kernel_info_list[kernel_number].schedule_hardware = 2;
+                    kernel_info_list[kernel_number].rescheduled_execution = -1;
+                    kernel_info_list[kernel_number].completion_time = -1;
+                    kernel_info_list[kernel_number].scheduled_execution = -1;
 					GLOBAL_CPU_KERNELS++;
 					if (GLOBAL_RTGS_DEBUG_MSG > 1) {
 						printf("Mode-3 Book Keeper:: Kernel-%d will not complete before it's deadline, Job REJECTED\n", kernel_number);
@@ -424,6 +477,10 @@ static int Mode_3_book_keeper
 			}
 			else
 			{
+                kernel_info_list[kernel_number].schedule_hardware = 2;
+                kernel_info_list[kernel_number].rescheduled_execution = -1;
+                kernel_info_list[kernel_number].completion_time = -1;
+                kernel_info_list[kernel_number].scheduled_execution = -1;
 				GLOBAL_CPU_KERNELS++;
 				if (GLOBAL_RTGS_DEBUG_MSG > 1) {
 					printf("Mode-3 Book Keeper:: Kernel-%d REJECTED ALAP kernel is set\n", kernel_number);
@@ -458,73 +515,119 @@ int RTGS_mode_3(char *kernelFilename, char *releaseTimeFilename)
 	GLOBAL_CPU_KERNELS = 0;
 	GLOBAL_ALAP_LIST = NULL;
 
-	int processorsAvailable = MAX_GPU_PROCESSOR;
-	int kernel_number = 0;
+    int processorsAvailable = MAX_GPU_PROCESSOR;
+    int kernel_number = 0;
 
-	int kernelMax = get_kernel_information(kernel_info_list, kernelFilename);// Read Kernel.TXT
-	if (kernelMax <= RTGS_FAILURE) { return  RTGS_FAILURE; }
-	int runTimeMax = get_kernel_release_times(releaseTimeInfo, releaseTimeFilename);// Read Release_time.TXT
-	if (runTimeMax <= RTGS_FAILURE) { return  RTGS_FAILURE; }
+    int kernelMax = get_kernel_information(kernel_info_list, kernelFilename);
+    if (kernelMax <= RTGS_FAILURE) { return  RTGS_FAILURE; }
+    int maxReleases = get_kernel_release_times(releaseTimeInfo, releaseTimeFilename);
+    if (maxReleases <= RTGS_FAILURE) { return  RTGS_FAILURE; }
 
-	if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-		printf("\n**************** The GPU Scheduler will Schedule %d Kernels ****************\n", kernelMax);
-	}
+    if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+        printf("\n**************** The GPU Scheduler will Schedule %d Jobs ****************\n", kernelMax);
+    }
 
-	int64_t stime = RTGS_GetClockCounter();
-	for (int present_time = 0; present_time < runTimeMax; present_time++)
-	{
-		// Freeing-up processors
-		processorsAvailable = Retrieve_processors(present_time, processorsAvailable, &processor_alloc_list);     
-		processorsAvailable = Dispatch_queued_kernels(present_time, processorsAvailable, &kernel_queue_list, &processor_alloc_list);
+    int numReleases = 0;
+    for (int present_time = 0; present_time < MAX_RUN_TIME; present_time++)
+    {
+        // Freeing-up processors
+        processorsAvailable = Retrieve_processors(present_time, processorsAvailable, &processor_alloc_list);
+        processorsAvailable = Dispatch_queued_kernels(present_time, processorsAvailable, &kernel_queue_list, &processor_alloc_list);
 
-		if (GLOBAL_RELEASE_TIME[present_time] == 1)
-		{
-			if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-				printf("\nRTGS Mode 3:: Total processors Available at time %d = %d\n", present_time, processorsAvailable);
-				printf("RTGS Mode 3:: Kernels:%d Released\n", kernel_number);
-			}
-			// handling the released kernel_info_list by the book-keeper
-			processorsAvailable = Mode_3_book_keeper(kernel_info_list, kernel_number, processorsAvailable, present_time, &processor_alloc_list, &kernel_queue_list);
-			kernel_number++;
-		}
-		else if (GLOBAL_RELEASE_TIME[present_time] == 2)
-		{
-			int k1 = kernel_number; kernel_number++;
-			int k2 = kernel_number; kernel_number++;
-			if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-				printf("\nRTGS Mode 3:: Total processors Available at time %d = %d\n", present_time, processorsAvailable);
-				printf("RTGS Mode 3:: Kernels:%d Released\n", k1);
-				printf("RTGS Mode 3:: Kernels:%d Released\n", k2);
-			}
-			if (kernel_info_list[k1].deadline <= kernel_info_list[k2].deadline)
-			{
-				// handling the released kernel_info_list by the book-keeper
-				processorsAvailable = Mode_3_book_keeper(kernel_info_list, k1, processorsAvailable, present_time, &processor_alloc_list, &kernel_queue_list); 
-				processorsAvailable = Mode_3_book_keeper(kernel_info_list, k2, processorsAvailable, present_time, &processor_alloc_list, &kernel_queue_list);
-			}
-			else
-			{
-				// handling the released kernel_info_list by the book-keeper
-				processorsAvailable = Mode_3_book_keeper(kernel_info_list, k2, processorsAvailable, present_time, &processor_alloc_list, &kernel_queue_list); 
-				processorsAvailable = Mode_3_book_keeper(kernel_info_list, k1, processorsAvailable, present_time, &processor_alloc_list, &kernel_queue_list);
-			}
-		}
-		else if (GLOBAL_RELEASE_TIME[present_time] > 2) { return RTGS_ERROR_NOT_IMPLEMENTED; }
-	}
+        if (releaseTimeInfo[numReleases].release_time == present_time) {
 
-	if (runTimeMax != 0) {
-		if (GLOBAL_RTGS_DEBUG_MSG) {
-			printf("\n******* Scheduler Mode 3 *******\n");
-			printf("Processors Available -- %d\n", processorsAvailable);
-			printf("Total Kernels Scheduled -- %d\n", kernelMax);
-			printf("	GPU Scheduled Kernels -- %d\n", GLOBAL_GPU_KERNELS);
-			printf("	CPU Scheduled Kernels -- %d\n", GLOBAL_CPU_KERNELS);
-		}
-		for (int j = 0; j <= kernelMax; j++) {
-			kernel_info_list[j].processor_req = kernel_info_list[j].deadline = kernel_info_list[j].execution_time = kernel_info_list[j].latest_schedulable_time = 0;
-		}
-		kernelMax = 0; runTimeMax = 0; kernel_number = 0; GLOBAL_GPU_KERNELS = 0; GLOBAL_CPU_KERNELS = 0;
-	}
+            if (releaseTimeInfo[numReleases].num_kernel_released == 1)
+            {
+                if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+                    printf("\nRTGS Mode 3 -- Total Processors Available at time %d = %d\n", present_time, processorsAvailable);
+                    printf("RTGS Mode 3 -- Job-%d Released\n", kernel_number);
+                }
+                kernel_info_list[kernel_number].release_time = present_time;
+                // handling the released kernel_info_list by the book-keeper
+                int64_t start_t = RTGS_GetClockCounter();
+                processorsAvailable = Mode_3_book_keeper(kernel_info_list, kernel_number, processorsAvailable, present_time,
+                    &processor_alloc_list, &kernel_queue_list);
+                int64_t end_t = RTGS_GetClockCounter();
+                int64_t freq = RTGS_GetClockFrequency();
+                float factor = 1000.0f / (float)freq; // to convert clock counter to ms
+                float SchedulerOverhead = (float)((end_t - start_t) * factor);
+                kernel_info_list[kernel_number].schedule_overhead = SchedulerOverhead;
+                kernel_number++;
+            }
+            else if (releaseTimeInfo[numReleases].num_kernel_released == 2)
+            {
+                int k1 = kernel_number; kernel_number++;
+                int k2 = kernel_number; kernel_number++;
+                kernel_info_list[k1].release_time = present_time;
+                kernel_info_list[k2].release_time = present_time;
+
+                if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+                    printf("\nRTGS Mode 3 -- Total Processors Available at time %d = %d\n", present_time, processorsAvailable);
+                    printf("RTGS Mode 3 -- Job-%d Released\n", k1);
+                    printf("RTGS Mode 3 -- Job-%d Released\n", k2);
+                }
+                if (kernel_info_list[k1].deadline <= kernel_info_list[k2].deadline)
+                {
+                    // handling the released kernel_info_list by the book-keeper
+                    int64_t start_t = RTGS_GetClockCounter();
+                    processorsAvailable = Mode_3_book_keeper(kernel_info_list, k1, processorsAvailable, present_time, &processor_alloc_list, &kernel_queue_list);
+                    int64_t end_t = RTGS_GetClockCounter();
+                    int64_t freq = RTGS_GetClockFrequency();
+                    float factor = 1000.0f / (float)freq; // to convert clock counter to ms
+                    float SchedulerOverhead = (float)((end_t - start_t) * factor);
+                    kernel_info_list[k1].schedule_overhead = SchedulerOverhead;
+                    start_t = RTGS_GetClockCounter();
+                    processorsAvailable = Mode_3_book_keeper(kernel_info_list, k2, processorsAvailable, present_time, &processor_alloc_list, &kernel_queue_list);
+                    end_t = RTGS_GetClockCounter();
+                    SchedulerOverhead = (float)((end_t - start_t) * factor);
+                    kernel_info_list[k2].schedule_overhead = SchedulerOverhead;
+                }
+                else
+                {
+                    // handling the released kernel_info_list by the book-keeper
+                    int64_t start_t = RTGS_GetClockCounter();
+                    processorsAvailable = Mode_3_book_keeper(kernel_info_list, k2, processorsAvailable, present_time, &processor_alloc_list, &kernel_queue_list);
+                    int64_t end_t = RTGS_GetClockCounter();
+                    int64_t freq = RTGS_GetClockFrequency();
+                    float factor = 1000.0f / (float)freq; // to convert clock counter to ms
+                    float SchedulerOverhead = (float)((end_t - start_t) * factor);
+                    kernel_info_list[k2].schedule_overhead = SchedulerOverhead;
+                    start_t = RTGS_GetClockCounter();
+                    processorsAvailable = Mode_3_book_keeper(kernel_info_list, k1, processorsAvailable, present_time, &processor_alloc_list, &kernel_queue_list);
+                    end_t = RTGS_GetClockCounter();
+                    SchedulerOverhead = (float)((end_t - start_t) * factor);
+                    kernel_info_list[k1].schedule_overhead = SchedulerOverhead;
+                }
+            }
+            else if (releaseTimeInfo[numReleases].num_kernel_released > 2) { return RTGS_ERROR_NOT_IMPLEMENTED; }
+
+            numReleases++;
+            if (numReleases > maxReleases) {
+                printf("RTGS Mode 3 ERROR --  KERNEL Release Time exceded Max Releases\n");
+                return RTGS_ERROR_INVALID_PARAMETERS;
+            }
+        }
+    }
+
+    if (maxReleases != 0) {
+
+        if (GLOBAL_RTGS_DEBUG_MSG) {
+            printf("\n******* Scheduler Mode 3 *******\n");
+            printf("Processors Available -- %d\n", processorsAvailable);
+            printf("Total Jobs Scheduled -- %d\n", kernelMax);
+            printf("	GPU Scheduled Jobs -- %d\n", GLOBAL_GPU_KERNELS);
+            printf("	CPU Scheduled Jobs -- %d\n", GLOBAL_CPU_KERNELS);
+        }
+
+        if (RTGS_PrintScheduleSummary(3, kernelMax, kernel_info_list)) {
+            printf("\nSummary Failed\n");
+        }
+
+        for (int j = 0; j <= kernelMax; j++) {
+            kernel_info_list[j].processor_req = kernel_info_list[j].deadline = kernel_info_list[j].execution_time = kernel_info_list[j].latest_schedulable_time = 0;
+        }
+        kernelMax = 0; maxReleases = 0; kernel_number = 0; GLOBAL_GPU_KERNELS = 0; GLOBAL_CPU_KERNELS = 0;
+    }
 
 	if (GLOBAL_RTGS_DEBUG_MSG > 1) {
 		print(processor_alloc_list);
