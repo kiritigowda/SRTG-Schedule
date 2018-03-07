@@ -53,6 +53,53 @@ bool RTGS_GetEnvironmentVariable(const char * name, char * value, size_t valueSi
 #endif
 }
 
+const char * header =
+"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n"
+"<html>\n"
+"<head>\n"
+"<title>%s</title>\n"
+"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\">\n"
+"<meta http-equiv=\"Content-Style-Type\" content=\"text/css\">\n"
+"<meta http-equiv=\"Content-Script-Type\" content=\"text/javascript\">\n"
+"<style type=\"text/css\">\n"
+"  <!--\n"
+"  .name0 { font-family: 'Trebuchet MS'; font-size: 15px; text-align: left;  left: 10px; height: 48px; position: fixed; }\n"
+"  .name1 { font-family: 'Comic Sans MS'; font-size: 12px; text-align: left;  left: 12px; height: 48px; position: fixed; }\n"
+"  .time0 { border: 1px solid #000000; background-color: #2080c0; height: 40px; position: absolute; }\n"
+"  .time1 { border: 0px solid #000000; background-color: #ffffff; height: 40px; position: absolute; }\n"
+"  -->\n"
+"</style>\n"
+"<script type=\"text/JavaScript\">\n"
+"  function load() {\n"
+;
+
+const char * footer =
+"  }\n"
+"</script>\n"
+"</head>\n"
+"<table>\n"
+"<tr>\n"
+"</tr>\n"
+"<tr>\n"
+"<th><b><strong>SRTG</strong> Visual Profiling</b></th>\n"
+"</tr>\n"
+"</table>\n"
+"<body onload='load()'>\n"
+"<div style=\"width:1000px;\">\n"
+"<div id=\"Canvas\" style=\"position: absolute; left:%dpx; width:%dpx; height:%dpx; border:solid black; overflow:auto;\"></div>\n"
+"</div>\n"
+"</body>\n"
+"</html>\n"
+;
+
+const char * colorlist[] = {
+	"#FF0000", "#800000", "#FFFF00", "#808000", "#00FF00", "#66FF00", "#66CCFF", "#66CCCC",
+	"#66CC99", "#66CC66", "#66CC33", "#66CC00", "#6699FF", "#6699CC", "#669999", "#669966",
+	"#669933", "#669900", "#6666FF", "#6666CC", "#666699", "#666666", "#666633", "#666600",
+	"#6633FF", "#6633CC", "#663399", "#663366", "#663333", "#663300", "#6600FF", "#6600CC",
+	"#660099", "#660066", "#660033", "#660000"
+};
+
 int RTGS_PrintScheduleSummary(int mode, int maxKernels, kernelInfo *kernelInfoList)
 {
 #if _WIN32
@@ -65,6 +112,7 @@ int RTGS_PrintScheduleSummary(int mode, int maxKernels, kernelInfo *kernelInfoLi
 	char profiler[1024] = "RTGS-Summary/RTGS";
 
 	char pCSVfile[1024]; sprintf(pCSVfile, "%s-Mode-%d-Job-Summary.csv", profiler, mode);
+	char pHTMLfile[1024]; sprintf(pHTMLfile, "%s-Mode-%d-Job-Summary.html", profiler, mode);
 
 	FILE * fp = fopen(pCSVfile, "w"); if (!fp) { printf("ERROR: unable to create '%s'\n", pCSVfile); return RTGS_ERROR_NO_RESOURCES; }
 
@@ -83,6 +131,53 @@ int RTGS_PrintScheduleSummary(int mode, int maxKernels, kernelInfo *kernelInfoLi
 			);
 	}
 	fclose(fp);
+
+	FILE * fh = fopen(pHTMLfile, "w"); if (!fp) { printf("ERROR: unable to create '%s'\n", pHTMLfile); return RTGS_ERROR_NO_RESOURCES; }
+	fprintf(fh, header, pHTMLfile);
+	int width = 1000;
+	int height = 400;
+	int xstart = 280; int max_time = 0;
+	for (int i = 0; i < maxKernels; i++) { max_time = max(max_time, kernelInfoList[i].completion_time);	}
+	max_time += 10;
+	for (int k = 0; k <= max_time; k += 5) {
+		int barx = xstart + (int)(k * 10);
+		fprintf(fh, "    d = document.createElement('div'); d.title = '%d T'; d.className='time0'; d.style.backgroundColor='#FFFFFF'; d.style.top='%dpx'; d.style.left='%dpx'; d.style.width='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
+			k, 40, barx - 1, 1);
+		fprintf(fh, "    d = document.createElement('div'); e = document.createTextNode('%3d T'); d.appendChild(e); d.className='time1'; d.style.backgroundColor='#FFFFFF'; d.style.top='%dpx'; d.style.left='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
+			k, 50, barx + 2);
+	}
+	int ncolors = (int)(sizeof(colorlist) / sizeof(colorlist[0]));
+	for (int k = 0; k < maxKernels; k++) {
+		float start = kernelInfoList[k].release_time, duration = 0;
+		int barx = xstart + (int)(start * 10);
+		int barw = (int)(duration * 10);
+		const char * color = colorlist[k];
+		fprintf(fh, "    d = document.createElement('div'); d.title = 'Release'; d.className='time1'; d.style.top='%dpx'; d.style.left='%dpx'; d.style.width='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
+			(50 * (k + 1)), (50 * (k + 1)) + 3, barx - (50 * (k + 1)) - 6);
+		fprintf(fh, "    d = document.createElement('div'); d.title = 'Release @ %5.3f T'; d.className='time0'; d.style.backgroundColor='%s'; d.style.top='%dpx'; d.style.left='%dpx'; d.style.width='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
+			start, color, (50 * (k + 1)), barx, barw);
+
+
+		fprintf(fh, "    d = document.createElement('div'); d.title = 'Scdeduled Time'; d.className='time1'; d.style.top='%dpx'; d.style.left='%dpx'; d.style.width='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
+			(50 * (k + 1)), (50 * (k + 1)) + 3, barx - (50 * (k + 1)) - 6);
+		fprintf(fh, "    d = document.createElement('div'); d.title = 'Release @ %5.3f T'; d.className='time0'; d.style.backgroundColor='%s'; d.style.top='%dpx'; d.style.left='%dpx'; d.style.width='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
+			start, color, (50 * (k + 1)), barx, barw);
+
+		if (width < (barx + barw)) {
+			width = barx + barw;
+		}
+	}
+
+	for (int e = 0; e < maxKernels; e++) {
+			fprintf(fh, "    d = document.createElement('div'); e = document.createTextNode('Job-%d'); d.appendChild(e); d.className='name0'; d.style.top='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
+				e, (50*(e+1))+ 3);
+			fprintf(fh, "    d = document.createElement('div'); e = document.createTextNode('%5.1f(min) %5.1f(avg) %5.1f(max) %3d(count)'); d.appendChild(e); d.className='name1'; d.style.top='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
+				0, 0, 0, 0, (50*(e+1))+ 3 + 18);
+	}
+	height = 60 + maxKernels * 50 + 100;
+	fprintf(fh, footer, xstart - 30, width - xstart + 50, height);
+
+	fclose(fh);
 	return RTGS_SUCCESS;
 }
 
