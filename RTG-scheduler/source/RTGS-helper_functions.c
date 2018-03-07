@@ -68,14 +68,14 @@ int RTGS_PrintScheduleSummary(int mode, int maxKernels, kernelInfo *kernelInfoLi
 
 	FILE * fp = fopen(pCSVfile, "w"); if (!fp) { printf("ERROR: unable to create '%s'\n", pCSVfile); return RTGS_ERROR_NO_RESOURCES; }
 
-    fprintf(fp, "Job,Processors,Execution Time,Deadline,Release Time,Scheduler Overhead,Scheduled At,Rescheduled to,Completion Time,Scheduled Hardware\n");
+    fprintf(fp, "Job,Processors,Execution Time,Deadline,Release Time,Scheduler Overhead (microSec),Scheduled At,Rescheduled to,Completion Time,Scheduled Hardware\n");
 	for (int i = 0; i < maxKernels; i++) {
-		fprintf(fp, "%d,%d,%d,%d,%d,%f,%d,%d,%d,%d\n",i,
+        fprintf(fp, "%d,%d,%d,%d,%d,%.2f,%d,%d,%d,%d\n",i,
 			kernelInfoList[i].processor_req,
 			kernelInfoList[i].execution_time,
-			kernelInfoList[i].deadline,
-			kernelInfoList[i].release_time,
-			kernelInfoList[i].schedule_overhead,
+            kernelInfoList[i].deadline,
+            kernelInfoList[i].release_time,
+            kernelInfoList[i].schedule_overhead*100,
 			kernelInfoList[i].scheduled_execution,
 			kernelInfoList[i].rescheduled_execution,
 			kernelInfoList[i].completion_time,
