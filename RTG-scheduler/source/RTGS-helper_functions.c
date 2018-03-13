@@ -99,14 +99,6 @@ const char * HTML_footer =
 "</html>\n"
 ;
 
-const char * HTML_colorlist[] = {
-	"#FF0000", "#800000", "#FFFF00", "#808000", "#00FF00", "#66FF00", "#66CCFF", "#66CCCC",
-	"#66CC99", "#66CC66", "#66CC33", "#66CC00", "#6699FF", "#6699CC", "#669999", "#669966",
-	"#669933", "#669900", "#6666FF", "#6666CC", "#666699", "#666666", "#666633", "#666600",
-	"#6633FF", "#6633CC", "#663399", "#663366", "#663333", "#663300", "#6600FF", "#6600CC",
-	"#660099", "#660066", "#660033", "#660000"
-};
-
 int RTGS_PrintScheduleSummary(int mode, int maxKernels, kernelInfo *kernelInfoList)
 {
 #if _WIN32
