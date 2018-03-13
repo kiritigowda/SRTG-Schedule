@@ -60,7 +60,7 @@ const char * HTML_header =
 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n"
 "<html>\n"
 "<head>\n"
-"<title>%s</title>\n"
+"<title>RTGS Visual Summary M-%d</title>\n"
 "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\">\n"
 "<meta http-equiv=\"Content-Style-Type\" content=\"text/css\">\n"
 "<meta http-equiv=\"Content-Script-Type\" content=\"text/javascript\">\n"
@@ -140,10 +140,11 @@ int RTGS_PrintScheduleSummary(int mode, int maxKernels, kernelInfo *kernelInfoLi
 	fclose(fp);
 
 	FILE * fh = fopen(pHTMLfile, "w"); if (!fp) { printf("ERROR: unable to create '%s'\n", pHTMLfile); return RTGS_ERROR_NO_RESOURCES; }
-    fprintf(fh, HTML_header, pHTMLfile);
+    fprintf(fh, HTML_header, mode);
 	int width = 1000;
 	int height = 400;
     int xstart = 300; int max_time = 0;
+    int offset = 100;
     for (int i = 0; i < maxKernels; i++) { max_time = MAX(max_time, kernelInfoList[i].completion_time);	}
 	max_time += 10;
     // Timing header
@@ -158,53 +159,56 @@ int RTGS_PrintScheduleSummary(int mode, int maxKernels, kernelInfo *kernelInfoLi
     // Jobs scheduling pattern
 	for (int k = 0; k < maxKernels; k++) {
 
-        float start = kernelInfoList[k].release_time, duration = 0.3;
+        // plot release time
+        float start = kernelInfoList[k].release_time, duration = 0.2;
 		int barx = xstart + (int)(start * 10);
 		int barw = (int)(duration * 10);
 		fprintf(fh, "    d = document.createElement('div'); d.title = 'Release'; d.className='time1'; d.style.top='%dpx'; d.style.left='%dpx'; d.style.width='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
-            (90 + 50 * (k + 1)), (90 + 50 * (k + 1)) + 3, barx - (90 + 50 * (k + 1)) - 6);
-        fprintf(fh, "    d = document.createElement('div'); d.title = 'Release @ %5.3f T'; d.className='time0'; d.style.backgroundColor='blue'; d.style.top='%dpx'; d.style.left='%dpx'; d.style.width='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
-            start,(90 + 50 * (k + 1)), barx, barw);
+            (offset + 50 * (k + 1)), (offset + 50 * (k + 1)) + 3, barx - (offset + 50 * (k + 1)) - 6);
+        fprintf(fh, "    d = document.createElement('div'); d.title = 'Release @ %5.3f T'; d.className='time0'; d.style.backgroundColor='yellow'; d.style.top='%dpx'; d.style.left='%dpx'; d.style.width='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
+            start,(offset + 50 * (k + 1)), barx, barw);
 
-        if(kernelInfoList[k].completion_time != -1){
-            if(kernelInfoList[k].scheduled_execution == kernelInfoList[k].release_time ){
-                start = kernelInfoList[k].scheduled_execution + kernelInfoList[k].schedule_overhead ;
-                duration = kernelInfoList[k].completion_time + kernelInfoList[k].schedule_overhead;
-                barx = xstart + (int)(start * 10);
-                barw = (int)(duration * 10);
-                fprintf(fh, "    d = document.createElement('div'); d.title = 'Scheduled'; d.className='time1'; d.style.top='%dpx'; d.style.left='%dpx'; d.style.width='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
-                    (100 + 50 * (k + 1)), (100 + 50 * (k + 1)) + 3, barx - (100 + 50 * (k + 1)) - 6);
-                fprintf(fh, "    d = document.createElement('div'); d.title = 'Scheduled @ %5.3f T -- Completion @ %5.3f T'; d.className='time0'; d.style.backgroundColor='green'; d.style.top='%dpx'; d.style.left='%dpx'; d.style.width='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
-                    start,duration,(100 + 50 * (k + 1)), barx, barw);
-            }
-            else{
-                start = kernelInfoList[k].release_time; duration = kernelInfoList[k].schedule_overhead;
-                barx = xstart + (int)(start * 10);
-                barw = (int)(duration * 10);
-                fprintf(fh, "    d = document.createElement('div'); d.title = 'Scheduler Overhead'; d.className='time1'; d.style.top='%dpx'; d.style.left='%dpx'; d.style.width='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
-                    (100 + 50 * (k + 1)), (100 + 50 * (k + 1)) + 3, barx - (100 + 50 * (k + 1)) - 6);
-                fprintf(fh, "    d = document.createElement('div'); d.title = 'Scheduler Overhead of %5.3f microsec'; d.className='time0'; d.style.backgroundColor='grey'; d.style.top='%dpx'; d.style.left='%dpx'; d.style.width='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
-                    duration,(100 + 50 * (k + 1)), barx, barw);
-
-                start = kernelInfoList[k].scheduled_execution; duration = kernelInfoList[k].completion_time;
-                barx = xstart + (int)(start * 10);
-                barw = (int)(duration * 10);
-                fprintf(fh, "    d = document.createElement('div'); d.title = 'Scheduled'; d.className='time1'; d.style.top='%dpx'; d.style.left='%dpx'; d.style.width='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
-                    (100 + 50 * (k + 1)), (100 + 50 * (k + 1)) + 3, barx - (100 + 50 * (k + 1)) - 6);
-                fprintf(fh, "    d = document.createElement('div'); d.title = 'Scheduled @ %5.3f T -- Completion @ %5.3f T'; d.className='time0'; d.style.backgroundColor='green'; d.style.top='%dpx'; d.style.left='%dpx'; d.style.width='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
-                    start,duration,(100 + 50 * (k + 1)), barx, barw);
-            }
-
-        }
-
-        if(kernelInfoList[k].completion_time == -1){
-        start = kernelInfoList[k].release_time + kernelInfoList[k].schedule_overhead; duration = 0.3;
+        // plot scheduler overhead
+        start = 0.2 + kernelInfoList[k].release_time; duration = 0.2;
         barx = xstart + (int)(start * 10);
         barw = (int)(duration * 10);
+        fprintf(fh, "    d = document.createElement('div'); d.title = 'Scheduler Overhead'; d.className='time1'; d.style.top='%dpx'; d.style.left='%dpx'; d.style.width='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
+            (offset + 50 * (k + 1)), (offset + 50 * (k + 1)) + 3, barx - offset - 6);
+        fprintf(fh, "    d = document.createElement('div'); d.title = 'Scheduler Overhead of %5.3f microsec'; d.className='time0'; d.style.backgroundColor='salmon'; d.style.top='%dpx'; d.style.left='%dpx'; d.style.width='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
+            kernelInfoList[k].schedule_overhead,(offset + 50 * (k + 1)), barx, barw);
+
+        // plot scheduled jobs
+        if(kernelInfoList[k].completion_time != -1){
+            if(kernelInfoList[k].scheduled_execution == kernelInfoList[k].release_time ){
+                start = 0.4 + kernelInfoList[k].scheduled_execution;
+                duration = kernelInfoList[k].execution_time;
+                barx = xstart + (int)(start * 10);
+                barw = (int)(duration * 10);
+
+            }
+            else{
+                start = kernelInfoList[k].scheduled_execution; duration = kernelInfoList[k].execution_time;
+                barx = xstart + (int)(start * 10);
+                barw = (int)(duration * 10);
+            }
+            float ScheduledTime = (float)kernelInfoList[k].scheduled_execution;
+            float completionTime = (float)kernelInfoList[k].completion_time;
+            fprintf(fh, "    d = document.createElement('div'); d.title = 'Scheduled'; d.className='time1'; d.style.top='%dpx'; d.style.left='%dpx'; d.style.width='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
+                (offset + 50 * (k + 1)), (offset + 50 * (k + 1)) + 3, barx - (offset + 50 * (k + 1)) - 6);
+            fprintf(fh, "    d = document.createElement('div'); d.title = 'Scheduled @ %5.3f T -- Completion @ %5.3f T'; d.className='time0'; d.style.backgroundColor='green'; d.style.top='%dpx'; d.style.left='%dpx'; d.style.width='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
+                ScheduledTime,completionTime,(offset + 50 * (k + 1)), barx, barw);
+        }
+
+        // plot returned jobs
+        if(kernelInfoList[k].completion_time == -1){
+        start = kernelInfoList[k].release_time + 0.4; duration = 0.5;
+        barx = xstart + (int)(start * 10);
+        barw = (int)(duration * 10);
+        float releaseTime = kernelInfoList[k].release_time;
         fprintf(fh, "    d = document.createElement('div'); d.title = 'CPU_JOB'; d.className='time1'; d.style.top='%dpx'; d.style.left='%dpx'; d.style.width='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
-            (100 + 50 * (k + 1)), (100 + 50 * (k + 1)) + 3, barx - (100 + 50 * (k + 1)) - 6);
-        fprintf(fh, "    d = document.createElement('div'); d.title = 'Sent Back to CPU @ %5.3f T'; d.className='time0'; d.style.backgroundColor='red'; d.style.top='%dpx'; d.style.left='%dpx'; d.style.width='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
-            start,(100 + 50 * (k + 1)), barx, barw);
+            (offset + 50 * (k + 1)), (offset + 50 * (k + 1)) + 3, barx - (offset + 50 * (k + 1)) - 6);
+        fprintf(fh, "    d = document.createElement('div'); d.title = 'Sent Back to CPU @ Release-%5.3f T + overhead-%5.3f microsec'; d.className='time0'; d.style.backgroundColor='red'; d.style.top='%dpx'; d.style.left='%dpx'; d.style.width='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
+            releaseTime,kernelInfoList[k].schedule_overhead,(offset + 50 * (k + 1)), barx, barw);
         }
 
 
