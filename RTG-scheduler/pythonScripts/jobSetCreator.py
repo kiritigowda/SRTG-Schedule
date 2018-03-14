@@ -26,10 +26,10 @@ for opt, arg in opts:
 
 if outputDirectory == '' or jobSetName == '' or jobSetName == '' :
     print('Invalid command line arguments. -d [output Directory] ' \
-          								  '-s [job set name] ' \
-          								  '-n [number of job sets to be created] ' \
-          								  '-j [number of job per set to be created]  ' \
-          								  '-p [max processors available]')
+          				  '-s [job set name] ' \
+          				  '-n [number of job sets to be created] ' \
+          				  '-j [number of job per set to be created]  ' \
+          				  '-p [max processors available]')
     exit()
 
 if not os.path.exists(outputDirectory):
