@@ -26,10 +26,10 @@ for opt, arg in opts:
 
 if outputDirectory == '' or jobSetName == '' or jobSetName == '' :
     print('Invalid command line arguments. -d [output Directory] ' \
-          				  '-s [job set name] ' \
-          				  '-n [number of job sets to be created] ' \
-          				  '-j [number of job per set to be created]  ' \
-          				  '-p [max processors available]')
+          								  '-s [job set name] ' \
+          								  '-n [number of job sets to be created] ' \
+          								  '-j [number of job per set to be created]  ' \
+          								  '-p [max processors available]')
     exit()
 
 if not os.path.exists(outputDirectory):
@@ -60,12 +60,11 @@ for s in range(numJobSet):
 			lastestTimeSchedulable = releaseTime + numProcessors
 			releaseTimeArray[x] = releaseTime
 			f.write(str(jobNumber)+','+str(numProcessors)+','+str(executionTime)+','+str(deadLine)+','+str(lastestTimeSchedulable)+'\n')
-			#print "JobID-",jobNumber,"	Pn-",numProcessors,"	Texe-",executionTime,"	Td-",deadLine,"	Tlts-",lastestTimeSchedulable
 
 	# create a job release set - job_releaseTime.txt
-	counter=collections.Counter(releaseTimeArray)
+	from collections import Counter
+	counter=Counter(releaseTimeArray)
 	with open(fileName_Releases,'w') as f:
 		
-		for T,N in counter.items():
+		for T,N in sorted(counter.items()):
 			f.write(str(T)+','+str(N)+'\n')
-			#print "Tr-",T,"	NumRelease-",N
