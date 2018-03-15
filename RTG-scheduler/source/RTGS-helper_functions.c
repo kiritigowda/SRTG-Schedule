@@ -357,7 +357,7 @@ int RTGS_PrintScheduleSummary(int mode, int maxKernels, kernelInfo *kernelInfoLi
 	fclose(fh);
 
 	FILE * fs = fopen(pSummaryfile, "w"); if (!fp) { printf("ERROR: unable to create '%s'\n", pSummaryfile); return RTGS_ERROR_NO_RESOURCES; }
-	fprintf(fs, summaryHTMLHeader);
+	fprintf(fs, "%s", summaryHTMLHeader);
 	// table summary
 	for (int i = 0; i < maxKernels; i++) {
 		fprintf(fs, "<tr>\n");
@@ -376,7 +376,7 @@ int RTGS_PrintScheduleSummary(int mode, int maxKernels, kernelInfo *kernelInfoLi
 			fprintf(fs, "<td align = \"center\"><font color = \"red\"><b>CPU</b></font></td>\n");
 		fprintf(fs, "</tr>\n");
 	}
-	fprintf(fs, summaryHTMLFooter);
+	fprintf(fs, "%s", summaryHTMLFooter);
 	fclose(fs);
 	return RTGS_SUCCESS;
 }
