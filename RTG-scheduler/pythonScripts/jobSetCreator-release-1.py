@@ -59,7 +59,7 @@ for s in range(numJobSet):
 			deadLine = releaseTime + executionTime + random.randint(numProcessors,50)
 			lastestTimeSchedulable = releaseTime + numProcessors
 			releaseTimeArray[x] = releaseTime
-			releaseTime = releaseTime +
+			releaseTime = releaseTime + 1
 			f.write(str(jobNumber)+','+str(numProcessors)+','+str(executionTime)+','+str(deadLine)+','+str(lastestTimeSchedulable)+'\n')
 
 	# create a job release set - job_releaseTime.txt
