@@ -64,7 +64,7 @@ int main(int argc, char * argv[])
 	char *kernelFilename = NULL, *releaseTimeFilename = NULL;
 	int schedulerMode = 0;
 	int error = 0;
-	
+
 	// global vaiable intitialize 
 	GLOBAL_RTGS_MODE = -1;
 	GLOBAL_KERNEL_FILE_NAME = NULL;
@@ -78,12 +78,12 @@ int main(int argc, char * argv[])
 
 	for (int arg = 1; arg < argc; arg++)
 	{
-        if (!strcasecmp(argv[arg], "--h") || !strcasecmp(argv[arg], "--help"))
+		if (!strcasecmp(argv[arg], "--h") || !strcasecmp(argv[arg], "--help"))
 		{
 			show_usage();
 			exit(status);
 		}
-        else if (!strcasecmp(argv[arg], "--jobs") || !strcasecmp(argv[arg], "--J"))
+		else if (!strcasecmp(argv[arg], "--jobs") || !strcasecmp(argv[arg], "--J"))
 		{
 			if ((arg + 1) == argc)
 			{
@@ -96,7 +96,7 @@ int main(int argc, char * argv[])
 			kernelFilename = (argv[arg]);
 			error++;
 		}
-        else if (!strcasecmp(argv[arg], "--releaseTimes") || !strcasecmp(argv[arg], "--RT"))
+		else if (!strcasecmp(argv[arg], "--releaseTimes") || !strcasecmp(argv[arg], "--RT"))
 		{
 			if ((arg + 1) == argc)
 			{
@@ -109,7 +109,7 @@ int main(int argc, char * argv[])
 			releaseTimeFilename = (argv[arg]);
 			error++;
 		}
-        else if (!strcasecmp(argv[arg], "--mode") || !strcasecmp(argv[arg], "--M"))
+		else if (!strcasecmp(argv[arg], "--mode") || !strcasecmp(argv[arg], "--M"))
 		{
 			if ((arg + 1) == argc)
 			{
@@ -139,13 +139,13 @@ int main(int argc, char * argv[])
 	PROFILER_INITIALIZE();
 	PROFILER_START(SRTG, RTG_Schedule)
 
-	int64_t start_t = RTGS_GetClockCounter();
+		int64_t start_t = RTGS_GetClockCounter();
 	status = scheduler_main(kernelFilename, releaseTimeFilename, schedulerMode); // scheduler call
 	int64_t end_t = RTGS_GetClockCounter();
 
 	PROFILER_STOP(SRTG, RTG_Schedule)
-	PROFILER_SHUTDOWN();
-	
+		PROFILER_SHUTDOWN();
+
 	if (status != RTGS_SUCCESS) {
 		printf("The Scheduler Failed with error code ->%d\n", status);
 	}

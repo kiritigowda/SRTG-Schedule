@@ -10,18 +10,18 @@
 /* Function to add future kernel_info_list releases and arrange kernel_info_list execution times in ascending order */
 void Queue_kernel_execution
 (
-	int processorReleased, 
+	int processorReleased,
 	int processor_release_time,
-	int present_time, 
-	int schedule_method, 
-	int kernel_number, 
+	int present_time,
+	int schedule_method,
+	int kernel_number,
 	scheduledNode **processor_alloc_list
 )
 {
 	PROFILER_START(SRTG, Queue_kernel_execution)
 	// TBD:: Sending Data and Kernels
-	*processor_alloc_list = ascending_insert(*processor_alloc_list, processor_release_time, processor_release_time, 
-											processorReleased, kernel_number, schedule_method);
+	*processor_alloc_list = ascending_insert(*processor_alloc_list, processor_release_time, processor_release_time,
+		processorReleased, kernel_number, schedule_method);
 	if (GLOBAL_RTGS_DEBUG_MSG > 1) {
 		print(*processor_alloc_list);
 	}
@@ -32,12 +32,12 @@ void Queue_kernel_execution
 /* Function to add future kernel_info_list releases and arrange kernel_info_list execution times in ascending order */
 void Kernel_queue_handler
 (
-int processorReleased,
-int kernel_release_time,
-int processor_release_time,
-int schedule_method,
-int kernel_number,
-scheduledNode **kernel_queue_list
+	int processorReleased,
+	int kernel_release_time,
+	int processor_release_time,
+	int schedule_method,
+	int kernel_number,
+	scheduledNode **kernel_queue_list
 )
 {
 	PROFILER_START(SRTG, Kernel_queue_handler)
