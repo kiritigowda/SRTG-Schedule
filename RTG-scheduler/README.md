@@ -11,10 +11,12 @@ RTG-scheduler [options] --jobs <jobs_file.txt> --releaseTimes <Release_Time_file
 ```
 
 ## Scheduler Options Supported
-
-## Options
 ````
         --h/--help -- Show full help
+        --v/--verbose -- Show detailed messages
+````
+## Scheduler Parameters
+````
         --j/--jobs -- Jobs to be scheduled [required]
         --rt/--releaseTimes -- Release times for the jobs [required]
         --m/--mode -- Mode options [optional]
