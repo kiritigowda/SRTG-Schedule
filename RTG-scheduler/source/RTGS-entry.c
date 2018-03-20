@@ -15,36 +15,40 @@ usage information
 static void show_usage()
 {
 	printf("\n*********************************************************************************************************\n");
-	printf("\n				Real Time GPU Scheduler -> RTG-scheduler-%s\n", RTGS_VERSION);
+	printf("\n				Real Time GPU Scheduler -- RTGS-%s\n", RTGS_VERSION);
 	printf("\n*********************************************************************************************************\n");
 	printf("\n");
 	printf("Usage:\n\n");
-	printf("Windows:\n");
-	printf("RTG-scheduler.exe [options] --jobs <jobs_file.txt> --releaseTimes <Release_Time_file.txt> --mode <Option>\n");
-	printf("Linux:\n");
-	printf("./RTG-scheduler [options] --jobs <jobs_file.txt> --releaseTimes <Release_Time_file.txt> --mode <Option>\n");
+	printf("\tWindows:\n");
+	printf("\t\tRTG-scheduler.exe [options] --jobs <jobs_file.txt> --releaseTimes <Release_Time_file.txt> --mode <Option>\n\n");
+	printf("\tLinux:\n");
+	printf("\t\t./RTG-scheduler [options] --jobs <jobs_file.txt> --releaseTimes <Release_Time_file.txt> --mode <Option>\n\n");
 	printf("\n");
-	printf("\n\nScheduler [options] Supported\n\n");
-	printf("  --h/--help\n");
-	printf("   Show full help.\n");
+	printf("\nScheduler Options Supported\n\n");
+	printf("\t--h/--help -- Show full help\n");
+	printf("\t--v/--verbose -- Show detailed messages\n");
+	printf("\nScheduler Parameters\n\n");
+	printf("\t--j/--jobs -- Jobs to be scheduled [required]\n");
+	printf("\t--rt/--releaseTimes -- Release times for the jobs [required]\n");
+	printf("\t--m/--mode -- Mode options [optional]\n");
 	printf("\n");
-	printf("The Jobs file is the list of jobs to be scheduled.\n");
-	printf("The arguments:\n");
-	printf("			Job Number\n");
-	printf("			Processors Needed\n");
-	printf("			Execution Time\n");
-	printf("			Deadline\n");
-	printf("			Lastest Time Schedulable on the GPU\n");
+	printf("The Jobs file is the list of jobs to be scheduled: <jobs_file.txt>\n");
+	printf("\tThe arguments:\n");
+	printf("			Jid - Job Number\n");
+	printf("			Pn - Processors Needed\n");
+	printf("			Texe - Execution Time\n");
+	printf("			Td - Deadline\n");
+	printf("			Tlts - Lastest Time Schedulable on the GPU\n\n");
+	printf("			\"Jid, Pn, Texe, Td, Tlts\"\n\n");
 	printf("\n");
-	printf("The Release Time File has the list of release times of the Jobs:\n");
-	printf("The arguments:\n");
-	printf("			0 - No Jobs Released\n");
-	printf("			1 - One Job Released at the time marked by location\n");
-	printf("			2 - Two Jobs Released at the time marked by location\n");
-	printf("			N - Extended in the next release\n");
+	printf("The Release Time File has the list of release times of the Jobs: <Release_Time_file.txt>\n");
+	printf("\tThe arguments:\n");
+	printf("			Tr - Release Time\n");
+	printf("			Jr - Number of jobs released\n\n");
+	printf("			\"Tr, Jr\"\n");
 	printf("\n");
-	printf("The Modes Supported:\n");
-	printf("The arguments:\n");
+	printf("The Modes Supported: <options>\n");
+	printf("\tThe arguments:\n");
 	printf("			1 - Simple GPU Scheduler\n");
 	printf("			2 - As Early As Possible mode->AEAP\n");
 	printf("			3 - AEAP with As Late As Possible mode->AEAP/ALAP\n");
@@ -64,19 +68,26 @@ int main(int argc, char * argv[])
 	char *kernelFilename = NULL, *releaseTimeFilename = NULL;
 	int schedulerMode = 0;
 	int error = 0;
-	
+
 	// global vaiable intitialize 
 	GLOBAL_RTGS_MODE = -1;
 	GLOBAL_KERNEL_FILE_NAME = NULL;
 
+	// get default debug msg control
+	GLOBAL_RTGS_DEBUG_MSG = 1;
+	char textBuffer[1024];
+	if (RTGS_GetEnvironmentVariable("RTGS_DEBUG_MSG", textBuffer, sizeof(textBuffer))) {
+		GLOBAL_RTGS_DEBUG_MSG = atoi(textBuffer);
+	}
+
 	for (int arg = 1; arg < argc; arg++)
 	{
-        if (!strcasecmp(argv[arg], "--h") || !strcasecmp(argv[arg], "--help"))
+		if (!strcasecmp(argv[arg], "--help") || !strcasecmp(argv[arg], "--H") || !strcasecmp(argv[arg], "--h"))
 		{
 			show_usage();
 			exit(status);
 		}
-        else if (!strcasecmp(argv[arg], "--jobs") || !strcasecmp(argv[arg], "--J"))
+		else if (!strcasecmp(argv[arg], "--jobs") || !strcasecmp(argv[arg], "--J") || !strcasecmp(argv[arg], "--j"))
 		{
 			if ((arg + 1) == argc)
 			{
@@ -89,7 +100,7 @@ int main(int argc, char * argv[])
 			kernelFilename = (argv[arg]);
 			error++;
 		}
-        else if (!strcasecmp(argv[arg], "--releaseTimes") || !strcasecmp(argv[arg], "--RT"))
+		else if (!strcasecmp(argv[arg], "--releaseTimes") || !strcasecmp(argv[arg], "--RT") || !strcasecmp(argv[arg], "--rt"))
 		{
 			if ((arg + 1) == argc)
 			{
@@ -102,7 +113,7 @@ int main(int argc, char * argv[])
 			releaseTimeFilename = (argv[arg]);
 			error++;
 		}
-        else if (!strcasecmp(argv[arg], "--mode") || !strcasecmp(argv[arg], "--M"))
+		else if (!strcasecmp(argv[arg], "--mode") || !strcasecmp(argv[arg], "--M") || !strcasecmp(argv[arg], "--m"))
 		{
 			if ((arg + 1) == argc)
 			{
@@ -130,15 +141,15 @@ int main(int argc, char * argv[])
 	GLOBAL_KERNEL_FILE_NAME = kernelFilename;
 	PROFILER_FILE_INITIALIZE(schedulerMode, kernelFilename);
 	PROFILER_INITIALIZE();
-	//PROFILER_START(SRTG, RTG_Schedule)
+	PROFILER_START(SRTG, RTG_Schedule)
 
 	int64_t start_t = RTGS_GetClockCounter();
 	status = scheduler_main(kernelFilename, releaseTimeFilename, schedulerMode); // scheduler call
 	int64_t end_t = RTGS_GetClockCounter();
 
-	//PROFILER_STOP(SRTG, RTG_Schedule)
+	PROFILER_STOP(SRTG, RTG_Schedule)
 	PROFILER_SHUTDOWN();
-	
+
 	if (status != RTGS_SUCCESS) {
 		printf("The Scheduler Failed with error code ->%d\n", status);
 	}
