@@ -22,7 +22,7 @@ RTG-scheduler [options] --jobs <jobs_file.txt> --releaseTimes <Release_Time_file
         --m/--mode -- Mode options [optional]
 ````
 
-#### The Jobs File is the list of Jobs to be scheduled: <jobs_file.txt>
+- #### --j/--jobs -- The Jobs File is the list of Jobs to be scheduled: <jobs_file.txt>
 ```
         Jid - Job Number
         Pn - Processors Needed
@@ -33,7 +33,7 @@ RTG-scheduler [options] --jobs <jobs_file.txt> --releaseTimes <Release_Time_file
         "Jid, Pn, Texe, Td, Tlts"
 ```
 
-#### The Release Time File has the list of release times of the kernels: <Release_Time_file.txt>
+- #### --rt/--releaseTimes -- The Release Time File has the list of release times of the kernels: <Release_Time_file.txt>
 ```
         Tr - Release Time
         Jr - Number of jobs released
@@ -41,7 +41,7 @@ RTG-scheduler [options] --jobs <jobs_file.txt> --releaseTimes <Release_Time_file
         "Tr, Jr"
 ```
 
-#### The Modes Supported: <mode option>
+- #### --m/--mode -- The Modes Supported: <mode option>
 ```
         1 - Simple GPU Scheduler
         2 - As Early As Possible mode->AEAP
