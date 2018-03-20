@@ -15,19 +15,21 @@ RTG-scheduler [options] --jobs <jobs_file.txt> --releaseTimes <Release_Time_file
 
 #### The Jobs File is the list of Jobs to be scheduled:
 ```
-    Job Number
-    Processors Needed
-    Execution Time
-    Deadline
-    Lastest Time Schedulable on the GPU
+    Job Number - Jid
+    Processors Needed - Pn
+    Execution Time - Texe
+    Deadline - Td
+    Lastest Time Schedulable on the GPU - Tlts
+    
+    Jid, Pn, Texe, Td, Tlts
 ```
 
 #### The Release Time File has the list of release times of the kernels:
 ```
-    0 - No Jobs Released
-    1 - One Job Released at the time marked by location
-    2 - Two Jobs Released at the time marked by location
-    N - Extended in the next release
+    Release Time - Tr
+    Number of Jobs Released - Jr
+    
+    Tr, Jr
 ```
 
 #### The Modes Supported:
