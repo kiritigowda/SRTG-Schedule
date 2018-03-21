@@ -1,5 +1,5 @@
 /*
-* RTGS-mode_2.c
+* RTGS-mode_3.c
 *      Author: Kiriti Nagesh Gowda
 */
 
