@@ -372,8 +372,10 @@ int RTGS_PrintScheduleSummary(int mode, int maxKernels, kernelInfo *kernelInfoLi
 		fprintf(fs, "<td align = \"center\"><font color = \"black\"><b>%d</b></font></td>\n", kernelInfoList[i].completion_time);
 		if (kernelInfoList[i].schedule_hardware == 1)
 			fprintf(fs, "<td align = \"center\"><font color = \"green\"><b>GPU</b></font></td>\n");
-		else
+		else if(kernelInfoList[i].schedule_hardware == 2)
 			fprintf(fs, "<td align = \"center\"><font color = \"red\"><b>CPU</b></font></td>\n");
+		else
+			fprintf(fs, "<td align = \"center\"><font color = \"blue\"><b>MISSING</b></font></td>\n");
 		fprintf(fs, "</tr>\n");
 	}
 	fprintf(fs, "%s", summaryHTMLFooter);

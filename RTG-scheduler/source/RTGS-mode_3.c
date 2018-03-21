@@ -421,7 +421,6 @@ static int Mode_3_book_keeper
 				schedule_method = RTGS_SCHEDULE_METHOD_IMMEDIATE;
 				// Kernel call for the GPU to handle the given Kernels and number of blocks//
 				Queue_kernel_execution(processorReleased, processor_release_time, presentTime, schedule_method, kernel_number, processor_alloc_list);
-
 				kernel_info_list[kernel_number].schedule_hardware = 1;
 				kernel_info_list[kernel_number].rescheduled_execution = -1;
 				kernel_info_list[kernel_number].scheduled_execution = presentTime;
@@ -460,7 +459,16 @@ static int Mode_3_book_keeper
 					processorReleased = kernel_info_list[kernel_number].processor_req;
 					processor_release_time = kernel_info_list[kernel_number].execution_time + presentTime;
 					schedule_method = 0;
-					Queue_kernel_execution(processorReleased, processor_release_time, presentTime, schedule_method, kernel_number, processor_alloc_list); // Kernel call for the GPU to handle the given Kernels and number of blocks//
+					Queue_kernel_execution(processorReleased, processor_release_time, presentTime, schedule_method, kernel_number, processor_alloc_list);
+					// TBD:: Kernel call for the GPU to handle the given Kernels and number of blocks//
+					kernel_info_list[kernel_number].schedule_hardware = 1;
+					kernel_info_list[kernel_number].rescheduled_execution = -1;
+					kernel_info_list[kernel_number].scheduled_execution = presentTime;
+					kernel_info_list[kernel_number].completion_time = kernel_info_list[kernel_number].execution_time + presentTime;
+					GLOBAL_GPU_KERNELS++;
+					if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+						printf("Mode-3 Book Keeper:: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
+					}
 				}
 				else
 				{
@@ -621,6 +629,10 @@ int RTGS_mode_3(char *kernelFilename, char *releaseTimeFilename)
 
 		if (RTGS_PrintScheduleSummary(3, kernelMax, kernel_info_list)) {
 			printf("\nSummary Failed\n");
+		}
+
+		if ((kernelMax != (GLOBAL_GPU_KERNELS + GLOBAL_CPU_KERNELS)) || processorsAvailable != MAX_GPU_PROCESSOR) {
+			return RTGS_FAILURE;
 		}
 
 		for (int j = 0; j <= kernelMax; j++) {
