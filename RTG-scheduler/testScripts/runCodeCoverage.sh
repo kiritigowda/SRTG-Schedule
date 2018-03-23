@@ -1,14 +1,23 @@
 ./bin/RTG-scheduler
 ./bin/RTG-scheduler --h
 ./bin/RTG-scheduler --j
-./bin/RTG-scheduler --j test
-./bin/RTG-scheduler --j ../../RTG-scheduler/set1-jobs.txt --rt
-./bin/RTG-scheduler --j ../../RTG-scheduler/set1-jobs.txt --rt test
-./bin/RTG-scheduler --j ../../RTG-scheduler/set1-jobs.txt --rt ../../RTG-scheduler/set1-jobReleaseTimes.txt
-./bin/RTG-scheduler --j ../../RTG-scheduler/set1-jobs.txt --rt ../../RTG-scheduler/set1-jobReleaseTimes.txt --m
-./bin/RTG-scheduler --j ../../RTG-scheduler/set1-jobs.txt --rt ../../RTG-scheduler/set1-jobReleaseTimes.txt --m 1
-./bin/RTG-scheduler --j ../../RTG-scheduler/set1-jobs.txt --rt ../../RTG-scheduler/set1-jobReleaseTimes.txt --m 2
-./bin/RTG-scheduler --j ../../RTG-scheduler/set1-jobs.txt --rt ../../RTG-scheduler/set1-jobReleaseTimes.txt --m 3
-./bin/RTG-scheduler --j ../../RTG-scheduler/set1-jobs.txt --rt ../../RTG-scheduler/set1-jobReleaseTimes.txt --m 4
-./bin/RTG-scheduler --j ../../RTG-scheduler/set1-jobs.txt --rt ../../RTG-scheduler/set1-jobReleaseTimes.txt --m 5
-./bin/RTG-scheduler --j ../../RTG-scheduler/set1-jobs.txt --rt ../../RTG-scheduler/set1-jobReleaseTimes.txt --m 99
+./bin/RTG-scheduler --rt
+./bin/RTG-scheduler --m
+./bin/RTG-scheduler --v
+./bin/RTG-scheduler --h example.txt
+./bin/RTG-scheduler --j example.txt
+./bin/RTG-scheduler --rt example.txt
+./bin/RTG-scheduler --m example.txt
+./bin/RTG-scheduler --v example.txt
+./bin/RTG-scheduler --j bin/testData/set1-jobs.txt
+./bin/RTG-scheduler --j bin/testData/set1-jobs.txt --rt
+./bin/RTG-scheduler --j bin/testData/set1-job --rt bin/testData/set1-jobReleaseTimes.txt
+./bin/RTG-scheduler --j bin/testData/set1-jobs.txt --rt bin/testData/set1-jobReleaseTimes
+./bin/RTG-scheduler --j bin/testData/set1-jobs.txt --rt bin/testData/set1-jobReleaseTimes.txt
+./bin/RTG-scheduler --j bin/testData/set1-jobs.txt --rt bin/testData/set1-jobReleaseTimes.txt --m
+./bin/RTG-scheduler --j bin/testData/set1-jobs.txt --rt bin/testData/set1-jobReleaseTimes.txt --m 1
+./bin/RTG-scheduler --j bin/testData/set1-jobs.txt --rt bin/testData/set1-jobReleaseTimes.txt --m 2
+./bin/RTG-scheduler --j bin/testData/set1-jobs.txt --rt bin/testData/set1-jobReleaseTimes.txt --m 3
+./bin/RTG-scheduler --j bin/testData/set1-jobs.txt --rt bin/testData/set1-jobReleaseTimes.txt --m 4
+./bin/RTG-scheduler --j bin/testData/set1-jobs.txt --rt bin/testData/set1-jobReleaseTimes.txt --m 5
+./bin/RTG-scheduler --j bin/testData/set1-jobs.txt --rt bin/testData/set1-jobReleaseTimes.txt --m 99
