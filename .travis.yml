@@ -18,6 +18,7 @@ addons:
 branches:
   - master
   - develop
+  - visual-profile
 
 before_script:
   - mkdir build
