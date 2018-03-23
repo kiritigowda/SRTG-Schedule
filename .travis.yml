@@ -1,14 +1,17 @@
 language: c
-
+sudo: false
+dist: trusty
 compiler:
-  - clang
-  
+- clang
+os:
+- linux
+
 addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - lcov
+    apt:
+        sources:
+            - ubuntu-toolchain-r-test
+        packages:
+            - lcov
   
 branches:
   - master
