@@ -2,6 +2,7 @@ language: c
 
 compiler:
   - clang
+  - g++
 
 before_script:
   - mkdir build
