@@ -3,7 +3,6 @@ sudo: false
 dist: trusty
 compiler:
     - clang
-    - g++
     - gcc
 os:
 - linux
@@ -23,7 +22,7 @@ before_script:
   - mkdir build
   - cd build
   #- cmake -DCMAKE_C_FLAGS="-Wall -fprofile-arcs -ftest-coverage -fprofile-generate -lgcov --coverage" ../RTG-scheduler
-  - cmake ../RTG-scheduler
+  - cmake -DCMAKE_C_FLAGS="-std=c99" ../RTG-scheduler
 
 script: 
   - make 
