@@ -28,7 +28,7 @@ script:
   - make 
 
 after_success:
-  - cd ${TRAVIS_BUILD_DIR}
+  #- cd ${TRAVIS_BUILD_DIR}
   - ../RTG-scheduler/testScripts/runCodeCoverage.sh
   - lcov --directory . --capture --output-file coverage.info
   - lcov --remove coverage.info '/usr/*' --output-file coverage.info
