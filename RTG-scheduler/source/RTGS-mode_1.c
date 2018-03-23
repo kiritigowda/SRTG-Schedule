@@ -78,8 +78,8 @@ RTGS Mode 1 - - Simple GPU Schedulers
 ***********************************************************************************************************/
 int RTGS_mode_1(char *kernelFilename, char *releaseTimeFilename)
 {
-	kernelInfo kernel_info_list[MAX_KERNELS] = { 0 };
-	kernelReleaseInfo releaseTimeInfo[MAX_KERNELS] = { 0 };
+	kernelInfo kernel_info_list[MAX_KERNELS] = {{0}};
+	kernelReleaseInfo releaseTimeInfo[MAX_KERNELS] = {{0}};
 	scheduledNode *processor_alloc_list = NULL;
 	scheduledNode *kernel_queue_list = NULL;
 
