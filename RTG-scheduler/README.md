@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/kiritigowda/SRTG-Schedule.svg?branch=master)](https://travis-ci.org/kiritigowda/SRTG-Schedule)
+[![codecov](https://codecov.io/gh/kiritigowda/SRTG-Schedule/branch/master/graph/badge.svg)](https://codecov.io/gh/kiritigowda/SRTG-Schedule)
+
 # RTGS
 The current release verion is 0.9.6 (beta preview).
 
@@ -12,31 +15,31 @@ RTG-scheduler [options] --jobs <jobs_file.txt> --releaseTimes <Release_Time_file
 
 ## Scheduler Options Supported
 ````
-        --h/--help -- Show full help
-        --v/--verbose -- Show detailed messages
+        --h/--help      -- Show full help
+        --v/--verbose   -- Show detailed messages
 ````
 ## Scheduler Parameters
 ````
-        --j/--jobs -- Jobs to be scheduled [required]
-        --rt/--releaseTimes -- Release times for the jobs [required]
-        --m/--mode -- Mode options [optional]
+        --j/--jobs              -- Jobs to be scheduled [required]
+        --rt/--releaseTimes     -- Release times for the jobs [required]
+        --m/--mode              -- Mode options [optional]
 ````
 
 - #### --j/--jobs -- The Jobs File is the list of Jobs to be scheduled: <jobs_file.txt>
 ```
-        Jid - Job Number
-        Pn - Processors Needed
-        Texe - Execution Time
-        Td - Deadline
-        Tlts - Lastest Time Schedulable on the GPU
+        Jid     - Job Number
+        Pn      - Processors Needed
+        Texe    - Execution Time
+        Td      - Deadline
+        Tlts    - Lastest Time Schedulable on the GPU
 
         "Jid, Pn, Texe, Td, Tlts"
 ```
 
 - #### --rt/--releaseTimes -- The Release Time File has the list of release times of the kernels: <Release_Time_file.txt>
 ```
-        Tr - Release Time
-        Jr - Number of jobs released
+        Tr      - Release Time
+        Jr      - Number of jobs released
 
         "Tr, Jr"
 ```

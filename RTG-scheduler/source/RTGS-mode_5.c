@@ -11,8 +11,8 @@ RTGS Mode 5 - - AEAP/ALAP BP with APLAP improver mode->AEAP/ALAP BP Improve
 int  RTGS_mode_5(char *kernelFilename, char *releaseTimeFilename)
 {
 	PROFILER_START(SRTG, RTGS_mode_5)
-	kernelInfo kernel_info_list[MAX_KERNELS] = { 0 };
-	kernelReleaseInfo releaseTimeInfo[MAX_KERNELS] = { 0 };
+	kernelInfo kernel_info_list[MAX_KERNELS] = {{0}};
+	kernelReleaseInfo releaseTimeInfo[MAX_KERNELS] = {{0}};
 	scheduledNode *processor_alloc_list = NULL;
 	scheduledNode *kernel_queue_list = NULL;		//Kernel queued for future executions
 

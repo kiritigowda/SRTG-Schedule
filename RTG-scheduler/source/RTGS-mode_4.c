@@ -1402,8 +1402,8 @@ RTGS Mode 4 - - AEAP/ALAP Bin Packer mode->AEAP/ALAP Pack
 ***********************************************************************************************************/
 int RTGS_mode_4(char *kernelFilename, char *releaseTimeFilename) {
 
-	kernelInfo kernel_info_list[MAX_KERNELS] = { 0 };
-	kernelReleaseInfo releaseTimeInfo[MAX_KERNELS] = { 0 };
+	kernelInfo kernel_info_list[MAX_KERNELS] = {{0}};
+	kernelReleaseInfo releaseTimeInfo[MAX_KERNELS] = {{0}};
 	scheduledNode *processor_alloc_list = NULL;
 	scheduledNode *kernel_queue_list = NULL;		//Kernel queued for future executions
 

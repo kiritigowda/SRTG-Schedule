@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/kiritigowda/SRTG-Schedule.svg?branch=master)](https://travis-ci.org/kiritigowda/SRTG-Schedule)
+[![codecov](https://codecov.io/gh/kiritigowda/SRTG-Schedule/branch/master/graph/badge.svg)](https://codecov.io/gh/kiritigowda/SRTG-Schedule)
+
 # Real Time Scheduler for Graphic Processing Units
 
 ## Dynamic schedule management framework for soft-real-time jobs on GPU based architectures
