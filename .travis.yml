@@ -2,7 +2,8 @@ language: c
 sudo: false
 dist: trusty
 compiler:
-- clang
+    - clang
+    - gcc-7.3
 os:
 - linux
 
