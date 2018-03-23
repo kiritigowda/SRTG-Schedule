@@ -3,6 +3,13 @@ language: c
 compiler:
   - clang
   
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - lcov
+  
 branches:
   - master
   - develop
@@ -10,6 +17,19 @@ branches:
 before_script:
   - mkdir build
   - cd build
-  - cmake ../RTG-scheduler
+  - cmake -DCMAKE_C_FLAGS="-Wall -fprofile-arcs -ftest-coverage" ../RTG-scheduler
 
-script: make 
+script: 
+  - make 
+
+after_success:
+  - cd ${TRAVIS_BUILD_DIR}
+  - lcov --directory . --capture --output-file coverage.info
+  - lcov --remove coverage.info '/usr/*' --output-file coverage.info
+  - lcov --list coverage.info
+  # Uploading report to CodeCov
+  - bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverage reports"
+
+notifications:
+  email:
+    - kiritigowda@gmail.com
