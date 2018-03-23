@@ -513,8 +513,8 @@ RTGS Mode 3 - AEAP with As Late As Possible mode->AEAP/ALAP
 ***********************************************************************************************************/
 int RTGS_mode_3(char *kernelFilename, char *releaseTimeFilename)
 {
-	kernelInfo kernel_info_list[MAX_KERNELS] = { 0 };
-	kernelReleaseInfo releaseTimeInfo[MAX_KERNELS] = { 0 };
+	kernelInfo kernel_info_list[MAX_KERNELS] = {{0}};
+	kernelReleaseInfo releaseTimeInfo[MAX_KERNELS] = {{0}};
 	scheduledNode *processor_alloc_list = NULL;
 	scheduledNode *kernel_queue_list = NULL;		//Kernel queued for future executions
 
