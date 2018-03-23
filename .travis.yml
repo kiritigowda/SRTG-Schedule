@@ -2,6 +2,10 @@ language: c
 
 compiler:
   - clang
+  
+branches:
+  - master
+  - develop
 
 before_script:
   - mkdir build
