@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/kiritigowda/SRTG-Schedule.svg?branch=master)](https://travis-ci.org/kiritigowda/SRTG-Schedule)
+
 # RTGS
 The current release verion is 0.9.6 (beta preview).
 
