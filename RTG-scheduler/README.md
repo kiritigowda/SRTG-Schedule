@@ -3,41 +3,52 @@ The current release verion is 0.9.6 (beta preview).
 
 ### Windows
 ```
-RTG-scheduler [options] --jobs <jobs_file.txt> --releaseTimes <Release_Time_file.txt> --mode <Option> 
+RTG-scheduler [options] --jobs <jobs_file.txt> --releaseTimes <Release_Time_file.txt> --mode <mode option> 
 ```
 ### Linux
 ```
-./RTG-scheduler [options] --jobs <jobs_file.txt> --releaseTimes <Release_Time_file.txt> --mode <Option> 
+./RTG-scheduler [options] --jobs <jobs_file.txt> --releaseTimes <Release_Time_file.txt> --mode <mode option> 
 ```
 
-## Scheduler [options] Supported
-#### --h/--help Show full help
+## Scheduler Options Supported
+````
+        --h/--help -- Show full help
+        --v/--verbose -- Show detailed messages
+````
+## Scheduler Parameters
+````
+        --j/--jobs -- Jobs to be scheduled [required]
+        --rt/--releaseTimes -- Release times for the jobs [required]
+        --m/--mode -- Mode options [optional]
+````
 
-#### The Jobs File is the list of Jobs to be scheduled:
+- #### --j/--jobs -- The Jobs File is the list of Jobs to be scheduled: <jobs_file.txt>
 ```
-    Job Number
-    Processors Needed
-    Execution Time
-    Deadline
-    Lastest Time Schedulable on the GPU
+        Jid - Job Number
+        Pn - Processors Needed
+        Texe - Execution Time
+        Td - Deadline
+        Tlts - Lastest Time Schedulable on the GPU
+
+        "Jid, Pn, Texe, Td, Tlts"
 ```
 
-#### The Release Time File has the list of release times of the kernels:
+- #### --rt/--releaseTimes -- The Release Time File has the list of release times of the kernels: <Release_Time_file.txt>
 ```
-    0 - No Jobs Released
-    1 - One Job Released at the time marked by location
-    2 - Two Jobs Released at the time marked by location
-    N - Extended in the next release
+        Tr - Release Time
+        Jr - Number of jobs released
+
+        "Tr, Jr"
 ```
 
-#### The Modes Supported:
+- #### --m/--mode -- The Modes Supported: <mode option>
 ```
-    1 - Simple GPU Scheduler
-    2 - As Early As Possible mode->AEAP
-    3 - AEAP with As Late As Possible mode->AEAP/ALAP
-    4 - AEAP/ALAP Bin Packer mode->AEAP/ALAP Pack
-    5 - AEAP/ALAP BP with APLAP improver mode->AEAP/ALAP BP Improve
-    N - Extended in the next release
+        1 - Simple GPU Scheduler
+        2 - As Early As Possible mode->AEAP
+        3 - AEAP with As Late As Possible mode->AEAP/ALAP
+        4 - AEAP/ALAP Bin Packer mode->AEAP/ALAP Pack
+        5 - AEAP/ALAP BP with APLAP improver mode->AEAP/ALAP BP Improve
+        N - Extended in the next release
 ```
 
 ## RTGS USER GUIDE

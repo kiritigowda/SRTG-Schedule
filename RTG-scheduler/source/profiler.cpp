@@ -33,8 +33,8 @@ static int MAX_PROFILER_EVENTS = 0;
 static int profiler_count = 0;
 static int * profiler_data = 0;
 static __int64 * profiler_clock = 0;
-static inline __int64 my_rdtsc(){ return __rdtsc(); }
-bool ls_getEnvironmentVariable(const char * name, char * value, size_t valueSize)
+static inline __int64 my_rdtsc() { return __rdtsc(); }
+bool getEnvironmentVariable(const char * name, char * value, size_t valueSize)
 {
 #if _WIN32
 	DWORD len = GetEnvironmentVariableA(name, value, (DWORD)valueSize);
@@ -104,12 +104,12 @@ extern "C" void dump_profile_log()
 #if _WIN32
 	CreateDirectory("SRTG-Visual-Profile", NULL);
 #else
-	struct stat st = {0};
-	if (stat("SRTG-Visual-Profile", &st) == -1) {	mkdir("SRTG-Visual-Profile", 0700); }
+	struct stat st = { 0 };
+	if (stat("SRTG-Visual-Profile", &st) == -1) { mkdir("SRTG-Visual-Profile", 0700); }
 #endif
 	char profiler[1024] = "SRTG-Visual-Profile/SRTG_PROFILE";
 	char textBuffer[1024];
-	if (ls_getEnvironmentVariable("VISUAL_PROFILER_LOCATION", textBuffer, sizeof(textBuffer))){sprintf(profiler, "%s/SRTG_PROFILE", textBuffer);}
+	if (getEnvironmentVariable("VISUAL_PROFILER_LOCATION", textBuffer, sizeof(textBuffer))) { sprintf(profiler, "%s/SRTG_PROFILE", textBuffer); }
 	char plogfile[1024]; sprintf(plogfile, "%s-Mode-%d-data.log", profiler, GLOBAL_SRTG_MODE);
 	char phtmfile[1024]; sprintf(phtmfile, "%s-Mode-%d-visual.html", profiler, GLOBAL_SRTG_MODE);
 	FILE * fp = fopen(plogfile, "w"); if (!fp) { printf("ERROR: unable to create '%s'\n", plogfile); return; }
@@ -139,7 +139,7 @@ extern "C" void dump_profile_log()
 	__int64 etime = my_rdtsc();
 	freq *= ((float)(etime - stime)) / ((float)(l2.QuadPart - li.QuadPart));
 #else
-    freq = std::chrono::high_resolution_clock::period::den / std::chrono::high_resolution_clock::period::num;
+	freq = std::chrono::high_resolution_clock::period::den / std::chrono::high_resolution_clock::period::num;
 #endif
 	int xstart = 280;
 	for (int k = 0; k < profiler_count; k++) {
@@ -209,7 +209,7 @@ extern "C" void dump_profile_log()
 			}
 		}
 		if (t == 2) {
-            fprintf(fp, "DATA %20lld %3d %s\n", (long long int)profiler_clock[k], e, ProfilerEventName[e]);
+			fprintf(fp, "DATA %20lld %3d %s\n", (long long int)profiler_clock[k], e, ProfilerEventName[e]);
 		}
 		else {
 			fprintf(fp, "%12.3f %-12s %3d %s\n", fclock, t ? "stop" : "start", e, ProfilerEventName[e]);

@@ -1,5 +1,5 @@
 /*
-/*
+*
 * RTGS-queue_handler.c
 *      Author: Kiriti Nagesh Gowda
 */
@@ -10,21 +10,21 @@
 /* Function to add future kernel_info_list releases and arrange kernel_info_list execution times in ascending order */
 void Queue_kernel_execution
 (
-	int processorReleased, 
+	int processorReleased,
 	int processor_release_time,
-	int present_time, 
-	int schedule_method, 
-	int kernel_number, 
+	int present_time,
+	int schedule_method,
+	int kernel_number,
 	scheduledNode **processor_alloc_list
 )
 {
 	PROFILER_START(SRTG, Queue_kernel_execution)
 	// TBD:: Sending Data and Kernels
-	*processor_alloc_list = ascending_insert(*processor_alloc_list, processor_release_time, processor_release_time, 
-											processorReleased, kernel_number, schedule_method);
-#if DEBUG_MESSAGES
-	print(*processor_alloc_list);
-#endif
+	*processor_alloc_list = ascending_insert(*processor_alloc_list, processor_release_time, processor_release_time,
+		processorReleased, kernel_number, schedule_method);
+	if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+		print(*processor_alloc_list);
+	}
 	PROFILER_STOP(SRTG, Queue_kernel_execution)
 	return;
 }
@@ -32,12 +32,12 @@ void Queue_kernel_execution
 /* Function to add future kernel_info_list releases and arrange kernel_info_list execution times in ascending order */
 void Kernel_queue_handler
 (
-int processorReleased,
-int kernel_release_time,
-int processor_release_time,
-int schedule_method,
-int kernel_number,
-scheduledNode **kernel_queue_list
+	int processorReleased,
+	int kernel_release_time,
+	int processor_release_time,
+	int schedule_method,
+	int kernel_number,
+	scheduledNode **kernel_queue_list
 )
 {
 	PROFILER_START(SRTG, Kernel_queue_handler)
@@ -46,17 +46,17 @@ scheduledNode **kernel_queue_list
 	{
 		*kernel_queue_list = ascending_insert(*kernel_queue_list, kernel_release_time, processor_release_time,
 			processorReleased, kernel_number, schedule_method);
-#if DEBUG_MESSAGES
-		Kernel_queue_print(*kernel_queue_list);
-#endif
+		if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+			Kernel_queue_print(*kernel_queue_list);
+		}
 	}
 	else if (schedule_method == RTGS_SCHEDULE_METHOD_AEAP)
 	{
 		*kernel_queue_list = ascending_insert(*kernel_queue_list, kernel_release_time, kernel_release_time,
 			processorReleased, kernel_number, schedule_method);
-#if DEBUG_MESSAGES
-		Kernel_queue_print(*kernel_queue_list);
-#endif
+		if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+			Kernel_queue_print(*kernel_queue_list);
+		}
 	}
 	else
 	{
