@@ -23,7 +23,7 @@ before_script:
   - mkdir build
   - cd build
   #- cmake -DCMAKE_C_FLAGS="-Wall -fprofile-arcs -ftest-coverage -fprofile-generate -lgcov --coverage" ../RTG-scheduler
-  - cmake -DCMAKE_C_FLAGS="--coverage" ../RTG-scheduler
+  - cmake ../RTG-scheduler
 
 script: 
   - make 
