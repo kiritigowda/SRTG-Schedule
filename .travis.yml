@@ -30,7 +30,13 @@ script:
 after_success:
   #- cd ${TRAVIS_BUILD_DIR}
   - ./../RTG-scheduler/testScripts/runCodeCoverage.sh
-  - ./bin/RTG-scheduler
+  - ./bin/RTG-scheduler --j testData/set1-jobs.txt --rt testData/set1-jobReleaseTimes.txt
+  - ./bin/RTG-scheduler --j testData/set1-jobs.txt --rt testData/set1-jobReleaseTimes.txt --m 1
+  - ./bin/RTG-scheduler --j testData/set1-jobs.txt --rt testData/set1-jobReleaseTimes.txt --m 2
+  - ./bin/RTG-scheduler --j testData/set1-jobs.txt --rt testData/set1-jobReleaseTimes.txt --m 3
+  - ./bin/RTG-scheduler --j testData/set1-jobs.txt --rt testData/set1-jobReleaseTimes.txt --m 4
+  - ./bin/RTG-scheduler --j testData/set1-jobs.txt --rt testData/set1-jobReleaseTimes.txt --m 5
+  - ./bin/RTG-scheduler --j testData/set1-jobs.txt --rt testData/set1-jobReleaseTimes.txt --m 99 
   - ./bin/RTG-scheduler --h
   - ./bin/RTG-scheduler --j
   - lcov --directory . --capture --output-file coverage.info
