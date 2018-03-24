@@ -57,4 +57,46 @@ RTGS_DEBUG_MSG=5 ./bin/RTG-scheduler --j bin/testData/set5-jobs.txt --rt bin/tes
 RTGS_DEBUG_MSG=5 ./bin/RTG-scheduler --j bin/testData/set5-jobs.txt --rt bin/testData/set5-jobReleaseTimes.txt --m 3
 RTGS_DEBUG_MSG=5 ./bin/RTG-scheduler --j bin/testData/set5-jobs.txt --rt bin/testData/set5-jobReleaseTimes.txt --m 4
 RTGS_DEBUG_MSG=5 ./bin/RTG-scheduler --j bin/testData/set5-jobs.txt --rt bin/testData/set5-jobReleaseTimes.txt --m 5
-RTGS_DEBUG_MSG=5 ./bin/RTG-scheduler --j bin/testData/set5-jobs.txt --rt bin/testData/set5-jobReleaseTimes.txt --m 99
+RTGS_DEBUG_MSG=5 ./bin/RTG-scheduler --j bin/testData/set5-jobs.txt --rt bin/testData/set6-jobReleaseTimes.txt --m 
+#Job Set 6
+RTGS_DEBUG_MSG=5 ./bin/RTG-scheduler --j bin/testData/set6-jobs.txt --rt bin/testData/set6-jobReleaseTimes.txt --m 1
+RTGS_DEBUG_MSG=5 ./bin/RTG-scheduler --j bin/testData/set6-jobs.txt --rt bin/testData/set6-jobReleaseTimes.txt --m 2
+RTGS_DEBUG_MSG=5 ./bin/RTG-scheduler --j bin/testData/set6-jobs.txt --rt bin/testData/set6-jobReleaseTimes.txt --m 3
+RTGS_DEBUG_MSG=5 ./bin/RTG-scheduler --j bin/testData/set6-jobs.txt --rt bin/testData/set6-jobReleaseTimes.txt --m 4
+RTGS_DEBUG_MSG=5 ./bin/RTG-scheduler --j bin/testData/set6-jobs.txt --rt bin/testData/set6-jobReleaseTimes.txt --m 5
+RTGS_DEBUG_MSG=5 ./bin/RTG-scheduler --j bin/testData/set6-jobs.txt --rt bin/testData/set6-jobReleaseTimes.txt --m 99
+#Job Set 7
+RTGS_DEBUG_MSG=5 ./bin/RTG-scheduler --j bin/testData/set7-jobs.txt --rt bin/testData/set7-jobReleaseTimes.txt --m 1
+RTGS_DEBUG_MSG=5 ./bin/RTG-scheduler --j bin/testData/set7-jobs.txt --rt bin/testData/set7-jobReleaseTimes.txt --m 2
+RTGS_DEBUG_MSG=5 ./bin/RTG-scheduler --j bin/testData/set7-jobs.txt --rt bin/testData/set7-jobReleaseTimes.txt --m 3
+RTGS_DEBUG_MSG=5 ./bin/RTG-scheduler --j bin/testData/set7-jobs.txt --rt bin/testData/set7-jobReleaseTimes.txt --m 4
+RTGS_DEBUG_MSG=5 ./bin/RTG-scheduler --j bin/testData/set7-jobs.txt --rt bin/testData/set7-jobReleaseTimes.txt --m 5
+RTGS_DEBUG_MSG=5 ./bin/RTG-scheduler --j bin/testData/set7-jobs.txt --rt bin/testData/set7-jobReleaseTimes.txt --m 99
+#Job Set 8
+RTGS_DEBUG_MSG=5 ./bin/RTG-scheduler --j bin/testData/set8-jobs.txt --rt bin/testData/set8-jobReleaseTimes.txt --m 1
+RTGS_DEBUG_MSG=5 ./bin/RTG-scheduler --j bin/testData/set8-jobs.txt --rt bin/testData/set8-jobReleaseTimes.txt --m 2
+RTGS_DEBUG_MSG=5 ./bin/RTG-scheduler --j bin/testData/set8-jobs.txt --rt bin/testData/set8-jobReleaseTimes.txt --m 3
+RTGS_DEBUG_MSG=5 ./bin/RTG-scheduler --j bin/testData/set8-jobs.txt --rt bin/testData/set8-jobReleaseTimes.txt --m 4
+RTGS_DEBUG_MSG=5 ./bin/RTG-scheduler --j bin/testData/set8-jobs.txt --rt bin/testData/set8-jobReleaseTimes.txt --m 5
+RTGS_DEBUG_MSG=5 ./bin/RTG-scheduler --j bin/testData/set8-jobs.txt --rt bin/testData/set8-jobReleaseTimes.txt --m 99
+#Job Set 9
+RTGS_DEBUG_MSG=5 ./bin/RTG-scheduler --j bin/testData/set9-jobs.txt --rt bin/testData/set9-jobReleaseTimes.txt --m 1
+RTGS_DEBUG_MSG=5 ./bin/RTG-scheduler --j bin/testData/set9-jobs.txt --rt bin/testData/set9-jobReleaseTimes.txt --m 2
+RTGS_DEBUG_MSG=5 ./bin/RTG-scheduler --j bin/testData/set9-jobs.txt --rt bin/testData/set9-jobReleaseTimes.txt --m 3
+RTGS_DEBUG_MSG=5 ./bin/RTG-scheduler --j bin/testData/set9-jobs.txt --rt bin/testData/set9-jobReleaseTimes.txt --m 4
+RTGS_DEBUG_MSG=5 ./bin/RTG-scheduler --j bin/testData/set9-jobs.txt --rt bin/testData/set9-jobReleaseTimes.txt --m 5
+RTGS_DEBUG_MSG=5 ./bin/RTG-scheduler --j bin/testData/set9-jobs.txt --rt bin/testData/set9-jobReleaseTimes.txt --m 99
+#Job Set 10
+RTGS_DEBUG_MSG=5 ./bin/RTG-scheduler --j bin/testData/set10-jobs.txt --rt bin/testData/set10-jobReleaseTimes.txt --m 1
+RTGS_DEBUG_MSG=5 ./bin/RTG-scheduler --j bin/testData/set10-jobs.txt --rt bin/testData/set10-jobReleaseTimes.txt --m 2
+RTGS_DEBUG_MSG=5 ./bin/RTG-scheduler --j bin/testData/set10-jobs.txt --rt bin/testData/set10-jobReleaseTimes.txt --m 3
+RTGS_DEBUG_MSG=5 ./bin/RTG-scheduler --j bin/testData/set10-jobs.txt --rt bin/testData/set10-jobReleaseTimes.txt --m 4
+RTGS_DEBUG_MSG=5 ./bin/RTG-scheduler --j bin/testData/set10-jobs.txt --rt bin/testData/set10-jobReleaseTimes.txt --m 5
+RTGS_DEBUG_MSG=5 ./bin/RTG-scheduler --j bin/testData/set10-jobs.txt --rt bin/testData/set10-jobReleaseTimes.txt --m 99
+#Job Set 11
+RTGS_DEBUG_MSG=5 ./bin/RTG-scheduler --j bin/testData/set11-jobs.txt --rt bin/testData/set11-jobReleaseTimes.txt --m 1
+RTGS_DEBUG_MSG=5 ./bin/RTG-scheduler --j bin/testData/set11-jobs.txt --rt bin/testData/set11-jobReleaseTimes.txt --m 2
+RTGS_DEBUG_MSG=5 ./bin/RTG-scheduler --j bin/testData/set11-jobs.txt --rt bin/testData/set11-jobReleaseTimes.txt --m 3
+RTGS_DEBUG_MSG=5 ./bin/RTG-scheduler --j bin/testData/set11-jobs.txt --rt bin/testData/set11-jobReleaseTimes.txt --m 4
+RTGS_DEBUG_MSG=5 ./bin/RTG-scheduler --j bin/testData/set11-jobs.txt --rt bin/testData/set11-jobReleaseTimes.txt --m 5
+RTGS_DEBUG_MSG=5 ./bin/RTG-scheduler --j bin/testData/set11-jobs.txt --rt bin/testData/set11-jobReleaseTimes.txt --m 99

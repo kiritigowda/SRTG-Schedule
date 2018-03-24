@@ -1520,6 +1520,10 @@ int RTGS_mode_4(char *kernelFilename, char *releaseTimeFilename) {
 			printf("\nSummary Failed\n");
 		}
 
+		if ((kernelMax != (GLOBAL_GPU_KERNELS + GLOBAL_CPU_KERNELS)) || processorsAvailable != MAX_GPU_PROCESSOR) {
+			return RTGS_FAILURE;
+		}
+
 		for (int j = 0; j <= kernelMax; j++) {
 			kernel_info_list[j].processor_req = kernel_info_list[j].deadline = kernel_info_list[j].execution_time = kernel_info_list[j].latest_schedulable_time = 0;
 		}
