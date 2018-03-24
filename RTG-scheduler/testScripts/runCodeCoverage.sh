@@ -1,3 +1,4 @@
+export RGTS_DEBUG_MSG=4
 ./bin/RTG-scheduler
 ./bin/RTG-scheduler --h
 ./bin/RTG-scheduler --j
