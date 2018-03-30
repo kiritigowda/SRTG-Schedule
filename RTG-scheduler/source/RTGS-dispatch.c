@@ -105,14 +105,16 @@ int Dispatch_queued_kernels
 						Queue_kernel_execution(ALAP_Pg, t1->processor_release_time, present_time,
 							t1->schedule_method, t1->kernel_number, processor_alloc_list);
 					}
-					else if (temp->schedule_method == RTGS_SCHEDULE_METHOD_AEAP)
+					else if (t1->schedule_method == RTGS_SCHEDULE_METHOD_AEAP)
 					{
 						if (GLOBAL_RTGS_DEBUG_MSG > 2) {
 							printf("Dispatch Queued Kernels -- Present Time:%d Dispatched RTGS_SCHEDULE_METHOD_AEAP Job-%d ProcAlloc:%d for GPU EXECUTION\n",
 								present_time, t1->kernel_number, t1->processors_allocated);
 						}
 					}
-					else { printf("Dispatch Queued Kernels -- ERROR NOT IMPLEMENTED"); return RTGS_ERROR_NOT_IMPLEMENTED; }
+					else { 
+						printf("Dispatch Queued Kernels -- ERROR NOT IMPLEMENTED"); return RTGS_ERROR_NOT_IMPLEMENTED; 
+					}
 
 					free(t1);
 					t1 = t2;
@@ -154,7 +156,9 @@ int Dispatch_queued_kernels
 							present_time, temp->kernel_number, temp->processors_allocated);
 					}
 				}
-				else { printf("Dispatch Queued Kernels -- ERROR NOT IMPLEMENTED"); return RTGS_ERROR_NOT_IMPLEMENTED; }
+				else { 
+					printf("Dispatch Queued Kernels -- ERROR NOT IMPLEMENTED"); return RTGS_ERROR_NOT_IMPLEMENTED; 
+				}
 			}
 			temp = position_delete(*kernel_queue_list, 1);
 			*kernel_queue_list = temp;
