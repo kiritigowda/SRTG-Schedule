@@ -17,7 +17,7 @@ int AEAP_advanced
 {
 	PROFILER_START(SRTG, AEAP_advanced)
 	if (GLOBAL_RTGS_DEBUG_MSG > 2) {
-		printf("As Early As Possible Advanced (AEAP-A) -- Job-%d is verified for ALAP Advanced scheduling\n", kernel_number);
+		printf("As Early As Possible Advanced (AEAP-A) -- Job-%d is verified for AEAP Advanced scheduling\n", kernel_number);
 	}
 
 	int Pro = 0, kernel_release_time;
@@ -35,6 +35,16 @@ int AEAP_advanced
 				if ((temp->processor_release_time + kernel_info_list[kernel_number].execution_time) > kernel_info_list[kernel_number].deadline)
 				{
 					PROFILER_STOP(SRTG, AEAP_advanced)
+					// TBD:: Kernel has to be sent to CPU
+					kernel_info_list[kernel_number].schedule_hardware = 2;
+					kernel_info_list[kernel_number].rescheduled_execution = -1;
+					kernel_info_list[kernel_number].completion_time = -1;
+					kernel_info_list[kernel_number].scheduled_execution = -1;
+					GLOBAL_CPU_KERNELS++;
+					if (GLOBAL_RTGS_DEBUG_MSG > 2) {
+						printf("As Early As Possible Advanced (AEAP-A) -- Job-%d Cannot be scheduled, can not be scheduled before deadline\n", kernel_number);
+						printf("AEAP-A -- Jobs REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
+					}
 					return processors_available;
 				}
 				else if (temp->processor_release_time <= GLOBAL_ALAP_LIST->data)
@@ -141,6 +151,16 @@ int AEAP_advanced
 						if ((temp->processor_release_time + kernel_info_list[kernel_number].execution_time) > kernel_info_list[kernel_number].deadline)
 						{
 							PROFILER_STOP(SRTG, AEAP_advanced)
+							// TBD:: Kernel has to be sent to CPU
+							kernel_info_list[kernel_number].schedule_hardware = 2;
+							kernel_info_list[kernel_number].rescheduled_execution = -1;
+							kernel_info_list[kernel_number].completion_time = -1;
+							kernel_info_list[kernel_number].scheduled_execution = -1;
+							GLOBAL_CPU_KERNELS++;
+							if (GLOBAL_RTGS_DEBUG_MSG > 2) {
+								printf("As Early As Possible Advanced (AEAP-A) -- Job-%d Cannot be scheduled, can not be scheduled before deadline\n", kernel_number);
+								printf("AEAP-A -- Jobs REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
+							}
 							return processors_available;
 						}
 						else if (temp->processor_release_time <= GLOBAL_ALAP_LIST->processor_release_time)
@@ -241,6 +261,9 @@ int AEAP_advanced
 				return processors_available;
 			}
 		} //End of else if
+		else {
+			printf("As Early As Possible Advanced (AEAP-A) -- Job-%d cannot be scheduled, ODD CASE\n", kernel_number);
+		}
 	} //End of GLOBAL_ALAP_LIST->next == NULL
 	if (GLOBAL_ALAP_LIST->next != NULL)
 	{
@@ -256,6 +279,16 @@ int AEAP_advanced
 					if ((temp->processor_release_time + kernel_info_list[kernel_number].execution_time) > kernel_info_list[kernel_number].deadline)
 					{
 						PROFILER_STOP(SRTG, AEAP_advanced)
+						// TBD:: Kernel has to be sent to CPU
+						kernel_info_list[kernel_number].schedule_hardware = 2;
+						kernel_info_list[kernel_number].rescheduled_execution = -1;
+						kernel_info_list[kernel_number].completion_time = -1;
+						kernel_info_list[kernel_number].scheduled_execution = -1;
+						GLOBAL_CPU_KERNELS++;
+						if (GLOBAL_RTGS_DEBUG_MSG > 2) {
+							printf("As Early As Possible Advanced (AEAP-A) -- Job-%d Cannot be scheduled, can not be scheduled before deadline\n", kernel_number);
+							printf("AEAP-A -- Jobs REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
+						}
 						return processors_available;
 					}
 					else if (temp->processor_release_time <= GLOBAL_ALAP_LIST->data)
@@ -381,6 +414,16 @@ int AEAP_advanced
 					{
 						if ((temp->processor_release_time + kernel_info_list[kernel_number].execution_time) > kernel_info_list[kernel_number].deadline)
 						{
+							// TBD:: Kernel has to be sent to CPU
+							kernel_info_list[kernel_number].schedule_hardware = 2;
+							kernel_info_list[kernel_number].rescheduled_execution = -1;
+							kernel_info_list[kernel_number].completion_time = -1;
+							kernel_info_list[kernel_number].scheduled_execution = -1;
+							GLOBAL_CPU_KERNELS++;
+							if (GLOBAL_RTGS_DEBUG_MSG > 2) {
+								printf("As Early As Possible Advanced (AEAP-A) -- Job-%d Cannot be scheduled, can not be scheduled before deadline\n", kernel_number);
+								printf("AEAP-A -- Jobs REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
+							}
 							return processors_available;
 						}
 						else if (temp->processor_release_time <= GLOBAL_ALAP_LIST->processor_release_time)
@@ -480,8 +523,12 @@ int AEAP_advanced
 				return processors_available;
 			}
 		} //End of else if
+		else {
+			printf("As Early As Possible Advanced (AEAP-A) -- Job-%d cannot be scheduled, ODD CASE\n", kernel_number);
+		}
 	} //End of GLOBAL_ALAP_LIST->next != NULL
 	PROFILER_STOP(SRTG, AEAP_advanced)
+	printf("As Early As Possible Advanced (AEAP-A) -- Job-%d cannot be scheduled, ODD CASE FINAL\n", kernel_number);
 	return processors_available;
 }
 

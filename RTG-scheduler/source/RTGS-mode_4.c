@@ -304,7 +304,7 @@ static int Mode_4_AEAP_advanced
 )
 {
 	if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-		printf("Mode - 4 AEAP advanced: Kernel->%d is verified for ALAP advanced scheduling\n", kernel_number);
+		printf("Mode - 4 AEAP advanced: Kernel->%d is verified for AEAP advanced scheduling\n", kernel_number);
 	}
 
 	int Pro = 0, kernel_release_time = 0;
@@ -320,6 +320,16 @@ static int Mode_4_AEAP_advanced
 			{
 				if ((temp->processor_release_time + kernel_info_list[kernel_number].execution_time) > kernel_info_list[kernel_number].deadline)
 				{
+					// TBD:: Kernel has to be sent to CPU
+					kernel_info_list[kernel_number].schedule_hardware = 2;
+					kernel_info_list[kernel_number].rescheduled_execution = -1;
+					kernel_info_list[kernel_number].completion_time = -1;
+					kernel_info_list[kernel_number].scheduled_execution = -1;
+					GLOBAL_CPU_KERNELS++;
+					if (GLOBAL_RTGS_DEBUG_MSG > 2) {
+						printf("Mode - 4 AEAP advanced -- Job-%d Cannot be scheduled, can not be scheduled before deadline\n", kernel_number);
+						printf("Mode - 4 AEAP advanced -- Jobs REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
+					}
 					return processors_available;
 				}
 				else if (temp->processor_release_time <= GLOBAL_ALAP_LIST->data)
@@ -521,6 +531,9 @@ static int Mode_4_AEAP_advanced
 				return processors_available;
 			}
 		} //End of else if
+		else {
+			printf("Mode 4 AEAP advanced: The Kernel:%d Cannot be scheduled --ODD CASE\n", kernel_number);
+		}
 	} //End of GLOBAL_ALAP_LIST->next == NULL
 	if (GLOBAL_ALAP_LIST->next != NULL)
 	{
@@ -1429,7 +1442,9 @@ int RTGS_mode_4(char *kernelFilename, char *releaseTimeFilename) {
 	{
 		// Freeing-up processors
 		processorsAvailable = Retrieve_processors(present_time, processorsAvailable, &processor_alloc_list);
+		if (processorsAvailable < 0) { printf("Retrieve_processors ERROR- Processors Available:%d\n", processorsAvailable); return RTGS_ERROR_NOT_IMPLEMENTED; }
 		processorsAvailable = Dispatch_queued_kernels(present_time, processorsAvailable, &kernel_queue_list, &processor_alloc_list);
+		if (processorsAvailable < 0) { printf("Dispatch_queued_kernels ERROR - Processors Available:%d\n", processorsAvailable); return RTGS_ERROR_NOT_IMPLEMENTED; }
 
 		if (releaseTimeInfo[numReleases].release_time == present_time) {
 
