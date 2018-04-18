@@ -7,55 +7,55 @@
 #include"RTGS.h"
 
 
-/* Function to add future kernel_info_list releases and arrange kernel_info_list execution times in ascending order */
+/* Function to add future jobAttributesList releases and arrange jobAttributesList execution times in ascending order */
 void Queue_kernel_execution
 (
 	int processorReleased,
 	int processor_release_time,
 	int present_time,
 	int schedule_method,
-	int kernel_number,
-	scheduledNode **processor_alloc_list
+	int jobNumber,
+	scheduledJobNode **processorsAllocatedList
 )
 {
 	PROFILER_START(SRTG, Queue_kernel_execution)
-	// TBD:: Sending Data and Kernels
-	*processor_alloc_list = ascending_insert(*processor_alloc_list, processor_release_time, processor_release_time,
-		processorReleased, kernel_number, schedule_method);
+	// TBD:: Sending Data and Jobs to GPU
+	*processorsAllocatedList = ascending_insert(*processorsAllocatedList, processor_release_time, processor_release_time,
+		processorReleased, jobNumber, schedule_method);
 	if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-		print(*processor_alloc_list);
+		print(*processorsAllocatedList);
 	}
 	PROFILER_STOP(SRTG, Queue_kernel_execution)
 	return;
 }
 
-/* Function to add future kernel_info_list releases and arrange kernel_info_list execution times in ascending order */
+/* Function to add future jobAttributesList releases and arrange jobAttributesList execution times in ascending order */
 void Kernel_queue_handler
 (
 	int processorReleased,
-	int kernel_release_time,
+	int job_release_time,
 	int processor_release_time,
 	int schedule_method,
-	int kernel_number,
-	scheduledNode **kernel_queue_list
+	int jobNumber,
+	scheduledJobNode **jobSchdeuleQueueList
 )
 {
 	PROFILER_START(SRTG, Kernel_queue_handler)
-	// TBD:: Sending Data and Kernels
+	// TBD:: Sending Data and Jobs
 	if (schedule_method == RTGS_SCHEDULE_METHOD_ALAP)
 	{
-		*kernel_queue_list = ascending_insert(*kernel_queue_list, kernel_release_time, processor_release_time,
-			processorReleased, kernel_number, schedule_method);
+		*jobSchdeuleQueueList = ascending_insert(*jobSchdeuleQueueList, job_release_time, processor_release_time,
+			processorReleased, jobNumber, schedule_method);
 		if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-			Kernel_queue_print(*kernel_queue_list);
+			Kernel_queue_print(*jobSchdeuleQueueList);
 		}
 	}
 	else if (schedule_method == RTGS_SCHEDULE_METHOD_AEAP)
 	{
-		*kernel_queue_list = ascending_insert(*kernel_queue_list, kernel_release_time, kernel_release_time,
-			processorReleased, kernel_number, schedule_method);
+		*jobSchdeuleQueueList = ascending_insert(*jobSchdeuleQueueList, job_release_time, job_release_time,
+			processorReleased, jobNumber, schedule_method);
 		if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-			Kernel_queue_print(*kernel_queue_list);
+			Kernel_queue_print(*jobSchdeuleQueueList);
 		}
 	}
 	else

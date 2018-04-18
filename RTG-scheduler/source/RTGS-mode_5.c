@@ -8,25 +8,25 @@
 /**********************************************************************************************************
 RTGS Mode 5 - - AEAP/ALAP BP with APLAP improver mode->AEAP/ALAP BP Improve
 ***********************************************************************************************************/
-int  RTGS_mode_5(char *kernelFilename, char *releaseTimeFilename)
+int  RTGS_mode_5(char *jobsListFileName, char *releaseTimeFilename)
 {
 	PROFILER_START(SRTG, RTGS_mode_5)
-	kernelInfo kernel_info_list[MAX_KERNELS] = {{0}};
-	kernelReleaseInfo releaseTimeInfo[MAX_KERNELS] = {{0}};
-	scheduledNode *processor_alloc_list = NULL;
-	scheduledNode *kernel_queue_list = NULL;		//Kernel queued for future executions
+	jobAttributes jobAttributesList[MAX_JOBS] = {{0}};
+	jobReleaseInfo releaseTimeInfo[MAX_JOBS] = {{0}};
+	scheduledJobNode *processorsAllocatedList = NULL;
+	scheduledJobNode *jobSchdeuleQueueList = NULL;		//Job queued for future executions
 
 	// global variable initialize
-	GLOBAL_GPU_KERNELS = 0;
-	GLOBAL_CPU_KERNELS = 0;
+	GLOBAL_GPU_JOBS = 0;
+	GLOBAL_CPU_JOBS = 0;
 	GLOBAL_ALAP_LIST = NULL;
 
 	int processorsAvailable = MAX_GPU_PROCESSOR;
-	int kernel_number = 0;
+	int jobNumber = 0;
 
-	int kernelMax = get_kernel_information(kernel_info_list, kernelFilename);
+	int kernelMax = get_job_information(jobAttributesList, jobsListFileName);
 	if (kernelMax <= RTGS_FAILURE) { return  RTGS_FAILURE; }
-	int maxReleases = get_kernel_release_times(releaseTimeInfo, releaseTimeFilename);
+	int maxReleases = get_job_release_times(releaseTimeInfo, releaseTimeFilename);
 	if (maxReleases <= RTGS_FAILURE) { return  RTGS_FAILURE; }
 
 	if (GLOBAL_RTGS_DEBUG_MSG > 1) {
@@ -37,77 +37,77 @@ int  RTGS_mode_5(char *kernelFilename, char *releaseTimeFilename)
 	for (int present_time = 0; present_time < MAX_RUN_TIME; present_time++)
 	{
 		// Freeing-up processors
-		processorsAvailable = Retrieve_processors(present_time, processorsAvailable, &processor_alloc_list);
+		processorsAvailable = Retrieve_processors(present_time, processorsAvailable, &processorsAllocatedList);
 		if (processorsAvailable < 0) { printf("Retrieve_processors ERROR- Processors Available:%d\n", processorsAvailable); return RTGS_ERROR_NOT_IMPLEMENTED; }
-		processorsAvailable = Dispatch_queued_kernels(present_time, processorsAvailable, &kernel_queue_list, &processor_alloc_list);
+		processorsAvailable = Dispatch_queued_kernels(present_time, processorsAvailable, &jobSchdeuleQueueList, &processorsAllocatedList);
 		if (processorsAvailable < 0) { printf("Dispatch_queued_kernels ERROR - Processors Available:%d\n", processorsAvailable); return RTGS_ERROR_NOT_IMPLEMENTED; }
 
 		if (releaseTimeInfo[numReleases].release_time == present_time) {
 
-			if (releaseTimeInfo[numReleases].num_kernel_released == 1)
+			if (releaseTimeInfo[numReleases].num_job_released == 1)
 			{
 				if (GLOBAL_RTGS_DEBUG_MSG > 1) {
 					printf("\nRTGS Mode 5 -- Total Processors Available at time %d = %d\n", present_time, processorsAvailable);
-					printf("RTGS Mode 5 -- Job-%d Released\n", kernel_number);
+					printf("RTGS Mode 5 -- Job-%d Released\n", jobNumber);
 				}
-				kernel_info_list[kernel_number].release_time = present_time;
-				// handling the released kernel_info_list by the book-keeper
+				jobAttributesList[jobNumber].release_time = present_time;
+				// handling the released jobAttributesList by the book-keeper
 				int64_t start_t = RTGS_GetClockCounter();
-				processorsAvailable = Kernel_book_keeper(kernel_info_list, kernel_number, processorsAvailable, present_time,
-					&processor_alloc_list, &kernel_queue_list);
+				processorsAvailable = Kernel_book_keeper(jobAttributesList, jobNumber, processorsAvailable, present_time,
+					&processorsAllocatedList, &jobSchdeuleQueueList);
 				int64_t end_t = RTGS_GetClockCounter();
 				int64_t freq = RTGS_GetClockFrequency();
 				float factor = 1000.0f / (float)freq; // to convert clock counter to ms
 				float SchedulerOverhead = (float)((end_t - start_t) * factor);
-				kernel_info_list[kernel_number].schedule_overhead = SchedulerOverhead;
-				kernel_number++;
+				jobAttributesList[jobNumber].schedule_overhead = SchedulerOverhead;
+				jobNumber++;
 			}
-			else if (releaseTimeInfo[numReleases].num_kernel_released == 2)
+			else if (releaseTimeInfo[numReleases].num_job_released == 2)
 			{
-				int k1 = kernel_number; kernel_number++;
-				int k2 = kernel_number; kernel_number++;
-				kernel_info_list[k1].release_time = present_time;
-				kernel_info_list[k2].release_time = present_time;
+				int k1 = jobNumber; jobNumber++;
+				int k2 = jobNumber; jobNumber++;
+				jobAttributesList[k1].release_time = present_time;
+				jobAttributesList[k2].release_time = present_time;
 
 				if (GLOBAL_RTGS_DEBUG_MSG > 1) {
 					printf("\nRTGS Mode 5 -- Total Processors Available at time %d = %d\n", present_time, processorsAvailable);
 					printf("RTGS Mode 5 -- Job-%d Released\n", k1);
 					printf("RTGS Mode 5 -- Job-%d Released\n", k2);
 				}
-				if (kernel_info_list[k1].deadline <= kernel_info_list[k2].deadline)
+				if (jobAttributesList[k1].deadline <= jobAttributesList[k2].deadline)
 				{
-					// handling the released kernel_info_list by the book-keeper
+					// handling the released jobAttributesList by the book-keeper
 					int64_t start_t = RTGS_GetClockCounter();
-					processorsAvailable = Kernel_book_keeper(kernel_info_list, k1, processorsAvailable, present_time, &processor_alloc_list, &kernel_queue_list);
+					processorsAvailable = Kernel_book_keeper(jobAttributesList, k1, processorsAvailable, present_time, &processorsAllocatedList, &jobSchdeuleQueueList);
 					int64_t end_t = RTGS_GetClockCounter();
 					int64_t freq = RTGS_GetClockFrequency();
 					float factor = 1000.0f / (float)freq; // to convert clock counter to ms
 					float SchedulerOverhead = (float)((end_t - start_t) * factor);
-					kernel_info_list[k1].schedule_overhead = SchedulerOverhead;
+					jobAttributesList[k1].schedule_overhead = SchedulerOverhead;
 					start_t = RTGS_GetClockCounter();
-					processorsAvailable = Kernel_book_keeper(kernel_info_list, k2, processorsAvailable, present_time, &processor_alloc_list, &kernel_queue_list);
+					processorsAvailable = Kernel_book_keeper(jobAttributesList, k2, processorsAvailable, present_time, &processorsAllocatedList, &jobSchdeuleQueueList);
 					end_t = RTGS_GetClockCounter();
 					SchedulerOverhead = (float)((end_t - start_t) * factor);
-					kernel_info_list[k2].schedule_overhead = SchedulerOverhead;
+					jobAttributesList[k2].schedule_overhead = SchedulerOverhead;
 				}
 				else
 				{
-					// handling the released kernel_info_list by the book-keeper
+					// handling the released jobAttributesList by the book-keeper
 					int64_t start_t = RTGS_GetClockCounter();
-					processorsAvailable = Kernel_book_keeper(kernel_info_list, k2, processorsAvailable, present_time, &processor_alloc_list, &kernel_queue_list);
+					processorsAvailable = Kernel_book_keeper(jobAttributesList, k2, processorsAvailable, present_time, &processorsAllocatedList, &jobSchdeuleQueueList);
 					int64_t end_t = RTGS_GetClockCounter();
 					int64_t freq = RTGS_GetClockFrequency();
 					float factor = 1000.0f / (float)freq; // to convert clock counter to ms
 					float SchedulerOverhead = (float)((end_t - start_t) * factor);
-					kernel_info_list[k2].schedule_overhead = SchedulerOverhead;
+					jobAttributesList[k2].schedule_overhead = SchedulerOverhead;
 					start_t = RTGS_GetClockCounter();
-					processorsAvailable = Kernel_book_keeper(kernel_info_list, k1, processorsAvailable, present_time, &processor_alloc_list, &kernel_queue_list);
+					processorsAvailable = Kernel_book_keeper(jobAttributesList, k1, processorsAvailable, present_time, &processorsAllocatedList, &jobSchdeuleQueueList);
 					end_t = RTGS_GetClockCounter();
 					SchedulerOverhead = (float)((end_t - start_t) * factor);
-					kernel_info_list[k1].schedule_overhead = SchedulerOverhead;
+					jobAttributesList[k1].schedule_overhead = SchedulerOverhead;
 				}
 			}
-			else if (releaseTimeInfo[numReleases].num_kernel_released > 2) { return RTGS_ERROR_NOT_IMPLEMENTED; }
+			else if (releaseTimeInfo[numReleases].num_job_released > 2) { return RTGS_ERROR_NOT_IMPLEMENTED; }
 
 			numReleases++;
 			if (numReleases > maxReleases) {
@@ -123,28 +123,28 @@ int  RTGS_mode_5(char *kernelFilename, char *releaseTimeFilename)
 			printf("\n******* Scheduler Mode 5 *******\n");
 			printf("Processors Available -- %d\n", processorsAvailable);
 			printf("Total Jobs Scheduled -- %d\n", kernelMax);
-			printf("	GPU Scheduled Jobs -- %d\n", GLOBAL_GPU_KERNELS);
-			printf("	CPU Scheduled Jobs -- %d\n", GLOBAL_CPU_KERNELS);
+			printf("	GPU Scheduled Jobs -- %d\n", GLOBAL_GPU_JOBS);
+			printf("	CPU Scheduled Jobs -- %d\n", GLOBAL_CPU_JOBS);
 		}
 
-		if (RTGS_PrintScheduleSummary(5, kernelMax, kernel_info_list)) {
+		if (RTGS_PrintScheduleSummary(5, kernelMax, jobAttributesList)) {
 			printf("\nSummary Failed\n");
 		}
 
-		if ((kernelMax != (GLOBAL_GPU_KERNELS + GLOBAL_CPU_KERNELS)) || processorsAvailable != MAX_GPU_PROCESSOR) {
+		if ((kernelMax != (GLOBAL_GPU_JOBS + GLOBAL_CPU_JOBS)) || processorsAvailable != MAX_GPU_PROCESSOR) {
 			return RTGS_FAILURE;
 		}
 
 		for (int j = 0; j <= kernelMax; j++) {
-			kernel_info_list[j].processor_req = kernel_info_list[j].deadline = kernel_info_list[j].execution_time = kernel_info_list[j].latest_schedulable_time = 0;
+			jobAttributesList[j].processor_req = jobAttributesList[j].deadline = jobAttributesList[j].execution_time = jobAttributesList[j].latest_schedulable_time = 0;
 		}
-		kernelMax = 0; maxReleases = 0; kernel_number = 0; GLOBAL_GPU_KERNELS = 0; GLOBAL_CPU_KERNELS = 0;
+		kernelMax = 0; maxReleases = 0; jobNumber = 0; GLOBAL_GPU_JOBS = 0; GLOBAL_CPU_JOBS = 0;
 	}
 
 	if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-		print(processor_alloc_list);
+		print(processorsAllocatedList);
 	}
-	processor_alloc_list = clean_node(processor_alloc_list);
+	processorsAllocatedList = clean_node(processorsAllocatedList);
 	GLOBAL_ALAP_LIST = clean_list(GLOBAL_ALAP_LIST);
 	PROFILER_STOP(SRTG, RTGS_mode_5)
 	return RTGS_SUCCESS;

@@ -10,32 +10,32 @@ MODE 3 FUNCTION
 ***********************************************************************************************************/
 static int Mode_3_ALAP
 (
-	kernelInfo *kernel_info_list,
-	int kernel_number,
+	jobAttributes *jobAttributesList,
+	int jobNumber,
 	int present_time,
 	int processors_available,
-	scheduledNode ** processor_alloc_list,
-	scheduledNode **kernel_queue_list
+	scheduledJobNode ** processorsAllocatedList,
+	scheduledJobNode **jobSchdeuleQueueList
 )
 {
-	int Pro = 0, kernel_release_time = 0, processor_release_time = 0, processors_allocated = 0;
-	backup_list *P_Given_list = NULL;
+	int Pro = 0, job_release_time = 0, processor_release_time = 0, processors_allocated = 0;
+	jobBackupNode *P_Given_list = NULL;
 
-	processors_allocated = kernel_info_list[kernel_number].processor_req;
-	processor_release_time = kernel_info_list[kernel_number].deadline;
-	kernel_release_time = processor_release_time - kernel_info_list[kernel_number].execution_time;
+	processors_allocated = jobAttributesList[jobNumber].processor_req;
+	processor_release_time = jobAttributesList[jobNumber].deadline;
+	job_release_time = processor_release_time - jobAttributesList[jobNumber].execution_time;
 	Pro = processors_available;
 
-	P_Given_list = insert_ALAP_list(P_Given_list, kernel_release_time, processor_release_time, processors_available, kernel_number);
-	scheduledNode* temp = *processor_alloc_list;
+	P_Given_list = insert_ALAP_list(P_Given_list, job_release_time, processor_release_time, processors_available, jobNumber);
+	scheduledJobNode* temp = *processorsAllocatedList;
 
 	while (temp != NULL)
 	{
-		if ((temp->processor_release_time + kernel_info_list[kernel_number].execution_time) > kernel_info_list[kernel_number].deadline)
+		if ((temp->processor_release_time + jobAttributesList[jobNumber].execution_time) > jobAttributesList[jobNumber].deadline)
 		{
 			int count = 0;
-			scheduledNode*temp1 = *processor_alloc_list;
-			backup_list* temp2 = P_Given_list;
+			scheduledJobNode*temp1 = *processorsAllocatedList;
+			jobBackupNode* temp2 = P_Given_list;
 			while (temp2 != NULL)
 			{
 
@@ -43,22 +43,22 @@ static int Mode_3_ALAP
 					temp2 = temp2->next;
 
 				else {
-					temp1->kernel_release_time = 0;
+					temp1->job_release_time = 0;
 					temp1 = temp1->next;
 					temp2 = temp2->next;
 				}
 				count++;
 			}
 			P_Given_list = clean_list(P_Given_list);
-			kernel_info_list[kernel_number].schedule_hardware = 2;
-			kernel_info_list[kernel_number].rescheduled_execution = -1;
-			kernel_info_list[kernel_number].completion_time = -1;
-			kernel_info_list[kernel_number].scheduled_execution = -1;
-			GLOBAL_CPU_KERNELS++;
+			jobAttributesList[jobNumber].schedule_hardware = 2;
+			jobAttributesList[jobNumber].rescheduled_execution = -1;
+			jobAttributesList[jobNumber].completion_time = -1;
+			jobAttributesList[jobNumber].scheduled_execution = -1;
+			GLOBAL_CPU_JOBS++;
 			if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-				// TBD:: Return Kernel to CPU - Function to send Kernel to CPU execution
-				printf("Mode 3 ALAP: Kernel:%d Cannot be scheduled", kernel_number);
-				printf("Mode 3 ALAP: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
+				// TBD:: Return Job to CPU - Function to send Job to CPU execution
+				printf("Mode 3 ALAP: Job:%d Cannot be scheduled", jobNumber);
+				printf("Mode 3 ALAP: Jobs REJECTED count --> %d\n", GLOBAL_CPU_JOBS);
 			}
 			return processors_available;
 		}
@@ -66,33 +66,33 @@ static int Mode_3_ALAP
 		{
 			Pro = Pro + temp->processors_allocated;
 
-			if (Pro >= kernel_info_list[kernel_number].processor_req)
+			if (Pro >= jobAttributesList[jobNumber].processor_req)
 			{
-				temp->kernel_release_time = kernel_release_time;
+				temp->job_release_time = job_release_time;
 				P_Given_list = clean_list(P_Given_list);
 
-				int processorReleased = kernel_info_list[kernel_number].processor_req;
+				int processorReleased = jobAttributesList[jobNumber].processor_req;
 				int schedule_method = RTGS_SCHEDULE_METHOD_ALAP;
 
-				kernel_info_list[kernel_number].schedule_hardware = 1;
-				kernel_info_list[kernel_number].rescheduled_execution = -1;
-				kernel_info_list[kernel_number].scheduled_execution = kernel_release_time;
-				kernel_info_list[kernel_number].completion_time = kernel_info_list[kernel_number].execution_time + kernel_release_time;
-				GLOBAL_GPU_KERNELS++;
+				jobAttributesList[jobNumber].schedule_hardware = 1;
+				jobAttributesList[jobNumber].rescheduled_execution = -1;
+				jobAttributesList[jobNumber].scheduled_execution = job_release_time;
+				jobAttributesList[jobNumber].completion_time = jobAttributesList[jobNumber].execution_time + job_release_time;
+				GLOBAL_GPU_JOBS++;
 				if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-					printf("Mode 3 ALAP: Kernel:%d scheduled", kernel_number);
-					printf("Mode 3 ALAP: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
+					printf("Mode 3 ALAP: Job:%d scheduled", jobNumber);
+					printf("Mode 3 ALAP: Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
 				}
-				GLOBAL_ALAP_LIST = insert_ALAP_list(GLOBAL_ALAP_LIST, kernel_release_time, processor_release_time, processors_allocated, kernel_number);
-				Kernel_queue_handler(processorReleased, kernel_release_time, processor_release_time,
-					schedule_method, kernel_number, kernel_queue_list);
+				GLOBAL_ALAP_LIST = insert_ALAP_list(GLOBAL_ALAP_LIST, job_release_time, processor_release_time, processors_allocated, jobNumber);
+				Kernel_queue_handler(processorReleased, job_release_time, processor_release_time,
+					schedule_method, jobNumber, jobSchdeuleQueueList);
 				return processors_available;
 			}
-			else if (Pro < kernel_info_list[kernel_number].processor_req)
+			else if (Pro < jobAttributesList[jobNumber].processor_req)
 			{
 
-				P_Given_list = insert_ALAP_list(P_Given_list, kernel_release_time, processor_release_time, temp->processors_allocated, kernel_number);
-				temp->kernel_release_time = kernel_release_time;
+				P_Given_list = insert_ALAP_list(P_Given_list, job_release_time, processor_release_time, temp->processors_allocated, jobNumber);
+				temp->job_release_time = job_release_time;
 				temp = temp->next;
 			}
 		}
@@ -100,15 +100,15 @@ static int Mode_3_ALAP
 	if (temp == NULL && P_Given_list != NULL)
 	{
 		int count = 0;
-		scheduledNode*temp1 = *processor_alloc_list;
-		backup_list* temp2 = P_Given_list;
+		scheduledJobNode*temp1 = *processorsAllocatedList;
+		jobBackupNode* temp2 = P_Given_list;
 		while (temp2 != NULL)
 		{
 			if (count == 0) {
 				temp2 = temp2->next;
 			}
 			else {
-				temp1->kernel_release_time = 0;
+				temp1->job_release_time = 0;
 				temp1 = temp1->next;
 				temp2 = temp2->next;
 			}
@@ -116,7 +116,7 @@ static int Mode_3_ALAP
 		}
 		P_Given_list = clean_list(P_Given_list);
 		if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-			printf("Mode 3 ALAP: Kernel:%d Cannot be scheduled AEAP --$$", kernel_number);
+			printf("Mode 3 ALAP: Job:%d Cannot be scheduled AEAP --$$", jobNumber);
 		}
 	}
 	return processors_available;
@@ -124,18 +124,18 @@ static int Mode_3_ALAP
 
 static int Mode_3_AEAP
 (
-	kernelInfo *kernel_info_list,
-	int kernel_number,
+	jobAttributes *jobAttributesList,
+	int jobNumber,
 	int present_time,
 	int processors_available,
-	scheduledNode ** processor_alloc_list,
-	scheduledNode **kernel_queue_list
+	scheduledJobNode ** processorsAllocatedList,
+	scheduledJobNode **jobSchdeuleQueueList
 )
 {
-	int Pro = 0, kernel_release_time = 0;
+	int Pro = 0, job_release_time = 0;
 	static int given = 0;
-	backup_list *P_Given_list = NULL;
-	scheduledNode* temp = *processor_alloc_list;
+	jobBackupNode *P_Given_list = NULL;
+	scheduledJobNode* temp = *processorsAllocatedList;
 
 	if (GLOBAL_ALAP_LIST == NULL)
 	{
@@ -145,11 +145,11 @@ static int Mode_3_AEAP
 
 		while (temp != NULL)
 		{
-			if ((temp->processor_release_time + kernel_info_list[kernel_number].execution_time) > kernel_info_list[kernel_number].deadline)
+			if ((temp->processor_release_time + jobAttributesList[jobNumber].execution_time) > jobAttributesList[jobNumber].deadline)
 			{
 				int count = 0;
-				scheduledNode*temp1 = *processor_alloc_list;
-				backup_list* temp2 = P_Given_list;
+				scheduledJobNode*temp1 = *processorsAllocatedList;
+				jobBackupNode* temp2 = P_Given_list;
 				while (temp2 != NULL)
 				{
 
@@ -166,45 +166,45 @@ static int Mode_3_AEAP
 				}
 				P_Given_list = clean_list(P_Given_list);
 
-				kernel_info_list[kernel_number].schedule_hardware = 2;
-				kernel_info_list[kernel_number].rescheduled_execution = -1;
-				kernel_info_list[kernel_number].completion_time = -1;
-				kernel_info_list[kernel_number].scheduled_execution = -1;
-				GLOBAL_CPU_KERNELS++;
+				jobAttributesList[jobNumber].schedule_hardware = 2;
+				jobAttributesList[jobNumber].rescheduled_execution = -1;
+				jobAttributesList[jobNumber].completion_time = -1;
+				jobAttributesList[jobNumber].scheduled_execution = -1;
+				GLOBAL_CPU_JOBS++;
 				if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-					printf("Mode 3 AEAP: The Kernel:%d Cannot be scheduled\n", kernel_number);
-					printf("Mode 3 AEAP: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
+					printf("Mode 3 AEAP: The Job:%d Cannot be scheduled\n", jobNumber);
+					printf("Mode 3 AEAP: Jobs REJECTED count --> %d\n", GLOBAL_CPU_JOBS);
 				}
 				return processors_available;
 			}
 			else
 			{
 				Pro = Pro + temp->processors_allocated;
-				if (Pro >= kernel_info_list[kernel_number].processor_req)
+				if (Pro >= jobAttributesList[jobNumber].processor_req)
 				{
-					temp->processors_allocated = Pro - kernel_info_list[kernel_number].processor_req;
-					kernel_release_time = temp->processor_release_time;
+					temp->processors_allocated = Pro - jobAttributesList[jobNumber].processor_req;
+					job_release_time = temp->processor_release_time;
 					P_Given_list = clean_list(P_Given_list);
 
-					int processorReleased = kernel_info_list[kernel_number].processor_req;
-					int processor_release_time = kernel_release_time + kernel_info_list[kernel_number].execution_time;
+					int processorReleased = jobAttributesList[jobNumber].processor_req;
+					int processor_release_time = job_release_time + jobAttributesList[jobNumber].execution_time;
 					int presentTime = present_time;
 					int schedule_method = RTGS_SCHEDULE_METHOD_AEAP;
 
-					kernel_info_list[kernel_number].schedule_hardware = 1;
-					kernel_info_list[kernel_number].rescheduled_execution = -1;
-					kernel_info_list[kernel_number].scheduled_execution = kernel_release_time;
-					kernel_info_list[kernel_number].completion_time = kernel_info_list[kernel_number].execution_time + kernel_release_time;
-					GLOBAL_GPU_KERNELS++;
+					jobAttributesList[jobNumber].schedule_hardware = 1;
+					jobAttributesList[jobNumber].rescheduled_execution = -1;
+					jobAttributesList[jobNumber].scheduled_execution = job_release_time;
+					jobAttributesList[jobNumber].completion_time = jobAttributesList[jobNumber].execution_time + job_release_time;
+					GLOBAL_GPU_JOBS++;
 					if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-						printf("Mode 3 AEAP: The Kernel:%d scheduled\n", kernel_number);
-						printf("Mode 3 AEAP: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
+						printf("Mode 3 AEAP: The Job:%d scheduled\n", jobNumber);
+						printf("Mode 3 AEAP: Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
 					}
-					Queue_kernel_execution(processorReleased, processor_release_time, presentTime, schedule_method, kernel_number, processor_alloc_list);
-					Kernel_queue_handler(processorReleased, kernel_release_time, presentTime, schedule_method, kernel_number, kernel_queue_list);
+					Queue_kernel_execution(processorReleased, processor_release_time, presentTime, schedule_method, jobNumber, processorsAllocatedList);
+					Kernel_queue_handler(processorReleased, job_release_time, presentTime, schedule_method, jobNumber, jobSchdeuleQueueList);
 					return processors_available;
 				}
-				else if (Pro < kernel_info_list[kernel_number].processor_req)
+				else if (Pro < jobAttributesList[jobNumber].processor_req)
 				{
 					P_Given_list = insert_list(P_Given_list, temp->processors_allocated);
 					temp->processors_allocated = 0;
@@ -220,11 +220,11 @@ static int Mode_3_AEAP
 		processors_available = 0;
 		while (temp != NULL)
 		{
-			if ((temp->processor_release_time + kernel_info_list[kernel_number].execution_time) > kernel_info_list[kernel_number].deadline)
+			if ((temp->processor_release_time + jobAttributesList[jobNumber].execution_time) > jobAttributesList[jobNumber].deadline)
 			{
 				int count = 0;
-				scheduledNode*temp1 = *processor_alloc_list;
-				backup_list* temp2 = P_Given_list;
+				scheduledJobNode*temp1 = *processorsAllocatedList;
+				jobBackupNode* temp2 = P_Given_list;
 				while (temp2 != NULL) {
 
 					if (count == 0) {
@@ -238,86 +238,86 @@ static int Mode_3_AEAP
 					}
 					count++;
 				}
-				// TBD:: Return Kernel to CPU - Function to send Kernel to CPU execution
-				kernel_info_list[kernel_number].schedule_hardware = 2;
-				kernel_info_list[kernel_number].rescheduled_execution = -1;
-				kernel_info_list[kernel_number].completion_time = -1;
-				kernel_info_list[kernel_number].scheduled_execution = -1;
-				GLOBAL_CPU_KERNELS++;
+				// TBD:: Return Job to CPU - Function to send Job to CPU execution
+				jobAttributesList[jobNumber].schedule_hardware = 2;
+				jobAttributesList[jobNumber].rescheduled_execution = -1;
+				jobAttributesList[jobNumber].completion_time = -1;
+				jobAttributesList[jobNumber].scheduled_execution = -1;
+				GLOBAL_CPU_JOBS++;
 				P_Given_list = clean_list(P_Given_list);
 				if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-					printf("Mode 3 AEAP: The Kernel:%d Cannot be scheduled AEAP\n", kernel_number);
-					printf("Mode 3 AEAP: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
+					printf("Mode 3 AEAP: The Job:%d Cannot be scheduled AEAP\n", jobNumber);
+					printf("Mode 3 AEAP: Jobs REJECTED count --> %d\n", GLOBAL_CPU_JOBS);
 				}
 				return processors_available;
 			}
 			else
 			{
 				Pro = Pro + temp->processors_allocated;
-				if (Pro >= kernel_info_list[kernel_number].processor_req)
+				if (Pro >= jobAttributesList[jobNumber].processor_req)
 				{
-					kernel_release_time = temp->processor_release_time;
-					int processorReleased = kernel_info_list[kernel_number].processor_req;
-					int processor_release_time = kernel_release_time + kernel_info_list[kernel_number].execution_time;
+					job_release_time = temp->processor_release_time;
+					int processorReleased = jobAttributesList[jobNumber].processor_req;
+					int processor_release_time = job_release_time + jobAttributesList[jobNumber].execution_time;
 					int presentTime = present_time;
 					int schedule_method = RTGS_SCHEDULE_METHOD_AEAP;
 					int Pl = MAX_GPU_PROCESSOR - GLOBAL_ALAP_LIST->processors_allocated;
-					if ((kernel_info_list[kernel_number].processor_req + given) <= Pl)
+					if ((jobAttributesList[jobNumber].processor_req + given) <= Pl)
 					{
-						temp->processors_allocated = Pro - kernel_info_list[kernel_number].processor_req;
+						temp->processors_allocated = Pro - jobAttributesList[jobNumber].processor_req;
 						P_Given_list = clean_list(P_Given_list);
-						given = kernel_info_list[kernel_number].processor_req;
+						given = jobAttributesList[jobNumber].processor_req;
 
-						kernel_info_list[kernel_number].schedule_hardware = 1;
-						kernel_info_list[kernel_number].rescheduled_execution = -1;
-						kernel_info_list[kernel_number].scheduled_execution = kernel_release_time;
-						kernel_info_list[kernel_number].completion_time = kernel_info_list[kernel_number].execution_time + kernel_release_time;
-						GLOBAL_GPU_KERNELS++;
+						jobAttributesList[jobNumber].schedule_hardware = 1;
+						jobAttributesList[jobNumber].rescheduled_execution = -1;
+						jobAttributesList[jobNumber].scheduled_execution = job_release_time;
+						jobAttributesList[jobNumber].completion_time = jobAttributesList[jobNumber].execution_time + job_release_time;
+						GLOBAL_GPU_JOBS++;
 						if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-							printf("Mode 3 AEAP: Condition-1 The Kernel:%d scheduled\n", kernel_number);
-							printf("Mode 3 AEAP: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
+							printf("Mode 3 AEAP: Condition-1 The Job:%d scheduled\n", jobNumber);
+							printf("Mode 3 AEAP: Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
 						}
 						Queue_kernel_execution(processorReleased, processor_release_time, presentTime,
-							schedule_method, kernel_number, processor_alloc_list);
-						Kernel_queue_handler(processorReleased, kernel_release_time, presentTime,
-							schedule_method, kernel_number, kernel_queue_list);
+							schedule_method, jobNumber, processorsAllocatedList);
+						Kernel_queue_handler(processorReleased, job_release_time, presentTime,
+							schedule_method, jobNumber, jobSchdeuleQueueList);
 						return processors_available;
 					}
 					else if (processor_release_time <= GLOBAL_ALAP_LIST->data)
 					{
-						temp->processors_allocated = Pro - kernel_info_list[kernel_number].processor_req;
+						temp->processors_allocated = Pro - jobAttributesList[jobNumber].processor_req;
 						P_Given_list = clean_list(P_Given_list);
 
-						kernel_info_list[kernel_number].schedule_hardware = 1;
-						kernel_info_list[kernel_number].rescheduled_execution = -1;
-						kernel_info_list[kernel_number].scheduled_execution = kernel_release_time;
-						kernel_info_list[kernel_number].completion_time = kernel_info_list[kernel_number].execution_time + kernel_release_time;
-						GLOBAL_GPU_KERNELS++;
+						jobAttributesList[jobNumber].schedule_hardware = 1;
+						jobAttributesList[jobNumber].rescheduled_execution = -1;
+						jobAttributesList[jobNumber].scheduled_execution = job_release_time;
+						jobAttributesList[jobNumber].completion_time = jobAttributesList[jobNumber].execution_time + job_release_time;
+						GLOBAL_GPU_JOBS++;
 						if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-							printf("Mode 3 AEAP: Condition-2 The Kernel:%d scheduled\n", kernel_number);
-							printf("Mode 3 AEAP: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
+							printf("Mode 3 AEAP: Condition-2 The Job:%d scheduled\n", jobNumber);
+							printf("Mode 3 AEAP: Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
 						}
 						Queue_kernel_execution(processorReleased, processor_release_time, presentTime,
-							schedule_method, kernel_number, processor_alloc_list);
-						Kernel_queue_handler(processorReleased, kernel_release_time, presentTime,
-							schedule_method, kernel_number, kernel_queue_list);
+							schedule_method, jobNumber, processorsAllocatedList);
+						Kernel_queue_handler(processorReleased, job_release_time, presentTime,
+							schedule_method, jobNumber, jobSchdeuleQueueList);
 						return processors_available;
 					}
 					else
 					{
-						kernel_info_list[kernel_number].schedule_hardware = 2;
-						kernel_info_list[kernel_number].rescheduled_execution = -1;
-						kernel_info_list[kernel_number].completion_time = -1;
-						kernel_info_list[kernel_number].scheduled_execution = -1;
-						GLOBAL_CPU_KERNELS++;
+						jobAttributesList[jobNumber].schedule_hardware = 2;
+						jobAttributesList[jobNumber].rescheduled_execution = -1;
+						jobAttributesList[jobNumber].completion_time = -1;
+						jobAttributesList[jobNumber].scheduled_execution = -1;
+						GLOBAL_CPU_JOBS++;
 						if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-							printf("Mode 3 AEAP: The Kernel:%d Cannot be scheduled Condition 1 & 2 Fail\n", kernel_number);
-							printf("MODE 3 AEAP: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
+							printf("Mode 3 AEAP: The Job:%d Cannot be scheduled Condition 1 & 2 Fail\n", jobNumber);
+							printf("MODE 3 AEAP: Jobs REJECTED count --> %d\n", GLOBAL_CPU_JOBS);
 						}
 					}
 					break;
 				}
-				else if (Pro < kernel_info_list[kernel_number].processor_req) {
+				else if (Pro < jobAttributesList[jobNumber].processor_req) {
 					P_Given_list = insert_list(P_Given_list, temp->processors_allocated);
 					temp->processors_allocated = 0;
 					temp = temp->next;
@@ -329,8 +329,8 @@ static int Mode_3_AEAP
 	if (P_Given_list != NULL)
 	{
 		int count = 0;
-		scheduledNode*temp1 = *processor_alloc_list;
-		backup_list* temp2 = P_Given_list;
+		scheduledJobNode*temp1 = *processorsAllocatedList;
+		jobBackupNode* temp2 = P_Given_list;
 		while (temp2 != NULL)
 		{
 			if (count == 0) {
@@ -354,31 +354,31 @@ static int Mode_3_AEAP
 
 static int Mode_3_Processors_Unavailable
 (
-	kernelInfo *kernel_info_list,
-	int kernel_number,
+	jobAttributes *jobAttributesList,
+	int jobNumber,
 	int present_time,
 	int processors_available,
-	scheduledNode ** processor_alloc_list,
-	scheduledNode **kernel_queue_list
+	scheduledJobNode ** processorsAllocatedList,
+	scheduledJobNode **jobSchdeuleQueueList
 )
 {
-	if (kernel_info_list[kernel_number].processor_req < PROCESSOR_LIMIT)
+	if (jobAttributesList[jobNumber].processor_req < PROCESSOR_LIMIT)
 	{
-		processors_available = Mode_3_AEAP(kernel_info_list, kernel_number, present_time, processors_available, processor_alloc_list, kernel_queue_list);
+		processors_available = Mode_3_AEAP(jobAttributesList, jobNumber, present_time, processors_available, processorsAllocatedList, jobSchdeuleQueueList);
 	}
-	else if (kernel_info_list[kernel_number].processor_req >= PROCESSOR_LIMIT && GLOBAL_ALAP_LIST == NULL)
+	else if (jobAttributesList[jobNumber].processor_req >= PROCESSOR_LIMIT && GLOBAL_ALAP_LIST == NULL)
 	{
-		processors_available = Mode_3_ALAP(kernel_info_list, kernel_number, present_time, processors_available, processor_alloc_list, kernel_queue_list);
+		processors_available = Mode_3_ALAP(jobAttributesList, jobNumber, present_time, processors_available, processorsAllocatedList, jobSchdeuleQueueList);
 	}
-	else if (kernel_info_list[kernel_number].processor_req >= PROCESSOR_LIMIT && GLOBAL_ALAP_LIST != NULL)
+	else if (jobAttributesList[jobNumber].processor_req >= PROCESSOR_LIMIT && GLOBAL_ALAP_LIST != NULL)
 	{
-		kernel_info_list[kernel_number].schedule_hardware = 2;
-		kernel_info_list[kernel_number].rescheduled_execution = -1;
-		kernel_info_list[kernel_number].completion_time = -1;
-		kernel_info_list[kernel_number].scheduled_execution = -1;
-		GLOBAL_CPU_KERNELS++;
+		jobAttributesList[jobNumber].schedule_hardware = 2;
+		jobAttributesList[jobNumber].rescheduled_execution = -1;
+		jobAttributesList[jobNumber].completion_time = -1;
+		jobAttributesList[jobNumber].scheduled_execution = -1;
+		GLOBAL_CPU_JOBS++;
 		if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-			printf("Mode-3 Processors Unavailable: Kernel:%d sent BACK TO CPU as ALAP is already set\n", kernel_number);
+			printf("Mode-3 Processors Unavailable: Job:%d sent BACK TO CPU as ALAP is already set\n", jobNumber);
 		}
 	}
 
@@ -387,12 +387,12 @@ static int Mode_3_Processors_Unavailable
 
 static int Mode_3_book_keeper
 (
-	kernelInfo* kernel_info_list,
-	int kernel_number,
+	jobAttributes* jobAttributesList,
+	int jobNumber,
 	int processors_available,
 	int present_time,
-	scheduledNode **processor_alloc_list,
-	scheduledNode **kernel_queue_list
+	scheduledJobNode **processorsAllocatedList,
+	scheduledJobNode **jobSchdeuleQueueList
 )
 {
 	int processorReleased = 0, processor_release_time = 0;
@@ -400,109 +400,109 @@ static int Mode_3_book_keeper
 	int schedule_method = RTGS_SCHEDULE_METHOD_NOT_DEFINED;
 	static int Flag_Processors = 0;
 	if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-		printf("Mode-3 Book Keeper:: Kernel::%d --> processor_req:%d execution_time:%d, deadline:%d, latest_schedulable_time:%d\n",
-			kernel_number, kernel_info_list[kernel_number].processor_req, kernel_info_list[kernel_number].execution_time,
-			kernel_info_list[kernel_number].deadline, kernel_info_list[kernel_number].latest_schedulable_time);
+		printf("Mode-3 Book Keeper:: Job::%d --> processor_req:%d execution_time:%d, deadline:%d, latest_schedulable_time:%d\n",
+			jobNumber, jobAttributesList[jobNumber].processor_req, jobAttributesList[jobNumber].execution_time,
+			jobAttributesList[jobNumber].deadline, jobAttributesList[jobNumber].latest_schedulable_time);
 	}
 
-	// If processors available is greater than the required processors by the kernel_info_list
-	if (kernel_info_list[kernel_number].processor_req <= processors_available)
+	// If processors available is greater than the required processors by the jobAttributesList
+	if (jobAttributesList[jobNumber].processor_req <= processors_available)
 	{
 		if (GLOBAL_ALAP_LIST == NULL) {
 
 			Flag_Processors = 0;
 
-			if (kernel_info_list[kernel_number].execution_time + presentTime <= kernel_info_list[kernel_number].deadline)
+			if (jobAttributesList[jobNumber].execution_time + presentTime <= jobAttributesList[jobNumber].deadline)
 			{
 
-				processors_available = processors_available - kernel_info_list[kernel_number].processor_req;
-				processorReleased = kernel_info_list[kernel_number].processor_req;
-				processor_release_time = kernel_info_list[kernel_number].execution_time + presentTime;
+				processors_available = processors_available - jobAttributesList[jobNumber].processor_req;
+				processorReleased = jobAttributesList[jobNumber].processor_req;
+				processor_release_time = jobAttributesList[jobNumber].execution_time + presentTime;
 				schedule_method = RTGS_SCHEDULE_METHOD_IMMEDIATE;
-				// Kernel call for the GPU to handle the given Kernels and number of blocks//
-				Queue_kernel_execution(processorReleased, processor_release_time, presentTime, schedule_method, kernel_number, processor_alloc_list);
-				kernel_info_list[kernel_number].schedule_hardware = 1;
-				kernel_info_list[kernel_number].rescheduled_execution = -1;
-				kernel_info_list[kernel_number].scheduled_execution = presentTime;
-				kernel_info_list[kernel_number].completion_time = kernel_info_list[kernel_number].execution_time + presentTime;
-				GLOBAL_GPU_KERNELS++;
+				// Job call for the GPU to handle the given Jobs and number of blocks//
+				Queue_kernel_execution(processorReleased, processor_release_time, presentTime, schedule_method, jobNumber, processorsAllocatedList);
+				jobAttributesList[jobNumber].schedule_hardware = 1;
+				jobAttributesList[jobNumber].rescheduled_execution = -1;
+				jobAttributesList[jobNumber].scheduled_execution = presentTime;
+				jobAttributesList[jobNumber].completion_time = jobAttributesList[jobNumber].execution_time + presentTime;
+				GLOBAL_GPU_JOBS++;
 				if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-					printf("Mode-3 Book Keeper:: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
+					printf("Mode-3 Book Keeper:: Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
 				}
 			}
 			else
 			{
-				kernel_info_list[kernel_number].schedule_hardware = 2;
-				kernel_info_list[kernel_number].rescheduled_execution = -1;
-				kernel_info_list[kernel_number].completion_time = -1;
-				kernel_info_list[kernel_number].scheduled_execution = -1;
-				GLOBAL_CPU_KERNELS++;
+				jobAttributesList[jobNumber].schedule_hardware = 2;
+				jobAttributesList[jobNumber].rescheduled_execution = -1;
+				jobAttributesList[jobNumber].completion_time = -1;
+				jobAttributesList[jobNumber].scheduled_execution = -1;
+				GLOBAL_CPU_JOBS++;
 				if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-					printf("Mode-3 Book Keeper:: Kernel-%d will not complete before it's deadline, Job REJECTED\n", kernel_number);
-					printf("Mode-3 Book Keeper:: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
+					printf("Mode-3 Book Keeper:: Job-%d will not complete before it's deadline, Job REJECTED\n", jobNumber);
+					printf("Mode-3 Book Keeper:: Jobs REJECTED count --> %d\n", GLOBAL_CPU_JOBS);
 				}
 			}
 		}
 		else if (GLOBAL_ALAP_LIST != NULL)
 		{
 			int Pl = MAX_GPU_PROCESSOR - GLOBAL_ALAP_LIST->processors_allocated;
-			if ((kernel_info_list[kernel_number].processor_req + Flag_Processors) <= Pl || (presentTime + kernel_info_list[kernel_number].execution_time) <= GLOBAL_ALAP_LIST->data)
+			if ((jobAttributesList[jobNumber].processor_req + Flag_Processors) <= Pl || (presentTime + jobAttributesList[jobNumber].execution_time) <= GLOBAL_ALAP_LIST->data)
 			{
-				Flag_Processors = Flag_Processors + kernel_info_list[kernel_number].processor_req;
+				Flag_Processors = Flag_Processors + jobAttributesList[jobNumber].processor_req;
 				if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-					printf("Mode-3 Book Keeper:: Kernel:%d SATISFIED CONDITION 1 or 2", kernel_number);
+					printf("Mode-3 Book Keeper:: Job:%d SATISFIED CONDITION 1 or 2", jobNumber);
 				}
-				if (kernel_info_list[kernel_number].execution_time + presentTime <= kernel_info_list[kernel_number].deadline)
+				if (jobAttributesList[jobNumber].execution_time + presentTime <= jobAttributesList[jobNumber].deadline)
 				{
 
-					processors_available = processors_available - kernel_info_list[kernel_number].processor_req;
-					processorReleased = kernel_info_list[kernel_number].processor_req;
-					processor_release_time = kernel_info_list[kernel_number].execution_time + presentTime;
+					processors_available = processors_available - jobAttributesList[jobNumber].processor_req;
+					processorReleased = jobAttributesList[jobNumber].processor_req;
+					processor_release_time = jobAttributesList[jobNumber].execution_time + presentTime;
 					schedule_method = 0;
-					Queue_kernel_execution(processorReleased, processor_release_time, presentTime, schedule_method, kernel_number, processor_alloc_list);
-					// TBD:: Kernel call for the GPU to handle the given Kernels and number of blocks//
-					kernel_info_list[kernel_number].schedule_hardware = 1;
-					kernel_info_list[kernel_number].rescheduled_execution = -1;
-					kernel_info_list[kernel_number].scheduled_execution = presentTime;
-					kernel_info_list[kernel_number].completion_time = kernel_info_list[kernel_number].execution_time + presentTime;
-					GLOBAL_GPU_KERNELS++;
+					Queue_kernel_execution(processorReleased, processor_release_time, presentTime, schedule_method, jobNumber, processorsAllocatedList);
+					// TBD:: Job call for the GPU to handle the given Jobs and number of blocks//
+					jobAttributesList[jobNumber].schedule_hardware = 1;
+					jobAttributesList[jobNumber].rescheduled_execution = -1;
+					jobAttributesList[jobNumber].scheduled_execution = presentTime;
+					jobAttributesList[jobNumber].completion_time = jobAttributesList[jobNumber].execution_time + presentTime;
+					GLOBAL_GPU_JOBS++;
 					if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-						printf("Mode-3 Book Keeper:: Kernels ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
+						printf("Mode-3 Book Keeper:: Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
 					}
 				}
 				else
 				{
-					kernel_info_list[kernel_number].schedule_hardware = 2;
-					kernel_info_list[kernel_number].rescheduled_execution = -1;
-					kernel_info_list[kernel_number].completion_time = -1;
-					kernel_info_list[kernel_number].scheduled_execution = -1;
-					GLOBAL_CPU_KERNELS++;
+					jobAttributesList[jobNumber].schedule_hardware = 2;
+					jobAttributesList[jobNumber].rescheduled_execution = -1;
+					jobAttributesList[jobNumber].completion_time = -1;
+					jobAttributesList[jobNumber].scheduled_execution = -1;
+					GLOBAL_CPU_JOBS++;
 					if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-						printf("Mode-3 Book Keeper:: Kernel-%d will not complete before it's deadline, Job REJECTED\n", kernel_number);
-						printf("Mode-3 Book Keeper:: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
+						printf("Mode-3 Book Keeper:: Job-%d will not complete before it's deadline, Job REJECTED\n", jobNumber);
+						printf("Mode-3 Book Keeper:: Jobs REJECTED count --> %d\n", GLOBAL_CPU_JOBS);
 					}
 				}
 			}
 			else
 			{
-				kernel_info_list[kernel_number].schedule_hardware = 2;
-				kernel_info_list[kernel_number].rescheduled_execution = -1;
-				kernel_info_list[kernel_number].completion_time = -1;
-				kernel_info_list[kernel_number].scheduled_execution = -1;
-				GLOBAL_CPU_KERNELS++;
+				jobAttributesList[jobNumber].schedule_hardware = 2;
+				jobAttributesList[jobNumber].rescheduled_execution = -1;
+				jobAttributesList[jobNumber].completion_time = -1;
+				jobAttributesList[jobNumber].scheduled_execution = -1;
+				GLOBAL_CPU_JOBS++;
 				if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-					printf("Mode-3 Book Keeper:: Kernel-%d REJECTED ALAP kernel is set\n", kernel_number);
-					printf("Mode-3 Book Keeper:: Kernels REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
+					printf("Mode-3 Book Keeper:: Job-%d REJECTED ALAP job is set\n", jobNumber);
+					printf("Mode-3 Book Keeper:: Jobs REJECTED count --> %d\n", GLOBAL_CPU_JOBS);
 				}
 			}
 		}
 	}
-	// If processors required is greater than the available processors by the kernel
-	else if (kernel_info_list[kernel_number].processor_req > processors_available)
+	// If processors required is greater than the available processors by the job
+	else if (jobAttributesList[jobNumber].processor_req > processors_available)
 	{
-		// Schedule the kernel_info_list to be released in a future time
-		processors_available = Mode_3_Processors_Unavailable(kernel_info_list, kernel_number, present_time,
-			processors_available, processor_alloc_list, kernel_queue_list);
+		// Schedule the jobAttributesList to be released in a future time
+		processors_available = Mode_3_Processors_Unavailable(jobAttributesList, jobNumber, present_time,
+			processors_available, processorsAllocatedList, jobSchdeuleQueueList);
 	}
 
 	return processors_available;
@@ -511,24 +511,24 @@ static int Mode_3_book_keeper
 /**********************************************************************************************************
 RTGS Mode 3 - AEAP with As Late As Possible mode->AEAP/ALAP
 ***********************************************************************************************************/
-int RTGS_mode_3(char *kernelFilename, char *releaseTimeFilename)
+int RTGS_mode_3(char *jobsListFileName, char *releaseTimeFilename)
 {
-	kernelInfo kernel_info_list[MAX_KERNELS] = {{0}};
-	kernelReleaseInfo releaseTimeInfo[MAX_KERNELS] = {{0}};
-	scheduledNode *processor_alloc_list = NULL;
-	scheduledNode *kernel_queue_list = NULL;		//Kernel queued for future executions
+	jobAttributes jobAttributesList[MAX_JOBS] = {{0}};
+	jobReleaseInfo releaseTimeInfo[MAX_JOBS] = {{0}};
+	scheduledJobNode *processorsAllocatedList = NULL;
+	scheduledJobNode *jobSchdeuleQueueList = NULL;		//Job queued for future executions
 
 	// global variable initialize
-	GLOBAL_GPU_KERNELS = 0;
-	GLOBAL_CPU_KERNELS = 0;
+	GLOBAL_GPU_JOBS = 0;
+	GLOBAL_CPU_JOBS = 0;
 	GLOBAL_ALAP_LIST = NULL;
 
 	int processorsAvailable = MAX_GPU_PROCESSOR;
-	int kernel_number = 0;
+	int jobNumber = 0;
 
-	int kernelMax = get_kernel_information(kernel_info_list, kernelFilename);
+	int kernelMax = get_job_information(jobAttributesList, jobsListFileName);
 	if (kernelMax <= RTGS_FAILURE) { return  RTGS_FAILURE; }
-	int maxReleases = get_kernel_release_times(releaseTimeInfo, releaseTimeFilename);
+	int maxReleases = get_job_release_times(releaseTimeInfo, releaseTimeFilename);
 	if (maxReleases <= RTGS_FAILURE) { return  RTGS_FAILURE; }
 
 	if (GLOBAL_RTGS_DEBUG_MSG > 1) {
@@ -539,77 +539,77 @@ int RTGS_mode_3(char *kernelFilename, char *releaseTimeFilename)
 	for (int present_time = 0; present_time < MAX_RUN_TIME; present_time++)
 	{
 		// Freeing-up processors
-		processorsAvailable = Retrieve_processors(present_time, processorsAvailable, &processor_alloc_list);
+		processorsAvailable = Retrieve_processors(present_time, processorsAvailable, &processorsAllocatedList);
 		if (processorsAvailable < 0) { printf("Retrieve_processors ERROR- Processors Available:%d\n", processorsAvailable); return RTGS_ERROR_NOT_IMPLEMENTED; }
-		processorsAvailable = Dispatch_queued_kernels(present_time, processorsAvailable, &kernel_queue_list, &processor_alloc_list);
+		processorsAvailable = Dispatch_queued_kernels(present_time, processorsAvailable, &jobSchdeuleQueueList, &processorsAllocatedList);
 		if (processorsAvailable < 0) { printf("Dispatch_queued_kernels ERROR - Processors Available:%d\n", processorsAvailable); return RTGS_ERROR_NOT_IMPLEMENTED; }
 
 		if (releaseTimeInfo[numReleases].release_time == present_time) {
 
-			if (releaseTimeInfo[numReleases].num_kernel_released == 1)
+			if (releaseTimeInfo[numReleases].num_job_released == 1)
 			{
 				if (GLOBAL_RTGS_DEBUG_MSG > 1) {
 					printf("\nRTGS Mode 3 -- Total Processors Available at time %d = %d\n", present_time, processorsAvailable);
-					printf("RTGS Mode 3 -- Job-%d Released\n", kernel_number);
+					printf("RTGS Mode 3 -- Job-%d Released\n", jobNumber);
 				}
-				kernel_info_list[kernel_number].release_time = present_time;
-				// handling the released kernel_info_list by the book-keeper
+				jobAttributesList[jobNumber].release_time = present_time;
+				// handling the released jobAttributesList by the book-keeper
 				int64_t start_t = RTGS_GetClockCounter();
-				processorsAvailable = Mode_3_book_keeper(kernel_info_list, kernel_number, processorsAvailable, present_time,
-					&processor_alloc_list, &kernel_queue_list);
+				processorsAvailable = Mode_3_book_keeper(jobAttributesList, jobNumber, processorsAvailable, present_time,
+					&processorsAllocatedList, &jobSchdeuleQueueList);
 				int64_t end_t = RTGS_GetClockCounter();
 				int64_t freq = RTGS_GetClockFrequency();
 				float factor = 1000.0f / (float)freq; // to convert clock counter to ms
 				float SchedulerOverhead = (float)((end_t - start_t) * factor);
-				kernel_info_list[kernel_number].schedule_overhead = SchedulerOverhead;
-				kernel_number++;
+				jobAttributesList[jobNumber].schedule_overhead = SchedulerOverhead;
+				jobNumber++;
 			}
-			else if (releaseTimeInfo[numReleases].num_kernel_released == 2)
+			else if (releaseTimeInfo[numReleases].num_job_released == 2)
 			{
-				int k1 = kernel_number; kernel_number++;
-				int k2 = kernel_number; kernel_number++;
-				kernel_info_list[k1].release_time = present_time;
-				kernel_info_list[k2].release_time = present_time;
+				int k1 = jobNumber; jobNumber++;
+				int k2 = jobNumber; jobNumber++;
+				jobAttributesList[k1].release_time = present_time;
+				jobAttributesList[k2].release_time = present_time;
 
 				if (GLOBAL_RTGS_DEBUG_MSG > 1) {
 					printf("\nRTGS Mode 3 -- Total Processors Available at time %d = %d\n", present_time, processorsAvailable);
 					printf("RTGS Mode 3 -- Job-%d Released\n", k1);
 					printf("RTGS Mode 3 -- Job-%d Released\n", k2);
 				}
-				if (kernel_info_list[k1].deadline <= kernel_info_list[k2].deadline)
+				if (jobAttributesList[k1].deadline <= jobAttributesList[k2].deadline)
 				{
-					// handling the released kernel_info_list by the book-keeper
+					// handling the released jobAttributesList by the book-keeper
 					int64_t start_t = RTGS_GetClockCounter();
-					processorsAvailable = Mode_3_book_keeper(kernel_info_list, k1, processorsAvailable, present_time, &processor_alloc_list, &kernel_queue_list);
+					processorsAvailable = Mode_3_book_keeper(jobAttributesList, k1, processorsAvailable, present_time, &processorsAllocatedList, &jobSchdeuleQueueList);
 					int64_t end_t = RTGS_GetClockCounter();
 					int64_t freq = RTGS_GetClockFrequency();
 					float factor = 1000.0f / (float)freq; // to convert clock counter to ms
 					float SchedulerOverhead = (float)((end_t - start_t) * factor);
-					kernel_info_list[k1].schedule_overhead = SchedulerOverhead;
+					jobAttributesList[k1].schedule_overhead = SchedulerOverhead;
 					start_t = RTGS_GetClockCounter();
-					processorsAvailable = Mode_3_book_keeper(kernel_info_list, k2, processorsAvailable, present_time, &processor_alloc_list, &kernel_queue_list);
+					processorsAvailable = Mode_3_book_keeper(jobAttributesList, k2, processorsAvailable, present_time, &processorsAllocatedList, &jobSchdeuleQueueList);
 					end_t = RTGS_GetClockCounter();
 					SchedulerOverhead = (float)((end_t - start_t) * factor);
-					kernel_info_list[k2].schedule_overhead = SchedulerOverhead;
+					jobAttributesList[k2].schedule_overhead = SchedulerOverhead;
 				}
 				else
 				{
-					// handling the released kernel_info_list by the book-keeper
+					// handling the released jobAttributesList by the book-keeper
 					int64_t start_t = RTGS_GetClockCounter();
-					processorsAvailable = Mode_3_book_keeper(kernel_info_list, k2, processorsAvailable, present_time, &processor_alloc_list, &kernel_queue_list);
+					processorsAvailable = Mode_3_book_keeper(jobAttributesList, k2, processorsAvailable, present_time, &processorsAllocatedList, &jobSchdeuleQueueList);
 					int64_t end_t = RTGS_GetClockCounter();
 					int64_t freq = RTGS_GetClockFrequency();
 					float factor = 1000.0f / (float)freq; // to convert clock counter to ms
 					float SchedulerOverhead = (float)((end_t - start_t) * factor);
-					kernel_info_list[k2].schedule_overhead = SchedulerOverhead;
+					jobAttributesList[k2].schedule_overhead = SchedulerOverhead;
 					start_t = RTGS_GetClockCounter();
-					processorsAvailable = Mode_3_book_keeper(kernel_info_list, k1, processorsAvailable, present_time, &processor_alloc_list, &kernel_queue_list);
+					processorsAvailable = Mode_3_book_keeper(jobAttributesList, k1, processorsAvailable, present_time, &processorsAllocatedList, &jobSchdeuleQueueList);
 					end_t = RTGS_GetClockCounter();
 					SchedulerOverhead = (float)((end_t - start_t) * factor);
-					kernel_info_list[k1].schedule_overhead = SchedulerOverhead;
+					jobAttributesList[k1].schedule_overhead = SchedulerOverhead;
 				}
 			}
-			else if (releaseTimeInfo[numReleases].num_kernel_released > 2) { return RTGS_ERROR_NOT_IMPLEMENTED; }
+			else if (releaseTimeInfo[numReleases].num_job_released > 2) { return RTGS_ERROR_NOT_IMPLEMENTED; }
 
 			numReleases++;
 			if (numReleases > maxReleases) {
@@ -625,28 +625,28 @@ int RTGS_mode_3(char *kernelFilename, char *releaseTimeFilename)
 			printf("\n******* Scheduler Mode 3 *******\n");
 			printf("Processors Available -- %d\n", processorsAvailable);
 			printf("Total Jobs Scheduled -- %d\n", kernelMax);
-			printf("	GPU Scheduled Jobs -- %d\n", GLOBAL_GPU_KERNELS);
-			printf("	CPU Scheduled Jobs -- %d\n", GLOBAL_CPU_KERNELS);
+			printf("	GPU Scheduled Jobs -- %d\n", GLOBAL_GPU_JOBS);
+			printf("	CPU Scheduled Jobs -- %d\n", GLOBAL_CPU_JOBS);
 		}
 
-		if (RTGS_PrintScheduleSummary(3, kernelMax, kernel_info_list)) {
+		if (RTGS_PrintScheduleSummary(3, kernelMax, jobAttributesList)) {
 			printf("\nSummary Failed\n");
 		}
 
-		if ((kernelMax != (GLOBAL_GPU_KERNELS + GLOBAL_CPU_KERNELS)) || processorsAvailable != MAX_GPU_PROCESSOR) {
+		if ((kernelMax != (GLOBAL_GPU_JOBS + GLOBAL_CPU_JOBS)) || processorsAvailable != MAX_GPU_PROCESSOR) {
 			return RTGS_FAILURE;
 		}
 
 		for (int j = 0; j <= kernelMax; j++) {
-			kernel_info_list[j].processor_req = kernel_info_list[j].deadline = kernel_info_list[j].execution_time = kernel_info_list[j].latest_schedulable_time = 0;
+			jobAttributesList[j].processor_req = jobAttributesList[j].deadline = jobAttributesList[j].execution_time = jobAttributesList[j].latest_schedulable_time = 0;
 		}
-		kernelMax = 0; maxReleases = 0; kernel_number = 0; GLOBAL_GPU_KERNELS = 0; GLOBAL_CPU_KERNELS = 0;
+		kernelMax = 0; maxReleases = 0; jobNumber = 0; GLOBAL_GPU_JOBS = 0; GLOBAL_CPU_JOBS = 0;
 	}
 
 	if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-		print(processor_alloc_list);
+		print(processorsAllocatedList);
 	}
-	processor_alloc_list = clean_node(processor_alloc_list);
+	processorsAllocatedList = clean_node(processorsAllocatedList);
 	GLOBAL_ALAP_LIST = clean_list(GLOBAL_ALAP_LIST);
 
 	return RTGS_SUCCESS;

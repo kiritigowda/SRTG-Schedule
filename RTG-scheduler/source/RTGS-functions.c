@@ -8,12 +8,12 @@
 /* Book keeping Function, the core function of the scheduler in charge of assigning processors and allocating the future releases */
 int Kernel_book_keeper
 (
-	kernelInfo* kernel_info_list,
-	int kernel_number,
+	jobAttributes* jobAttributesList,
+	int jobNumber,
 	int processors_available,
 	int present_time,
-	scheduledNode **processor_alloc_list,
-	scheduledNode **kernel_queue_list
+	scheduledJobNode **processorsAllocatedList,
+	scheduledJobNode **jobSchdeuleQueueList
 )
 {
 	PROFILER_START(SRTG, Kernel_book_keeper)
@@ -22,12 +22,12 @@ int Kernel_book_keeper
 	static int FLAG, FLAG_V, given;
 
 	if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-		printf("Kernel Book Keeper -- Job-%d --> processor required:%d, execution time:%d, deadline:%d, latest schedulable time:%d\n",
-			kernel_number, kernel_info_list[kernel_number].processor_req, kernel_info_list[kernel_number].execution_time,
-			kernel_info_list[kernel_number].deadline, kernel_info_list[kernel_number].latest_schedulable_time);
+		printf("Job Book Keeper -- Job-%d --> processor required:%d, execution time:%d, deadline:%d, latest schedulable time:%d\n",
+			jobNumber, jobAttributesList[jobNumber].processor_req, jobAttributesList[jobNumber].execution_time,
+			jobAttributesList[jobNumber].deadline, jobAttributesList[jobNumber].latest_schedulable_time);
 	}
-	// If processors available is greater than the required processors by the kernel_info_list
-	if (kernel_info_list[kernel_number].processor_req <= processors_available)
+	// If processors available is greater than the required processors by the jobAttributesList
+	if (jobAttributesList[jobNumber].processor_req <= processors_available)
 	{
 		if (GLOBAL_ALAP_LIST == NULL)
 		{ //ALAP not set
@@ -35,49 +35,49 @@ int Kernel_book_keeper
 			FLAG_V = 0;
 			given = 0;
 
-			if (kernel_info_list[kernel_number].processor_req < PROCESSOR_LIMIT)
+			if (jobAttributesList[jobNumber].processor_req < PROCESSOR_LIMIT)
 			{ // Processors needed lesser than the limit
 
-				if (kernel_info_list[kernel_number].execution_time + present_time <= kernel_info_list[kernel_number].deadline)
+				if (jobAttributesList[jobNumber].execution_time + present_time <= jobAttributesList[jobNumber].deadline)
 				{
-					processors_available = processors_available - kernel_info_list[kernel_number].processor_req;
-					processorReleased = kernel_info_list[kernel_number].processor_req;
-					processor_release_time = kernel_info_list[kernel_number].execution_time + present_time;
+					processors_available = processors_available - jobAttributesList[jobNumber].processor_req;
+					processorReleased = jobAttributesList[jobNumber].processor_req;
+					processor_release_time = jobAttributesList[jobNumber].execution_time + present_time;
 					schedule_method = RTGS_SCHEDULE_METHOD_IMMEDIATE;
 
-					kernel_info_list[kernel_number].schedule_hardware = 1;
-					kernel_info_list[kernel_number].rescheduled_execution = -1;
-					kernel_info_list[kernel_number].scheduled_execution = present_time;
-					kernel_info_list[kernel_number].completion_time = kernel_info_list[kernel_number].execution_time + present_time;
-					GLOBAL_GPU_KERNELS++;
+					jobAttributesList[jobNumber].schedule_hardware = 1;
+					jobAttributesList[jobNumber].rescheduled_execution = -1;
+					jobAttributesList[jobNumber].scheduled_execution = present_time;
+					jobAttributesList[jobNumber].completion_time = jobAttributesList[jobNumber].execution_time + present_time;
+					GLOBAL_GPU_JOBS++;
 					if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-						printf("Kernel Book Keeper -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
+						printf("Job Book Keeper -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
 					}
-					// Kernel call for the GPU to handle the given Kernels and number of blocks
+					// Job call for the GPU to handle the given Jobs and number of blocks
 					Queue_kernel_execution(processorReleased, processor_release_time, present_time,
-						schedule_method, kernel_number, processor_alloc_list);
+						schedule_method, jobNumber, processorsAllocatedList);
 
 				}
 				else
 				{
-					kernel_info_list[kernel_number].schedule_hardware = 2;
-					kernel_info_list[kernel_number].rescheduled_execution = -1;
-					kernel_info_list[kernel_number].completion_time = -1;
-					kernel_info_list[kernel_number].scheduled_execution = -1;
-					GLOBAL_CPU_KERNELS++;
+					jobAttributesList[jobNumber].schedule_hardware = 2;
+					jobAttributesList[jobNumber].rescheduled_execution = -1;
+					jobAttributesList[jobNumber].completion_time = -1;
+					jobAttributesList[jobNumber].scheduled_execution = -1;
+					GLOBAL_CPU_JOBS++;
 					if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-						printf("Kernel Book Keeper -- Job-%d will not complete before it's deadline, Job REJECTED\n", kernel_number);
-						printf("Kernel Book Keeper -- Jobs REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
+						printf("Job Book Keeper -- Job-%d will not complete before it's deadline, Job REJECTED\n", jobNumber);
+						printf("Job Book Keeper -- Jobs REJECTED count --> %d\n", GLOBAL_CPU_JOBS);
 					}
 				}
 			}
-			else if (kernel_info_list[kernel_number].processor_req >= PROCESSOR_LIMIT)
+			else if (jobAttributesList[jobNumber].processor_req >= PROCESSOR_LIMIT)
 			{ // Processors needed greater or equal than the limit
 				if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-					printf("Kernel Book Keeper -- Job-%d is compute intensive, sent for ALAP execution\n", kernel_number);
+					printf("Job Book Keeper -- Job-%d is compute intensive, sent for ALAP execution\n", jobNumber);
 				}
-				processors_available = ALAP(kernel_info_list, kernel_number, present_time,
-					processors_available, processor_alloc_list, kernel_queue_list);
+				processors_available = ALAP(jobAttributesList, jobNumber, present_time,
+					processors_available, processorsAllocatedList, jobSchdeuleQueueList);
 			}
 		}
 		else if (GLOBAL_ALAP_LIST != NULL)
@@ -90,85 +90,85 @@ int Kernel_book_keeper
 			}
 			int Pl = MAX_GPU_PROCESSOR - GLOBAL_ALAP_LIST->processors_allocated;
 
-			if (kernel_info_list[kernel_number].processor_req < PROCESSOR_LIMIT)
+			if (jobAttributesList[jobNumber].processor_req < PROCESSOR_LIMIT)
 			{ // Processors needed lesser than the limit
-				if (kernel_info_list[kernel_number].processor_req <= Pl && (present_time + kernel_info_list[kernel_number].execution_time) <= GLOBAL_ALAP_LIST->data)
+				if (jobAttributesList[jobNumber].processor_req <= Pl && (present_time + jobAttributesList[jobNumber].execution_time) <= GLOBAL_ALAP_LIST->data)
 				{ // Condition 1
 					if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-						printf("Kernel Book Keeper -- ALAP is set, Job-%d SATISFIED CONDITION 1", kernel_number);
+						printf("Job Book Keeper -- ALAP is set, Job-%d SATISFIED CONDITION 1", jobNumber);
 					}
-					if (kernel_info_list[kernel_number].execution_time + present_time <= kernel_info_list[kernel_number].deadline) {
+					if (jobAttributesList[jobNumber].execution_time + present_time <= jobAttributesList[jobNumber].deadline) {
 
-						processors_available = processors_available - kernel_info_list[kernel_number].processor_req;
-						processorReleased = kernel_info_list[kernel_number].processor_req;
-						processor_release_time = kernel_info_list[kernel_number].execution_time + present_time;
+						processors_available = processors_available - jobAttributesList[jobNumber].processor_req;
+						processorReleased = jobAttributesList[jobNumber].processor_req;
+						processor_release_time = jobAttributesList[jobNumber].execution_time + present_time;
 						schedule_method = RTGS_SCHEDULE_METHOD_IMMEDIATE;
-						kernel_info_list[kernel_number].schedule_hardware = 1;
-						kernel_info_list[kernel_number].rescheduled_execution = -1;
-						kernel_info_list[kernel_number].scheduled_execution = present_time;
-						kernel_info_list[kernel_number].completion_time = kernel_info_list[kernel_number].execution_time + present_time;
-						GLOBAL_GPU_KERNELS++;
+						jobAttributesList[jobNumber].schedule_hardware = 1;
+						jobAttributesList[jobNumber].rescheduled_execution = -1;
+						jobAttributesList[jobNumber].scheduled_execution = present_time;
+						jobAttributesList[jobNumber].completion_time = jobAttributesList[jobNumber].execution_time + present_time;
+						GLOBAL_GPU_JOBS++;
 						if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-							printf("Kernel Book Keeper -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
+							printf("Job Book Keeper -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
 						}
-						// Kernel call for the GPU to handle the given Kernels and number of blocks//
+						// Job call for the GPU to handle the given Jobs and number of blocks//
 						Queue_kernel_execution(processorReleased, processor_release_time, present_time,
-							schedule_method, kernel_number, processor_alloc_list);
+							schedule_method, jobNumber, processorsAllocatedList);
 					}
 					else
 					{
-						kernel_info_list[kernel_number].schedule_hardware = 2;
-						kernel_info_list[kernel_number].rescheduled_execution = -1;
-						kernel_info_list[kernel_number].completion_time = -1;
-						kernel_info_list[kernel_number].scheduled_execution = -1;
-						GLOBAL_CPU_KERNELS++;
+						jobAttributesList[jobNumber].schedule_hardware = 2;
+						jobAttributesList[jobNumber].rescheduled_execution = -1;
+						jobAttributesList[jobNumber].completion_time = -1;
+						jobAttributesList[jobNumber].scheduled_execution = -1;
+						GLOBAL_CPU_JOBS++;
 						if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-							printf("Kernel Book Keeper -- Job-%d will not complete before it's deadline, Job REJECTED\n", kernel_number);
-							printf("Kernel Book Keeper -- Jobs REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
+							printf("Job Book Keeper -- Job-%d will not complete before it's deadline, Job REJECTED\n", jobNumber);
+							printf("Job Book Keeper -- Jobs REJECTED count --> %d\n", GLOBAL_CPU_JOBS);
 						}
 					}
 				}
-				else if (kernel_info_list[kernel_number].processor_req > Pl && (present_time + kernel_info_list[kernel_number].execution_time) <= GLOBAL_ALAP_LIST->data)
+				else if (jobAttributesList[jobNumber].processor_req > Pl && (present_time + jobAttributesList[jobNumber].execution_time) <= GLOBAL_ALAP_LIST->data)
 				{ // Condition 2
 					if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-						printf("Kernel Book Keeper -- ALAP is set, Job-%d SATISFIED CONDITION 2", kernel_number);
+						printf("Job Book Keeper -- ALAP is set, Job-%d SATISFIED CONDITION 2", jobNumber);
 					}
-					if (kernel_info_list[kernel_number].execution_time + present_time <= kernel_info_list[kernel_number].deadline) {
+					if (jobAttributesList[jobNumber].execution_time + present_time <= jobAttributesList[jobNumber].deadline) {
 
-						processors_available = processors_available - kernel_info_list[kernel_number].processor_req;
-						processorReleased = kernel_info_list[kernel_number].processor_req;
-						processor_release_time = kernel_info_list[kernel_number].execution_time + present_time;
+						processors_available = processors_available - jobAttributesList[jobNumber].processor_req;
+						processorReleased = jobAttributesList[jobNumber].processor_req;
+						processor_release_time = jobAttributesList[jobNumber].execution_time + present_time;
 						schedule_method = RTGS_SCHEDULE_METHOD_IMMEDIATE;
 
-						kernel_info_list[kernel_number].schedule_hardware = 1;
-						kernel_info_list[kernel_number].rescheduled_execution = -1;
-						kernel_info_list[kernel_number].scheduled_execution = present_time;
-						kernel_info_list[kernel_number].completion_time = kernel_info_list[kernel_number].execution_time + present_time;
-						GLOBAL_GPU_KERNELS++;
+						jobAttributesList[jobNumber].schedule_hardware = 1;
+						jobAttributesList[jobNumber].rescheduled_execution = -1;
+						jobAttributesList[jobNumber].scheduled_execution = present_time;
+						jobAttributesList[jobNumber].completion_time = jobAttributesList[jobNumber].execution_time + present_time;
+						GLOBAL_GPU_JOBS++;
 						if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-							printf("Kernel Book Keeper -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
+							printf("Job Book Keeper -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
 						}
-						// Kernel call for the GPU to handle the given Kernels and number of blocks//
+						// Job call for the GPU to handle the given Jobs and number of blocks//
 						Queue_kernel_execution(processorReleased, processor_release_time, present_time,
-							schedule_method, kernel_number, processor_alloc_list);
+							schedule_method, jobNumber, processorsAllocatedList);
 					}
 					else
 					{
-						kernel_info_list[kernel_number].schedule_hardware = 2;
-						kernel_info_list[kernel_number].rescheduled_execution = -1;
-						kernel_info_list[kernel_number].completion_time = -1;
-						kernel_info_list[kernel_number].scheduled_execution = -1;
-						GLOBAL_CPU_KERNELS++;
+						jobAttributesList[jobNumber].schedule_hardware = 2;
+						jobAttributesList[jobNumber].rescheduled_execution = -1;
+						jobAttributesList[jobNumber].completion_time = -1;
+						jobAttributesList[jobNumber].scheduled_execution = -1;
+						GLOBAL_CPU_JOBS++;
 						if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-							printf("Kernel Book Keeper -- Job-%d will not complete before it's deadline, Job REJECTED\n", kernel_number);
-							printf("Kernel Book Keeper -- Jobs REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
+							printf("Job Book Keeper -- Job-%d will not complete before it's deadline, Job REJECTED\n", jobNumber);
+							printf("Job Book Keeper -- Jobs REJECTED count --> %d\n", GLOBAL_CPU_JOBS);
 						}
 					}
 				}
-				else if ((kernel_info_list[kernel_number].processor_req + given) <= Pl && (present_time + kernel_info_list[kernel_number].execution_time) > GLOBAL_ALAP_LIST->data &&
+				else if ((jobAttributesList[jobNumber].processor_req + given) <= Pl && (present_time + jobAttributesList[jobNumber].execution_time) > GLOBAL_ALAP_LIST->data &&
 					FLAG == 0)
 				{ // Condition 3
-					given = given + kernel_info_list[kernel_number].processor_req;
+					given = given + jobAttributesList[jobNumber].processor_req;
 					// Control flags to not allow over budgeting of PA
 					if (given == Pl) {
 						FLAG = 1;
@@ -176,71 +176,71 @@ int Kernel_book_keeper
 						given = 0;
 					}
 					if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-						printf("Kernel Book Keeper -- ALAP is set, Job-%d SATISFIED CONDITION 1 with FLAG", kernel_number);
+						printf("Job Book Keeper -- ALAP is set, Job-%d SATISFIED CONDITION 1 with FLAG", jobNumber);
 					}
-					if (kernel_info_list[kernel_number].execution_time + present_time <= kernel_info_list[kernel_number].deadline)
+					if (jobAttributesList[jobNumber].execution_time + present_time <= jobAttributesList[jobNumber].deadline)
 					{
 
-						processors_available = processors_available - kernel_info_list[kernel_number].processor_req;
-						processorReleased = kernel_info_list[kernel_number].processor_req;
-						processor_release_time = kernel_info_list[kernel_number].execution_time + present_time;
+						processors_available = processors_available - jobAttributesList[jobNumber].processor_req;
+						processorReleased = jobAttributesList[jobNumber].processor_req;
+						processor_release_time = jobAttributesList[jobNumber].execution_time + present_time;
 						schedule_method = RTGS_SCHEDULE_METHOD_IMMEDIATE;
 
-						kernel_info_list[kernel_number].schedule_hardware = 1;
-						kernel_info_list[kernel_number].rescheduled_execution = -1;
-						kernel_info_list[kernel_number].scheduled_execution = present_time;
-						kernel_info_list[kernel_number].completion_time = kernel_info_list[kernel_number].execution_time + present_time;
-						GLOBAL_GPU_KERNELS++;
+						jobAttributesList[jobNumber].schedule_hardware = 1;
+						jobAttributesList[jobNumber].rescheduled_execution = -1;
+						jobAttributesList[jobNumber].scheduled_execution = present_time;
+						jobAttributesList[jobNumber].completion_time = jobAttributesList[jobNumber].execution_time + present_time;
+						GLOBAL_GPU_JOBS++;
 						if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-							printf("Kernel Book Keeper -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_KERNELS);
+							printf("Job Book Keeper -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
 						}
-						// Kernel call for the GPU to handle the given Kernels and number of blocks//
+						// Job call for the GPU to handle the given Jobs and number of blocks//
 						Queue_kernel_execution(processorReleased, processor_release_time, present_time,
-							schedule_method, kernel_number, processor_alloc_list);
+							schedule_method, jobNumber, processorsAllocatedList);
 					}
 					else
 					{
-						kernel_info_list[kernel_number].schedule_hardware = 2;
-						kernel_info_list[kernel_number].rescheduled_execution = -1;
-						kernel_info_list[kernel_number].completion_time = -1;
-						kernel_info_list[kernel_number].scheduled_execution = -1;
-						GLOBAL_CPU_KERNELS++;
+						jobAttributesList[jobNumber].schedule_hardware = 2;
+						jobAttributesList[jobNumber].rescheduled_execution = -1;
+						jobAttributesList[jobNumber].completion_time = -1;
+						jobAttributesList[jobNumber].scheduled_execution = -1;
+						GLOBAL_CPU_JOBS++;
 						if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-							printf("Kernel Book Keeper -- Job-%d will not complete before it's deadline, Job REJECTED\n", kernel_number);
-							printf("Kernel Book Keeper -- Jobs REJECTED count --> %d\n", GLOBAL_CPU_KERNELS);
+							printf("Job Book Keeper -- Job-%d will not complete before it's deadline, Job REJECTED\n", jobNumber);
+							printf("Job Book Keeper -- Jobs REJECTED count --> %d\n", GLOBAL_CPU_JOBS);
 						}
 					}
 				}
-				else if (processors_available >= kernel_info_list[GLOBAL_ALAP_LIST->kernel_number].processor_req)
+				else if (processors_available >= jobAttributesList[GLOBAL_ALAP_LIST->jobNumber].processor_req)
 				{
 					/// NEW FUNCTION NEEDED
 					if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-						printf("Kernel Book Keeper -- RELEASE ALAP Job NOW TO INCREASE SYSTEM TIME\n\n");
-						printf("\nPA : %d   ALAP_Pg : %d\n", processors_available, kernel_info_list[GLOBAL_ALAP_LIST->kernel_number].processor_req);
+						printf("Job Book Keeper -- RELEASE ALAP Job NOW TO INCREASE SYSTEM TIME\n\n");
+						printf("\nPA : %d   ALAP_Pg : %d\n", processors_available, jobAttributesList[GLOBAL_ALAP_LIST->jobNumber].processor_req);
 					}
-					processors_available = ALAP_improve(kernel_info_list, GLOBAL_ALAP_LIST->kernel_number, present_time,
-						processors_available, processor_alloc_list, kernel_queue_list);
-					processors_available = AEAP(kernel_info_list, kernel_number, present_time,
-						processors_available, processor_alloc_list, kernel_queue_list);
+					processors_available = ALAP_improve(jobAttributesList, GLOBAL_ALAP_LIST->jobNumber, present_time,
+						processors_available, processorsAllocatedList, jobSchdeuleQueueList);
+					processors_available = AEAP(jobAttributesList, jobNumber, present_time,
+						processors_available, processorsAllocatedList, jobSchdeuleQueueList);
 				}
 				else
 				{
-					processors_available = AEAP_advanced(kernel_info_list, kernel_number, present_time,
-						processors_available, processor_alloc_list, kernel_queue_list);
+					processors_available = AEAP_advanced(jobAttributesList, jobNumber, present_time,
+						processors_available, processorsAllocatedList, jobSchdeuleQueueList);
 				}
 			}//Processors lesses than the limit
-			else if (kernel_info_list[kernel_number].processor_req >= PROCESSOR_LIMIT)
+			else if (jobAttributesList[jobNumber].processor_req >= PROCESSOR_LIMIT)
 			{ // Processors needed greater or equal than the limit
-				processors_available = ALAP_advanced(kernel_info_list, kernel_number, present_time,
-					processors_available, processor_alloc_list, kernel_queue_list);
+				processors_available = ALAP_advanced(jobAttributesList, jobNumber, present_time,
+					processors_available, processorsAllocatedList, jobSchdeuleQueueList);
 			}
 		}//ALAP != NULL end if
 	}//End processors_available available
-	else if (kernel_info_list[kernel_number].processor_req > processors_available)
-	{// If processors available is lesser than the required processors by the kernel_info_list
-		// Schedule the kernel_info_list to be released in a future time
-		processors_available = Processors_unavailable(kernel_info_list, kernel_number, present_time,
-			processors_available, processor_alloc_list, kernel_queue_list);
+	else if (jobAttributesList[jobNumber].processor_req > processors_available)
+	{// If processors available is lesser than the required processors by the jobAttributesList
+		// Schedule the jobAttributesList to be released in a future time
+		processors_available = Processors_unavailable(jobAttributesList, jobNumber, present_time,
+			processors_available, processorsAllocatedList, jobSchdeuleQueueList);
 	}
 	PROFILER_STOP(SRTG, Kernel_book_keeper)
 	return processors_available;
@@ -248,29 +248,29 @@ int Kernel_book_keeper
 
 int Processors_unavailable
 (
-	kernelInfo *kernel_info_list,
-	int kernel_number,
+	jobAttributes *jobAttributesList,
+	int jobNumber,
 	int present_time,
 	int processors_available,
-	scheduledNode ** processor_alloc_list,
-	scheduledNode **kernel_queue_list
+	scheduledJobNode ** processorsAllocatedList,
+	scheduledJobNode **jobSchdeuleQueueList
 )
 {
 	PROFILER_START(SRTG, Processors_unavailable)
-	if (kernel_info_list[kernel_number].processor_req < PROCESSOR_LIMIT)
+	if (jobAttributesList[jobNumber].processor_req < PROCESSOR_LIMIT)
 	{
-		processors_available = AEAP(kernel_info_list, kernel_number, present_time,
-			processors_available, processor_alloc_list, kernel_queue_list);
+		processors_available = AEAP(jobAttributesList, jobNumber, present_time,
+			processors_available, processorsAllocatedList, jobSchdeuleQueueList);
 	}
-	else if (kernel_info_list[kernel_number].processor_req >= PROCESSOR_LIMIT && GLOBAL_ALAP_LIST == NULL)
+	else if (jobAttributesList[jobNumber].processor_req >= PROCESSOR_LIMIT && GLOBAL_ALAP_LIST == NULL)
 	{
-		processors_available = ALAP(kernel_info_list, kernel_number, present_time,
-			processors_available, processor_alloc_list, kernel_queue_list);
+		processors_available = ALAP(jobAttributesList, jobNumber, present_time,
+			processors_available, processorsAllocatedList, jobSchdeuleQueueList);
 	}
-	else if (kernel_info_list[kernel_number].processor_req >= PROCESSOR_LIMIT && GLOBAL_ALAP_LIST != NULL)
+	else if (jobAttributesList[jobNumber].processor_req >= PROCESSOR_LIMIT && GLOBAL_ALAP_LIST != NULL)
 	{
-		processors_available = ALAP_advanced(kernel_info_list, kernel_number, present_time,
-			processors_available, processor_alloc_list, kernel_queue_list);
+		processors_available = ALAP_advanced(jobAttributesList, jobNumber, present_time,
+			processors_available, processorsAllocatedList, jobSchdeuleQueueList);
 	}
 	PROFILER_STOP(SRTG, Processors_unavailable)
 	return processors_available;

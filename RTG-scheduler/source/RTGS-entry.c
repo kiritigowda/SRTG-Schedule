@@ -32,7 +32,7 @@ static void show_usage()
 	printf("\t--rt/--releaseTimes -- Release times for the jobs [required]\n");
 	printf("\t--m/--mode -- Mode options [optional]\n");
 	printf("\n");
-	printf("The Jobs file is the list of jobs to be scheduled: <jobs_file.txt>\n");
+	printf("The Jobs file is the jobBackupList of jobs to be scheduled: <jobs_file.txt>\n");
 	printf("\tThe arguments:\n");
 	printf("			Jid - Job Number\n");
 	printf("			Pn - Processors Needed\n");
@@ -41,7 +41,7 @@ static void show_usage()
 	printf("			Tlts - Lastest Time Schedulable on the GPU\n\n");
 	printf("			\"Jid, Pn, Texe, Td, Tlts\"\n\n");
 	printf("\n");
-	printf("The Release Time File has the list of release times of the Jobs: <Release_Time_file.txt>\n");
+	printf("The Release Time File has the jobBackupList of release times of the Jobs: <Release_Time_file.txt>\n");
 	printf("\tThe arguments:\n");
 	printf("			Tr - Release Time\n");
 	printf("			Jr - Number of jobs released\n\n");
@@ -65,7 +65,7 @@ Program Entry
 int main(int argc, char * argv[])
 {
 	RTGS_Status status = RTGS_SUCCESS;
-	char *kernelFilename = NULL, *releaseTimeFilename = NULL;
+	char *jobsListFileName = NULL, *releaseTimeFilename = NULL;
 	int schedulerMode = 0;
 	int error = 0;
 
@@ -97,7 +97,7 @@ int main(int argc, char * argv[])
 				exit(status);
 			}
 			arg++;
-			kernelFilename = (argv[arg]);
+			jobsListFileName = (argv[arg]);
 			error++;
 		}
 		else if (!strcasecmp(argv[arg], "--releaseTimes") || !strcasecmp(argv[arg], "--RT") || !strcasecmp(argv[arg], "--rt"))
@@ -138,13 +138,13 @@ int main(int argc, char * argv[])
 
 	// profiler  - output name initialize, profiler initialize and shutdown
 	GLOBAL_RTGS_MODE = schedulerMode;
-	GLOBAL_KERNEL_FILE_NAME = kernelFilename;
-	PROFILER_FILE_INITIALIZE(schedulerMode, kernelFilename);
+	GLOBAL_KERNEL_FILE_NAME = jobsListFileName;
+	PROFILER_FILE_INITIALIZE(schedulerMode, jobsListFileName);
 	PROFILER_INITIALIZE();
 	PROFILER_START(SRTG, RTG_Schedule)
 
 	int64_t start_t = RTGS_GetClockCounter();
-	status = scheduler_main(kernelFilename, releaseTimeFilename, schedulerMode); // scheduler call
+	status = scheduler_main(jobsListFileName, releaseTimeFilename, schedulerMode); // scheduler call
 	int64_t end_t = RTGS_GetClockCounter();
 
 	PROFILER_STOP(SRTG, RTG_Schedule)
