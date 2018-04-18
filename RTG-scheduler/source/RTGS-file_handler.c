@@ -17,7 +17,7 @@ int get_kernel_information(kernelInfo *kernelInfoList, const char *kernelFilenam
 		printf("ERROR::get_kernel_information - error while opening the file -- %s\n", kernelFilename);
 		return RTGS_FAILURE;
 	}
-	if (GLOBAL_RTGS_DEBUG_MSG) {
+	if (GLOBAL_RTGS_DEBUG_MSG > 1) {
 		printf("Jobs Info File -- %s\n", kernelFilename);
 	}
 
@@ -82,7 +82,7 @@ int get_kernel_release_times(kernelReleaseInfo *releaseTimeInfo, const char *rel
 		return RTGS_FAILURE;
 	}
 
-	if (GLOBAL_RTGS_DEBUG_MSG) {
+	if (GLOBAL_RTGS_DEBUG_MSG > 1) {
 		printf("Release Times Info File -- %s\n", releaseTimeFilename);
 	}
 
