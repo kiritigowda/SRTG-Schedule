@@ -11,8 +11,8 @@ int AEAP_advanced
 	int jobNumber,
 	int present_time,
 	int processors_available,
-	scheduledJobNode ** processorsAllocatedList,
-	scheduledJobNode **jobSchdeuleQueueList
+	scheduledResourceNode ** processorsAllocatedList,
+	scheduledResourceNode **jobScheduledQueueList
 )
 {
 	PROFILER_START(SRTG, AEAP_advanced)
@@ -21,8 +21,8 @@ int AEAP_advanced
 	}
 
 	int Pro = 0, job_release_time;
-	jobBackupNode *P_Given_list = NULL;
-	scheduledJobNode* temp = *processorsAllocatedList;
+	genericBackupNode *P_Given_list = NULL;
+	scheduledResourceNode* temp = *processorsAllocatedList;
 
 	if (GLOBAL_ALAP_LIST->next == NULL)
 	{
@@ -53,19 +53,19 @@ int AEAP_advanced
 				}
 				else if (temp->processor_release_time > GLOBAL_ALAP_LIST->data)
 				{
-					scheduledJobNode *t1 = temp;
-					scheduledJobNode *t2 = temp; // Back up
+					scheduledResourceNode *t1 = temp;
+					scheduledResourceNode *t2 = temp; // Back up
 					Pro = 0;
 					do
 					{
 						Pro = Pro + t1->processors_allocated;
 						t1->processors_allocated = 0;
-						P_Given_list = insert_list(P_Given_list, t1->processors_allocated);
+						P_Given_list = insert_node(P_Given_list, t1->processors_allocated);
 
 						if ((t1->processor_release_time + jobAttributesList[jobNumber].execution_time) > jobAttributesList[jobNumber].deadline)
 						{
-							scheduledJobNode* temp1 = t2;
-							jobBackupNode* temp2 = P_Given_list;
+							scheduledResourceNode* temp1 = t2;
+							genericBackupNode* temp2 = P_Given_list;
 							while (temp2 != NULL)
 							{
 								temp1->processors_allocated = temp2->data;
@@ -104,10 +104,10 @@ int AEAP_advanced
 								printf("As Early As Possible Advanced (AEAP-A) -- Job-%d scheduled\n", jobNumber);
 								printf("AEAP-A -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
 							}
-							Queue_kernel_execution(processorReleased, processor_release_time, presentTime,
+							queue_job_execution(processorReleased, processor_release_time, presentTime,
 								schedule_method, jobNumber, processorsAllocatedList);
-							Kernel_queue_handler(processorReleased, job_release_time, presentTime,
-								schedule_method, jobNumber, jobSchdeuleQueueList);
+							job_queue_handler(processorReleased, job_release_time, presentTime,
+								schedule_method, jobNumber, jobScheduledQueueList);
 							PROFILER_STOP(SRTG, AEAP_advanced)
 							return processors_available;
 						}
@@ -138,10 +138,10 @@ int AEAP_advanced
 						printf("As Early As Possible Advanced (AEAP-A) -- Job-%d scheduled\n", jobNumber);
 						printf("AEAP-A -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
 					}
-					Queue_kernel_execution(processorReleased, processor_release_time, presentTime,
+					queue_job_execution(processorReleased, processor_release_time, presentTime,
 						schedule_method, jobNumber, processorsAllocatedList);
-					Kernel_queue_handler(processorReleased, job_release_time, presentTime,
-						schedule_method, jobNumber, jobSchdeuleQueueList);
+					job_queue_handler(processorReleased, job_release_time, presentTime,
+						schedule_method, jobNumber, jobScheduledQueueList);
 					PROFILER_STOP(SRTG, AEAP_advanced)
 					return processors_available;
 				}
@@ -169,22 +169,22 @@ int AEAP_advanced
 						}
 						else if (temp->processor_release_time > GLOBAL_ALAP_LIST->processor_release_time)
 						{
-							scheduledJobNode *t1 = temp;
-							scheduledJobNode *t2 = temp; // Back up
+							scheduledResourceNode *t1 = temp;
+							scheduledResourceNode *t2 = temp; // Back up
 							Pro = GLOBAL_ALAP_LIST->processors_allocated;
-							P_Given_list = insert_list(P_Given_list, GLOBAL_ALAP_LIST->processors_allocated);
+							P_Given_list = insert_node(P_Given_list, GLOBAL_ALAP_LIST->processors_allocated);
 							GLOBAL_ALAP_LIST->processors_allocated = 0;
 							do
 							{
 								Pro = Pro + t1->processors_allocated;
 								t1->processors_allocated = 0;
-								P_Given_list = insert_list(P_Given_list, t1->processors_allocated);
+								P_Given_list = insert_node(P_Given_list, t1->processors_allocated);
 
 								if ((t1->processor_release_time + jobAttributesList[jobNumber].execution_time) > jobAttributesList[jobNumber].deadline)
 								{
 									int count = 0;
-									scheduledJobNode* temp1 = t2;
-									jobBackupNode* temp2 = P_Given_list;
+									scheduledResourceNode* temp1 = t2;
+									genericBackupNode* temp2 = P_Given_list;
 
 									while (temp2 != NULL)
 									{
@@ -233,10 +233,10 @@ int AEAP_advanced
 										printf("As Early As Possible Advanced (AEAP-A) -- Job-%d scheduled\n", jobNumber);
 										printf("AEAP-A -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
 									}
-									Queue_kernel_execution(processorReleased, processor_release_time, presentTime,
+									queue_job_execution(processorReleased, processor_release_time, presentTime,
 										schedule_method, jobNumber, processorsAllocatedList);
-									Kernel_queue_handler(processorReleased, job_release_time, presentTime,
-										schedule_method, jobNumber, jobSchdeuleQueueList);
+									job_queue_handler(processorReleased, job_release_time, presentTime,
+										schedule_method, jobNumber, jobScheduledQueueList);
 									PROFILER_STOP(SRTG, AEAP_advanced)
 									return processors_available;
 								}
@@ -267,7 +267,7 @@ int AEAP_advanced
 	} //End of GLOBAL_ALAP_LIST->next == NULL
 	if (GLOBAL_ALAP_LIST->next != NULL)
 	{
-		jobBackupNode* check = GLOBAL_ALAP_LIST->next;
+		genericBackupNode* check = GLOBAL_ALAP_LIST->next;
 		int Pl = MAX_GPU_PROCESSOR - jobAttributesList[GLOBAL_ALAP_LIST->jobNumber].processor_req;
 
 		if (jobAttributesList[jobNumber].processor_req <= Pl)
@@ -297,19 +297,19 @@ int AEAP_advanced
 					}
 					else if (temp->processor_release_time > GLOBAL_ALAP_LIST->data)
 					{
-						scheduledJobNode *t1 = temp;
-						scheduledJobNode *t2 = temp; // Back up
+						scheduledResourceNode *t1 = temp;
+						scheduledResourceNode *t2 = temp; // Back up
 						Pro = 0;
 						do
 						{
 							Pro = Pro + t1->processors_allocated;
 							t1->processors_allocated = 0;
-							P_Given_list = insert_list(P_Given_list, t1->processors_allocated);
+							P_Given_list = insert_node(P_Given_list, t1->processors_allocated);
 
 							if ((t1->processor_release_time + jobAttributesList[jobNumber].execution_time) > jobAttributesList[jobNumber].deadline)
 							{
-								scheduledJobNode* temp1 = t2;
-								jobBackupNode* temp2 = P_Given_list;
+								scheduledResourceNode* temp1 = t2;
+								genericBackupNode* temp2 = P_Given_list;
 
 								while (temp2 != NULL)
 								{
@@ -350,10 +350,10 @@ int AEAP_advanced
 									printf("As Early As Possible Advanced (AEAP-A) -- Job-%d scheduled\n", jobNumber);
 									printf("AEAP-A -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
 								}
-								Queue_kernel_execution(processorReleased, processor_release_time, presentTime,
+								queue_job_execution(processorReleased, processor_release_time, presentTime,
 									schedule_method, jobNumber, processorsAllocatedList);
-								Kernel_queue_handler(processorReleased, job_release_time, presentTime,
-									schedule_method, jobNumber, jobSchdeuleQueueList);
+								job_queue_handler(processorReleased, job_release_time, presentTime,
+									schedule_method, jobNumber, jobScheduledQueueList);
 								PROFILER_STOP(SRTG, AEAP_advanced)
 								return processors_available;
 							}
@@ -402,10 +402,10 @@ int AEAP_advanced
 						printf("As Early As Possible Advanced (AEAP-A) -- Job-%d scheduled\n", jobNumber);
 						printf("AEAP-A -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
 					}
-					Queue_kernel_execution(processorReleased, processor_release_time, presentTime,
+					queue_job_execution(processorReleased, processor_release_time, presentTime,
 						schedule_method, jobNumber, processorsAllocatedList);
-					Kernel_queue_handler(processorReleased, job_release_time, presentTime,
-						schedule_method, jobNumber, jobSchdeuleQueueList);
+					job_queue_handler(processorReleased, job_release_time, presentTime,
+						schedule_method, jobNumber, jobScheduledQueueList);
 					return processors_available;
 				}
 				else if (GLOBAL_ALAP_LIST->processors_allocated < jobAttributesList[jobNumber].processor_req)
@@ -432,23 +432,23 @@ int AEAP_advanced
 						}
 						else if (temp->processor_release_time > GLOBAL_ALAP_LIST->processor_release_time)
 						{
-							scheduledJobNode *t1 = temp;
-							scheduledJobNode *t2 = temp; // Back up
+							scheduledResourceNode *t1 = temp;
+							scheduledResourceNode *t2 = temp; // Back up
 
 							Pro = GLOBAL_ALAP_LIST->processors_allocated;
-							P_Given_list = insert_list(P_Given_list, GLOBAL_ALAP_LIST->processors_allocated);
+							P_Given_list = insert_node(P_Given_list, GLOBAL_ALAP_LIST->processors_allocated);
 							GLOBAL_ALAP_LIST->processors_allocated = 0;
 							do
 							{
 								Pro = Pro + t1->processors_allocated;
 								t1->processors_allocated = 0;
-								P_Given_list = insert_list(P_Given_list, t1->processors_allocated);
+								P_Given_list = insert_node(P_Given_list, t1->processors_allocated);
 
 								if ((t1->processor_release_time + jobAttributesList[jobNumber].execution_time) > jobAttributesList[jobNumber].deadline)
 								{
 									int count = 0;
-									scheduledJobNode* temp1 = t2;
-									jobBackupNode* temp2 = P_Given_list;
+									scheduledResourceNode* temp1 = t2;
+									genericBackupNode* temp2 = P_Given_list;
 
 									while (temp2 != NULL)
 									{
@@ -495,10 +495,10 @@ int AEAP_advanced
 										printf("As Early As Possible Advanced (AEAP-A) -- Job-%d scheduled\n", jobNumber);
 										printf("AEAP-A -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
 									}
-									Queue_kernel_execution(processorReleased, processor_release_time, presentTime,
+									queue_job_execution(processorReleased, processor_release_time, presentTime,
 										schedule_method, jobNumber, processorsAllocatedList);
-									Kernel_queue_handler(processorReleased, job_release_time, presentTime,
-										schedule_method, jobNumber, jobSchdeuleQueueList);
+									job_queue_handler(processorReleased, job_release_time, presentTime,
+										schedule_method, jobNumber, jobScheduledQueueList);
 									return processors_available;
 								}
 								t1 = t1->next;

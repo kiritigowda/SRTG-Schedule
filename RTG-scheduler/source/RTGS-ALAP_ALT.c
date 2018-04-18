@@ -11,8 +11,8 @@ int ALAP_advanced
 	int jobNumber,
 	int present_time,
 	int processors_available,
-	scheduledJobNode ** processorsAllocatedList,
-	scheduledJobNode **jobSchdeuleQueueList
+	scheduledResourceNode ** processorsAllocatedList,
+	scheduledResourceNode **jobScheduledQueueList
 )
 {
 	PROFILER_START(SRTG, ALAP_advanced)
@@ -20,8 +20,8 @@ int ALAP_advanced
 		printf("As Late As Possible Advanced (ALAP-A) -- Job-%d is verified for AEAP advanced scheduling\n", jobNumber);
 	}
 	int Pro = 0, job_release_time;
-	scheduledJobNode* temp = *processorsAllocatedList;
-	jobBackupNode *alap_check = GLOBAL_ALAP_LIST;
+	scheduledResourceNode* temp = *processorsAllocatedList;
+	genericBackupNode *alap_check = GLOBAL_ALAP_LIST;
 
 	while (alap_check->next != NULL)
 		alap_check = alap_check->next;
@@ -46,8 +46,8 @@ int ALAP_advanced
 			}
 			GLOBAL_ALAP_LIST = insert_ALAP_list(GLOBAL_ALAP_LIST, job_release_time, processor_release_time,
 				processorReleased, jobNumber);
-			Kernel_queue_handler(processorReleased, job_release_time, processor_release_time, schedule_method,
-				jobNumber, jobSchdeuleQueueList);
+			job_queue_handler(processorReleased, job_release_time, processor_release_time, schedule_method,
+				jobNumber, jobScheduledQueueList);
 			PROFILER_STOP(SRTG, ALAP_advanced)
 			return processors_available;
 		}
@@ -68,7 +68,7 @@ int ALAP_advanced
 				printf("ALAP-A -- Jos ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
 			}
 			GLOBAL_ALAP_LIST = insert_ALAP_list(GLOBAL_ALAP_LIST, job_release_time, processor_release_time, processorReleased, jobNumber);
-			Kernel_queue_handler(processorReleased, job_release_time, processor_release_time, schedule_method, jobNumber, jobSchdeuleQueueList);
+			job_queue_handler(processorReleased, job_release_time, processor_release_time, schedule_method, jobNumber, jobScheduledQueueList);
 			PROFILER_STOP(SRTG, ALAP_advanced)
 			return processors_available;
 		}
@@ -92,7 +92,7 @@ int ALAP_advanced
 				}
 				else if (temp->processor_release_time <= (jobAttributesList[jobNumber].deadline - jobAttributesList[jobNumber].execution_time))
 				{
-					scheduledJobNode *t1 = temp;
+					scheduledResourceNode *t1 = temp;
 					Pro = alap_check->processors_allocated;
 					do {
 						Pro = Pro + t1->processors_allocated;
@@ -132,8 +132,8 @@ int ALAP_advanced
 							}
 							GLOBAL_ALAP_LIST = insert_ALAP_list(GLOBAL_ALAP_LIST, job_release_time, processor_release_time,
 								processorReleased, jobNumber);
-							Kernel_queue_handler(processorReleased, job_release_time, processor_release_time,
-								schedule_method, jobNumber, jobSchdeuleQueueList);
+							job_queue_handler(processorReleased, job_release_time, processor_release_time,
+								schedule_method, jobNumber, jobScheduledQueueList);
 							PROFILER_STOP(SRTG, ALAP_advanced)
 							return processors_available;
 						}

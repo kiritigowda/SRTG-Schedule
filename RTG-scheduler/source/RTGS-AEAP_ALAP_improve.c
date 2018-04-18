@@ -11,8 +11,8 @@ int AEAP_ALAP_improve
 	int job_release_time,
 	int present_time,
 	int processors_available,
-	scheduledJobNode ** processorsAllocatedList,
-	scheduledJobNode **jobSchdeuleQueueList
+	scheduledResourceNode ** processorsAllocatedList,
+	scheduledResourceNode **jobScheduledQueueList
 )
 {
 
@@ -20,7 +20,7 @@ int AEAP_ALAP_improve
 		printf("AEAP_ALAP_IMPROVE: ALAP IMPROVED scheduling\n");
 		printf("AEAP_ALAP_IMPROVE: Job Release Time: %d\n", job_release_time);
 	}
-	scheduledJobNode *temp = *jobSchdeuleQueueList;
+	scheduledResourceNode *temp = *jobScheduledQueueList;
 	while (temp->jobNumber != GLOBAL_ALAP_LIST->jobNumber && temp->next != NULL)
 		temp = temp->next;
 

@@ -55,7 +55,7 @@ int get_job_information(jobAttributes *kernelInfoList, const char *jobsListFileN
 
 		kernel_ID = atoi(jobAttributes[0]);
 		if (kernel_ID < 0) {
-			printf("ERROR::get_job_information - KERNEL ID needs to be in the range 0 - N\n");
+			printf("ERROR::get_job_information - Job ID needs to be in the range 0 - N\n");
 			return RTGS_ERROR_INVALID_PARAMETERS;
 		}
 		kernelInfoList[kernel_ID].processor_req = atoi(jobAttributes[1]);
@@ -120,7 +120,7 @@ int get_job_release_times(jobReleaseInfo *releaseTimeInfo, const char *releaseTi
 
 		releaseTime = atoi(jobAttributes[0]);
 		if (releaseTime < 0) {
-			printf("ERROR::get_job_release_times - KERNEL Release time needs to be in the range 0 - N\n");
+			printf("ERROR::get_job_release_times - Job Release time needs to be in the range 0 - N\n");
 			return RTGS_ERROR_INVALID_PARAMETERS;
 		}
 

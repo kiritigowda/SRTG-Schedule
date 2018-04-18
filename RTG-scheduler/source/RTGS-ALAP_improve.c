@@ -11,33 +11,33 @@ int ALAP_improve
 	int jobNumber,
 	int present_time,
 	int processors_available,
-	scheduledJobNode ** processorsAllocatedList,
-	scheduledJobNode **jobSchdeuleQueueList
+	scheduledResourceNode ** processorsAllocatedList,
+	scheduledResourceNode **jobScheduledQueueList
 )
 {
 	PROFILER_START(SRTG, ALAP_improve)
 	if (GLOBAL_RTGS_DEBUG_MSG > 2) {
 		printf("As Late Aa Possible Improved (ALAP-I) -- Job-%d is verified for ALAP IMPROVED scheduling\n", jobNumber);
 	}
-	scheduledJobNode *temp = *jobSchdeuleQueueList;
+	scheduledResourceNode *temp = *jobScheduledQueueList;
 
 	if (temp->jobNumber == jobNumber)
 	{
 		if (GLOBAL_RTGS_DEBUG_MSG > 2) {
 			printf("As Late Aa Possible Improved (ALAP-I) -- Job-%d is verified for ALAP IMPROVED scheduling\n", jobNumber);
-			printf("ALAP-I -- GLOBAL_ALAP_LIST->data: %d && jobSchdeuleQueueList: %d\n", GLOBAL_ALAP_LIST->data, temp->data);
+			printf("ALAP-I -- GLOBAL_ALAP_LIST->data: %d && jobScheduledQueueList: %d\n", GLOBAL_ALAP_LIST->data, temp->data);
 		}
 		if (GLOBAL_ALAP_LIST->data == temp->data)
 		{
 			GLOBAL_ALAP_LIST->data = temp->data = present_time;
 			temp->processor_release_time = present_time + jobAttributesList[jobNumber].execution_time;
-			processors_available = Dispatch_queued_kernels(present_time, processors_available, jobSchdeuleQueueList, processorsAllocatedList);
+			processors_available = Dispatch_queued_kernels(present_time, processors_available, jobScheduledQueueList, processorsAllocatedList);
 		}
 	}
 	else if (temp->jobNumber == MULTIPLE_JOBS_SCHEDULED)
 	{
-		scheduledJobNode *head = temp;
-		scheduledJobNode *t1, *t2;
+		scheduledResourceNode *head = temp;
+		scheduledResourceNode *t1, *t2;
 		t1 = temp->job_next;
 		while (t1 != NULL)
 		{
@@ -53,7 +53,7 @@ int ALAP_improve
 					printf("As Late Aa Possible Improved (ALAP-I) -- MULTIPLE_JOBS_SCHEDULED\n");
 					printf("ALAP-I --  TIME: %d<--Dispatch-- schedule_method:RTGS_SCHEDULE_METHOD_ALAP  Job-%d sent to GPU for EXECUTION-->\n", present_time, t1->jobNumber);
 				}
-				Queue_kernel_execution(t1->processors_allocated, t1->processor_release_time, present_time,
+				queue_job_execution(t1->processors_allocated, t1->processor_release_time, present_time,
 					t1->schedule_method, t1->jobNumber, processorsAllocatedList);
 
 				free(t1);

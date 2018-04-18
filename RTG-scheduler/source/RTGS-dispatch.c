@@ -10,11 +10,11 @@ int Retrieve_processors
 (
 	int present_time,
 	int processors_available,
-	scheduledJobNode** processorsAllocatedList
+	scheduledResourceNode** processorsAllocatedList
 )
 {
 	PROFILER_START(SRTG, Retrieve_processors)
-	scheduledJobNode* temp;
+	scheduledResourceNode* temp;
 	temp = *processorsAllocatedList;
 
 	if (temp != NULL)
@@ -29,7 +29,7 @@ int Retrieve_processors
 			}
 			if (temp->job_next != NULL)
 			{
-				scheduledJobNode *t1, *t2;
+				scheduledResourceNode *t1, *t2;
 				t1 = temp->job_next;
 				while (t1 != NULL)
 				{
@@ -59,13 +59,13 @@ int Dispatch_queued_kernels
 (
 	int present_time,
 	int processors_available,
-	scheduledJobNode** jobSchdeuleQueueList,
-	scheduledJobNode **processorsAllocatedList
+	scheduledResourceNode** jobScheduledQueueList,
+	scheduledResourceNode **processorsAllocatedList
 )
 {
 	PROFILER_START(SRTG, Dispatch_queued_kernels)
-	scheduledJobNode* temp;
-	temp = *jobSchdeuleQueueList;
+	scheduledResourceNode* temp;
+	temp = *jobScheduledQueueList;
 
 	if (temp != NULL)
 	{
@@ -73,7 +73,7 @@ int Dispatch_queued_kernels
 		{
 			if (temp->job_next != NULL)
 			{
-				scheduledJobNode *t1, *t2;
+				scheduledResourceNode *t1, *t2;
 				t1 = temp->job_next;
 				while (t1 != NULL)
 				{
@@ -83,7 +83,7 @@ int Dispatch_queued_kernels
 						int ALAP_Pg = 0;
 						if (GLOBAL_ALAP_LIST != NULL)
 						{
-							jobBackupNode* temp1 = GLOBAL_ALAP_LIST;
+							genericBackupNode* temp1 = GLOBAL_ALAP_LIST;
 							if (temp1->data == present_time)
 							{
 								ALAP_Pg = temp1->processors_allocated;
@@ -102,7 +102,7 @@ int Dispatch_queued_kernels
 							printf("Dispatch Queued Jobs -- Present Time:%d Dispatched RTGS_SCHEDULE_METHOD_ALAP Job-%d ProcAlloc:%d for GPU EXECUTION\n",
 								present_time, t1->jobNumber, t1->processors_allocated);
 						}
-						Queue_kernel_execution(ALAP_Pg, t1->processor_release_time, present_time,
+						queue_job_execution(ALAP_Pg, t1->processor_release_time, present_time,
 							t1->schedule_method, t1->jobNumber, processorsAllocatedList);
 					}
 					else if (t1->schedule_method == RTGS_SCHEDULE_METHOD_AEAP)
@@ -127,7 +127,7 @@ int Dispatch_queued_kernels
 					int ALAP_Pg = 0;
 					if (GLOBAL_ALAP_LIST != NULL)
 					{
-						jobBackupNode* temp1 = GLOBAL_ALAP_LIST;
+						genericBackupNode* temp1 = GLOBAL_ALAP_LIST;
 						if (temp1->data == present_time)
 						{
 							ALAP_Pg = temp1->processors_allocated;
@@ -146,7 +146,7 @@ int Dispatch_queued_kernels
 						printf("Dispatch Queued Jobs -- Present Time:%d Dispatched RTGS_SCHEDULE_METHOD_ALAP Job-%d ProcAlloc:%d for GPU EXECUTION\n",
 							present_time, temp->jobNumber, temp->processors_allocated);
 					}
-					Queue_kernel_execution(ALAP_Pg, temp->processor_release_time, present_time,
+					queue_job_execution(ALAP_Pg, temp->processor_release_time, present_time,
 						temp->schedule_method, temp->jobNumber, processorsAllocatedList);
 				}
 				else if (temp->schedule_method == RTGS_SCHEDULE_METHOD_AEAP)
@@ -160,8 +160,8 @@ int Dispatch_queued_kernels
 					printf("Dispatch Queued Jobs -- ERROR NOT IMPLEMENTED"); return RTGS_ERROR_NOT_IMPLEMENTED; 
 				}
 			}
-			temp = position_delete(*jobSchdeuleQueueList, 1);
-			*jobSchdeuleQueueList = temp;
+			temp = position_delete(*jobScheduledQueueList, 1);
+			*jobScheduledQueueList = temp;
 		}
 	}
 	PROFILER_STOP(SRTG, Dispatch_queued_kernels)

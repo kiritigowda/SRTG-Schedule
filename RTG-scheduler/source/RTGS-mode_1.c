@@ -14,7 +14,7 @@ static int Mode_1_book_keeper
 	int jobNumber,
 	int processors_available,
 	int present_time,
-	scheduledJobNode** processorsAllocatedList
+	scheduledResourceNode** processorsAllocatedList
 )
 {
 	int processorsInUse = 0, processorReleaseTime = 0;
@@ -33,7 +33,7 @@ static int Mode_1_book_keeper
 			processorReleaseTime = jobAttributesList[jobNumber].execution_time + presentTime;
 			scheduleMethod = RTGS_SCHEDULE_METHOD_IMMEDIATE;
 			// Job call for the GPU to handle the given Jobs and number of blocks
-			Queue_kernel_execution(processorsInUse, processorReleaseTime, presentTime, scheduleMethod, jobNumber, processorsAllocatedList);
+			queue_job_execution(processorsInUse, processorReleaseTime, presentTime, scheduleMethod, jobNumber, processorsAllocatedList);
 
 			jobAttributesList[jobNumber].schedule_hardware = 1;
 			jobAttributesList[jobNumber].rescheduled_execution = -1;
@@ -80,7 +80,7 @@ int RTGS_mode_1(char *jobsListFileName, char *releaseTimeFilename)
 {
 	jobAttributes jobAttributesList[MAX_JOBS] = {{0}};
 	jobReleaseInfo releaseTimeInfo[MAX_JOBS] = {{0}};
-	scheduledJobNode *processorsAllocatedList = NULL;
+	scheduledResourceNode *processorsAllocatedList = NULL;
 
 	// global variables initialized
 	GLOBAL_GPU_JOBS = 0;
@@ -174,7 +174,7 @@ int RTGS_mode_1(char *jobsListFileName, char *releaseTimeFilename)
 
 			numReleases++;
 			if (numReleases > maxReleases) {
-				printf("RTGS Mode 1 ERROR --  KERNEL Release Time exceded Max Releases\n");
+				printf("RTGS Mode 1 ERROR --  Job Release Time exceded Max Releases\n");
 				return RTGS_ERROR_INVALID_PARAMETERS;
 			}
 		}

@@ -12,8 +12,8 @@ int Kernel_book_keeper
 	int jobNumber,
 	int processors_available,
 	int present_time,
-	scheduledJobNode **processorsAllocatedList,
-	scheduledJobNode **jobSchdeuleQueueList
+	scheduledResourceNode **processorsAllocatedList,
+	scheduledResourceNode **jobScheduledQueueList
 )
 {
 	PROFILER_START(SRTG, Kernel_book_keeper)
@@ -54,7 +54,7 @@ int Kernel_book_keeper
 						printf("Job Book Keeper -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
 					}
 					// Job call for the GPU to handle the given Jobs and number of blocks
-					Queue_kernel_execution(processorReleased, processor_release_time, present_time,
+					queue_job_execution(processorReleased, processor_release_time, present_time,
 						schedule_method, jobNumber, processorsAllocatedList);
 
 				}
@@ -77,7 +77,7 @@ int Kernel_book_keeper
 					printf("Job Book Keeper -- Job-%d is compute intensive, sent for ALAP execution\n", jobNumber);
 				}
 				processors_available = ALAP(jobAttributesList, jobNumber, present_time,
-					processors_available, processorsAllocatedList, jobSchdeuleQueueList);
+					processors_available, processorsAllocatedList, jobScheduledQueueList);
 			}
 		}
 		else if (GLOBAL_ALAP_LIST != NULL)
@@ -112,7 +112,7 @@ int Kernel_book_keeper
 							printf("Job Book Keeper -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
 						}
 						// Job call for the GPU to handle the given Jobs and number of blocks//
-						Queue_kernel_execution(processorReleased, processor_release_time, present_time,
+						queue_job_execution(processorReleased, processor_release_time, present_time,
 							schedule_method, jobNumber, processorsAllocatedList);
 					}
 					else
@@ -149,7 +149,7 @@ int Kernel_book_keeper
 							printf("Job Book Keeper -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
 						}
 						// Job call for the GPU to handle the given Jobs and number of blocks//
-						Queue_kernel_execution(processorReleased, processor_release_time, present_time,
+						queue_job_execution(processorReleased, processor_release_time, present_time,
 							schedule_method, jobNumber, processorsAllocatedList);
 					}
 					else
@@ -195,7 +195,7 @@ int Kernel_book_keeper
 							printf("Job Book Keeper -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
 						}
 						// Job call for the GPU to handle the given Jobs and number of blocks//
-						Queue_kernel_execution(processorReleased, processor_release_time, present_time,
+						queue_job_execution(processorReleased, processor_release_time, present_time,
 							schedule_method, jobNumber, processorsAllocatedList);
 					}
 					else
@@ -219,20 +219,20 @@ int Kernel_book_keeper
 						printf("\nPA : %d   ALAP_Pg : %d\n", processors_available, jobAttributesList[GLOBAL_ALAP_LIST->jobNumber].processor_req);
 					}
 					processors_available = ALAP_improve(jobAttributesList, GLOBAL_ALAP_LIST->jobNumber, present_time,
-						processors_available, processorsAllocatedList, jobSchdeuleQueueList);
+						processors_available, processorsAllocatedList, jobScheduledQueueList);
 					processors_available = AEAP(jobAttributesList, jobNumber, present_time,
-						processors_available, processorsAllocatedList, jobSchdeuleQueueList);
+						processors_available, processorsAllocatedList, jobScheduledQueueList);
 				}
 				else
 				{
 					processors_available = AEAP_advanced(jobAttributesList, jobNumber, present_time,
-						processors_available, processorsAllocatedList, jobSchdeuleQueueList);
+						processors_available, processorsAllocatedList, jobScheduledQueueList);
 				}
 			}//Processors lesses than the limit
 			else if (jobAttributesList[jobNumber].processor_req >= PROCESSOR_LIMIT)
 			{ // Processors needed greater or equal than the limit
 				processors_available = ALAP_advanced(jobAttributesList, jobNumber, present_time,
-					processors_available, processorsAllocatedList, jobSchdeuleQueueList);
+					processors_available, processorsAllocatedList, jobScheduledQueueList);
 			}
 		}//ALAP != NULL end if
 	}//End processors_available available
@@ -240,7 +240,7 @@ int Kernel_book_keeper
 	{// If processors available is lesser than the required processors by the jobAttributesList
 		// Schedule the jobAttributesList to be released in a future time
 		processors_available = Processors_unavailable(jobAttributesList, jobNumber, present_time,
-			processors_available, processorsAllocatedList, jobSchdeuleQueueList);
+			processors_available, processorsAllocatedList, jobScheduledQueueList);
 	}
 	PROFILER_STOP(SRTG, Kernel_book_keeper)
 	return processors_available;
@@ -252,25 +252,25 @@ int Processors_unavailable
 	int jobNumber,
 	int present_time,
 	int processors_available,
-	scheduledJobNode ** processorsAllocatedList,
-	scheduledJobNode **jobSchdeuleQueueList
+	scheduledResourceNode ** processorsAllocatedList,
+	scheduledResourceNode **jobScheduledQueueList
 )
 {
 	PROFILER_START(SRTG, Processors_unavailable)
 	if (jobAttributesList[jobNumber].processor_req < PROCESSOR_LIMIT)
 	{
 		processors_available = AEAP(jobAttributesList, jobNumber, present_time,
-			processors_available, processorsAllocatedList, jobSchdeuleQueueList);
+			processors_available, processorsAllocatedList, jobScheduledQueueList);
 	}
 	else if (jobAttributesList[jobNumber].processor_req >= PROCESSOR_LIMIT && GLOBAL_ALAP_LIST == NULL)
 	{
 		processors_available = ALAP(jobAttributesList, jobNumber, present_time,
-			processors_available, processorsAllocatedList, jobSchdeuleQueueList);
+			processors_available, processorsAllocatedList, jobScheduledQueueList);
 	}
 	else if (jobAttributesList[jobNumber].processor_req >= PROCESSOR_LIMIT && GLOBAL_ALAP_LIST != NULL)
 	{
 		processors_available = ALAP_advanced(jobAttributesList, jobNumber, present_time,
-			processors_available, processorsAllocatedList, jobSchdeuleQueueList);
+			processors_available, processorsAllocatedList, jobScheduledQueueList);
 	}
 	PROFILER_STOP(SRTG, Processors_unavailable)
 	return processors_available;

@@ -11,13 +11,13 @@ int ALAP
 	int jobNumber,
 	int present_time,
 	int processors_available,
-	scheduledJobNode ** processorsAllocatedList,
-	scheduledJobNode **jobSchdeuleQueueList
+	scheduledResourceNode ** processorsAllocatedList,
+	scheduledResourceNode **jobScheduledQueueList
 )
 {
 	PROFILER_START(SRTG, ALAP)
 	int Pro = 0, job_release_time, processor_release_time = 0, processors_allocated = 0;
-	jobBackupNode *P_Given_list = NULL;
+	genericBackupNode *P_Given_list = NULL;
 	processors_allocated = jobAttributesList[jobNumber].processor_req;
 	processor_release_time = jobAttributesList[jobNumber].deadline;
 	job_release_time = processor_release_time - jobAttributesList[jobNumber].execution_time;
@@ -39,22 +39,22 @@ int ALAP
 		}
 		GLOBAL_ALAP_LIST = insert_ALAP_list(GLOBAL_ALAP_LIST, job_release_time, processor_release_time,
 			processors_allocated, jobNumber);
-		Kernel_queue_handler(processorReleased, job_release_time, processor_release_time,
-			schedule_method, jobNumber, jobSchdeuleQueueList);
+		job_queue_handler(processorReleased, job_release_time, processor_release_time,
+			schedule_method, jobNumber, jobScheduledQueueList);
 		PROFILER_STOP(SRTG, ALAP)
 			return processors_available;
 	}
 	P_Given_list = insert_ALAP_list(P_Given_list, job_release_time, processor_release_time,
 		processors_available, jobNumber);
-	scheduledJobNode* temp = *processorsAllocatedList;
+	scheduledResourceNode* temp = *processorsAllocatedList;
 
 	while (temp != NULL)
 	{
 		if ((temp->processor_release_time + jobAttributesList[jobNumber].execution_time) > jobAttributesList[jobNumber].deadline)
 		{
 			int count = 0;
-			scheduledJobNode*temp1 = *processorsAllocatedList;
-			jobBackupNode* temp2 = P_Given_list;
+			scheduledResourceNode*temp1 = *processorsAllocatedList;
+			genericBackupNode* temp2 = P_Given_list;
 
 			while (temp2 != NULL)
 			{
@@ -101,8 +101,8 @@ int ALAP
 				}
 				GLOBAL_ALAP_LIST = insert_ALAP_list(GLOBAL_ALAP_LIST, job_release_time, processor_release_time,
 					processors_allocated, jobNumber);
-				Kernel_queue_handler(processorReleased, job_release_time, processor_release_time,
-					schedule_method, jobNumber, jobSchdeuleQueueList);
+				job_queue_handler(processorReleased, job_release_time, processor_release_time,
+					schedule_method, jobNumber, jobScheduledQueueList);
 				PROFILER_STOP(SRTG, ALAP)
 				return processors_available;
 			}
@@ -117,8 +117,8 @@ int ALAP
 	if (temp == NULL && P_Given_list != NULL)
 	{
 		int count = 0;
-		scheduledJobNode*temp1 = *processorsAllocatedList;
-		jobBackupNode* temp2 = P_Given_list;
+		scheduledResourceNode*temp1 = *processorsAllocatedList;
+		genericBackupNode* temp2 = P_Given_list;
 		while (temp2 != NULL)
 		{
 			if (count == 0) {

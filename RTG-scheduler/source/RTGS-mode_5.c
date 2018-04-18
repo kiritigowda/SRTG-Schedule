@@ -13,8 +13,8 @@ int  RTGS_mode_5(char *jobsListFileName, char *releaseTimeFilename)
 	PROFILER_START(SRTG, RTGS_mode_5)
 	jobAttributes jobAttributesList[MAX_JOBS] = {{0}};
 	jobReleaseInfo releaseTimeInfo[MAX_JOBS] = {{0}};
-	scheduledJobNode *processorsAllocatedList = NULL;
-	scheduledJobNode *jobSchdeuleQueueList = NULL;		//Job queued for future executions
+	scheduledResourceNode *processorsAllocatedList = NULL;
+	scheduledResourceNode *jobScheduledQueueList = NULL;		//Job queued for future executions
 
 	// global variable initialize
 	GLOBAL_GPU_JOBS = 0;
@@ -39,7 +39,7 @@ int  RTGS_mode_5(char *jobsListFileName, char *releaseTimeFilename)
 		// Freeing-up processors
 		processorsAvailable = Retrieve_processors(present_time, processorsAvailable, &processorsAllocatedList);
 		if (processorsAvailable < 0) { printf("Retrieve_processors ERROR- Processors Available:%d\n", processorsAvailable); return RTGS_ERROR_NOT_IMPLEMENTED; }
-		processorsAvailable = Dispatch_queued_kernels(present_time, processorsAvailable, &jobSchdeuleQueueList, &processorsAllocatedList);
+		processorsAvailable = Dispatch_queued_kernels(present_time, processorsAvailable, &jobScheduledQueueList, &processorsAllocatedList);
 		if (processorsAvailable < 0) { printf("Dispatch_queued_kernels ERROR - Processors Available:%d\n", processorsAvailable); return RTGS_ERROR_NOT_IMPLEMENTED; }
 
 		if (releaseTimeInfo[numReleases].release_time == present_time) {
@@ -54,7 +54,7 @@ int  RTGS_mode_5(char *jobsListFileName, char *releaseTimeFilename)
 				// handling the released jobAttributesList by the book-keeper
 				int64_t start_t = RTGS_GetClockCounter();
 				processorsAvailable = Kernel_book_keeper(jobAttributesList, jobNumber, processorsAvailable, present_time,
-					&processorsAllocatedList, &jobSchdeuleQueueList);
+					&processorsAllocatedList, &jobScheduledQueueList);
 				int64_t end_t = RTGS_GetClockCounter();
 				int64_t freq = RTGS_GetClockFrequency();
 				float factor = 1000.0f / (float)freq; // to convert clock counter to ms
@@ -78,14 +78,14 @@ int  RTGS_mode_5(char *jobsListFileName, char *releaseTimeFilename)
 				{
 					// handling the released jobAttributesList by the book-keeper
 					int64_t start_t = RTGS_GetClockCounter();
-					processorsAvailable = Kernel_book_keeper(jobAttributesList, k1, processorsAvailable, present_time, &processorsAllocatedList, &jobSchdeuleQueueList);
+					processorsAvailable = Kernel_book_keeper(jobAttributesList, k1, processorsAvailable, present_time, &processorsAllocatedList, &jobScheduledQueueList);
 					int64_t end_t = RTGS_GetClockCounter();
 					int64_t freq = RTGS_GetClockFrequency();
 					float factor = 1000.0f / (float)freq; // to convert clock counter to ms
 					float SchedulerOverhead = (float)((end_t - start_t) * factor);
 					jobAttributesList[k1].schedule_overhead = SchedulerOverhead;
 					start_t = RTGS_GetClockCounter();
-					processorsAvailable = Kernel_book_keeper(jobAttributesList, k2, processorsAvailable, present_time, &processorsAllocatedList, &jobSchdeuleQueueList);
+					processorsAvailable = Kernel_book_keeper(jobAttributesList, k2, processorsAvailable, present_time, &processorsAllocatedList, &jobScheduledQueueList);
 					end_t = RTGS_GetClockCounter();
 					SchedulerOverhead = (float)((end_t - start_t) * factor);
 					jobAttributesList[k2].schedule_overhead = SchedulerOverhead;
@@ -94,14 +94,14 @@ int  RTGS_mode_5(char *jobsListFileName, char *releaseTimeFilename)
 				{
 					// handling the released jobAttributesList by the book-keeper
 					int64_t start_t = RTGS_GetClockCounter();
-					processorsAvailable = Kernel_book_keeper(jobAttributesList, k2, processorsAvailable, present_time, &processorsAllocatedList, &jobSchdeuleQueueList);
+					processorsAvailable = Kernel_book_keeper(jobAttributesList, k2, processorsAvailable, present_time, &processorsAllocatedList, &jobScheduledQueueList);
 					int64_t end_t = RTGS_GetClockCounter();
 					int64_t freq = RTGS_GetClockFrequency();
 					float factor = 1000.0f / (float)freq; // to convert clock counter to ms
 					float SchedulerOverhead = (float)((end_t - start_t) * factor);
 					jobAttributesList[k2].schedule_overhead = SchedulerOverhead;
 					start_t = RTGS_GetClockCounter();
-					processorsAvailable = Kernel_book_keeper(jobAttributesList, k1, processorsAvailable, present_time, &processorsAllocatedList, &jobSchdeuleQueueList);
+					processorsAvailable = Kernel_book_keeper(jobAttributesList, k1, processorsAvailable, present_time, &processorsAllocatedList, &jobScheduledQueueList);
 					end_t = RTGS_GetClockCounter();
 					SchedulerOverhead = (float)((end_t - start_t) * factor);
 					jobAttributesList[k1].schedule_overhead = SchedulerOverhead;
@@ -111,7 +111,7 @@ int  RTGS_mode_5(char *jobsListFileName, char *releaseTimeFilename)
 
 			numReleases++;
 			if (numReleases > maxReleases) {
-				printf("RTGS Mode 5 ERROR --  KERNEL Release Time exceded Max Releases\n");
+				printf("RTGS Mode 5 ERROR --  Job Release Time exceded Max Releases\n");
 				return RTGS_ERROR_INVALID_PARAMETERS;
 			}
 		}
