@@ -18,6 +18,7 @@ addons:
 branches:
   - master
   - develop
+  - develop-local
   - visual-profile
 
 before_script:
