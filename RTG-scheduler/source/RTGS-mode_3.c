@@ -18,27 +18,26 @@ static int Mode_3_ALAP
 	scheduledResourceNode **jobScheduledQueueList
 )
 {
-	int Pro = 0, job_release_time = 0, processor_release_time = 0, processors_allocated = 0;
-	genericBackupNode *P_Given_list = NULL;
+	int localProcessors = 0, job_release_time = 0, processor_release_time = 0, processors_allocated = 0;
+	genericBackupNode *processorsDistList = NULL;
 
 	processors_allocated = jobAttributesList[jobNumber].processor_req;
 	processor_release_time = jobAttributesList[jobNumber].deadline;
 	job_release_time = processor_release_time - jobAttributesList[jobNumber].execution_time;
-	Pro = processors_available;
+	localProcessors = processors_available;
 
-	P_Given_list = insert_ALAP_list(P_Given_list, job_release_time, processor_release_time, processors_available, jobNumber);
-	scheduledResourceNode* temp = *processorsAllocatedList;
+	processorsDistList = insert_ALAP_list(processorsDistList, job_release_time, processor_release_time, processors_available, jobNumber);
+	scheduledResourceNode* localProcessorsAllocatedList = *processorsAllocatedList;
 
-	while (temp != NULL)
+	while (localProcessorsAllocatedList != NULL)
 	{
-		if ((temp->processor_release_time + jobAttributesList[jobNumber].execution_time) > jobAttributesList[jobNumber].deadline)
+		if ((localProcessorsAllocatedList->processor_release_time + jobAttributesList[jobNumber].execution_time) > jobAttributesList[jobNumber].deadline)
 		{
 			int count = 0;
-			scheduledResourceNode*temp1 = *processorsAllocatedList;
-			genericBackupNode* temp2 = P_Given_list;
+			scheduledResourceNode *temp1 = *processorsAllocatedList;
+			genericBackupNode *temp2 = processorsDistList;
 			while (temp2 != NULL)
 			{
-
 				if (count == 0)
 					temp2 = temp2->next;
 
@@ -49,7 +48,7 @@ static int Mode_3_ALAP
 				}
 				count++;
 			}
-			P_Given_list = clean_list(P_Given_list);
+			processorsDistList = clean_list(processorsDistList);
 			jobAttributesList[jobNumber].schedule_hardware = 2;
 			jobAttributesList[jobNumber].rescheduled_execution = -1;
 			jobAttributesList[jobNumber].completion_time = -1;
@@ -60,16 +59,16 @@ static int Mode_3_ALAP
 				printf("Mode 3 ALAP: Job:%d Cannot be scheduled", jobNumber);
 				printf("Mode 3 ALAP: Jobs REJECTED count --> %d\n", GLOBAL_CPU_JOBS);
 			}
-			return processors_available;
+			break;
 		}
 		else
 		{
-			Pro = Pro + temp->processors_allocated;
+			localProcessors = localProcessors + localProcessorsAllocatedList->processors_allocated;
 
-			if (Pro >= jobAttributesList[jobNumber].processor_req)
+			if (localProcessors >= jobAttributesList[jobNumber].processor_req)
 			{
-				temp->job_release_time = job_release_time;
-				P_Given_list = clean_list(P_Given_list);
+				localProcessorsAllocatedList->job_release_time = job_release_time;
+				processorsDistList = clean_list(processorsDistList);
 
 				int processorsInUse = jobAttributesList[jobNumber].processor_req;
 				int schedule_method = RTGS_SCHEDULE_METHOD_ALAP;
@@ -86,39 +85,17 @@ static int Mode_3_ALAP
 				GLOBAL_ALAP_LIST = insert_ALAP_list(GLOBAL_ALAP_LIST, job_release_time, processor_release_time, processors_allocated, jobNumber);
 				job_queue_handler(processorsInUse, job_release_time, processor_release_time,
 					schedule_method, jobNumber, jobScheduledQueueList);
-				return processors_available;
+				break;
 			}
-			else if (Pro < jobAttributesList[jobNumber].processor_req)
+			else
 			{
+				processorsDistList = insert_ALAP_list(processorsDistList, job_release_time, processor_release_time, localProcessorsAllocatedList->processors_allocated, jobNumber);
+				localProcessorsAllocatedList->job_release_time = job_release_time;
+				localProcessorsAllocatedList = localProcessorsAllocatedList->next;
+			}
+		}
+	}
 
-				P_Given_list = insert_ALAP_list(P_Given_list, job_release_time, processor_release_time, temp->processors_allocated, jobNumber);
-				temp->job_release_time = job_release_time;
-				temp = temp->next;
-			}
-		}
-	}
-	if (temp == NULL && P_Given_list != NULL)
-	{
-		int count = 0;
-		scheduledResourceNode*temp1 = *processorsAllocatedList;
-		genericBackupNode* temp2 = P_Given_list;
-		while (temp2 != NULL)
-		{
-			if (count == 0) {
-				temp2 = temp2->next;
-			}
-			else {
-				temp1->job_release_time = 0;
-				temp1 = temp1->next;
-				temp2 = temp2->next;
-			}
-			count++;
-		}
-		P_Given_list = clean_list(P_Given_list);
-		if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-			printf("Mode 3 ALAP: Job:%d Cannot be scheduled AEAP --$$", jobNumber);
-		}
-	}
 	return processors_available;
 }
 
@@ -128,28 +105,28 @@ static int Mode_3_AEAP
 	int jobNumber,
 	int present_time,
 	int processors_available,
-	scheduledResourceNode ** processorsAllocatedList,
+	scheduledResourceNode **processorsAllocatedList,
 	scheduledResourceNode **jobScheduledQueueList
 )
 {
-	int Pro = 0, job_release_time = 0;
+	int localProcessors = 0, job_release_time = 0;
 	static int given = 0;
-	genericBackupNode *P_Given_list = NULL;
-	scheduledResourceNode* temp = *processorsAllocatedList;
+	genericBackupNode *processorsDistList = NULL;
+	scheduledResourceNode *localProcessorsAllocatedList = *processorsAllocatedList;
 
 	if (GLOBAL_ALAP_LIST == NULL)
 	{
-		Pro = processors_available;
-		P_Given_list = insert_node(P_Given_list, processors_available);
+		localProcessors = processors_available;
+		processorsDistList = insert_node(processorsDistList, processors_available);
 		processors_available = 0;
 
-		while (temp != NULL)
+		while (localProcessorsAllocatedList != NULL)
 		{
-			if ((temp->processor_release_time + jobAttributesList[jobNumber].execution_time) > jobAttributesList[jobNumber].deadline)
+			if ((localProcessorsAllocatedList->processor_release_time + jobAttributesList[jobNumber].execution_time) > jobAttributesList[jobNumber].deadline)
 			{
 				int count = 0;
-				scheduledResourceNode*temp1 = *processorsAllocatedList;
-				genericBackupNode* temp2 = P_Given_list;
+				scheduledResourceNode *temp1 = *processorsAllocatedList;
+				genericBackupNode *temp2 = processorsDistList;
 				while (temp2 != NULL)
 				{
 
@@ -164,7 +141,7 @@ static int Mode_3_AEAP
 					}
 					count++;
 				}
-				P_Given_list = clean_list(P_Given_list);
+				processorsDistList = clean_list(processorsDistList);
 
 				jobAttributesList[jobNumber].schedule_hardware = 2;
 				jobAttributesList[jobNumber].rescheduled_execution = -1;
@@ -179,12 +156,12 @@ static int Mode_3_AEAP
 			}
 			else
 			{
-				Pro = Pro + temp->processors_allocated;
-				if (Pro >= jobAttributesList[jobNumber].processor_req)
+				localProcessors = localProcessors + localProcessorsAllocatedList->processors_allocated;
+				if (localProcessors >= jobAttributesList[jobNumber].processor_req)
 				{
-					temp->processors_allocated = Pro - jobAttributesList[jobNumber].processor_req;
-					job_release_time = temp->processor_release_time;
-					P_Given_list = clean_list(P_Given_list);
+					localProcessorsAllocatedList->processors_allocated = localProcessors - jobAttributesList[jobNumber].processor_req;
+					job_release_time = localProcessorsAllocatedList->processor_release_time;
+					processorsDistList = clean_list(processorsDistList);
 
 					int processorsInUse = jobAttributesList[jobNumber].processor_req;
 					int processor_release_time = job_release_time + jobAttributesList[jobNumber].execution_time;
@@ -206,25 +183,25 @@ static int Mode_3_AEAP
 				}
 				else
 				{
-					P_Given_list = insert_node(P_Given_list, temp->processors_allocated);
-					temp->processors_allocated = 0;
-					temp = temp->next;
+					processorsDistList = insert_node(processorsDistList, localProcessorsAllocatedList->processors_allocated);
+					localProcessorsAllocatedList->processors_allocated = 0;
+					localProcessorsAllocatedList = localProcessorsAllocatedList->next;
 				}
 			}
 		}
 	}
 	else
 	{
-		Pro = processors_available;
-		P_Given_list = insert_node(P_Given_list, processors_available);
+		localProcessors = processors_available;
+		processorsDistList = insert_node(processorsDistList, processors_available);
 		processors_available = 0;
-		while (temp != NULL)
+		while (localProcessorsAllocatedList != NULL)
 		{
-			if ((temp->processor_release_time + jobAttributesList[jobNumber].execution_time) > jobAttributesList[jobNumber].deadline)
+			if ((localProcessorsAllocatedList->processor_release_time + jobAttributesList[jobNumber].execution_time) > jobAttributesList[jobNumber].deadline)
 			{
 				int count = 0;
 				scheduledResourceNode*temp1 = *processorsAllocatedList;
-				genericBackupNode* temp2 = P_Given_list;
+				genericBackupNode* temp2 = processorsDistList;
 				while (temp2 != NULL) {
 
 					if (count == 0) {
@@ -244,7 +221,7 @@ static int Mode_3_AEAP
 				jobAttributesList[jobNumber].completion_time = -1;
 				jobAttributesList[jobNumber].scheduled_execution = -1;
 				GLOBAL_CPU_JOBS++;
-				P_Given_list = clean_list(P_Given_list);
+				processorsDistList = clean_list(processorsDistList);
 				if (GLOBAL_RTGS_DEBUG_MSG > 1) {
 					printf("Mode 3 AEAP: The Job:%d Cannot be scheduled AEAP\n", jobNumber);
 					printf("Mode 3 AEAP: Jobs REJECTED count --> %d\n", GLOBAL_CPU_JOBS);
@@ -253,19 +230,19 @@ static int Mode_3_AEAP
 			}
 			else
 			{
-				Pro = Pro + temp->processors_allocated;
-				if (Pro >= jobAttributesList[jobNumber].processor_req)
+				localProcessors = localProcessors + localProcessorsAllocatedList->processors_allocated;
+				if (localProcessors >= jobAttributesList[jobNumber].processor_req)
 				{
-					job_release_time = temp->processor_release_time;
+					job_release_time = localProcessorsAllocatedList->processor_release_time;
 					int processorsInUse = jobAttributesList[jobNumber].processor_req;
 					int processor_release_time = job_release_time + jobAttributesList[jobNumber].execution_time;
 					int presentTime = present_time;
 					int schedule_method = RTGS_SCHEDULE_METHOD_AEAP;
-					int Pl = MAX_GPU_PROCESSOR - GLOBAL_ALAP_LIST->processors_allocated;
-					if ((jobAttributesList[jobNumber].processor_req + given) <= Pl)
+					int availAlapProcessors = MAX_GPU_PROCESSOR - GLOBAL_ALAP_LIST->processors_allocated;
+					if ((jobAttributesList[jobNumber].processor_req + given) <= availAlapProcessors)
 					{
-						temp->processors_allocated = Pro - jobAttributesList[jobNumber].processor_req;
-						P_Given_list = clean_list(P_Given_list);
+						localProcessorsAllocatedList->processors_allocated = localProcessors - jobAttributesList[jobNumber].processor_req;
+						processorsDistList = clean_list(processorsDistList);
 						given = jobAttributesList[jobNumber].processor_req;
 
 						jobAttributesList[jobNumber].schedule_hardware = 1;
@@ -285,8 +262,8 @@ static int Mode_3_AEAP
 					}
 					else if (processor_release_time <= GLOBAL_ALAP_LIST->data)
 					{
-						temp->processors_allocated = Pro - jobAttributesList[jobNumber].processor_req;
-						P_Given_list = clean_list(P_Given_list);
+						localProcessorsAllocatedList->processors_allocated = localProcessors - jobAttributesList[jobNumber].processor_req;
+						processorsDistList = clean_list(processorsDistList);
 
 						jobAttributesList[jobNumber].schedule_hardware = 1;
 						jobAttributesList[jobNumber].rescheduled_execution = -1;
@@ -319,19 +296,19 @@ static int Mode_3_AEAP
 				}
 				else
 				{
-					P_Given_list = insert_node(P_Given_list, temp->processors_allocated);
-					temp->processors_allocated = 0;
-					temp = temp->next;
+					processorsDistList = insert_node(processorsDistList, localProcessorsAllocatedList->processors_allocated);
+					localProcessorsAllocatedList->processors_allocated = 0;
+					localProcessorsAllocatedList = localProcessorsAllocatedList->next;
 				}
 			}
 		}
 	}
 
-	if (P_Given_list != NULL)
+	if (processorsDistList != NULL)
 	{
 		int count = 0;
 		scheduledResourceNode*temp1 = *processorsAllocatedList;
-		genericBackupNode* temp2 = P_Given_list;
+		genericBackupNode* temp2 = processorsDistList;
 		while (temp2 != NULL)
 		{
 			if (count == 0) {
@@ -345,7 +322,7 @@ static int Mode_3_AEAP
 			}
 			count++;
 		}
-		P_Given_list = clean_list(P_Given_list);
+		processorsDistList = clean_list(processorsDistList);
 		if (GLOBAL_RTGS_DEBUG_MSG > 1) {
 			printf("Mode 3 AEAP with ALAP:Backup processors reloaded\n");
 		}
@@ -371,7 +348,7 @@ static int Mode_3_Processors_Unavailable
 	{
 		processors_available = Mode_3_ALAP(jobAttributesList, jobNumber, present_time, processors_available, processorsAllocatedList, jobScheduledQueueList);
 	}
-	else if (jobAttributesList[jobNumber].processor_req >= PROCESSOR_LIMIT && GLOBAL_ALAP_LIST != NULL)
+	else
 	{
 		jobAttributesList[jobNumber].schedule_hardware = 2;
 		jobAttributesList[jobNumber].rescheduled_execution = -1;
@@ -399,7 +376,7 @@ static int Mode_3_book_keeper
 	int processorsInUse = 0, processor_release_time = 0;
 	int presentTime = present_time;
 	int schedule_method = RTGS_SCHEDULE_METHOD_NOT_DEFINED;
-	static int Flag_Processors = 0;
+	static int fillerProcessors = 0;
 	if (GLOBAL_RTGS_DEBUG_MSG > 1) {
 		printf("Mode-3 Book Keeper:: Job::%d --> processor_req:%d execution_time:%d, deadline:%d, latest_schedulable_time:%d\n",
 			jobNumber, jobAttributesList[jobNumber].processor_req, jobAttributesList[jobNumber].execution_time,
@@ -411,11 +388,9 @@ static int Mode_3_book_keeper
 	{
 		if (GLOBAL_ALAP_LIST == NULL)
 		{
-			Flag_Processors = 0;
-
+			fillerProcessors = 0;
 			if (jobAttributesList[jobNumber].execution_time + presentTime <= jobAttributesList[jobNumber].deadline)
 			{
-
 				processors_available = processors_available - jobAttributesList[jobNumber].processor_req;
 				processorsInUse = jobAttributesList[jobNumber].processor_req;
 				processor_release_time = jobAttributesList[jobNumber].execution_time + presentTime;
@@ -446,10 +421,10 @@ static int Mode_3_book_keeper
 		}
 		else
 		{
-			int Pl = MAX_GPU_PROCESSOR - GLOBAL_ALAP_LIST->processors_allocated;
-			if ((jobAttributesList[jobNumber].processor_req + Flag_Processors) <= Pl || (presentTime + jobAttributesList[jobNumber].execution_time) <= GLOBAL_ALAP_LIST->data)
+			int availAlapProcessors = MAX_GPU_PROCESSOR - GLOBAL_ALAP_LIST->processors_allocated;
+			if ((jobAttributesList[jobNumber].processor_req + fillerProcessors) <= availAlapProcessors || (presentTime + jobAttributesList[jobNumber].execution_time) <= GLOBAL_ALAP_LIST->data)
 			{
-				Flag_Processors = Flag_Processors + jobAttributesList[jobNumber].processor_req;
+				fillerProcessors = fillerProcessors + jobAttributesList[jobNumber].processor_req;
 				if (GLOBAL_RTGS_DEBUG_MSG > 1) {
 					printf("Mode-3 Book Keeper:: Job:%d SATISFIED CONDITION 1 or 2", jobNumber);
 				}
