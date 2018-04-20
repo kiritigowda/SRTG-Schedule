@@ -162,8 +162,7 @@ static int Mode_2_book_keeper
 			}
 		}
 	}
-	// If processors available is lesser than the required processors by the jobAttributesList
-	else if (jobAttributesList[jobNumber].processor_req > processors_available)
+	else
 	{
 		// Schedule the job to be released in a future time
 		processors_available = Mode_2_Processors_Unavailable(jobAttributesList, jobNumber,
@@ -274,7 +273,7 @@ int RTGS_mode_2(char *jobsListFileName, char *releaseTimeFilename)
 					jobAttributesList[k1].schedule_overhead = SchedulerOverhead;
 				}
 			}
-			else if (releaseTimeInfo[numReleases].num_job_released > 2) { printf("RTGS Mode 2 ERROR --  RTGS_ERROR_NOT_IMPLEMENTED\n"); return RTGS_ERROR_NOT_IMPLEMENTED; }
+			else { printf("RTGS Mode 2 ERROR --  RTGS_ERROR_NOT_IMPLEMENTED\n"); return RTGS_ERROR_NOT_IMPLEMENTED; }
 
 			numReleases++;
 			if (numReleases > maxReleases) {
