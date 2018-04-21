@@ -91,7 +91,7 @@ int Dispatch_queued_kernels
 								return RTGS_FAILURE;
 							}
 						}
-						processors_available = processors_available - t1->processors_allocated;
+						processors_available = processors_available - processorsAllocatedALAP;
 						queue_job_execution(processorsAllocatedALAP, t1->processor_release_time, present_time,
 							t1->schedule_method, t1->jobNumber, processorsAllocatedList);
 
@@ -134,7 +134,7 @@ int Dispatch_queued_kernels
 							return RTGS_FAILURE;
 						}
 					}
-					processors_available = processors_available - localJobScheduledQueueList->processors_allocated;
+					processors_available = processors_available - processorsAllocatedALAP;
 					queue_job_execution(processorsAllocatedALAP, localJobScheduledQueueList->processor_release_time, present_time,
 						localJobScheduledQueueList->schedule_method, localJobScheduledQueueList->jobNumber, processorsAllocatedList);
 
@@ -162,4 +162,3 @@ int Dispatch_queued_kernels
 	PROFILER_STOP(SRTG, Dispatch_queued_kernels)
 	return processors_available;
 }
-
