@@ -370,7 +370,6 @@ static int Mode_3_book_keeper
 	int processorsInUse = 0, processor_release_time = 0;
 	int presentTime = present_time;
 	int schedule_method = RTGS_SCHEDULE_METHOD_NOT_DEFINED;
-	static int fillerProcessors = 0;
 	if (GLOBAL_RTGS_DEBUG_MSG > 1) {
 		printf("Mode-3 Book Keeper:: Job::%d --> processor_req:%d execution_time:%d, deadline:%d, latest_schedulable_time:%d\n",
 			jobNumber, jobAttributesList[jobNumber].processor_req, jobAttributesList[jobNumber].execution_time,
@@ -382,7 +381,6 @@ static int Mode_3_book_keeper
 	{
 		if (GLOBAL_ALAP_LIST == NULL)
 		{
-			fillerProcessors = 0;
 			if (jobAttributesList[jobNumber].execution_time + presentTime <= jobAttributesList[jobNumber].deadline)
 			{
 				processors_available = processors_available - jobAttributesList[jobNumber].processor_req;
@@ -415,12 +413,11 @@ static int Mode_3_book_keeper
 		}
 		else
 		{
-			int availAlapProcessors = MAX_GPU_PROCESSOR - GLOBAL_ALAP_LIST->processors_allocated;
-			if ((jobAttributesList[jobNumber].processor_req + fillerProcessors) <= availAlapProcessors || (presentTime + jobAttributesList[jobNumber].execution_time) <= GLOBAL_ALAP_LIST->data)
+			int availAlapProcessors = processors_available - GLOBAL_ALAP_LIST->processors_allocated;
+			if (jobAttributesList[jobNumber].processor_req <= availAlapProcessors)
 			{
-				fillerProcessors = fillerProcessors + jobAttributesList[jobNumber].processor_req;
 				if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-					printf("Mode-3 Book Keeper:: Job:%d SATISFIED CONDITION 1 or 2", jobNumber);
+					printf("Mode-3 Book Keeper:: Job:%d SATISFIED CONDITION 1\n", jobNumber);
 				}
 				if (jobAttributesList[jobNumber].execution_time + presentTime <= jobAttributesList[jobNumber].deadline)
 				{
@@ -428,7 +425,43 @@ static int Mode_3_book_keeper
 					processors_available = processors_available - jobAttributesList[jobNumber].processor_req;
 					processorsInUse = jobAttributesList[jobNumber].processor_req;
 					processor_release_time = jobAttributesList[jobNumber].execution_time + presentTime;
-					schedule_method = 0;
+					schedule_method = RTGS_SCHEDULE_METHOD_IMMEDIATE;
+					queue_job_execution(processorsInUse, processor_release_time, presentTime, schedule_method, jobNumber, processorsAllocatedList);
+					// TBD:: Job call for the GPU to handle the given Jobs and number of blocks//
+					jobAttributesList[jobNumber].schedule_hardware = 1;
+					jobAttributesList[jobNumber].rescheduled_execution = -1;
+					jobAttributesList[jobNumber].scheduled_execution = presentTime;
+					jobAttributesList[jobNumber].completion_time = jobAttributesList[jobNumber].execution_time + presentTime;
+					GLOBAL_GPU_JOBS++;
+					if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+						printf("Mode-3 Book Keeper:: Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
+					}
+				}
+				else
+				{
+					jobAttributesList[jobNumber].schedule_hardware = 2;
+					jobAttributesList[jobNumber].rescheduled_execution = -1;
+					jobAttributesList[jobNumber].completion_time = -1;
+					jobAttributesList[jobNumber].scheduled_execution = -1;
+					GLOBAL_CPU_JOBS++;
+					if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+						printf("Mode-3 Book Keeper:: Job-%d will not complete before it's deadline, Job REJECTED\n", jobNumber);
+						printf("Mode-3 Book Keeper:: Jobs REJECTED count --> %d\n", GLOBAL_CPU_JOBS);
+					}
+				}
+			}
+			else if ((presentTime + jobAttributesList[jobNumber].execution_time) <= GLOBAL_ALAP_LIST->data)
+			{
+				if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+					printf("Mode-3 Book Keeper:: Job:%d SATISFIED CONDITION 2\n", jobNumber);
+				}
+				if (jobAttributesList[jobNumber].execution_time + presentTime <= jobAttributesList[jobNumber].deadline)
+				{
+
+					processors_available = processors_available - jobAttributesList[jobNumber].processor_req;
+					processorsInUse = jobAttributesList[jobNumber].processor_req;
+					processor_release_time = jobAttributesList[jobNumber].execution_time + presentTime;
+					schedule_method = RTGS_SCHEDULE_METHOD_IMMEDIATE;
 					queue_job_execution(processorsInUse, processor_release_time, presentTime, schedule_method, jobNumber, processorsAllocatedList);
 					// TBD:: Job call for the GPU to handle the given Jobs and number of blocks//
 					jobAttributesList[jobNumber].schedule_hardware = 1;
@@ -611,11 +644,10 @@ int RTGS_mode_3(char *jobsListFileName, char *releaseTimeFilename)
 		kernelMax = 0; maxReleases = 0; jobNumber = 0; GLOBAL_GPU_JOBS = 0; GLOBAL_CPU_JOBS = 0;
 	}
 
-	if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-		print(processorsAllocatedList);
+	if (processorsAllocatedList || GLOBAL_ALAP_LIST) {
+		printf("\nERROR -- processorsAllocatedList/GLOBAL_ALAP_LIST Failed\n");
+		return RTGS_FAILURE;
 	}
-	processorsAllocatedList = clean_node(processorsAllocatedList);
-	GLOBAL_ALAP_LIST = clean_list(GLOBAL_ALAP_LIST);
 
 	return RTGS_SUCCESS;
 }

@@ -42,25 +42,20 @@ void job_queue_handler
 {
 	PROFILER_START(SRTG, job_queue_handler)
 	// TBD:: Sending Data and Jobs
-	if (schedule_method == RTGS_SCHEDULE_METHOD_ALAP)
-	{
+	if (schedule_method == RTGS_SCHEDULE_METHOD_ALAP){
 		*jobScheduledQueueList = ascending_insert(*jobScheduledQueueList, job_release_time, processor_release_time,
 			processorReleased, jobNumber, schedule_method);
-		if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-			Kernel_queue_print(*jobScheduledQueueList);
-		}
 	}
-	else if (schedule_method == RTGS_SCHEDULE_METHOD_AEAP)
-	{
+	else if (schedule_method == RTGS_SCHEDULE_METHOD_AEAP) {
 		*jobScheduledQueueList = ascending_insert(*jobScheduledQueueList, job_release_time, job_release_time,
 			processorReleased, jobNumber, schedule_method);
-		if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-			Kernel_queue_print(*jobScheduledQueueList);
-		}
 	}
-	else
-	{
+	else {
 		printf("job_queue_handler ERROR NOT IMPLEMENTED");
+	}
+
+	if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+		Kernel_queue_print(*jobScheduledQueueList);
 	}
 	PROFILER_STOP(SRTG, job_queue_handler)
 	return;

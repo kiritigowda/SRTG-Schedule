@@ -204,10 +204,10 @@ int RTGS_mode_1(char *jobsListFileName, char *releaseTimeFilename)
 		kernelMax = 0; maxReleases = 0; jobNumber = 0; GLOBAL_GPU_JOBS = 0; GLOBAL_CPU_JOBS = 0;
 	}
 
-	if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-		print(processorsAllocatedList);
+	if (processorsAllocatedList) {
+		printf("\nERROR -- processorsAllocatedList Failed\n");
+		return RTGS_FAILURE;
 	}
-	processorsAllocatedList = clean_node(processorsAllocatedList);
 
 	return RTGS_SUCCESS;
 }
