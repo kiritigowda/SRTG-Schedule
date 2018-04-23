@@ -111,11 +111,9 @@ static int Mode_3_AEAP
 {
 	int localProcessors = 0, job_release_time = 0;
 	genericBackupNode *processorsDistList = NULL;
-	static int fillerProcessors = 0;
 
 	if (GLOBAL_ALAP_LIST == NULL)
 	{
-		fillerProcessors = 0;
 		scheduledResourceNode *localProcessorsAllocatedList = *processorsAllocatedList;
 		localProcessors = processors_available;
 		processorsDistList = insert_node(processorsDistList, processors_available);
@@ -238,13 +236,12 @@ static int Mode_3_AEAP
 					int processor_release_time = job_release_time + jobAttributesList[jobNumber].execution_time;
 					int presentTime = present_time;
 					int schedule_method = RTGS_SCHEDULE_METHOD_AEAP;
-					int availAlapProcessors = MAX_GPU_PROCESSOR - GLOBAL_ALAP_LIST->processors_allocated;
-					// condition 1 - processors required is lesser than Job scheduled under ALAP
-					if ((jobAttributesList[jobNumber].processor_req + fillerProcessors) <= availAlapProcessors)
+					int availAlapProcessors = localProcessors - GLOBAL_ALAP_LIST->processors_allocated;
+					// condition 1
+					if (jobAttributesList[jobNumber].processor_req <= availAlapProcessors)
 					{
 						localProcessorsAllocatedList->processors_allocated = localProcessors - jobAttributesList[jobNumber].processor_req;
 						processorsDistList = clean_list(processorsDistList);
-						fillerProcessors = fillerProcessors + jobAttributesList[jobNumber].processor_req;
 
 						jobAttributesList[jobNumber].schedule_hardware = 1;
 						jobAttributesList[jobNumber].rescheduled_execution = -1;
@@ -261,7 +258,7 @@ static int Mode_3_AEAP
 							schedule_method, jobNumber, jobScheduledQueueList);
 						break;
 					}
-					// condition 2 - processors will be released before ALAP job is scheduled for Execution
+					// condition 2
 					else if (processor_release_time <= GLOBAL_ALAP_LIST->data)
 					{
 						localProcessorsAllocatedList->processors_allocated = localProcessors - jobAttributesList[jobNumber].processor_req;
@@ -414,6 +411,7 @@ static int Mode_3_book_keeper
 		else
 		{
 			int availAlapProcessors = processors_available - GLOBAL_ALAP_LIST->processors_allocated;
+			// condition 1
 			if (jobAttributesList[jobNumber].processor_req <= availAlapProcessors)
 			{
 				if (GLOBAL_RTGS_DEBUG_MSG > 1) {
@@ -450,6 +448,7 @@ static int Mode_3_book_keeper
 					}
 				}
 			}
+			// condition 2
 			else if ((presentTime + jobAttributesList[jobNumber].execution_time) <= GLOBAL_ALAP_LIST->data)
 			{
 				if (GLOBAL_RTGS_DEBUG_MSG > 1) {
