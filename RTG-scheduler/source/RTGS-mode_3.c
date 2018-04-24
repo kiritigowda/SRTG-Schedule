@@ -183,9 +183,9 @@ static int Mode_3_AEAP
 				{
 					processorsDistList = insert_node(processorsDistList, localProcessorsAllocatedList->processors_allocated);
 					localProcessorsAllocatedList->processors_allocated = 0;
-					localProcessorsAllocatedList = localProcessorsAllocatedList->next;
 				}
 			}
+			localProcessorsAllocatedList = localProcessorsAllocatedList->next;
 		}
 	}
 	else
@@ -236,7 +236,7 @@ static int Mode_3_AEAP
 					int processor_release_time = job_release_time + jobAttributesList[jobNumber].execution_time;
 					int presentTime = present_time;
 					int schedule_method = RTGS_SCHEDULE_METHOD_AEAP;
-					int availAlapProcessors = localProcessors - GLOBAL_ALAP_LIST->processors_allocated;
+					int availAlapProcessors = localProcessors - jobAttributesList[GLOBAL_ALAP_LIST->jobNumber].processor_req;
 					// condition 1
 					if (jobAttributesList[jobNumber].processor_req <= availAlapProcessors)
 					{
@@ -410,7 +410,7 @@ static int Mode_3_book_keeper
 		}
 		else
 		{
-			int availAlapProcessors = processors_available - GLOBAL_ALAP_LIST->processors_allocated;
+			int availAlapProcessors = processors_available - jobAttributesList[GLOBAL_ALAP_LIST->jobNumber].processor_req;
 			// condition 1
 			if (jobAttributesList[jobNumber].processor_req <= availAlapProcessors)
 			{
