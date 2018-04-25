@@ -883,7 +883,6 @@ static int Mode_4_AEAP
 					// condition 2
 					else if (localProcessorsAllocatedList->processor_release_time + jobAttributesList[jobNumber].execution_time <= GLOBAL_ALAP_LIST->data)
 					{
-						printf("Mode 4 AEAP: Condition-2 localPro:%d ProAvail:%d\n", localProcessors,processors_available);
 						localProcessorsAllocatedList->processors_allocated = localProcessors - jobAttributesList[jobNumber].processor_req;
 						processorsDistList = clean_list(processorsDistList);
 
