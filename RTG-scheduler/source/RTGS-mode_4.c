@@ -466,8 +466,8 @@ static int Mode_4_AEAP_advanced
 						jobAttributesList[jobNumber].completion_time = jobAttributesList[jobNumber].execution_time + job_release_time;
 						GLOBAL_GPU_JOBS++;
 						if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-							printf("Mode 3 AEAP: The Job:%d scheduled\n", jobNumber);
-							printf("Mode 3 AEAP: Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
+							printf("Mode 4 AEAP Advanced: The Job:%d scheduled\n", jobNumber);
+							printf("Mode 4 AEAP Advanced: Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
 						}
 						queue_job_execution(processorsInUse, processor_release_time, presentTime, schedule_method, jobNumber, processorsAllocatedList);
 						job_queue_handler(processorsInUse, job_release_time, presentTime, schedule_method, jobNumber, jobScheduledQueueList);
