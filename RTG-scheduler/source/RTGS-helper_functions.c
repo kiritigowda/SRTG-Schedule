@@ -774,8 +774,9 @@ void print(scheduledResourceNode* head)
 		}
 		else {
 			scheduledResourceNode* temp1 = temp->job_next;
+			printf("	Job-MJ	-- Completion Time:%d,	Processors Retrived:%d\n", temp->data, temp->processors_allocated);
 			while (temp1 != NULL) {
-				printf("	Job-%d	-- Completion Time:%d,	Processors Retrived:%d\n", temp1->jobNumber, temp1->data, temp1->processors_allocated);
+				printf("	      	   Job-%d	-- Schdeuled for Completion\n", temp1->jobNumber);
 				temp1 = temp1->job_next;
 			}
 		}

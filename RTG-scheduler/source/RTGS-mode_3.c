@@ -110,14 +110,14 @@ static int Mode_3_AEAP
 {
 	int localProcessors = 0, job_release_time = 0;
 	genericBackupNode *processorsDistList = NULL;
+	scheduledResourceNode *localProcessorsAllocatedList = *processorsAllocatedList;
+
+	localProcessors = processors_available;
+	processorsDistList = insert_node(processorsDistList, processors_available);
+	processors_available = 0;
 
 	if (GLOBAL_ALAP_LIST == NULL)
 	{
-		scheduledResourceNode *localProcessorsAllocatedList = *processorsAllocatedList;
-		localProcessors = processors_available;
-		processorsDistList = insert_node(processorsDistList, processors_available);
-		processors_available = 0;
-
 		while (localProcessorsAllocatedList != NULL)
 		{
 			if ((localProcessorsAllocatedList->processor_release_time + jobAttributesList[jobNumber].execution_time) > jobAttributesList[jobNumber].deadline)
@@ -189,10 +189,6 @@ static int Mode_3_AEAP
 	}
 	else
 	{
-		scheduledResourceNode *localProcessorsAllocatedList = *processorsAllocatedList;
-		localProcessors = processors_available;
-		processorsDistList = insert_node(processorsDistList, processors_available);
-		processors_available = 0;
 		while (localProcessorsAllocatedList != NULL)
 		{
 			if ((localProcessorsAllocatedList->processor_release_time + jobAttributesList[jobNumber].execution_time) > jobAttributesList[jobNumber].deadline)
