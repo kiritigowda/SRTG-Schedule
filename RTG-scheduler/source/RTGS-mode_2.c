@@ -94,7 +94,6 @@ static int Mode_2_AEAP
 		}
 		localProcessorsAllocatedList = localProcessorsAllocatedList->next;
 	}
-
 	return processors_available;
 }
 
@@ -166,10 +165,8 @@ static int Mode_2_book_keeper
 	{
 		// Schedule the job to be released in a future time
 		processors_available = Mode_2_Processors_Unavailable(jobAttributesList, jobNumber,
-			present_time, processors_available,
-			processorsAllocatedList, jobScheduledQueueList);
+			present_time, processors_available, processorsAllocatedList, jobScheduledQueueList);
 	}
-
 	return processors_available;
 }
 
@@ -312,6 +309,5 @@ int RTGS_mode_2(char *jobsListFileName, char *releaseTimeFilename)
 		printf("\nERROR -- processorsAllocatedList Failed\n");
 		return RTGS_FAILURE;
 	}
-
 	return RTGS_SUCCESS;
 }

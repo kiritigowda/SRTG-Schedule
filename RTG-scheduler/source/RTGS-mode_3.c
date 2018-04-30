@@ -14,7 +14,7 @@ static int Mode_3_ALAP
 	int jobNumber,
 	int present_time,
 	int processors_available,
-	scheduledResourceNode ** processorsAllocatedList,
+	scheduledResourceNode **processorsAllocatedList,
 	scheduledResourceNode **jobScheduledQueueList
 )
 {
@@ -95,7 +95,6 @@ static int Mode_3_ALAP
 			}
 		}
 	}
-
 	return processors_available;
 }
 
@@ -328,7 +327,7 @@ static int Mode_3_Processors_Unavailable
 	int jobNumber,
 	int present_time,
 	int processors_available,
-	scheduledResourceNode ** processorsAllocatedList,
+	scheduledResourceNode **processorsAllocatedList,
 	scheduledResourceNode **jobScheduledQueueList
 )
 {

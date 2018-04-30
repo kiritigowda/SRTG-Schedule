@@ -137,7 +137,7 @@ struct jobBackupList {
 	int data;
 	int processor_release_time;
 	int processors_allocated;
-	struct jobBackupList* next;
+	struct jobBackupList *next;
 };
 //! \brief backup job scheduled info
 typedef struct jobBackupList genericBackupNode;
@@ -172,12 +172,11 @@ int get_job_information(jobAttributes *jobAttributesList, const char *jobsListFi
 int get_job_release_times(jobReleaseInfo *releaseTimeInfo, const char *releaseTimeFilename);
 
 //! \brief function to retrieve processors from kernels which complete thier execution
-int Retrieve_processors(int present_time, int processors_available,
-	scheduledResourceNode** processorsAllocatedList);
+int Retrieve_processors(int present_time, int processors_available, scheduledResourceNode **processorsAllocatedList);
 
 //! \brief function to release kernels for exection at the scheduled time
 int Dispatch_queued_kernels(int present_time, int processors_available,
-	scheduledResourceNode** jobScheduledQueueList, scheduledResourceNode **processorsAllocatedList);
+	scheduledResourceNode **jobScheduledQueueList, scheduledResourceNode **processorsAllocatedList);
 
 //! \brief Function to add future jobAttibutesList releases and arrange jobAttibutesList execution times in ascending order
 void queue_job_execution(int processorReleased, int processorReleaseTime, int presentTime,
@@ -189,7 +188,7 @@ int Kernel_book_keeper(jobAttributes* jobAttibutesList, int jobNumber, int proce
 
 //! \brief Function to
 int Processors_unavailable(jobAttributes *jobAttibutesList, int jobNumber, int present_time, int processors_available,
-	scheduledResourceNode ** processorsAllocatedList, scheduledResourceNode **jobScheduledQueueList);
+	scheduledResourceNode **processorsAllocatedList, scheduledResourceNode **jobScheduledQueueList);
 
 //! \brief Function to
 void job_queue_handler(int processorReleased, int job_release_time, int processor_release_time,
@@ -201,23 +200,23 @@ int AEAP(jobAttributes *jobAttibutesList, int jobNumber, int present_time, int p
 
 //! \brief Function to
 int AEAP_ALAP_improve(jobAttributes *jobAttibutesList, int job_release_time, int present_time, int processors_available,
-	scheduledResourceNode ** processorsAllocatedList, scheduledResourceNode **jobScheduledQueueList);
+	scheduledResourceNode **processorsAllocatedList, scheduledResourceNode **jobScheduledQueueList);
 
 //! \brief Function to
 int AEAP_advanced(jobAttributes *jobAttibutesList, int jobNumber, int present_time, int processors_available,
-	scheduledResourceNode ** processorsAllocatedList, scheduledResourceNode **jobScheduledQueueList);
+	scheduledResourceNode **processorsAllocatedList, scheduledResourceNode **jobScheduledQueueList);
 
 //! \brief Function to
 int ALAP(jobAttributes *jobAttibutesList, int jobNumber, int present_time, int processors_available,
-	scheduledResourceNode ** processorsAllocatedList, scheduledResourceNode **jobScheduledQueueList);
+	scheduledResourceNode **processorsAllocatedList, scheduledResourceNode **jobScheduledQueueList);
 
 //! \brief Function to
 int ALAP_advanced(jobAttributes *jobAttibutesList, int jobNumber, int present_time, int processors_available,
-	scheduledResourceNode ** processorsAllocatedList, scheduledResourceNode **jobScheduledQueueList);
+	scheduledResourceNode **processorsAllocatedList, scheduledResourceNode **jobScheduledQueueList);
 
 //! \brief Function to
 int ALAP_improve(jobAttributes *jobAttibutesList, int jobNumber, int present_time, int processors_available,
-	scheduledResourceNode ** processorsAllocatedList, scheduledResourceNode **jobScheduledQueueList);
+	scheduledResourceNode **processorsAllocatedList, scheduledResourceNode **jobScheduledQueueList);
 
 /***************************************************************
 					helper functions
@@ -229,27 +228,27 @@ int64_t RTGS_GetClockCounter();
 int64_t RTGS_GetClockFrequency();
 
 //! \brief Get ENV Variable
-bool RTGS_GetEnvironmentVariable(const char * name, char * value, size_t valueSize);
+bool RTGS_GetEnvironmentVariable(const char *name, char *value, size_t valueSize);
 
 //! \brief print summary
 int RTGS_PrintScheduleSummary(int mode, int maxKernels, jobAttributes *jobAttributesList);
 
 // jobBackupList functions
-scheduledResourceNode* insert(scheduledResourceNode* head, scheduledResourceNode* data);
-scheduledResourceNode* ascending_insert(scheduledResourceNode* head, int data, int processor_release_time,
+scheduledResourceNode* insert(scheduledResourceNode *head, scheduledResourceNode *data);
+scheduledResourceNode* ascending_insert(scheduledResourceNode *head, int data, int processor_release_time,
 	int processorReleased, int jobNumber, int schedule_method);
-scheduledResourceNode* position_insert(scheduledResourceNode* head, scheduledResourceNode* data, int position);
-scheduledResourceNode* position_delete(scheduledResourceNode* head, int position);
-scheduledResourceNode* reverse(scheduledResourceNode* head);
-scheduledResourceNode* remove_recurring_node(scheduledResourceNode* head);
-scheduledResourceNode* clean_node(scheduledResourceNode* head);
-genericBackupNode* insert_node(genericBackupNode* head, int data);
-genericBackupNode* clean_list(genericBackupNode* head);
-genericBackupNode* position_delete_list(genericBackupNode* head);
-genericBackupNode* insert_ALAP_list(genericBackupNode* head, int job_release_time,
+scheduledResourceNode* position_insert(scheduledResourceNode *head, scheduledResourceNode *data, int position);
+scheduledResourceNode* position_delete(scheduledResourceNode *head, int position);
+scheduledResourceNode* reverse(scheduledResourceNode *head);
+scheduledResourceNode* remove_recurring_node(scheduledResourceNode *head);
+scheduledResourceNode* clean_node(scheduledResourceNode *head);
+genericBackupNode* insert_node(genericBackupNode *head, int data);
+genericBackupNode* clean_list(genericBackupNode *head);
+genericBackupNode* position_delete_list(genericBackupNode *head);
+genericBackupNode* insert_ALAP_list(genericBackupNode *head, int job_release_time,
 	int processor_release_time, int processors_allocated, int jobNumber);
-void print(scheduledResourceNode* head);
-void Kernel_queue_print(scheduledResourceNode* head);
-void R_print(scheduledResourceNode* head);
+void print(scheduledResourceNode *head);
+void Kernel_queue_print(scheduledResourceNode *head);
+void R_print(scheduledResourceNode *head);
 
 #endif /* RTGS_H */
