@@ -17,7 +17,7 @@ static int Mode_4_ALAP_advanced
 )
 {
 	if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-		printf("Mode 4 ALAP advanced: Job:%d is verified for AEAP advanced scheduling\n", jobNumber);
+		printf("Mode 4 ALAP advanced: Job:%d is verified for ALAP advanced scheduling\n", jobNumber);
 	}
 
 	int localProcessors = 0, job_release_time = 0, processor_release_time = 0, processorsInUse = 0;
@@ -115,7 +115,7 @@ static int Mode_4_ALAP_advanced
 				else
 				{
 					localProcessors = localProcessors + localProcessorsAllocatedList->processors_allocated;
-					if (localProcessorsAllocatedList->next) { localProcessors = MAX_GPU_PROCESSOR; }
+					if (localProcessorsAllocatedList->next == NULL) { localProcessors = MAX_GPU_PROCESSOR; }
 
 					if (localProcessors >= jobAttributesList[jobNumber].processor_req)
 					{
