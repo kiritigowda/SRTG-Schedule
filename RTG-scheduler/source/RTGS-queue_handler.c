@@ -46,12 +46,16 @@ void job_queue_handler
 		*jobScheduledQueueList = ascending_insert(*jobScheduledQueueList, job_release_time, processor_release_time,
 			processorReleased, jobNumber, schedule_method);
 	}
+	else if (schedule_method == RTGS_SCHEDULE_METHOD_AEAP_ADVANCED) {
+		*jobScheduledQueueList = ascending_insert(*jobScheduledQueueList, job_release_time, processor_release_time,
+			processorReleased, jobNumber, schedule_method);
+	}
 	else if (schedule_method == RTGS_SCHEDULE_METHOD_AEAP) {
 		*jobScheduledQueueList = ascending_insert(*jobScheduledQueueList, job_release_time, job_release_time,
 			processorReleased, jobNumber, schedule_method);
 	}
 	else {
-		printf("job_queue_handler ERROR NOT IMPLEMENTED");
+		printf("job_queue_handler ERROR NOT IMPLEMENTED\n");
 	}
 
 	if (GLOBAL_RTGS_DEBUG_MSG > 1) {

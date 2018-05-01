@@ -127,8 +127,8 @@ struct jobScheduleList {
 	int processors_allocated;
 	int schedule_method;
 	int data;
-	struct jobScheduleList* next;
-	struct jobScheduleList* job_next;
+	struct jobScheduleList *next;
+	struct jobScheduleList *job_next;
 };
 //! \brief Job scheduled info
 typedef struct jobScheduleList scheduledResourceNode;
@@ -148,7 +148,8 @@ typedef struct jobBackupList genericBackupNode;
 int GLOBAL_GPU_JOBS;
 int GLOBAL_CPU_JOBS;
 int GLOBAL_RELEASE_TIME[MAX_RUN_TIME];
-genericBackupNode* GLOBAL_ALAP_LIST;
+genericBackupNode *GLOBAL_ALAP_LIST;
+genericBackupNode *GLOBAL_AEAP_ADVANCED_LIST;
 
 // debug message setup variable
 int GLOBAL_RTGS_DEBUG_MSG;  // debug mode information: 0 - TurnOff, 1 - Basic Debug Info, 2 - Detailed Debug Info, 3 - extended Debug Information
@@ -198,7 +199,7 @@ void job_queue_handler(int processorReleased, int job_release_time, int processo
 
 //! \brief Function to
 int AEAP(jobAttributes *jobAttibutesList, int jobNumber, int present_time, int processors_available,
-	scheduledResourceNode ** processorsAllocatedList, scheduledResourceNode **jobScheduledQueueList);
+	scheduledResourceNode **processorsAllocatedList, scheduledResourceNode **jobScheduledQueueList);
 
 //! \brief Function to
 int AEAP_ALAP_improve(jobAttributes *jobAttibutesList, int job_release_time, int present_time, int processors_available,
@@ -236,18 +237,18 @@ bool RTGS_GetEnvironmentVariable(const char *name, char *value, size_t valueSize
 int RTGS_PrintScheduleSummary(int mode, int maxKernels, jobAttributes *jobAttributesList);
 
 // jobBackupList functions
-scheduledResourceNode* insert(scheduledResourceNode *head, scheduledResourceNode *data);
-scheduledResourceNode* ascending_insert(scheduledResourceNode *head, int data, int processor_release_time,
+scheduledResourceNode *insert(scheduledResourceNode *head, scheduledResourceNode *data);
+scheduledResourceNode *ascending_insert(scheduledResourceNode *head, int data, int processor_release_time,
 	int processorReleased, int jobNumber, int schedule_method);
-scheduledResourceNode* position_insert(scheduledResourceNode *head, scheduledResourceNode *data, int position);
-scheduledResourceNode* position_delete(scheduledResourceNode *head, int position);
-scheduledResourceNode* reverse(scheduledResourceNode *head);
-scheduledResourceNode* remove_recurring_node(scheduledResourceNode *head);
-scheduledResourceNode* clean_node(scheduledResourceNode *head);
-genericBackupNode* insert_node(genericBackupNode *head, int data);
-genericBackupNode* clean_list(genericBackupNode *head);
-genericBackupNode* position_delete_list(genericBackupNode *head);
-genericBackupNode* insert_ALAP_list(genericBackupNode *head, int job_release_time,
+scheduledResourceNode *position_insert(scheduledResourceNode *head, scheduledResourceNode *data, int position);
+scheduledResourceNode *position_delete(scheduledResourceNode *head, int position);
+scheduledResourceNode *reverse(scheduledResourceNode *head);
+scheduledResourceNode *remove_recurring_node(scheduledResourceNode *head);
+scheduledResourceNode *clean_node(scheduledResourceNode *head);
+genericBackupNode *insert_node(genericBackupNode *head, int data);
+genericBackupNode *clean_list(genericBackupNode *head);
+genericBackupNode *position_delete_list(genericBackupNode *head);
+genericBackupNode *insert_ALAP_list(genericBackupNode *head, int job_release_time,
 	int processor_release_time, int processors_allocated, int jobNumber);
 void print(scheduledResourceNode *head);
 void Kernel_queue_print(scheduledResourceNode *head);
