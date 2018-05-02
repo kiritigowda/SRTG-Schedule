@@ -22,7 +22,7 @@ int AEAP
 	genericBackupNode *P_Given_list_t = NULL;
 	scheduledResourceNode* temp = *processorsAllocatedList;
 
-	if (GLOBAL_ALAP_LIST == NULL)
+	if (GLOBAL_preScheduleList == NULL)
 	{
 		Pro = processors_available;
 		P_Given_list = insert_node(P_Given_list, processors_available);
@@ -99,8 +99,8 @@ int AEAP
 				}
 			}
 		}
-	} //End of GLOBAL_ALAP_LIST == NULL
-	else if (GLOBAL_ALAP_LIST != NULL)
+	} //End of GLOBAL_preScheduleList == NULL
+	else if (GLOBAL_preScheduleList != NULL)
 	{
 		Pro = processors_available;
 		P_Given_list = insert_node(P_Given_list, processors_available);
@@ -149,8 +149,8 @@ int AEAP
 					int processor_release_time = job_release_time + jobAttributesList[jobNumber].execution_time;
 					int presentTime = present_time;
 					int schedule_method = RTGS_SCHEDULE_METHOD_AEAP;
-					int Pl = MAX_GPU_PROCESSOR - jobAttributesList[GLOBAL_ALAP_LIST->jobNumber].processor_req;
-					if (processor_release_time <= GLOBAL_ALAP_LIST->data)
+					int Pl = MAX_GPU_PROCESSOR - jobAttributesList[GLOBAL_preScheduleList->jobNumber].processor_req;
+					if (processor_release_time <= GLOBAL_preScheduleList->data)
 					{
 						temp->processors_allocated = Pro - jobAttributesList[jobNumber].processor_req;
 						P_Given_list = clean_list(P_Given_list);
@@ -171,9 +171,9 @@ int AEAP
 						PROFILER_STOP(SRTG, AEAP)
 						return processors_available;
 					}
-					else if (jobAttributesList[jobNumber].processor_req > Pl && processor_release_time > GLOBAL_ALAP_LIST->data)
+					else if (jobAttributesList[jobNumber].processor_req > Pl && processor_release_time > GLOBAL_preScheduleList->data)
 					{
-						if (Pro >= jobAttributesList[GLOBAL_ALAP_LIST->jobNumber].processor_req && job_release_time < GLOBAL_ALAP_LIST->data)
+						if (Pro >= jobAttributesList[GLOBAL_preScheduleList->jobNumber].processor_req && job_release_time < GLOBAL_preScheduleList->data)
 						{
 							//Improve ALAP release time
 							processors_available = AEAP_ALAP_improve(jobAttributesList, job_release_time, present_time,
@@ -358,7 +358,7 @@ int AEAP
 				}
 			} //End of else
 		} //End of while
-	} //End of GLOBAL_ALAP_LIST != NULL
+	} //End of GLOBAL_preScheduleList != NULL
 	if (P_Given_list != NULL)
 	{
 		int count = 0;

@@ -77,11 +77,11 @@ int Dispatch_queued_kernels
 					if (t1->schedule_method == RTGS_SCHEDULE_METHOD_ALAP) 
 					{
 						int processorsAllocatedALAP = 0;
-						if (GLOBAL_ALAP_LIST != NULL) {
-							genericBackupNode* localListALAP = GLOBAL_ALAP_LIST;
+						if (GLOBAL_preScheduleList != NULL) {
+							genericBackupNode* localListALAP = GLOBAL_preScheduleList;
 							if (localListALAP->data == present_time) {
 								processorsAllocatedALAP = localListALAP->processors_allocated;
-								GLOBAL_ALAP_LIST = position_delete_list(GLOBAL_ALAP_LIST);
+								GLOBAL_preScheduleList = position_delete_list(GLOBAL_preScheduleList);
 							}
 							else {
 								printf("Dispatch Queued Jobs -- ERROR At TIME: %d while dispatching Job-%d\n", present_time, t1->jobNumber);
@@ -104,11 +104,11 @@ int Dispatch_queued_kernels
 					else if (t1->schedule_method == RTGS_SCHEDULE_METHOD_AEAP_ADVANCED)
 					{
 						int processorsAllocatedAEAP_ADV = 0;
-						if (GLOBAL_AEAP_ADVANCED_LIST != NULL) {
-							genericBackupNode* localListAEAP_ADV = GLOBAL_AEAP_ADVANCED_LIST;
+						if (GLOBAL_preScheduleList != NULL) {
+							genericBackupNode* localListAEAP_ADV = GLOBAL_preScheduleList;
 							if (localListAEAP_ADV->data == present_time) {
 								processorsAllocatedAEAP_ADV = localListAEAP_ADV->processors_allocated;
-								GLOBAL_AEAP_ADVANCED_LIST = position_delete_list(GLOBAL_AEAP_ADVANCED_LIST);
+								GLOBAL_preScheduleList = position_delete_list(GLOBAL_preScheduleList);
 							}
 							else{
 								printf("Dispatch Queued Jobs -- ERROR At TIME: %d while dispatching Job-%d\n", present_time, t1->jobNumber);
@@ -148,11 +148,11 @@ int Dispatch_queued_kernels
 				if (localJobScheduledQueueList->schedule_method == RTGS_SCHEDULE_METHOD_ALAP)
 				{
 					int processorsAllocatedALAP = 0;
-					if (GLOBAL_ALAP_LIST != NULL) {
-						genericBackupNode* localListALAP = GLOBAL_ALAP_LIST;
+					if (GLOBAL_preScheduleList != NULL) {
+						genericBackupNode* localListALAP = GLOBAL_preScheduleList;
 						if (localListALAP->data == present_time) {
 							processorsAllocatedALAP = localListALAP->processors_allocated;
-							GLOBAL_ALAP_LIST = position_delete_list(GLOBAL_ALAP_LIST);
+							GLOBAL_preScheduleList = position_delete_list(GLOBAL_preScheduleList);
 						}
 						else {
 							printf("Dispatch Queued Jobs -- ERROR At TIME:%d Dispatch Job-%d \n", present_time, localJobScheduledQueueList->jobNumber);
@@ -175,11 +175,11 @@ int Dispatch_queued_kernels
 				else if (localJobScheduledQueueList->schedule_method == RTGS_SCHEDULE_METHOD_AEAP_ADVANCED)
 				{
 					int processorsAllocatedAEAP_ADV = 0;
-					if (GLOBAL_AEAP_ADVANCED_LIST != NULL) {
-						genericBackupNode* localListAEAP_ADV = GLOBAL_AEAP_ADVANCED_LIST;
+					if (GLOBAL_preScheduleList != NULL) {
+						genericBackupNode* localListAEAP_ADV = GLOBAL_preScheduleList;
 						if (localListAEAP_ADV->data == present_time) {
 							processorsAllocatedAEAP_ADV = localListAEAP_ADV->processors_allocated;
-							GLOBAL_AEAP_ADVANCED_LIST = position_delete_list(GLOBAL_AEAP_ADVANCED_LIST);
+							GLOBAL_preScheduleList = position_delete_list(GLOBAL_preScheduleList);
 						}
 						else {
 							printf("Dispatch Queued Jobs -- ERROR At TIME: %d while dispatching Job-%d\n", present_time, localJobScheduledQueueList->jobNumber);

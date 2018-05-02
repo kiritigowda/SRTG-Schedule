@@ -183,7 +183,7 @@ int RTGS_mode_2(char *jobsListFileName, char *releaseTimeFilename)
 	// global variable initialize
 	GLOBAL_GPU_JOBS = 0;
 	GLOBAL_CPU_JOBS = 0;
-	GLOBAL_ALAP_LIST = NULL;
+	GLOBAL_preScheduleList = NULL;
 
 	int processorsAvailable = MAX_GPU_PROCESSOR;
 	int jobNumber = 0;

@@ -148,8 +148,7 @@ typedef struct jobBackupList genericBackupNode;
 int GLOBAL_GPU_JOBS;
 int GLOBAL_CPU_JOBS;
 int GLOBAL_RELEASE_TIME[MAX_RUN_TIME];
-genericBackupNode *GLOBAL_ALAP_LIST;
-genericBackupNode *GLOBAL_AEAP_ADVANCED_LIST;
+genericBackupNode *GLOBAL_preScheduleList;
 
 // debug message setup variable
 int GLOBAL_RTGS_DEBUG_MSG;  // debug mode information: 0 - TurnOff, 1 - Basic Debug Info, 2 - Detailed Debug Info, 3 - extended Debug Information

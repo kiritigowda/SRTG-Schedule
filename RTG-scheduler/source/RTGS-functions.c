@@ -29,7 +29,7 @@ int Kernel_book_keeper
 	// If processors available is greater than the required processors by the jobAttributesList
 	if (jobAttributesList[jobNumber].processor_req <= processors_available)
 	{
-		if (GLOBAL_ALAP_LIST == NULL)
+		if (GLOBAL_preScheduleList == NULL)
 		{ //ALAP not set
 			FLAG = 0;
 			FLAG_V = 0;
@@ -80,19 +80,19 @@ int Kernel_book_keeper
 					processors_available, processorsAllocatedList, jobScheduledQueueList);
 			}
 		}
-		else if (GLOBAL_ALAP_LIST != NULL)
+		else if (GLOBAL_preScheduleList != NULL)
 		{ //ALAP set
-			if (FLAG_V != GLOBAL_ALAP_LIST->data)
+			if (FLAG_V != GLOBAL_preScheduleList->data)
 			{ //ALAP updated
 				FLAG = 0;
 				FLAG_V = 0;
 				given = 0;
 			}
-			int Pl = MAX_GPU_PROCESSOR - GLOBAL_ALAP_LIST->processors_allocated;
+			int Pl = MAX_GPU_PROCESSOR - GLOBAL_preScheduleList->processors_allocated;
 
 			if (jobAttributesList[jobNumber].processor_req < PROCESSOR_LIMIT)
 			{ // Processors needed lesser than the limit
-				if (jobAttributesList[jobNumber].processor_req <= Pl && (present_time + jobAttributesList[jobNumber].execution_time) <= GLOBAL_ALAP_LIST->data)
+				if (jobAttributesList[jobNumber].processor_req <= Pl && (present_time + jobAttributesList[jobNumber].execution_time) <= GLOBAL_preScheduleList->data)
 				{ // Condition 1
 					if (GLOBAL_RTGS_DEBUG_MSG > 1) {
 						printf("Job Book Keeper -- ALAP is set, Job-%d SATISFIED CONDITION 1", jobNumber);
@@ -128,7 +128,7 @@ int Kernel_book_keeper
 						}
 					}
 				}
-				else if (jobAttributesList[jobNumber].processor_req > Pl && (present_time + jobAttributesList[jobNumber].execution_time) <= GLOBAL_ALAP_LIST->data)
+				else if (jobAttributesList[jobNumber].processor_req > Pl && (present_time + jobAttributesList[jobNumber].execution_time) <= GLOBAL_preScheduleList->data)
 				{ // Condition 2
 					if (GLOBAL_RTGS_DEBUG_MSG > 1) {
 						printf("Job Book Keeper -- ALAP is set, Job-%d SATISFIED CONDITION 2", jobNumber);
@@ -165,14 +165,14 @@ int Kernel_book_keeper
 						}
 					}
 				}
-				else if ((jobAttributesList[jobNumber].processor_req + given) <= Pl && (present_time + jobAttributesList[jobNumber].execution_time) > GLOBAL_ALAP_LIST->data &&
+				else if ((jobAttributesList[jobNumber].processor_req + given) <= Pl && (present_time + jobAttributesList[jobNumber].execution_time) > GLOBAL_preScheduleList->data &&
 					FLAG == 0)
 				{ // Condition 3
 					given = given + jobAttributesList[jobNumber].processor_req;
 					// Control flags to not allow over budgeting of PA
 					if (given == Pl) {
 						FLAG = 1;
-						FLAG_V = GLOBAL_ALAP_LIST->data;
+						FLAG_V = GLOBAL_preScheduleList->data;
 						given = 0;
 					}
 					if (GLOBAL_RTGS_DEBUG_MSG > 1) {
@@ -211,14 +211,14 @@ int Kernel_book_keeper
 						}
 					}
 				}
-				else if (processors_available >= jobAttributesList[GLOBAL_ALAP_LIST->jobNumber].processor_req)
+				else if (processors_available >= jobAttributesList[GLOBAL_preScheduleList->jobNumber].processor_req)
 				{
 					/// NEW FUNCTION NEEDED
 					if (GLOBAL_RTGS_DEBUG_MSG > 1) {
 						printf("Job Book Keeper -- RELEASE ALAP Job NOW TO INCREASE SYSTEM TIME\n\n");
-						printf("\nPA : %d   ALAP_Pg : %d\n", processors_available, jobAttributesList[GLOBAL_ALAP_LIST->jobNumber].processor_req);
+						printf("\nPA : %d   ALAP_Pg : %d\n", processors_available, jobAttributesList[GLOBAL_preScheduleList->jobNumber].processor_req);
 					}
-					processors_available = ALAP_improve(jobAttributesList, GLOBAL_ALAP_LIST->jobNumber, present_time,
+					processors_available = ALAP_improve(jobAttributesList, GLOBAL_preScheduleList->jobNumber, present_time,
 						processors_available, processorsAllocatedList, jobScheduledQueueList);
 					processors_available = AEAP(jobAttributesList, jobNumber, present_time,
 						processors_available, processorsAllocatedList, jobScheduledQueueList);
@@ -262,12 +262,12 @@ int Processors_unavailable
 		processors_available = AEAP(jobAttributesList, jobNumber, present_time,
 			processors_available, processorsAllocatedList, jobScheduledQueueList);
 	}
-	else if (jobAttributesList[jobNumber].processor_req >= PROCESSOR_LIMIT && GLOBAL_ALAP_LIST == NULL)
+	else if (jobAttributesList[jobNumber].processor_req >= PROCESSOR_LIMIT && GLOBAL_preScheduleList == NULL)
 	{
 		processors_available = ALAP(jobAttributesList, jobNumber, present_time,
 			processors_available, processorsAllocatedList, jobScheduledQueueList);
 	}
-	else if (jobAttributesList[jobNumber].processor_req >= PROCESSOR_LIMIT && GLOBAL_ALAP_LIST != NULL)
+	else if (jobAttributesList[jobNumber].processor_req >= PROCESSOR_LIMIT && GLOBAL_preScheduleList != NULL)
 	{
 		processors_available = ALAP_advanced(jobAttributesList, jobNumber, present_time,
 			processors_available, processorsAllocatedList, jobScheduledQueueList);

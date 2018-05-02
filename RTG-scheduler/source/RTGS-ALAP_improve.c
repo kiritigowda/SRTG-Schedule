@@ -25,11 +25,11 @@ int ALAP_improve
 	{
 		if (GLOBAL_RTGS_DEBUG_MSG > 2) {
 			printf("As Late Aa Possible Improved (ALAP-I) -- Job-%d is verified for ALAP IMPROVED scheduling\n", jobNumber);
-			printf("ALAP-I -- GLOBAL_ALAP_LIST->data: %d && jobScheduledQueueList: %d\n", GLOBAL_ALAP_LIST->data, temp->data);
+			printf("ALAP-I -- GLOBAL_preScheduleList->data: %d && jobScheduledQueueList: %d\n", GLOBAL_preScheduleList->data, temp->data);
 		}
-		if (GLOBAL_ALAP_LIST->data == temp->data)
+		if (GLOBAL_preScheduleList->data == temp->data)
 		{
-			GLOBAL_ALAP_LIST->data = temp->data = present_time;
+			GLOBAL_preScheduleList->data = temp->data = present_time;
 			temp->processor_release_time = present_time + jobAttributesList[jobNumber].execution_time;
 			processors_available = Dispatch_queued_kernels(present_time, processors_available, jobScheduledQueueList, processorsAllocatedList);
 		}
@@ -42,12 +42,12 @@ int ALAP_improve
 		while (t1 != NULL)
 		{
 			t2 = t1->job_next;
-			if (t1->jobNumber == jobNumber && GLOBAL_ALAP_LIST->data == t1->data)
+			if (t1->jobNumber == jobNumber && GLOBAL_preScheduleList->data == t1->data)
 			{
 				head->job_next = t2;
-				GLOBAL_ALAP_LIST->data = t1->data = present_time;
+				GLOBAL_preScheduleList->data = t1->data = present_time;
 				t1->processor_release_time = present_time + jobAttributesList[jobNumber].execution_time;
-				GLOBAL_ALAP_LIST = position_delete_list(GLOBAL_ALAP_LIST);
+				GLOBAL_preScheduleList = position_delete_list(GLOBAL_preScheduleList);
 				processors_available = processors_available - t1->processors_allocated;
 				if (GLOBAL_RTGS_DEBUG_MSG > 2) {
 					printf("As Late Aa Possible Improved (ALAP-I) -- MULTIPLE_JOBS_SCHEDULED\n");

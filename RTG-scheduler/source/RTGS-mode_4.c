@@ -27,7 +27,7 @@ static int Mode_4_ALAP_advanced
 	int schedule_method = RTGS_SCHEDULE_METHOD_ALAP;
 
 	scheduledResourceNode *localProcessorsAllocatedList = *processorsAllocatedList;
-	genericBackupNode *lastALAPJobScheduled = GLOBAL_ALAP_LIST;
+	genericBackupNode *lastALAPJobScheduled = GLOBAL_preScheduleList;
 
 	// fail case return
 	if (present_time >= job_release_time) {
@@ -67,7 +67,7 @@ static int Mode_4_ALAP_advanced
 				printf("Mode 4 ALAP advanced: Condition 3 pass, The Job:%d scheduled\n", jobNumber);
 				printf("Mode 4 ALAP advanced: Condition 3 pass, Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
 			}
-			GLOBAL_ALAP_LIST = insert_ALAP_list(GLOBAL_ALAP_LIST, job_release_time, processor_release_time,
+			GLOBAL_preScheduleList = insert_ALAP_list(GLOBAL_preScheduleList, job_release_time, processor_release_time,
 				processorsInUse, jobNumber);
 			job_queue_handler(processorsInUse, job_release_time, processor_release_time,
 				schedule_method, jobNumber, jobScheduledQueueList);
@@ -87,7 +87,7 @@ static int Mode_4_ALAP_advanced
 				printf("Mode 4 ALAP advanced: Condition 4 pass, The Job:%d scheduled\n", jobNumber);
 				printf("Mode 4 ALAP advanced: Condition 4 pass, Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
 			}
-			GLOBAL_ALAP_LIST = insert_ALAP_list(GLOBAL_ALAP_LIST, job_release_time, processor_release_time,
+			GLOBAL_preScheduleList = insert_ALAP_list(GLOBAL_preScheduleList, job_release_time, processor_release_time,
 				processorsInUse, jobNumber);
 			job_queue_handler(processorsInUse, job_release_time, processor_release_time,
 				schedule_method, jobNumber, jobScheduledQueueList);
@@ -130,7 +130,7 @@ static int Mode_4_ALAP_advanced
 							printf("Mode 4 ALAP advanced: The Job:%d scheduled\n", jobNumber);
 							printf("Mode 4 ALAP advanced: Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
 						}
-						GLOBAL_ALAP_LIST = insert_ALAP_list(GLOBAL_ALAP_LIST, job_release_time, processor_release_time,
+						GLOBAL_preScheduleList = insert_ALAP_list(GLOBAL_preScheduleList, job_release_time, processor_release_time,
 							processorsInUse, jobNumber);
 						job_queue_handler(processorsInUse, job_release_time, processor_release_time,
 							schedule_method, jobNumber, jobScheduledQueueList);
@@ -201,7 +201,7 @@ static int Mode_4_ALAP
 			printf("Mode 4 ALAP: The Job:%d scheduled\n", jobNumber);
 			printf("Mode 4 ALAP: Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
 		}
-		GLOBAL_ALAP_LIST = insert_ALAP_list(GLOBAL_ALAP_LIST, job_release_time,
+		GLOBAL_preScheduleList = insert_ALAP_list(GLOBAL_preScheduleList, job_release_time,
 			processor_release_time, processors_allocated, jobNumber);
 		job_queue_handler(processorsInUse, job_release_time, processor_release_time,
 			schedule_method, jobNumber, jobScheduledQueueList);
@@ -261,7 +261,7 @@ static int Mode_4_ALAP
 					printf("Mode 4 ALAP: The Job:%d scheduled\n", jobNumber);
 					printf("Mode 4 ALAP: Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
 				}
-				GLOBAL_ALAP_LIST = insert_ALAP_list(GLOBAL_ALAP_LIST, job_release_time, processor_release_time,
+				GLOBAL_preScheduleList = insert_ALAP_list(GLOBAL_preScheduleList, job_release_time, processor_release_time,
 					processors_allocated, jobNumber);
 				job_queue_handler(processorsInUse, job_release_time, processor_release_time,
 					schedule_method, jobNumber, jobScheduledQueueList);
@@ -288,7 +288,7 @@ static int Mode_4_AEAP_advanced
 	scheduledResourceNode **jobScheduledQueueList
 )
 {
-	if (GLOBAL_ALAP_LIST == NULL && GLOBAL_AEAP_ADVANCED_LIST == NULL) {
+	if (GLOBAL_preScheduleList == NULL) {
 		printf("Mode 4 AEAP advanced: ERROR - Bad Entry Case\n");
 		return RTGS_ERROR_NOT_SUPPORTED;
 	}
@@ -304,8 +304,8 @@ static int Mode_4_AEAP_advanced
 	int jobProcessorReq = jobAttributesList[jobNumber].processor_req;
 
 	// condition 5 - schedule before ALAP execution
-	if (localProcessorsAllocatedList != NULL && GLOBAL_ALAP_LIST != NULL) {
-		startTimeALAP = jobAttributesList[GLOBAL_ALAP_LIST->jobNumber].scheduled_execution;
+	if (localProcessorsAllocatedList != NULL) {
+		startTimeALAP = jobAttributesList[GLOBAL_preScheduleList->jobNumber].scheduled_execution;
 		localProcessors = processors_available;
 		processorsDistList = insert_node(processorsDistList, processors_available);
 		processors_available = 0;
@@ -369,20 +369,20 @@ static int Mode_4_AEAP_advanced
 		}
 	}
 	// condition 6 - schedule After ALAP execution
-	if (GLOBAL_ALAP_LIST != NULL && 0)
+	if (GLOBAL_preScheduleList != NULL)
 	{
-		if (GLOBAL_ALAP_LIST->next == NULL && GLOBAL_AEAP_ADVANCED_LIST == NULL)
+		if (GLOBAL_preScheduleList->next == NULL)
 		{
-			localProcessors = GLOBAL_ALAP_LIST->processors_allocated;
-			processorsDistList = insert_node(processorsDistList, GLOBAL_ALAP_LIST->processors_allocated);
-			GLOBAL_ALAP_LIST->processors_allocated = 0;
+			localProcessors = GLOBAL_preScheduleList->processors_allocated;
+			processorsDistList = insert_node(processorsDistList, GLOBAL_preScheduleList->processors_allocated);
+			GLOBAL_preScheduleList->processors_allocated = 0;
 
 			if (localProcessors >= jobProcessorReq)
 			{
-				if (jobAttributesList[jobNumber].execution_time + GLOBAL_ALAP_LIST->processor_release_time <= jobAttributesList[jobNumber].deadline)
+				if (jobAttributesList[jobNumber].execution_time + GLOBAL_preScheduleList->processor_release_time <= jobAttributesList[jobNumber].deadline)
 				{
-					GLOBAL_ALAP_LIST->processors_allocated = localProcessors - jobProcessorReq;
-					job_release_time = GLOBAL_ALAP_LIST->processor_release_time;
+					GLOBAL_preScheduleList->processors_allocated = localProcessors - jobProcessorReq;
+					job_release_time = GLOBAL_preScheduleList->processor_release_time;
 					processorsDistList = clean_list(processorsDistList);
 
 					int processorsInUse = jobAttributesList[jobNumber].processor_req;
@@ -399,7 +399,7 @@ static int Mode_4_AEAP_advanced
 						printf("Mode 4 AEAP Advanced: Condition-6 The Job:%d scheduled\n", jobNumber);
 						printf("Mode 4 AEAP Advanced: Condition-6 Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
 					}
-					GLOBAL_AEAP_ADVANCED_LIST = insert_ALAP_list(GLOBAL_AEAP_ADVANCED_LIST, job_release_time, processor_release_time, processorsInUse, jobNumber);
+					GLOBAL_preScheduleList = insert_ALAP_list(GLOBAL_preScheduleList, job_release_time, processor_release_time, processorsInUse, jobNumber);
 					job_queue_handler(processorsInUse, job_release_time, processor_release_time, schedule_method, jobNumber, jobScheduledQueueList);
 				}
 				else
@@ -427,11 +427,11 @@ static int Mode_4_AEAP_advanced
 						genericBackupNode *temp2 = processorsDistList;
 						while (temp2 != NULL) {
 							if (count == 0) {
-								GLOBAL_ALAP_LIST->processors_allocated = temp2->data;
+								GLOBAL_preScheduleList->processors_allocated = temp2->data;
 								temp2 = temp2->next;
 							}
 							else {
-								if (temp1->processor_release_time >= GLOBAL_ALAP_LIST->processor_release_time) {
+								if (temp1->processor_release_time >= GLOBAL_preScheduleList->processor_release_time) {
 									temp1->processors_allocated = temp2->data;
 									temp2 = temp2->next;
 								}
@@ -454,7 +454,7 @@ static int Mode_4_AEAP_advanced
 					}
 					else
 					{
-						if (localProcessorsAllocatedList->processor_release_time >= GLOBAL_ALAP_LIST->processor_release_time)
+						if (localProcessorsAllocatedList->processor_release_time >= GLOBAL_preScheduleList->processor_release_time)
 							localProcessors = localProcessors + localProcessorsAllocatedList->processors_allocated;
 
 						if (localProcessors >= jobProcessorReq)
@@ -481,7 +481,7 @@ static int Mode_4_AEAP_advanced
 							job_queue_handler(processorsInUse, job_release_time, processor_release_time, schedule_method, jobNumber, jobScheduledQueueList);
 							return processors_available;
 						}
-						else if (localProcessorsAllocatedList->processor_release_time >= GLOBAL_ALAP_LIST->processor_release_time) {
+						else if (localProcessorsAllocatedList->processor_release_time >= GLOBAL_preScheduleList->processor_release_time) {
 							processorsDistList = insert_node(processorsDistList, localProcessorsAllocatedList->processors_allocated);
 							localProcessorsAllocatedList->processors_allocated = 0;
 						}
@@ -523,7 +523,7 @@ static int Mode_4_AEAP
 	processorsDistList = insert_node(processorsDistList, processors_available);
 	processors_available = 0;
 
-	if (GLOBAL_ALAP_LIST == NULL)
+	if (GLOBAL_preScheduleList == NULL)
 	{
 		while (localProcessorsAllocatedList != NULL)
 		{
@@ -636,7 +636,7 @@ static int Mode_4_AEAP
 				localProcessors = localProcessors + localProcessorsAllocatedList->processors_allocated;
 				if (localProcessors >= jobAttributesList[jobNumber].processor_req)
 				{
-					int availAlapProcessors = localProcessors - jobAttributesList[GLOBAL_ALAP_LIST->jobNumber].processor_req;
+					int availAlapProcessors = localProcessors - jobAttributesList[GLOBAL_preScheduleList->jobNumber].processor_req;
 					// condition 1
 					if (jobAttributesList[jobNumber].processor_req <= availAlapProcessors)
 					{
@@ -665,7 +665,7 @@ static int Mode_4_AEAP
 						break;
 					}
 					// condition 2
-					else if (localProcessorsAllocatedList->processor_release_time + jobAttributesList[jobNumber].execution_time <= GLOBAL_ALAP_LIST->data)
+					else if (localProcessorsAllocatedList->processor_release_time + jobAttributesList[jobNumber].execution_time <= GLOBAL_preScheduleList->data)
 					{
 						localProcessorsAllocatedList->processors_allocated = localProcessors - jobAttributesList[jobNumber].processor_req;
 						processorsDistList = clean_list(processorsDistList);
@@ -742,7 +742,7 @@ static int Mode_4_Processors_unavailable
 	scheduledResourceNode **jobScheduledQueueList
 )
 {
-	if (jobAttributesList[jobNumber].processor_req < PROCESSOR_LIMIT && GLOBAL_AEAP_ADVANCED_LIST == NULL)
+	if (jobAttributesList[jobNumber].processor_req < PROCESSOR_LIMIT && GLOBAL_preScheduleList == NULL)
 	{
 		if (GLOBAL_RTGS_DEBUG_MSG > 2) {
 			printf("Mode 4 Processors unavailable:: Job:%d sent for AEAP Advanced execution\n", jobNumber);
@@ -758,7 +758,7 @@ static int Mode_4_Processors_unavailable
 		processors_available = Mode_4_AEAP_advanced(jobAttributesList, jobNumber, present_time,
 			processors_available, processorsAllocatedList, jobScheduledQueueList);
 	}
-	else if (jobAttributesList[jobNumber].processor_req >= PROCESSOR_LIMIT && GLOBAL_ALAP_LIST == NULL)
+	else if (jobAttributesList[jobNumber].processor_req >= PROCESSOR_LIMIT && GLOBAL_preScheduleList == NULL)
 	{
 		if (GLOBAL_RTGS_DEBUG_MSG > 2) {
 			printf("Mode 4 Processors unavailable:: Job:%d sent for ALAP execution\n", jobNumber);
@@ -801,7 +801,7 @@ static int Mode_4_book_keeper
 	// If processors available is greater than the required processors by the jobAttributesList
 	if (jobAttributesList[jobNumber].processor_req <= processors_available)
 	{
-		if (GLOBAL_ALAP_LIST == NULL)
+		if (GLOBAL_preScheduleList == NULL)
 		{
 			// Processors needed lesser than the ALAP limit
 			if (jobAttributesList[jobNumber].processor_req < PROCESSOR_LIMIT)
@@ -850,7 +850,7 @@ static int Mode_4_book_keeper
 		}
 		else
 		{
-			int availAlapProcessors = processors_available - jobAttributesList[GLOBAL_ALAP_LIST->jobNumber].processor_req;
+			int availAlapProcessors = processors_available - jobAttributesList[GLOBAL_preScheduleList->jobNumber].processor_req;
 			// Processors needed lesser than the limit
 			if (jobAttributesList[jobNumber].processor_req < PROCESSOR_LIMIT)
 			{
@@ -893,7 +893,7 @@ static int Mode_4_book_keeper
 					}
 				}
 				// Condition 2
-				else if ((presentTime + jobAttributesList[jobNumber].execution_time) <= GLOBAL_ALAP_LIST->data)
+				else if ((presentTime + jobAttributesList[jobNumber].execution_time) <= GLOBAL_preScheduleList->data)
 				{
 					if (GLOBAL_RTGS_DEBUG_MSG > 1) {
 						printf("Mode 4 Book Keeper::  ALAP is set, Job:%d SATISFIED CONDITION 2\n", jobNumber);
@@ -964,8 +964,7 @@ int RTGS_mode_4(char *jobsListFileName, char *releaseTimeFilename) {
 	// global variable initialize
 	GLOBAL_GPU_JOBS = 0;
 	GLOBAL_CPU_JOBS = 0;
-	GLOBAL_ALAP_LIST = NULL;
-	GLOBAL_AEAP_ADVANCED_LIST = NULL;
+	GLOBAL_preScheduleList = NULL;
 
 	int processorsAvailable = MAX_GPU_PROCESSOR;
 	int jobNumber = 0;
@@ -1086,8 +1085,8 @@ int RTGS_mode_4(char *jobsListFileName, char *releaseTimeFilename) {
 		kernelMax = 0; maxReleases = 0; jobNumber = 0; GLOBAL_GPU_JOBS = 0; GLOBAL_CPU_JOBS = 0;
 	}
 
-	if (processorsAllocatedList || GLOBAL_ALAP_LIST) {
-		printf("\nERROR -- processorsAllocatedList/GLOBAL_ALAP_LIST Failed\n");
+	if (processorsAllocatedList || GLOBAL_preScheduleList) {
+		printf("\nERROR -- processorsAllocatedList/GLOBAL_preScheduleList Failed\n");
 		return RTGS_FAILURE;
 	}
 

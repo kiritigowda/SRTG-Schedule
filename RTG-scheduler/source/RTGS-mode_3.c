@@ -82,7 +82,7 @@ static int Mode_3_ALAP
 					printf("Mode 3 ALAP: Job:%d scheduled", jobNumber);
 					printf("Mode 3 ALAP: Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
 				}
-				GLOBAL_ALAP_LIST = insert_ALAP_list(GLOBAL_ALAP_LIST, job_release_time, processor_release_time, processors_allocated, jobNumber);
+				GLOBAL_preScheduleList = insert_ALAP_list(GLOBAL_preScheduleList, job_release_time, processor_release_time, processors_allocated, jobNumber);
 				job_queue_handler(processorsInUse, job_release_time, processor_release_time,
 					schedule_method, jobNumber, jobScheduledQueueList);
 				break;
@@ -116,7 +116,7 @@ static int Mode_3_AEAP
 	processorsDistList = insert_node(processorsDistList, processors_available);
 	processors_available = 0;
 
-	if (GLOBAL_ALAP_LIST == NULL)
+	if (GLOBAL_preScheduleList == NULL)
 	{
 		while (localProcessorsAllocatedList != NULL)
 		{
@@ -231,7 +231,7 @@ static int Mode_3_AEAP
 					int processor_release_time = job_release_time + jobAttributesList[jobNumber].execution_time;
 					int presentTime = present_time;
 					int schedule_method = RTGS_SCHEDULE_METHOD_AEAP;
-					int availAlapProcessors = localProcessors - jobAttributesList[GLOBAL_ALAP_LIST->jobNumber].processor_req;
+					int availAlapProcessors = localProcessors - jobAttributesList[GLOBAL_preScheduleList->jobNumber].processor_req;
 					// condition 1
 					if (jobAttributesList[jobNumber].processor_req <= availAlapProcessors)
 					{
@@ -254,7 +254,7 @@ static int Mode_3_AEAP
 						break;
 					}
 					// condition 2
-					else if (processor_release_time <= GLOBAL_ALAP_LIST->data)
+					else if (processor_release_time <= GLOBAL_preScheduleList->data)
 					{
 						localProcessorsAllocatedList->processors_allocated = localProcessors - jobAttributesList[jobNumber].processor_req;
 						processorsDistList = clean_list(processorsDistList);
@@ -331,7 +331,7 @@ static int Mode_3_Processors_Unavailable
 	{
 		processors_available = Mode_3_AEAP(jobAttributesList, jobNumber, present_time, processors_available, processorsAllocatedList, jobScheduledQueueList);
 	}
-	else if (jobAttributesList[jobNumber].processor_req >= PROCESSOR_LIMIT && GLOBAL_ALAP_LIST == NULL)
+	else if (jobAttributesList[jobNumber].processor_req >= PROCESSOR_LIMIT && GLOBAL_preScheduleList == NULL)
 	{
 		processors_available = Mode_3_ALAP(jobAttributesList, jobNumber, present_time, processors_available, processorsAllocatedList, jobScheduledQueueList);
 	}
@@ -371,7 +371,7 @@ static int Mode_3_book_keeper
 	// If processors available is greater than the required processors by the jobAttributesList
 	if (jobAttributesList[jobNumber].processor_req <= processors_available)
 	{
-		if (GLOBAL_ALAP_LIST == NULL)
+		if (GLOBAL_preScheduleList == NULL)
 		{
 			if (jobAttributesList[jobNumber].execution_time + presentTime <= jobAttributesList[jobNumber].deadline)
 			{
@@ -405,7 +405,7 @@ static int Mode_3_book_keeper
 		}
 		else
 		{
-			int availAlapProcessors = processors_available - jobAttributesList[GLOBAL_ALAP_LIST->jobNumber].processor_req;
+			int availAlapProcessors = processors_available - jobAttributesList[GLOBAL_preScheduleList->jobNumber].processor_req;
 			// condition 1
 			if (jobAttributesList[jobNumber].processor_req <= availAlapProcessors)
 			{
@@ -444,7 +444,7 @@ static int Mode_3_book_keeper
 				}
 			}
 			// condition 2
-			else if ((presentTime + jobAttributesList[jobNumber].execution_time) <= GLOBAL_ALAP_LIST->data)
+			else if ((presentTime + jobAttributesList[jobNumber].execution_time) <= GLOBAL_preScheduleList->data)
 			{
 				if (GLOBAL_RTGS_DEBUG_MSG > 1) {
 					printf("Mode-3 Book Keeper:: Job:%d SATISFIED CONDITION 2\n", jobNumber);
@@ -516,7 +516,7 @@ int RTGS_mode_3(char *jobsListFileName, char *releaseTimeFilename)
 	// global variable initialize
 	GLOBAL_GPU_JOBS = 0;
 	GLOBAL_CPU_JOBS = 0;
-	GLOBAL_ALAP_LIST = NULL;
+	GLOBAL_preScheduleList = NULL;
 
 	int processorsAvailable = MAX_GPU_PROCESSOR;
 	int jobNumber = 0;
@@ -638,8 +638,8 @@ int RTGS_mode_3(char *jobsListFileName, char *releaseTimeFilename)
 		kernelMax = 0; maxReleases = 0; jobNumber = 0; GLOBAL_GPU_JOBS = 0; GLOBAL_CPU_JOBS = 0;
 	}
 
-	if (processorsAllocatedList || GLOBAL_ALAP_LIST) {
-		printf("\nERROR -- processorsAllocatedList/GLOBAL_ALAP_LIST Failed\n");
+	if (processorsAllocatedList || GLOBAL_preScheduleList) {
+		printf("\nERROR -- processorsAllocatedList/GLOBAL_preScheduleList Failed\n");
 		return RTGS_FAILURE;
 	}
 

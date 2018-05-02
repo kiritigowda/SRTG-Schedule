@@ -21,13 +21,13 @@ int AEAP_ALAP_improve
 		printf("AEAP_ALAP_IMPROVE: Job Release Time: %d\n", job_release_time);
 	}
 	scheduledResourceNode *temp = *jobScheduledQueueList;
-	while (temp->jobNumber != GLOBAL_ALAP_LIST->jobNumber && temp->next != NULL)
+	while (temp->jobNumber != GLOBAL_preScheduleList->jobNumber && temp->next != NULL)
 		temp = temp->next;
 
-	if (temp->jobNumber == GLOBAL_ALAP_LIST->jobNumber && temp->processors_allocated == GLOBAL_ALAP_LIST->processors_allocated)
+	if (temp->jobNumber == GLOBAL_preScheduleList->jobNumber && temp->processors_allocated == GLOBAL_preScheduleList->processors_allocated)
 	{
-		temp->data = temp->job_release_time = GLOBAL_ALAP_LIST->data = job_release_time;
-		temp->processor_release_time = GLOBAL_ALAP_LIST->processor_release_time = job_release_time + jobAttributesList[temp->jobNumber].execution_time;
+		temp->data = temp->job_release_time = GLOBAL_preScheduleList->data = job_release_time;
+		temp->processor_release_time = GLOBAL_preScheduleList->processor_release_time = job_release_time + jobAttributesList[temp->jobNumber].execution_time;
 	}
 
 	return processors_available;

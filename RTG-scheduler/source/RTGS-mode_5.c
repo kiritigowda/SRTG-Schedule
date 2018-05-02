@@ -19,7 +19,7 @@ int  RTGS_mode_5(char *jobsListFileName, char *releaseTimeFilename)
 	// global variable initialize
 	GLOBAL_GPU_JOBS = 0;
 	GLOBAL_CPU_JOBS = 0;
-	GLOBAL_ALAP_LIST = NULL;
+	GLOBAL_preScheduleList = NULL;
 
 	int processorsAvailable = MAX_GPU_PROCESSOR;
 	int jobNumber = 0;
@@ -145,7 +145,7 @@ int  RTGS_mode_5(char *jobsListFileName, char *releaseTimeFilename)
 		print(processorsAllocatedList);
 	}
 	processorsAllocatedList = clean_node(processorsAllocatedList);
-	GLOBAL_ALAP_LIST = clean_list(GLOBAL_ALAP_LIST);
+	GLOBAL_preScheduleList = clean_list(GLOBAL_preScheduleList);
 	PROFILER_STOP(SRTG, RTGS_mode_5)
 	return RTGS_SUCCESS;
 }

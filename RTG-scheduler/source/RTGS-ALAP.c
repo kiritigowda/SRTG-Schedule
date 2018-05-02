@@ -37,7 +37,7 @@ int ALAP
 			printf("As Lata As Possible (ALAP) -- Job-%d scheduled\n", jobNumber);
 			printf("ALAP -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
 		}
-		GLOBAL_ALAP_LIST = insert_ALAP_list(GLOBAL_ALAP_LIST, job_release_time, processor_release_time,
+		GLOBAL_preScheduleList = insert_ALAP_list(GLOBAL_preScheduleList, job_release_time, processor_release_time,
 			processors_allocated, jobNumber);
 		job_queue_handler(processorReleased, job_release_time, processor_release_time,
 			schedule_method, jobNumber, jobScheduledQueueList);
@@ -99,7 +99,7 @@ int ALAP
 					printf("As Lata As Possible (ALAP) -- Job-%d scheduled\n", jobNumber);
 					printf("ALAP -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
 				}
-				GLOBAL_ALAP_LIST = insert_ALAP_list(GLOBAL_ALAP_LIST, job_release_time, processor_release_time,
+				GLOBAL_preScheduleList = insert_ALAP_list(GLOBAL_preScheduleList, job_release_time, processor_release_time,
 					processors_allocated, jobNumber);
 				job_queue_handler(processorReleased, job_release_time, processor_release_time,
 					schedule_method, jobNumber, jobScheduledQueueList);

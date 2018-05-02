@@ -24,9 +24,9 @@ int AEAP_advanced
 	genericBackupNode *P_Given_list = NULL;
 	scheduledResourceNode* temp = *processorsAllocatedList;
 
-	if (GLOBAL_ALAP_LIST->next == NULL)
+	if (GLOBAL_preScheduleList->next == NULL)
 	{
-		int Pl = MAX_GPU_PROCESSOR - jobAttributesList[GLOBAL_ALAP_LIST->jobNumber].processor_req;
+		int Pl = MAX_GPU_PROCESSOR - jobAttributesList[GLOBAL_preScheduleList->jobNumber].processor_req;
 
 		if (jobAttributesList[jobNumber].processor_req <= Pl)
 		{
@@ -47,11 +47,11 @@ int AEAP_advanced
 					}
 					return processors_available;
 				}
-				else if (temp->processor_release_time <= GLOBAL_ALAP_LIST->data)
+				else if (temp->processor_release_time <= GLOBAL_preScheduleList->data)
 				{
 					temp = temp->next;
 				}
-				else if (temp->processor_release_time > GLOBAL_ALAP_LIST->data)
+				else if (temp->processor_release_time > GLOBAL_preScheduleList->data)
 				{
 					scheduledResourceNode *t1 = temp;
 					scheduledResourceNode *t2 = temp; // Back up
@@ -118,12 +118,12 @@ int AEAP_advanced
 		} //End of if
 		else if (jobAttributesList[jobNumber].processor_req > Pl)
 		{
-			if ((GLOBAL_ALAP_LIST->processor_release_time + jobAttributesList[jobNumber].execution_time) <= jobAttributesList[jobNumber].deadline)
+			if ((GLOBAL_preScheduleList->processor_release_time + jobAttributesList[jobNumber].execution_time) <= jobAttributesList[jobNumber].deadline)
 			{
-				if (GLOBAL_ALAP_LIST->processors_allocated >= jobAttributesList[jobNumber].processor_req)
+				if (GLOBAL_preScheduleList->processors_allocated >= jobAttributesList[jobNumber].processor_req)
 				{
-					GLOBAL_ALAP_LIST->processors_allocated = GLOBAL_ALAP_LIST->processors_allocated - jobAttributesList[jobNumber].processor_req;
-					job_release_time = GLOBAL_ALAP_LIST->processor_release_time;
+					GLOBAL_preScheduleList->processors_allocated = GLOBAL_preScheduleList->processors_allocated - jobAttributesList[jobNumber].processor_req;
+					job_release_time = GLOBAL_preScheduleList->processor_release_time;
 					int processorReleased = jobAttributesList[jobNumber].processor_req;
 					int processor_release_time = job_release_time + jobAttributesList[jobNumber].execution_time;
 					int presentTime = present_time;
@@ -145,7 +145,7 @@ int AEAP_advanced
 					PROFILER_STOP(SRTG, AEAP_advanced)
 					return processors_available;
 				}
-				else if (GLOBAL_ALAP_LIST->processors_allocated < jobAttributesList[jobNumber].processor_req)
+				else if (GLOBAL_preScheduleList->processors_allocated < jobAttributesList[jobNumber].processor_req)
 				{
 					while (temp != NULL) {
 						if ((temp->processor_release_time + jobAttributesList[jobNumber].execution_time) > jobAttributesList[jobNumber].deadline)
@@ -163,17 +163,17 @@ int AEAP_advanced
 							}
 							return processors_available;
 						}
-						else if (temp->processor_release_time <= GLOBAL_ALAP_LIST->processor_release_time)
+						else if (temp->processor_release_time <= GLOBAL_preScheduleList->processor_release_time)
 						{
 							temp = temp->next;
 						}
-						else if (temp->processor_release_time > GLOBAL_ALAP_LIST->processor_release_time)
+						else if (temp->processor_release_time > GLOBAL_preScheduleList->processor_release_time)
 						{
 							scheduledResourceNode *t1 = temp;
 							scheduledResourceNode *t2 = temp; // Back up
-							Pro = GLOBAL_ALAP_LIST->processors_allocated;
-							P_Given_list = insert_node(P_Given_list, GLOBAL_ALAP_LIST->processors_allocated);
-							GLOBAL_ALAP_LIST->processors_allocated = 0;
+							Pro = GLOBAL_preScheduleList->processors_allocated;
+							P_Given_list = insert_node(P_Given_list, GLOBAL_preScheduleList->processors_allocated);
+							GLOBAL_preScheduleList->processors_allocated = 0;
 							do
 							{
 								Pro = Pro + t1->processors_allocated;
@@ -189,7 +189,7 @@ int AEAP_advanced
 									while (temp2 != NULL)
 									{
 										if (count == 0) {
-											GLOBAL_ALAP_LIST->processors_allocated = temp2->data;
+											GLOBAL_preScheduleList->processors_allocated = temp2->data;
 											temp2 = temp2->next;
 										}
 										else {
@@ -264,11 +264,11 @@ int AEAP_advanced
 		else {
 			printf("As Early As Possible Advanced (AEAP-A) -- Job-%d cannot be scheduled, ODD CASE\n", jobNumber);
 		}
-	} //End of GLOBAL_ALAP_LIST->next == NULL
-	if (GLOBAL_ALAP_LIST->next != NULL)
+	} //End of GLOBAL_preScheduleList->next == NULL
+	if (GLOBAL_preScheduleList->next != NULL)
 	{
-		genericBackupNode* check = GLOBAL_ALAP_LIST->next;
-		int Pl = MAX_GPU_PROCESSOR - jobAttributesList[GLOBAL_ALAP_LIST->jobNumber].processor_req;
+		genericBackupNode* check = GLOBAL_preScheduleList->next;
+		int Pl = MAX_GPU_PROCESSOR - jobAttributesList[GLOBAL_preScheduleList->jobNumber].processor_req;
 
 		if (jobAttributesList[jobNumber].processor_req <= Pl)
 		{
@@ -291,11 +291,11 @@ int AEAP_advanced
 						}
 						return processors_available;
 					}
-					else if (temp->processor_release_time <= GLOBAL_ALAP_LIST->data)
+					else if (temp->processor_release_time <= GLOBAL_preScheduleList->data)
 					{
 						temp = temp->next;
 					}
-					else if (temp->processor_release_time > GLOBAL_ALAP_LIST->data)
+					else if (temp->processor_release_time > GLOBAL_preScheduleList->data)
 					{
 						scheduledResourceNode *t1 = temp;
 						scheduledResourceNode *t2 = temp; // Back up
@@ -380,13 +380,13 @@ int AEAP_advanced
 		} //End of if
 		else if (jobAttributesList[jobNumber].processor_req > Pl)
 		{
-			if ((GLOBAL_ALAP_LIST->processor_release_time + jobAttributesList[jobNumber].execution_time) <= jobAttributesList[jobNumber].deadline	&&
+			if ((GLOBAL_preScheduleList->processor_release_time + jobAttributesList[jobNumber].execution_time) <= jobAttributesList[jobNumber].deadline	&&
 				jobAttributesList[jobNumber].deadline <= check->data)
 			{
-				if (GLOBAL_ALAP_LIST->processors_allocated >= jobAttributesList[jobNumber].processor_req)
+				if (GLOBAL_preScheduleList->processors_allocated >= jobAttributesList[jobNumber].processor_req)
 				{
-					GLOBAL_ALAP_LIST->processors_allocated = GLOBAL_ALAP_LIST->processors_allocated - jobAttributesList[jobNumber].processor_req;
-					job_release_time = GLOBAL_ALAP_LIST->processor_release_time;
+					GLOBAL_preScheduleList->processors_allocated = GLOBAL_preScheduleList->processors_allocated - jobAttributesList[jobNumber].processor_req;
+					job_release_time = GLOBAL_preScheduleList->processor_release_time;
 
 					int processorReleased = jobAttributesList[jobNumber].processor_req;
 					int processor_release_time = job_release_time + jobAttributesList[jobNumber].execution_time;
@@ -408,7 +408,7 @@ int AEAP_advanced
 						schedule_method, jobNumber, jobScheduledQueueList);
 					return processors_available;
 				}
-				else if (GLOBAL_ALAP_LIST->processors_allocated < jobAttributesList[jobNumber].processor_req)
+				else if (GLOBAL_preScheduleList->processors_allocated < jobAttributesList[jobNumber].processor_req)
 				{
 					while (temp != NULL)
 					{
@@ -426,18 +426,18 @@ int AEAP_advanced
 							}
 							return processors_available;
 						}
-						else if (temp->processor_release_time <= GLOBAL_ALAP_LIST->processor_release_time)
+						else if (temp->processor_release_time <= GLOBAL_preScheduleList->processor_release_time)
 						{
 							temp = temp->next;
 						}
-						else if (temp->processor_release_time > GLOBAL_ALAP_LIST->processor_release_time)
+						else if (temp->processor_release_time > GLOBAL_preScheduleList->processor_release_time)
 						{
 							scheduledResourceNode *t1 = temp;
 							scheduledResourceNode *t2 = temp; // Back up
 
-							Pro = GLOBAL_ALAP_LIST->processors_allocated;
-							P_Given_list = insert_node(P_Given_list, GLOBAL_ALAP_LIST->processors_allocated);
-							GLOBAL_ALAP_LIST->processors_allocated = 0;
+							Pro = GLOBAL_preScheduleList->processors_allocated;
+							P_Given_list = insert_node(P_Given_list, GLOBAL_preScheduleList->processors_allocated);
+							GLOBAL_preScheduleList->processors_allocated = 0;
 							do
 							{
 								Pro = Pro + t1->processors_allocated;
@@ -453,7 +453,7 @@ int AEAP_advanced
 									while (temp2 != NULL)
 									{
 										if (count == 0) {
-											GLOBAL_ALAP_LIST->processors_allocated = temp2->data;
+											GLOBAL_preScheduleList->processors_allocated = temp2->data;
 											temp2 = temp2->next;
 										}
 										else {
@@ -526,7 +526,7 @@ int AEAP_advanced
 		else {
 			printf("As Early As Possible Advanced (AEAP-A) -- Job-%d cannot be scheduled, ODD CASE\n", jobNumber);
 		}
-	} //End of GLOBAL_ALAP_LIST->next != NULL
+	} //End of GLOBAL_preScheduleList->next != NULL
 	PROFILER_STOP(SRTG, AEAP_advanced)
 	printf("As Early As Possible Advanced (AEAP-A) -- Job-%d cannot be scheduled, ODD CASE FINAL\n", jobNumber);
 	return processors_available;
