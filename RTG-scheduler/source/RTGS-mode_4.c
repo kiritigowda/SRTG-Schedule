@@ -374,8 +374,6 @@ static int Mode_4_AEAP_advanced
 		if (GLOBAL_preScheduleList->next == NULL)
 		{
 			localProcessors = GLOBAL_preScheduleList->processors_allocated;
-			processorsDistList = insert_node(processorsDistList, GLOBAL_preScheduleList->processors_allocated);
-			GLOBAL_preScheduleList->processors_allocated = 0;
 
 			if (localProcessors >= jobProcessorReq)
 			{
@@ -418,6 +416,9 @@ static int Mode_4_AEAP_advanced
 			}
 			else
 			{
+				processorsDistList = insert_node(processorsDistList, GLOBAL_preScheduleList->processors_allocated);
+				GLOBAL_preScheduleList->processors_allocated = 0;
+
 				while (localProcessorsAllocatedList != NULL)
 				{
 					if ((localProcessorsAllocatedList->processor_release_time + jobExecutionTime) > jobAttributesList[jobNumber].deadline)
@@ -454,8 +455,9 @@ static int Mode_4_AEAP_advanced
 					}
 					else
 					{
-						if (localProcessorsAllocatedList->processor_release_time >= GLOBAL_preScheduleList->processor_release_time)
+						if (localProcessorsAllocatedList->processor_release_time >= GLOBAL_preScheduleList->processor_release_time) {
 							localProcessors = localProcessors + localProcessorsAllocatedList->processors_allocated;
+						}
 
 						if (localProcessors >= jobProcessorReq)
 						{
