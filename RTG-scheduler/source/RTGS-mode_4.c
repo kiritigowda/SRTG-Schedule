@@ -416,7 +416,7 @@ static int Mode_4_AEAP_advanced
 				}
 				return processors_available;
 			}
-			/*else
+			else
 			{
 				while (localProcessorsAllocatedList != NULL)
 				{
@@ -477,7 +477,7 @@ static int Mode_4_AEAP_advanced
 								printf("Mode 4 AEAP Advanced: The Job:%d scheduled\n", jobNumber);
 								printf("Mode 4 AEAP Advanced: Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
 							}
-							GLOBAL_AEAP_ADVANCED_LIST = insert_ALAP_list(GLOBAL_AEAP_ADVANCED_LIST, job_release_time, processor_release_time, processorsInUse, jobNumber);
+							GLOBAL_preScheduleList = insert_ALAP_list(GLOBAL_preScheduleList, job_release_time, processor_release_time, processorsInUse, jobNumber);
 							job_queue_handler(processorsInUse, job_release_time, processor_release_time, schedule_method, jobNumber, jobScheduledQueueList);
 							return processors_available;
 						}
@@ -488,7 +488,7 @@ static int Mode_4_AEAP_advanced
 					}
 					localProcessorsAllocatedList = localProcessorsAllocatedList->next;
 				}
-			}*/
+			}
 		}
 	}
 
