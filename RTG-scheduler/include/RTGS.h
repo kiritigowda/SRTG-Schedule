@@ -241,7 +241,6 @@ scheduledResourceNode *ascending_insert(scheduledResourceNode *head, int data, i
 	int processorReleased, int jobNumber, int schedule_method);
 scheduledResourceNode *position_insert(scheduledResourceNode *head, scheduledResourceNode *data, int position);
 scheduledResourceNode *position_delete(scheduledResourceNode *head, int position);
-scheduledResourceNode *reverse(scheduledResourceNode *head);
 scheduledResourceNode *remove_recurring_node(scheduledResourceNode *head);
 scheduledResourceNode *clean_node(scheduledResourceNode *head);
 genericBackupNode *insert_node(genericBackupNode *head, int data);
@@ -251,6 +250,5 @@ genericBackupNode *insert_ALAP_list(genericBackupNode *head, int job_release_tim
 	int processor_release_time, int processors_allocated, int jobNumber);
 void print(scheduledResourceNode *head);
 void Kernel_queue_print(scheduledResourceNode *head);
-void R_print(scheduledResourceNode *head);
 
 #endif /* RTGS_H */

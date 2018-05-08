@@ -744,24 +744,6 @@ scheduledResourceNode *clean_node(scheduledResourceNode * head)
 	return head;
 }
 
-//Reverese a jobBackupList
-scheduledResourceNode* reverse(scheduledResourceNode* head)
-{
-	scheduledResourceNode *current, *prev, *next;
-	current = head;
-	prev = NULL;
-
-	while (current != NULL)
-	{
-		next = current->next;
-		current->next = prev;
-		prev = current;
-		current = next;
-	}
-	head = prev;
-	return head;
-}
-
 //Print the jobBackupList
 void print(scheduledResourceNode* head)
 {
@@ -782,15 +764,6 @@ void print(scheduledResourceNode* head)
 		}
 		temp = temp->next;
 	}
-	return;
-}
-
-//Print the jobBackupList in reverse order
-void R_print(scheduledResourceNode *p)
-{
-	if (p == NULL)return;
-	R_print(p->next);
-	printf("%d->", p->data);
 	return;
 }
 
@@ -815,6 +788,3 @@ void Kernel_queue_print(scheduledResourceNode* head)
 	}
 	return;
 }
-
-
-
