@@ -37,14 +37,14 @@ int ALAP
 			printf("As Lata As Possible (ALAP) -- Job-%d scheduled\n", jobNumber);
 			printf("ALAP -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
 		}
-		GLOBAL_preScheduleList = insert_ALAP_list(GLOBAL_preScheduleList, job_release_time, processor_release_time,
+		GLOBAL_preScheduleList = insert_preScheduledJob_list(GLOBAL_preScheduleList, job_release_time, processor_release_time,
 			processors_allocated, jobNumber);
 		job_queue_handler(processorReleased, job_release_time, processor_release_time,
 			schedule_method, jobNumber, jobScheduledQueueList);
 		PROFILER_STOP(SRTG, ALAP)
 			return processors_available;
 	}
-	P_Given_list = insert_ALAP_list(P_Given_list, job_release_time, processor_release_time,
+	P_Given_list = insert_preScheduledJob_list(P_Given_list, job_release_time, processor_release_time,
 		processors_available, jobNumber);
 	scheduledResourceNode* temp = *processorsAllocatedList;
 
@@ -99,7 +99,7 @@ int ALAP
 					printf("As Lata As Possible (ALAP) -- Job-%d scheduled\n", jobNumber);
 					printf("ALAP -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
 				}
-				GLOBAL_preScheduleList = insert_ALAP_list(GLOBAL_preScheduleList, job_release_time, processor_release_time,
+				GLOBAL_preScheduleList = insert_preScheduledJob_list(GLOBAL_preScheduleList, job_release_time, processor_release_time,
 					processors_allocated, jobNumber);
 				job_queue_handler(processorReleased, job_release_time, processor_release_time,
 					schedule_method, jobNumber, jobScheduledQueueList);
@@ -108,7 +108,7 @@ int ALAP
 			}
 			else if (Pro < jobAttributesList[jobNumber].processor_req)
 			{
-				P_Given_list = insert_ALAP_list(P_Given_list, job_release_time, processor_release_time, temp->processors_allocated, jobNumber);
+				P_Given_list = insert_preScheduledJob_list(P_Given_list, job_release_time, processor_release_time, temp->processors_allocated, jobNumber);
 				temp->job_release_time = job_release_time;
 				temp = temp->next;
 			}

@@ -420,7 +420,7 @@ int RTGS_PrintScheduleSummary(int mode, int maxKernels, jobAttributes *kernelInf
 
 
 // Backup processor jobBackupList
-genericBackupNode* insert_ALAP_list
+genericBackupNode* insert_preScheduledJob_list
 (
 	genericBackupNode* head,
 	int job_release_time,
@@ -434,6 +434,7 @@ genericBackupNode* insert_ALAP_list
 	temp->data = job_release_time;
 	temp->processor_release_time = processor_release_time;
 	temp->processors_allocated = processors_allocated;
+	temp->processors_requested = processors_allocated;
 	temp->next = NULL;
 	temp->jobNumber = jobNumber;
 

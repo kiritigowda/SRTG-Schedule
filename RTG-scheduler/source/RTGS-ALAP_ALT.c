@@ -44,7 +44,7 @@ int ALAP_advanced
 				printf("As Late As Possible Advanced (ALAP-A) -- Job-%d scheduled\n", jobNumber);
 				printf("ALAP-A -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
 			}
-			GLOBAL_preScheduleList = insert_ALAP_list(GLOBAL_preScheduleList, job_release_time, processor_release_time,
+			GLOBAL_preScheduleList = insert_preScheduledJob_list(GLOBAL_preScheduleList, job_release_time, processor_release_time,
 				processorReleased, jobNumber);
 			job_queue_handler(processorReleased, job_release_time, processor_release_time, schedule_method,
 				jobNumber, jobScheduledQueueList);
@@ -67,7 +67,7 @@ int ALAP_advanced
 				printf("As Late As Possible Advanced (ALAP-A) -- Job-%d scheduled\n", jobNumber);
 				printf("ALAP-A -- Jos ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
 			}
-			GLOBAL_preScheduleList = insert_ALAP_list(GLOBAL_preScheduleList, job_release_time, processor_release_time, processorReleased, jobNumber);
+			GLOBAL_preScheduleList = insert_preScheduledJob_list(GLOBAL_preScheduleList, job_release_time, processor_release_time, processorReleased, jobNumber);
 			job_queue_handler(processorReleased, job_release_time, processor_release_time, schedule_method, jobNumber, jobScheduledQueueList);
 			PROFILER_STOP(SRTG, ALAP_advanced)
 			return processors_available;
@@ -130,7 +130,7 @@ int ALAP_advanced
 								printf("As Late As Possible Advanced (ALAP-A) -- Job-%d scheduled\n", jobNumber);
 								printf("ALAP-A -- Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
 							}
-							GLOBAL_preScheduleList = insert_ALAP_list(GLOBAL_preScheduleList, job_release_time, processor_release_time,
+							GLOBAL_preScheduleList = insert_preScheduledJob_list(GLOBAL_preScheduleList, job_release_time, processor_release_time,
 								processorReleased, jobNumber);
 							job_queue_handler(processorReleased, job_release_time, processor_release_time,
 								schedule_method, jobNumber, jobScheduledQueueList);

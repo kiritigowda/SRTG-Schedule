@@ -139,6 +139,7 @@ struct jobBackupList {
 	int data;
 	int processor_release_time;
 	int processors_allocated;
+	int processors_requested;
 	struct jobBackupList *next;
 };
 //! \brief backup job scheduled info
@@ -246,7 +247,7 @@ scheduledResourceNode *clean_node(scheduledResourceNode *head);
 genericBackupNode *insert_node(genericBackupNode *head, int data);
 genericBackupNode *clean_list(genericBackupNode *head);
 genericBackupNode *position_delete_list(genericBackupNode *head);
-genericBackupNode *insert_ALAP_list(genericBackupNode *head, int job_release_time,
+genericBackupNode *insert_preScheduledJob_list(genericBackupNode *head, int job_release_time,
 	int processor_release_time, int processors_allocated, int jobNumber);
 void print(scheduledResourceNode *head);
 void Kernel_queue_print(scheduledResourceNode *head);

@@ -80,7 +80,7 @@ int Dispatch_queued_kernels
 						if (GLOBAL_preScheduleList != NULL) {
 							genericBackupNode* localListALAP = GLOBAL_preScheduleList;
 							if (localListALAP->data == present_time) {
-								processorsAllocatedALAP = localListALAP->processors_allocated;
+								processorsAllocatedALAP = localListALAP->processors_requested;
 								GLOBAL_preScheduleList = position_delete_list(GLOBAL_preScheduleList);
 							}
 							else {
@@ -107,7 +107,7 @@ int Dispatch_queued_kernels
 						if (GLOBAL_preScheduleList != NULL) {
 							genericBackupNode* localListAEAP_ADV = GLOBAL_preScheduleList;
 							if (localListAEAP_ADV->data == present_time) {
-								processorsAllocatedAEAP_ADV = localListAEAP_ADV->processors_allocated;
+								processorsAllocatedAEAP_ADV = localListAEAP_ADV->processors_requested;
 								GLOBAL_preScheduleList = position_delete_list(GLOBAL_preScheduleList);
 							}
 							else{
@@ -151,7 +151,7 @@ int Dispatch_queued_kernels
 					if (GLOBAL_preScheduleList != NULL) {
 						genericBackupNode* localListALAP = GLOBAL_preScheduleList;
 						if (localListALAP->data == present_time) {
-							processorsAllocatedALAP = localListALAP->processors_allocated;
+							processorsAllocatedALAP = localListALAP->processors_requested;
 							GLOBAL_preScheduleList = position_delete_list(GLOBAL_preScheduleList);
 						}
 						else {
@@ -178,7 +178,7 @@ int Dispatch_queued_kernels
 					if (GLOBAL_preScheduleList != NULL) {
 						genericBackupNode* localListAEAP_ADV = GLOBAL_preScheduleList;
 						if (localListAEAP_ADV->data == present_time) {
-							processorsAllocatedAEAP_ADV = localListAEAP_ADV->processors_allocated;
+							processorsAllocatedAEAP_ADV = localListAEAP_ADV->processors_requested;
 							GLOBAL_preScheduleList = position_delete_list(GLOBAL_preScheduleList);
 						}
 						else {

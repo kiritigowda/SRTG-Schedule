@@ -26,7 +26,7 @@ static int Mode_3_ALAP
 	job_release_time = processor_release_time - jobAttributesList[jobNumber].execution_time;
 	localProcessors = processors_available;
 
-	processorsDistList = insert_ALAP_list(processorsDistList, job_release_time, processor_release_time, processors_available, jobNumber);
+	processorsDistList = insert_preScheduledJob_list(processorsDistList, job_release_time, processor_release_time, processors_available, jobNumber);
 	scheduledResourceNode *localProcessorsAllocatedList = *processorsAllocatedList;
 
 	while (localProcessorsAllocatedList != NULL)
@@ -82,14 +82,14 @@ static int Mode_3_ALAP
 					printf("Mode 3 ALAP: Job:%d scheduled", jobNumber);
 					printf("Mode 3 ALAP: Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
 				}
-				GLOBAL_preScheduleList = insert_ALAP_list(GLOBAL_preScheduleList, job_release_time, processor_release_time, processors_allocated, jobNumber);
+				GLOBAL_preScheduleList = insert_preScheduledJob_list(GLOBAL_preScheduleList, job_release_time, processor_release_time, processors_allocated, jobNumber);
 				job_queue_handler(processorsInUse, job_release_time, processor_release_time,
 					schedule_method, jobNumber, jobScheduledQueueList);
 				break;
 			}
 			else
 			{
-				processorsDistList = insert_ALAP_list(processorsDistList, job_release_time, processor_release_time, localProcessorsAllocatedList->processors_allocated, jobNumber);
+				processorsDistList = insert_preScheduledJob_list(processorsDistList, job_release_time, processor_release_time, localProcessorsAllocatedList->processors_allocated, jobNumber);
 				localProcessorsAllocatedList->job_release_time = job_release_time;
 				localProcessorsAllocatedList = localProcessorsAllocatedList->next;
 			}
