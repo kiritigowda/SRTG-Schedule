@@ -79,7 +79,7 @@ int Dispatch_queued_kernels
 						int processorsAllocatedALAP = 0;
 						if (GLOBAL_preScheduleList != NULL) {
 							genericBackupNode* localListALAP = GLOBAL_preScheduleList;
-							if (localListALAP->data == present_time) {
+							if (localListALAP->data == present_time && t1->jobNumber == localListALAP->jobNumber) {
 								processorsAllocatedALAP = localListALAP->processors_requested;
 								GLOBAL_preScheduleList = position_delete_list(GLOBAL_preScheduleList);
 							}
@@ -106,7 +106,7 @@ int Dispatch_queued_kernels
 						int processorsAllocatedAEAP_ADV = 0;
 						if (GLOBAL_preScheduleList != NULL) {
 							genericBackupNode* localListAEAP_ADV = GLOBAL_preScheduleList;
-							if (localListAEAP_ADV->data == present_time) {
+							if (localListAEAP_ADV->data == present_time && t1->jobNumber == localListAEAP_ADV->jobNumber) {
 								processorsAllocatedAEAP_ADV = localListAEAP_ADV->processors_requested;
 								GLOBAL_preScheduleList = position_delete_list(GLOBAL_preScheduleList);
 							}
@@ -150,7 +150,7 @@ int Dispatch_queued_kernels
 					int processorsAllocatedALAP = 0;
 					if (GLOBAL_preScheduleList != NULL) {
 						genericBackupNode* localListALAP = GLOBAL_preScheduleList;
-						if (localListALAP->data == present_time) {
+						if (localListALAP->data == present_time && localJobScheduledQueueList->jobNumber == localListALAP->jobNumber) {
 							processorsAllocatedALAP = localListALAP->processors_requested;
 							GLOBAL_preScheduleList = position_delete_list(GLOBAL_preScheduleList);
 						}
@@ -177,7 +177,7 @@ int Dispatch_queued_kernels
 					int processorsAllocatedAEAP_ADV = 0;
 					if (GLOBAL_preScheduleList != NULL) {
 						genericBackupNode* localListAEAP_ADV = GLOBAL_preScheduleList;
-						if (localListAEAP_ADV->data == present_time) {
+						if (localListAEAP_ADV->data == present_time && localJobScheduledQueueList->jobNumber == localListAEAP_ADV->jobNumber) {
 							processorsAllocatedAEAP_ADV = localListAEAP_ADV->processors_requested;
 							GLOBAL_preScheduleList = position_delete_list(GLOBAL_preScheduleList);
 						}
