@@ -249,6 +249,10 @@ genericBackupNode *clean_list(genericBackupNode *head);
 genericBackupNode *position_delete_list(genericBackupNode *head);
 genericBackupNode *insert_preScheduledJob_list(genericBackupNode *head, int job_release_time,
 	int processor_release_time, int processors_allocated, int jobNumber);
+genericBackupNode *position_insert_preScheduledJobs(genericBackupNode *head, genericBackupNode *positionInsertVariable, int position);
+genericBackupNode *insert_preScheduledJobs(genericBackupNode *head, genericBackupNode *insertVariable);
+genericBackupNode *ascending_insert_preScheduledJobs(genericBackupNode *head, int job_release_time, int processor_release_time,
+	int processors_allocated, int jobNumber);
 void print(scheduledResourceNode *head);
 void Kernel_queue_print(scheduledResourceNode *head);
 

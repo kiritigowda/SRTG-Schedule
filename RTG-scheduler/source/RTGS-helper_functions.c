@@ -56,7 +56,7 @@ bool RTGS_GetEnvironmentVariable(const char * name, char * value, size_t valueSi
 #endif
 }
 
-const char * HTML_header =
+const char *HTML_header =
 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n"
 "<html>\n"
 "<head>\n"
@@ -76,7 +76,7 @@ const char * HTML_header =
 "  function load() {\n"
 ;
 
-const char * HTML_footer =
+const char *HTML_footer =
 "  }\n"
 "</script>\n"
 "</head>\n"
@@ -257,7 +257,7 @@ const char * summaryHTMLHeader =
 "</tr>\n"
 ;
 
-const char * summaryHTMLFooter =
+const char *summaryHTMLFooter =
 "</table>\n"
 "<A NAME=\"table3\"><h1 align=\"center\"><font color=\"DodgerBlue\" size=\"6\"><br><br><br><em>Compare</em></font></h1></A>\n"
 "\t\n"
@@ -283,7 +283,7 @@ int RTGS_PrintScheduleSummary(int mode, int maxKernels, jobAttributes *kernelInf
 	char pHTMLfile[1024]; sprintf(pHTMLfile, "%s-Mode-%d-Job-Summary.html", profiler, mode);
 	char pSummaryfile[1024]; sprintf(pSummaryfile, "%s-Mode-%d-Summary.html", profiler, mode);
 
-	FILE * fp = fopen(pCSVfile, "w"); if (!fp) { printf("ERROR: unable to create '%s'\n", pCSVfile); return RTGS_ERROR_NO_RESOURCES; }
+	FILE *fp = fopen(pCSVfile, "w"); if (!fp) { printf("ERROR: unable to create '%s'\n", pCSVfile); return RTGS_ERROR_NO_RESOURCES; }
 
 	fprintf(fp, "Job,Processors,Execution Time,Deadline,Release Time,Scheduler Overhead (microSec),Scheduled At,Rescheduled to,Completion Time,Scheduled Hardware\n");
 	for (int i = 0; i < maxKernels; i++) {
@@ -301,7 +301,7 @@ int RTGS_PrintScheduleSummary(int mode, int maxKernels, jobAttributes *kernelInf
 	}
 	fclose(fp);
 
-	FILE * fh = fopen(pHTMLfile, "w"); if (!fp) { printf("ERROR: unable to create '%s'\n", pHTMLfile); return RTGS_ERROR_NO_RESOURCES; }
+	FILE *fh = fopen(pHTMLfile, "w"); if (!fp) { printf("ERROR: unable to create '%s'\n", pHTMLfile); return RTGS_ERROR_NO_RESOURCES; }
 	fprintf(fh, HTML_header, mode);
 	int width = 1000, height = 400;
 	int xstart = 300, max_time = 0;
@@ -418,47 +418,143 @@ int RTGS_PrintScheduleSummary(int mode, int maxKernels, jobAttributes *kernelInf
 	return RTGS_SUCCESS;
 }
 
-
-// Backup processor jobBackupList
-genericBackupNode* insert_preScheduledJob_list
+// insert a pre-scheduled job in a given position
+genericBackupNode *position_insert_preScheduledJobs
 (
-	genericBackupNode* head,
+	genericBackupNode *head,
+	genericBackupNode *positionInsertVariable,
+	int position
+)
+{
+	genericBackupNode *temp = head;
+	genericBackupNode *temp1 = positionInsertVariable;
+	int count = 1;
+
+	if (temp == NULL) {
+		head = temp1;
+		return head;
+	}
+
+	if (position == 1) {
+		temp1->next = head;
+		head = temp1;
+		return head;
+	}
+
+	while (temp->next != NULL)
+	{
+		if (count == (position - 1))
+		{
+			temp1->next = temp->next;
+			temp->next = temp1;
+			return head;
+		}
+		temp = temp->next;
+		++count;
+	}
+
+	if (count == position + 1) {
+		head = insert_preScheduledJobs(head, positionInsertVariable);
+		return head;
+	}
+
+	return head;
+}
+
+// insert pre-scheduled jobs function
+genericBackupNode *insert_preScheduledJobs
+(
+	genericBackupNode *head,
+	genericBackupNode *insertVariable
+)
+{
+	genericBackupNode *temp;
+	genericBackupNode *temp1 = insertVariable;
+
+	if (head == NULL) {
+		head = temp1;
+	}
+	else {
+		temp = head;
+		while (temp->next != NULL) {
+			temp = temp->next;
+		}
+		temp->next = temp1;
+	}
+	return head;
+}
+
+// ascending insert pre scheduled jobs function
+genericBackupNode *ascending_insert_preScheduledJobs
+(
+	genericBackupNode *head,
 	int job_release_time,
 	int processor_release_time,
 	int processors_allocated,
 	int jobNumber
 )
 {
+	int count = 1, flag = 0;
+	genericBackupNode *temp = head;
+	genericBackupNode *temp1 = (genericBackupNode*)malloc(sizeof(scheduledResourceNode));
+	//Values into the variable
+	temp1->data = job_release_time;
+	temp1->jobNumber = jobNumber;
+	temp1->processor_release_time = processor_release_time;
+	temp1->processors_allocated = processors_allocated;
+	temp1->processors_requested = processors_allocated;
+	temp1->next = NULL;
 
-	genericBackupNode* temp = (genericBackupNode*)malloc(sizeof(genericBackupNode));
-	temp->data = job_release_time;
-	temp->processor_release_time = processor_release_time;
-	temp->processors_allocated = processors_allocated;
-	temp->processors_requested = processors_allocated;
-	temp->next = NULL;
-	temp->jobNumber = jobNumber;
 
-	if (head == NULL)	head = temp;
+	if (head == NULL) {
+		head = temp1;
+		flag = 1;
+	}
+	else if (job_release_time < temp->data) {
+		temp1->next = head;
+		head = temp1;
+		flag = 1;
+	}
 	else {
-		genericBackupNode* temp1;
-		temp1 = head;
-
-		while (temp1 != NULL)
-		{
-			if (temp1->next == NULL) {
-				temp1->next = temp;
+		while (temp != NULL) {
+			if (job_release_time < temp->data) {
+				head = position_insert_preScheduledJobs(head, temp1, count);
 				return head;
 			}
-			temp1 = temp1->next;
+			else if (job_release_time == temp->data) {
+				count += 1;
+				head = position_insert_preScheduledJobs(head, temp1, count);
+				return head;
+			}
+			temp = temp->next;
+			count++;
 		}
+	}
+
+	if (flag == 0) {
+		head = insert_preScheduledJobs(head, temp1);
 	}
 	return head;
 }
 
-// Backup  jobBackupList delete
-genericBackupNode* position_delete_list(genericBackupNode* head)
+// Backup processor jobBackupList
+genericBackupNode *insert_preScheduledJob_list
+(
+	genericBackupNode *head,
+	int job_release_time,
+	int processor_release_time,
+	int processors_allocated,
+	int jobNumber
+)
 {
-	genericBackupNode* temp;
+	head = ascending_insert_preScheduledJobs(head, job_release_time, processor_release_time, processors_allocated, jobNumber);
+	return head;
+}
+
+// Backup  jobBackupList delete
+genericBackupNode *position_delete_list(genericBackupNode *head)
+{
+	genericBackupNode *temp;
 	temp = head;
 	if (temp == NULL) {
 		if (GLOBAL_RTGS_DEBUG_MSG > 1) {
@@ -472,9 +568,9 @@ genericBackupNode* position_delete_list(genericBackupNode* head)
 }
 
 // Backup processor jobBackupList
-genericBackupNode* insert_node(genericBackupNode* head, int x)
+genericBackupNode *insert_node(genericBackupNode *head, int x)
 {
-	genericBackupNode* temp = (genericBackupNode*)malloc(sizeof(genericBackupNode));
+	genericBackupNode *temp = (genericBackupNode*)malloc(sizeof(genericBackupNode));
 
 	temp->data = x;
 	temp->processor_release_time = 0;
@@ -484,7 +580,7 @@ genericBackupNode* insert_node(genericBackupNode* head, int x)
 	if (head == NULL)	head = temp;
 	else
 	{
-		genericBackupNode* temp1;
+		genericBackupNode *temp1;
 		temp1 = head;
 		while (temp1 != NULL)
 		{
@@ -499,9 +595,9 @@ genericBackupNode* insert_node(genericBackupNode* head, int x)
 }
 
 //clean jobBackupList
-genericBackupNode *clean_list(genericBackupNode * head)
+genericBackupNode *clean_list(genericBackupNode *head)
 {
-	genericBackupNode  *temp1;
+	genericBackupNode *temp1;
 
 	while (head != NULL) {
 		temp1 = head->next;
@@ -512,9 +608,9 @@ genericBackupNode *clean_list(genericBackupNode * head)
 }
 
 //Ascending insert function
-scheduledResourceNode* ascending_insert
+scheduledResourceNode *ascending_insert
 (
-	scheduledResourceNode* head,
+	scheduledResourceNode *head,
 	int ascendingVariable,
 	int processor_release_time,
 	int processorReleased,
@@ -523,8 +619,8 @@ scheduledResourceNode* ascending_insert
 )
 {
 	int count = 1, flag = 0;
-	scheduledResourceNode* temp = head;
-	scheduledResourceNode* temp1 = (scheduledResourceNode*)malloc(sizeof(scheduledResourceNode));
+	scheduledResourceNode *temp = head;
+	scheduledResourceNode *temp1 = (scheduledResourceNode*)malloc(sizeof(scheduledResourceNode));
 	//Values into the variable
 	temp1->job_release_time = 0;
 	temp1->data = ascendingVariable;
@@ -571,7 +667,7 @@ scheduledResourceNode* ascending_insert
 }
 
 //Remove recurring variables function
-scheduledResourceNode* remove_recurring_node(scheduledResourceNode* head)
+scheduledResourceNode *remove_recurring_node(scheduledResourceNode* head)
 {
 	scheduledResourceNode *temp, *kernel_check;
 	scheduledResourceNode *temp1;
@@ -582,8 +678,8 @@ scheduledResourceNode* remove_recurring_node(scheduledResourceNode* head)
 		temp1 = temp->next;
 		if (temp->data == temp1->data)
 		{
-			scheduledResourceNode* t1 = (scheduledResourceNode*)malloc(sizeof(scheduledResourceNode));
-			scheduledResourceNode* t2 = (scheduledResourceNode*)malloc(sizeof(scheduledResourceNode));
+			scheduledResourceNode *t1 = (scheduledResourceNode*)malloc(sizeof(scheduledResourceNode));
+			scheduledResourceNode *t2 = (scheduledResourceNode*)malloc(sizeof(scheduledResourceNode));
 
 			t1->data = temp->data;
 			t1->job_release_time = temp->job_release_time;
@@ -603,16 +699,15 @@ scheduledResourceNode* remove_recurring_node(scheduledResourceNode* head)
 			t2->next = NULL;
 			t2->job_next = temp1->job_next;
 
-			if (t2->job_next == NULL)
-			{
+			if (t2->job_next == NULL){
 				temp->job_next = t2;
 				t2->job_next = t1;
 			}
-			else
-			{
+			else {
 				free(t2);
 				temp->job_next = temp1->job_next;
 				kernel_check = temp1->job_next;
+
 				while (kernel_check->job_next != NULL)
 					kernel_check = kernel_check->job_next;
 
@@ -626,7 +721,9 @@ scheduledResourceNode* remove_recurring_node(scheduledResourceNode* head)
 
 			free(temp1);
 
-			if (temp->next == NULL)		return head;
+			if (temp->next == NULL) {
+				return head;
+			}
 		}
 		temp = temp->next;
 	}
@@ -634,10 +731,10 @@ scheduledResourceNode* remove_recurring_node(scheduledResourceNode* head)
 }
 
 //Insert a variable function
-scheduledResourceNode* insert(scheduledResourceNode* head, scheduledResourceNode* insertVariable)
+scheduledResourceNode *insert(scheduledResourceNode *head, scheduledResourceNode *insertVariable)
 {
-	scheduledResourceNode* temp;
-	scheduledResourceNode* temp1 = insertVariable;
+	scheduledResourceNode *temp;
+	scheduledResourceNode *temp1 = insertVariable;
 
 	if (head == NULL) head = temp1;
 	else
@@ -652,10 +749,10 @@ scheduledResourceNode* insert(scheduledResourceNode* head, scheduledResourceNode
 }
 
 //Insert a variable in a given position
-scheduledResourceNode* position_insert(scheduledResourceNode* head, scheduledResourceNode* positionInsertVariable, int p)
+scheduledResourceNode *position_insert(scheduledResourceNode *head, scheduledResourceNode *positionInsertVariable, int p)
 {
-	scheduledResourceNode* temp;
-	scheduledResourceNode* temp1;
+	scheduledResourceNode *temp;
+	scheduledResourceNode *temp1;
 	int count = 1;
 	temp = head;
 	temp1 = positionInsertVariable;
@@ -693,10 +790,10 @@ scheduledResourceNode* position_insert(scheduledResourceNode* head, scheduledRes
 }
 
 //Delete a node from the jobBackupList
-scheduledResourceNode* position_delete(scheduledResourceNode* head, int p)
+scheduledResourceNode *position_delete(scheduledResourceNode *head, int p)
 {
-	scheduledResourceNode* temp;
-	scheduledResourceNode* temp1;
+	scheduledResourceNode *temp;
+	scheduledResourceNode *temp1;
 	int count = 1;
 	temp = head;
 
@@ -733,9 +830,9 @@ scheduledResourceNode* position_delete(scheduledResourceNode* head, int p)
 }
 
 //clean node
-scheduledResourceNode *clean_node(scheduledResourceNode * head)
+scheduledResourceNode *clean_node(scheduledResourceNode *head)
 {
-	scheduledResourceNode  *temp1;
+	scheduledResourceNode *temp1;
 	while (head != NULL)
 	{
 		temp1 = head->next;
@@ -745,10 +842,10 @@ scheduledResourceNode *clean_node(scheduledResourceNode * head)
 	return head;
 }
 
-//Print the jobBackupList
-void print(scheduledResourceNode* head)
+// Print the jobBackupList
+void print(scheduledResourceNode *head)
 {
-	scheduledResourceNode* temp;
+	scheduledResourceNode *temp;
 	temp = head;
 	printf("Scheduled Job List\n");
 	while (temp != NULL) {
@@ -756,7 +853,7 @@ void print(scheduledResourceNode* head)
 			printf("	Job-%d	-- Completion Time:%d,	Processors Retrived:%d\n", temp->jobNumber, temp->data, temp->processors_allocated);
 		}
 		else {
-			scheduledResourceNode* temp1 = temp->job_next;
+			scheduledResourceNode *temp1 = temp->job_next;
 			printf("	Job-MJ	-- Completion Time:%d,	Processors Retrived:%d\n", temp->data, temp->processors_allocated);
 			while (temp1 != NULL) {
 				printf("	      	   Job-%d	-- Schdeuled for Completion\n", temp1->jobNumber);
@@ -769,9 +866,9 @@ void print(scheduledResourceNode* head)
 }
 
 //Print the jobBackupList
-void Kernel_queue_print(scheduledResourceNode* head)
+void Kernel_queue_print(scheduledResourceNode *head)
 {
-	scheduledResourceNode* temp;
+	scheduledResourceNode *temp;
 	temp = head;
 	printf("Jobs Scheduled for GPU Execution\n");
 	while (temp != NULL) {
@@ -779,9 +876,10 @@ void Kernel_queue_print(scheduledResourceNode* head)
 			printf("	Job-%d	-- Job Release Time:%d,	Processor Allocated:%d\n", temp->jobNumber, temp->data, temp->processors_allocated);
 		}
 		else {
-			scheduledResourceNode* temp1 = temp->job_next;
+			scheduledResourceNode *temp1 = temp->job_next;
+			printf("	Job-MJ	-- Job Release Time:%d,	Processor Allocated:%d\n", temp->data, temp->processors_allocated);
 			while (temp1 != NULL) {
-				printf("	Job-%d	-- Job Release Time:%d,	Processor Allocated:%d\n", temp1->jobNumber, temp1->data, temp1->processors_allocated);
+				printf("	      	   Job-%d	-- Schdeuled for Release -- Processors Allocated:%d\n", temp1->jobNumber, temp1->processors_allocated);
 				temp1 = temp1->job_next;
 			}
 		}
