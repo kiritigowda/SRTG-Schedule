@@ -233,7 +233,7 @@ int64_t RTGS_GetClockFrequency();
 //! \brief Get ENV Variable
 bool RTGS_GetEnvironmentVariable(const char *name, char *value, size_t valueSize);
 
-//! \brief print summary
+//! \brief print_processorsAllocated_list summary
 int RTGS_PrintScheduleSummary(int mode, int maxKernels, jobAttributes *jobAttributesList);
 
 // jobBackupList functions
@@ -253,7 +253,9 @@ genericBackupNode *position_insert_preScheduledJobs(genericBackupNode *head, gen
 genericBackupNode *insert_preScheduledJobs(genericBackupNode *head, genericBackupNode *insertVariable);
 genericBackupNode *ascending_insert_preScheduledJobs(genericBackupNode *head, int job_release_time, int processor_release_time,
 	int processors_allocated, int jobNumber);
-void print(scheduledResourceNode *head);
-void Kernel_queue_print(scheduledResourceNode *head);
+genericBackupNode *position_delete_preScheduledJob(genericBackupNode *head, int position);
+void print_processorsAllocated_list(scheduledResourceNode *head);
+void print_preScheduledJob_list(scheduledResourceNode *head);
+void print_preQueuedJob_list(genericBackupNode *head);
 
 #endif /* RTGS_H */

@@ -142,7 +142,7 @@ int  RTGS_mode_5(char *jobsListFileName, char *releaseTimeFilename)
 	}
 
 	if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-		print(processorsAllocatedList);
+		print_processorsAllocated_list(processorsAllocatedList);
 	}
 	processorsAllocatedList = clean_node(processorsAllocatedList);
 	GLOBAL_preScheduleList = clean_list(GLOBAL_preScheduleList);

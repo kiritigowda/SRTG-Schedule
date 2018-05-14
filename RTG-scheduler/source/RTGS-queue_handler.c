@@ -23,7 +23,7 @@ void queue_job_execution
 	*processorsAllocatedList = ascending_insert(*processorsAllocatedList, processor_release_time, processor_release_time,
 		processorReleased, jobNumber, schedule_method);
 	if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-		print(*processorsAllocatedList);
+		print_processorsAllocated_list(*processorsAllocatedList);
 	}
 	PROFILER_STOP(SRTG, queue_job_execution)
 	return;
@@ -59,7 +59,9 @@ void job_queue_handler
 	}
 
 	if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-		Kernel_queue_print(*jobScheduledQueueList);
+		print_preScheduledJob_list(*jobScheduledQueueList);
+		if(GLOBAL_preScheduleList != NULL)
+			print_preQueuedJob_list(GLOBAL_preScheduleList);
 	}
 	PROFILER_STOP(SRTG, job_queue_handler)
 	return;

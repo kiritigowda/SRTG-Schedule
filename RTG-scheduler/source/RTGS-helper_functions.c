@@ -428,7 +428,7 @@ genericBackupNode *position_insert_preScheduledJobs
 {
 	genericBackupNode *temp = head;
 	genericBackupNode *temp1 = positionInsertVariable;
-	int count = 1;
+	int count = 0;
 
 	if (temp == NULL) {
 		head = temp1;
@@ -441,23 +441,24 @@ genericBackupNode *position_insert_preScheduledJobs
 		return head;
 	}
 
-	while (temp->next != NULL)
+	while (temp != NULL)
 	{
-		if (count == (position - 1))
+		++count;
+		if (count == position - 1)
 		{
 			temp1->next = temp->next;
 			temp->next = temp1;
 			return head;
 		}
 		temp = temp->next;
-		++count;
 	}
-
-	if (count == position + 1) {
+	
+	if (count + 1 == position) {
 		head = insert_preScheduledJobs(head, positionInsertVariable);
 		return head;
 	}
 
+	printf("ERROR position_insert_preScheduledJobs - Position insert Failed\n");
 	return head;
 }
 
@@ -494,7 +495,7 @@ genericBackupNode *ascending_insert_preScheduledJobs
 	int jobNumber
 )
 {
-	int count = 1, flag = 0;
+	int count = 1;
 	genericBackupNode *temp = head;
 	genericBackupNode *temp1 = (genericBackupNode*)malloc(sizeof(scheduledResourceNode));
 	//Values into the variable
@@ -505,15 +506,14 @@ genericBackupNode *ascending_insert_preScheduledJobs
 	temp1->processors_requested = processors_allocated;
 	temp1->next = NULL;
 
-
 	if (head == NULL) {
 		head = temp1;
-		flag = 1;
+		return head;
 	}
 	else if (job_release_time < temp->data) {
 		temp1->next = head;
 		head = temp1;
-		flag = 1;
+		return head;
 	}
 	else {
 		while (temp != NULL) {
@@ -522,7 +522,7 @@ genericBackupNode *ascending_insert_preScheduledJobs
 				return head;
 			}
 			else if (job_release_time == temp->data) {
-				count += 1;
+				count++;
 				head = position_insert_preScheduledJobs(head, temp1, count);
 				return head;
 			}
@@ -531,9 +531,7 @@ genericBackupNode *ascending_insert_preScheduledJobs
 		}
 	}
 
-	if (flag == 0) {
-		head = insert_preScheduledJobs(head, temp1);
-	}
+	head = insert_preScheduledJobs(head, temp1);
 	return head;
 }
 
@@ -548,6 +546,40 @@ genericBackupNode *insert_preScheduledJob_list
 )
 {
 	head = ascending_insert_preScheduledJobs(head, job_release_time, processor_release_time, processors_allocated, jobNumber);
+	return head;
+}
+
+// delete a pre-scheduled job by position
+genericBackupNode *position_delete_preScheduledJob(genericBackupNode *head, int position)
+{
+	genericBackupNode *temp;
+	genericBackupNode *temp1;
+	int count = 1;
+	temp = head;
+
+	if (temp == NULL) {
+		if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+			printf("The List is empty\n");
+		}
+		return head;
+	}
+
+	if (position == 1) {
+		head = temp->next;
+		free(temp);
+		return head;
+	}
+
+	while (temp->next != NULL) {
+		if (count == position ) {
+			temp1 = temp->next;
+			temp->next = temp1->next;
+			free(temp1);
+			return head;
+		}
+		temp = temp->next;
+		++count;
+	}
 	return head;
 }
 
@@ -842,8 +874,8 @@ scheduledResourceNode *clean_node(scheduledResourceNode *head)
 	return head;
 }
 
-// Print the jobBackupList
-void print(scheduledResourceNode *head)
+// Print the processors retrived list
+void print_processorsAllocated_list(scheduledResourceNode *head)
 {
 	scheduledResourceNode *temp;
 	temp = head;
@@ -865,8 +897,8 @@ void print(scheduledResourceNode *head)
 	return;
 }
 
-//Print the jobBackupList
-void Kernel_queue_print(scheduledResourceNode *head)
+//Print the job pre scheduled list
+void print_preScheduledJob_list(scheduledResourceNode *head)
 {
 	scheduledResourceNode *temp;
 	temp = head;
@@ -883,6 +915,19 @@ void Kernel_queue_print(scheduledResourceNode *head)
 				temp1 = temp1->job_next;
 			}
 		}
+		temp = temp->next;
+	}
+	return;
+}
+
+//Print the job pre scheduled list
+void print_preQueuedJob_list(genericBackupNode *head)
+{
+	genericBackupNode *temp;
+	temp = head;
+	printf("Jobs Queued for GPU Execution\n");
+	while (temp != NULL) {
+		printf("	Job-%d	-- Job Release Time:%d,	Processor Allocated:%d\n", temp->jobNumber, temp->data, temp->processors_requested);
 		temp = temp->next;
 	}
 	return;
