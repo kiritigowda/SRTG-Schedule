@@ -17,7 +17,7 @@ int Kernel_book_keeper
 )
 {
 	PROFILER_START(SRTG, Kernel_book_keeper)
-	int processorReleased = 0, processor_release_time = 0;
+		int processorReleased = 0, processor_release_time = 0;
 	int schedule_method = RTGS_SCHEDULE_METHOD_NOT_DEFINED;
 	static int FLAG, FLAG_V, given;
 
@@ -243,7 +243,7 @@ int Kernel_book_keeper
 			processors_available, processorsAllocatedList, jobScheduledQueueList);
 	}
 	PROFILER_STOP(SRTG, Kernel_book_keeper)
-	return processors_available;
+		return processors_available;
 }
 
 int Processors_unavailable
@@ -257,21 +257,30 @@ int Processors_unavailable
 )
 {
 	PROFILER_START(SRTG, Processors_unavailable)
-	if (jobAttributesList[jobNumber].processor_req < PROCESSOR_LIMIT)
-	{
-		processors_available = AEAP(jobAttributesList, jobNumber, present_time,
-			processors_available, processorsAllocatedList, jobScheduledQueueList);
-	}
-	else if (jobAttributesList[jobNumber].processor_req >= PROCESSOR_LIMIT && GLOBAL_preScheduleList == NULL)
-	{
-		processors_available = ALAP(jobAttributesList, jobNumber, present_time,
-			processors_available, processorsAllocatedList, jobScheduledQueueList);
-	}
-	else if (jobAttributesList[jobNumber].processor_req >= PROCESSOR_LIMIT && GLOBAL_preScheduleList != NULL)
-	{
-		processors_available = ALAP_advanced(jobAttributesList, jobNumber, present_time,
-			processors_available, processorsAllocatedList, jobScheduledQueueList);
-	}
+		if (jobAttributesList[jobNumber].processor_req < PROCESSOR_LIMIT)
+		{
+			if (GLOBAL_RTGS_DEBUG_MSG > 2) {
+				printf("Processors unavailable:: Job:%d sent for AEAP execution\n", jobNumber);
+			}
+			processors_available = AEAP(jobAttributesList, jobNumber, present_time,
+				processors_available, processorsAllocatedList, jobScheduledQueueList);
+		}
+		else if (jobAttributesList[jobNumber].processor_req >= PROCESSOR_LIMIT && GLOBAL_preScheduleList == NULL)
+		{
+			if (GLOBAL_RTGS_DEBUG_MSG > 2) {
+				printf("Processors unavailable:: Job:%d sent for ALAP execution\n", jobNumber);
+			}
+			processors_available = ALAP(jobAttributesList, jobNumber, present_time,
+				processors_available, processorsAllocatedList, jobScheduledQueueList);
+		}
+		else
+		{
+			if (GLOBAL_RTGS_DEBUG_MSG > 2) {
+				printf("Processors unavailable:: Job:%d sent for ALAP Advanced execution\n", jobNumber);
+			}
+			processors_available = ALAP_advanced(jobAttributesList, jobNumber, present_time,
+				processors_available, processorsAllocatedList, jobScheduledQueueList);
+		}
 	PROFILER_STOP(SRTG, Processors_unavailable)
-	return processors_available;
+		return processors_available;
 }
