@@ -414,7 +414,6 @@ static int Mode_4_AEAP_advanced
 
 				int processorsInUse = jobAttributesList[jobNumber].processor_req;
 				int processor_release_time = job_release_time + jobAttributesList[jobNumber].execution_time;
-				int presentTime = present_time;
 				int schedule_method = RTGS_SCHEDULE_METHOD_AEAP_ADVANCED;
 
 				jobAttributesList[jobNumber].schedule_hardware = 1;
@@ -466,7 +465,6 @@ static int Mode_4_AEAP_advanced
 					job_release_time = latestProcessorRelTime;
 					int processorsInUse = jobAttributesList[jobNumber].processor_req;
 					int processor_release_time = job_release_time + jobAttributesList[jobNumber].execution_time;
-					int presentTime = present_time;
 					int schedule_method = RTGS_SCHEDULE_METHOD_AEAP_ADVANCED;
 
 					jobAttributesList[jobNumber].schedule_hardware = 1;
@@ -508,7 +506,6 @@ static int Mode_4_AEAP_advanced
 					job_release_time = latestProcessorRelTime;
 					int processorsInUse = jobAttributesList[jobNumber].processor_req;
 					int processor_release_time = job_release_time + jobAttributesList[jobNumber].execution_time;
-					int presentTime = present_time;
 					int schedule_method = RTGS_SCHEDULE_METHOD_AEAP_ADVANCED;
 
 					jobAttributesList[jobNumber].schedule_hardware = 1;
@@ -579,7 +576,6 @@ static int Mode_4_AEAP_advanced
 						job_release_time = latestProcessorRelTime;
 						int processorsInUse = jobAttributesList[jobNumber].processor_req;
 						int processor_release_time = job_release_time + jobAttributesList[jobNumber].execution_time;
-						int presentTime = present_time;
 						int schedule_method = RTGS_SCHEDULE_METHOD_AEAP_ADVANCED;
 
 						jobAttributesList[jobNumber].schedule_hardware = 1;
@@ -603,7 +599,6 @@ static int Mode_4_AEAP_advanced
 						job_release_time = latestProcessorRelTime;
 						int processorsInUse = jobAttributesList[jobNumber].processor_req;
 						int processor_release_time = job_release_time + jobAttributesList[jobNumber].execution_time;
-						int presentTime = present_time;
 						int schedule_method = RTGS_SCHEDULE_METHOD_AEAP_ADVANCED;
 
 						jobAttributesList[jobNumber].schedule_hardware = 1;
@@ -667,7 +662,6 @@ static int Mode_4_AEAP_advanced
 				job_release_time = processorsQueuedRelease;
 				int processorsInUse = jobAttributesList[jobNumber].processor_req;
 				int processor_release_time = job_release_time + jobAttributesList[jobNumber].execution_time;
-				int presentTime = present_time;
 				int schedule_method = RTGS_SCHEDULE_METHOD_AEAP_ADVANCED;
 
 				jobAttributesList[jobNumber].schedule_hardware = 1;
@@ -760,7 +754,6 @@ static int Mode_4_AEAP_advanced
 						job_release_time = latestProcessorRelTime;
 						int processorsInUse = jobAttributesList[jobNumber].processor_req;
 						int processor_release_time = job_release_time + jobAttributesList[jobNumber].execution_time;
-						int presentTime = present_time;
 						int schedule_method = RTGS_SCHEDULE_METHOD_AEAP_ADVANCED;
 
 						jobAttributesList[jobNumber].schedule_hardware = 1;
@@ -784,7 +777,6 @@ static int Mode_4_AEAP_advanced
 						job_release_time = latestProcessorRelTime;
 						int processorsInUse = jobAttributesList[jobNumber].processor_req;
 						int processor_release_time = job_release_time + jobAttributesList[jobNumber].execution_time;
-						int presentTime = present_time;
 						int schedule_method = RTGS_SCHEDULE_METHOD_AEAP_ADVANCED;
 
 						jobAttributesList[jobNumber].schedule_hardware = 1;
@@ -848,7 +840,6 @@ static int Mode_4_AEAP_advanced
 				job_release_time = processorsQueuedRelease;
 				int processorsInUse = jobAttributesList[jobNumber].processor_req;
 				int processor_release_time = job_release_time + jobAttributesList[jobNumber].execution_time;
-				int presentTime = present_time;
 				int schedule_method = RTGS_SCHEDULE_METHOD_AEAP_ADVANCED;
 
 				jobAttributesList[jobNumber].schedule_hardware = 1;
