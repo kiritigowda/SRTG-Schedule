@@ -141,11 +141,10 @@ int  RTGS_mode_5(char *jobsListFileName, char *releaseTimeFilename)
 		kernelMax = 0; maxReleases = 0; jobNumber = 0; GLOBAL_GPU_JOBS = 0; GLOBAL_CPU_JOBS = 0;
 	}
 
-	if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-		print_processorsAllocated_list(processorsAllocatedList);
+	if (processorsAllocatedList || GLOBAL_preScheduleList) {
+		printf("\nERROR -- processorsAllocatedList/GLOBAL_preScheduleList Failed\n");
+		return RTGS_FAILURE;
 	}
-	processorsAllocatedList = clean_node(processorsAllocatedList);
-	GLOBAL_preScheduleList = clean_list(GLOBAL_preScheduleList);
 	PROFILER_STOP(SRTG, RTGS_mode_5)
 	return RTGS_SUCCESS;
 }
