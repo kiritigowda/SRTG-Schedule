@@ -7,63 +7,87 @@
 
 int ALAP_improve
 (
-	kernelInfo *kernel_info_list,
-	int kernel_number,
+	jobAttributes *jobAttributesList,
+	int jobNumber,
 	int present_time,
 	int processors_available,
-	scheduledNode ** processor_alloc_list,
-	scheduledNode **kernel_queue_list
+	scheduledResourceNode **processorsAllocatedList,
+	scheduledResourceNode **jobScheduledQueueList
 )
 {
 	PROFILER_START(SRTG, ALAP_improve)
+	
+	if (GLOBAL_preScheduleList == NULL) {
+		printf("As Late As Possible Improved (ALAP-I) -- Job:%d BAD ENTRY\n", jobNumber);
+		return RTGS_FAILURE;
+	}
 	if (GLOBAL_RTGS_DEBUG_MSG > 2) {
-		printf("As Late Aa Possible Improved (ALAP-I) -- Job-%d is verified for ALAP IMPROVED scheduling\n", kernel_number);
+		printf("As Late As Possible Improved (ALAP-I) -- Job-%d is verified, ALAP IMPROVED called\n", jobNumber);
 	}
-	scheduledNode *temp = *kernel_queue_list;
 
-	if (temp->kernel_number == kernel_number)
-	{
-		if (GLOBAL_RTGS_DEBUG_MSG > 2) {
-			printf("As Late Aa Possible Improved (ALAP-I) -- Job-%d is verified for ALAP IMPROVED scheduling\n", kernel_number);
-			printf("ALAP-I -- GLOBAL_ALAP_LIST->data: %d && kernel_queue_list: %d\n", GLOBAL_ALAP_LIST->data, temp->data);
-		}
-		if (GLOBAL_ALAP_LIST->data == temp->data)
-		{
-			GLOBAL_ALAP_LIST->data = temp->data = present_time;
-			temp->processor_release_time = present_time + kernel_info_list[kernel_number].execution_time;
-			processors_available = Dispatch_queued_kernels(present_time, processors_available, kernel_queue_list, processor_alloc_list);
-		}
-	}
-	else if (temp->kernel_number == MULTIPLE_KERNELS_SCHEDULED)
-	{
-		scheduledNode *head = temp;
-		scheduledNode *t1, *t2;
-		t1 = temp->kernel_next;
-		while (t1 != NULL)
-		{
-			t2 = t1->kernel_next;
-			if (t1->kernel_number == kernel_number && GLOBAL_ALAP_LIST->data == t1->data)
-			{
-				head->kernel_next = t2;
-				GLOBAL_ALAP_LIST->data = t1->data = present_time;
-				t1->processor_release_time = present_time + kernel_info_list[kernel_number].execution_time;
-				GLOBAL_ALAP_LIST = position_delete_list(GLOBAL_ALAP_LIST);
-				processors_available = processors_available - t1->processors_allocated;
-				if (GLOBAL_RTGS_DEBUG_MSG > 2) {
-					printf("As Late Aa Possible Improved (ALAP-I) -- MULTIPLE_KERNELS_SCHEDULED\n");
-					printf("ALAP-I --  TIME: %d<--Dispatch-- schedule_method:RTGS_SCHEDULE_METHOD_ALAP  Job-%d sent to GPU for EXECUTION-->\n", present_time, t1->kernel_number);
-				}
-				Queue_kernel_execution(t1->processors_allocated, t1->processor_release_time, present_time,
-					t1->schedule_method, t1->kernel_number, processor_alloc_list);
+	scheduledResourceNode *localJobScheduledQueueList = *jobScheduledQueueList;
+	genericBackupNode *localPreScheduleList = GLOBAL_preScheduleList;
 
-				free(t1);
-				PROFILER_STOP(SRTG, ALAP_improve)
-				return processors_available;
+
+	if (localJobScheduledQueueList->jobNumber != MULTIPLE_JOBS_SCHEDULED)
+	{
+		if ((localPreScheduleList->data == localJobScheduledQueueList->data) && (localPreScheduleList->jobNumber == localJobScheduledQueueList->jobNumber) &&
+			processors_available >= localPreScheduleList->processors_requested)
+		{
+			int jobImproveID = localJobScheduledQueueList->jobNumber;
+			if (GLOBAL_RTGS_DEBUG_MSG > 2) {
+				printf("As Late Aa Possible Improved (ALAP-I) -- Job-%d is verified for ALAP IMPROVED scheduling\n", jobImproveID);
+				printf("ALAP-I -- GLOBAL_preScheduleList->data: %d && jobScheduledQueueList: %d\n", localPreScheduleList->data, localJobScheduledQueueList->data);
 			}
-			else
-				head = t1;
+			int completionTime = present_time + jobAttributesList[jobImproveID].execution_time;
+			// job attribute updates
+			jobAttributesList[jobImproveID].rescheduled_execution = present_time;
+			jobAttributesList[jobImproveID].completion_time = completionTime;
+			// change job release and completion time
+			localPreScheduleList->data = localJobScheduledQueueList->data = present_time;
+			localJobScheduledQueueList->job_release_time = present_time;
+			localPreScheduleList->processor_release_time = localJobScheduledQueueList->processor_release_time = completionTime;
+			// dispatch job for execution
+			processors_available = Dispatch_queued_kernels(present_time, processors_available, jobScheduledQueueList, processorsAllocatedList);
+		}
+	}
+	else
+	{
+		if (localPreScheduleList->data == localJobScheduledQueueList->data && 
+			processors_available >= localJobScheduledQueueList->processors_allocated)
+		{
+			scheduledResourceNode *t1, *t2;
+			t1 = localJobScheduledQueueList->job_next;
+			while (t1 != NULL)
+			{
+				t2 = t1->job_next;
+				int jobImproveID = t1->jobNumber;
 
-			t1 = t2;
+				genericBackupNode *local_pre = localPreScheduleList;
+				while (local_pre->jobNumber != jobImproveID)
+					local_pre = local_pre->next;
+
+				if (jobImproveID == local_pre->jobNumber &&
+					local_pre->data == t1->data)
+				{
+					if (GLOBAL_RTGS_DEBUG_MSG > 2) {
+						printf("As Late Aa Possible Improved (ALAP-I) -- Job-%d is verified for ALAP IMPROVED scheduling\n", jobImproveID);
+						printf("ALAP-I -- GLOBAL_preScheduleList->data: %d && jobScheduledQueueList: %d\n", localPreScheduleList->data, t1->data);
+					}
+					int completionTime = present_time + jobAttributesList[jobImproveID].execution_time;
+					// job attribute updates
+					jobAttributesList[jobImproveID].rescheduled_execution = present_time;
+					jobAttributesList[jobImproveID].completion_time = completionTime;
+					// change job release and completion time
+					local_pre->data = t1->data = present_time;
+					t1->job_release_time = present_time;
+					local_pre->processor_release_time = t1->processor_release_time = completionTime;
+				}
+				t1 = t2;
+			}
+			localJobScheduledQueueList->job_release_time = localJobScheduledQueueList->data = present_time;
+			// dispatch job for execution
+			processors_available = Dispatch_queued_kernels(present_time, processors_available, jobScheduledQueueList, processorsAllocatedList);
 		}
 	}
 	PROFILER_STOP(SRTG, ALAP_improve)
