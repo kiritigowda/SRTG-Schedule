@@ -167,8 +167,16 @@ int Kernel_book_keeper
 				}
 				else {
 					// TBD: ALAP_IMPROVE FUNCTION
-					processors_available = AEAP_advanced(jobAttributesList, jobNumber, present_time,
+					processors_available = ALAP_improve(jobAttributesList, jobNumber, present_time, 
 						processors_available, processorsAllocatedList, jobScheduledQueueList);
+					if (GLOBAL_preScheduleList == NULL) {
+						processors_available = AEAP(jobAttributesList, jobNumber, present_time,
+							processors_available, processorsAllocatedList, jobScheduledQueueList);
+					}
+					else {
+						processors_available = AEAP_advanced(jobAttributesList, jobNumber, present_time,
+							processors_available, processorsAllocatedList, jobScheduledQueueList);
+					}
 				}
 			}
 			else
