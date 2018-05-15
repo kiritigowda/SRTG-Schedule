@@ -579,7 +579,6 @@ int AEAP_advanced
 		printf("AEAP advanced: The Job:%d Cannot be scheduled\n", jobNumber);
 		printf("AEAP advanced: Jobs REJECTED count --> %d\n", GLOBAL_CPU_JOBS);
 	}
-
 	PROFILER_STOP(SRTG, AEAP_advanced)
 	return processors_available;
 }

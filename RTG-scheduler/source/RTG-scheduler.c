@@ -9,7 +9,7 @@ Scheduler Main - Mode Selector
 ***********************************************************************************************************/
 int scheduler_main(char *jobsListFileName, char *releaseTimeFilename, int schedulerMode)
 {
-	PROFILER_START(SRTG, scheduler_main)
+	//PROFILER_START(SRTG, scheduler_main)
 	RTGS_Status status = RTGS_SUCCESS;
 	switch (schedulerMode) {
 	case 1:
@@ -40,6 +40,19 @@ int scheduler_main(char *jobsListFileName, char *releaseTimeFilename, int schedu
 		printf("The Scheduler Mode 5 returned Status ->%d\n", status);
 		status = 0;
 		break;
+	case 99:
+		status = RTGS_mode_1(kernelFilename, releaseTimeFilename);
+		printf("The Scheduler Mode 1 returned Status ->%d\n", status);
+		status = RTGS_mode_2(kernelFilename, releaseTimeFilename);
+		printf("The Scheduler Mode 2 returned Status ->%d\n", status);
+		status = RTGS_mode_3(kernelFilename, releaseTimeFilename);
+		printf("The Scheduler Mode 3 returned Status ->%d\n", status);
+		status = RTGS_mode_4(kernelFilename, releaseTimeFilename);
+		printf("The Scheduler Mode 4 returned Status ->%d\n", status);
+		status = RTGS_mode_5(kernelFilename, releaseTimeFilename);
+		printf("The Scheduler Mode 5 returned Status ->%d\n", status);
+		status = 0;
+		break;
 
 	default:
 		printf("\nMode  Not Specified/Not implemented, switched to default mode\n");
@@ -47,6 +60,6 @@ int scheduler_main(char *jobsListFileName, char *releaseTimeFilename, int schedu
 		status = RTGS_mode_5(jobsListFileName, releaseTimeFilename);
 		break;
 	}
-	PROFILER_STOP(SRTG, scheduler_main)
+	//PROFILER_STOP(SRTG, scheduler_main)
 	return status;
 }
