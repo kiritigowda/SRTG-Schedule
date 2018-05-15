@@ -16,10 +16,11 @@ int AEAP_advanced
 )
 {
 	PROFILER_START(SRTG, AEAP_advanced)
-		if (GLOBAL_preScheduleList == NULL) {
-			printf("AEAP advanced: ERROR - Bad Entry Case\n");
-			return RTGS_ERROR_NOT_SUPPORTED;
-		}
+
+	if (GLOBAL_preScheduleList == NULL) {
+		printf("AEAP advanced: ERROR - Bad Entry Case\n");
+		return RTGS_ERROR_NOT_SUPPORTED;
+	}
 	if (GLOBAL_RTGS_DEBUG_MSG > 1) {
 		printf("AEAP advanced: Job->%d is verified for AEAP advanced scheduling\n", jobNumber);
 	}
@@ -578,8 +579,7 @@ int AEAP_advanced
 		printf("AEAP advanced: The Job:%d Cannot be scheduled\n", jobNumber);
 		printf("AEAP advanced: Jobs REJECTED count --> %d\n", GLOBAL_CPU_JOBS);
 	}
+
 	PROFILER_STOP(SRTG, AEAP_advanced)
-	printf("As Early As Possible Advanced (AEAP-A) -- Job-%d cannot be scheduled, ODD CASE FINAL\n", jobNumber);
 	return processors_available;
 }
-
