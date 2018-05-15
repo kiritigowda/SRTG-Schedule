@@ -243,10 +243,8 @@ scheduledResourceNode *ascending_insert(scheduledResourceNode *head, int data, i
 scheduledResourceNode *position_insert(scheduledResourceNode *head, scheduledResourceNode *data, int position);
 scheduledResourceNode *position_delete(scheduledResourceNode *head, int position);
 scheduledResourceNode *remove_recurring_node(scheduledResourceNode *head);
-scheduledResourceNode *clean_node(scheduledResourceNode *head);
 genericBackupNode *insert_node(genericBackupNode *head, int data);
 genericBackupNode *clean_list(genericBackupNode *head);
-genericBackupNode *position_delete_list(genericBackupNode *head);
 genericBackupNode *insert_preScheduledJob_list(genericBackupNode *head, int job_release_time,
 	int processor_release_time, int processors_allocated, int jobNumber);
 genericBackupNode *position_insert_preScheduledJobs(genericBackupNode *head, genericBackupNode *positionInsertVariable, int position);

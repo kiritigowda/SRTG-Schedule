@@ -583,22 +583,6 @@ genericBackupNode *position_delete_preScheduledJob(genericBackupNode *head, int 
 	return head;
 }
 
-// Backup  jobBackupList delete
-genericBackupNode *position_delete_list(genericBackupNode *head)
-{
-	genericBackupNode *temp;
-	temp = head;
-	if (temp == NULL) {
-		if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-			printf("The List is empty\n");
-		}
-		return head;
-	}
-	head = temp->next;
-	free(temp);
-	return head;
-}
-
 // Backup processor jobBackupList
 genericBackupNode *insert_node(genericBackupNode *head, int x)
 {
@@ -857,19 +841,6 @@ scheduledResourceNode *position_delete(scheduledResourceNode *head, int p)
 
 		temp = temp->next;
 		++count;
-	}
-	return head;
-}
-
-//clean node
-scheduledResourceNode *clean_node(scheduledResourceNode *head)
-{
-	scheduledResourceNode *temp1;
-	while (head != NULL)
-	{
-		temp1 = head->next;
-		free(head);
-		head = temp1;
 	}
 	return head;
 }
