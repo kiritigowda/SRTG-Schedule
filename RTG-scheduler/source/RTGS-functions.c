@@ -166,7 +166,7 @@ int Kernel_book_keeper
 					}
 				}
 				else {
-					// TBD: ALAP_IMPROVE FUNCTION
+					// ALAP Improve function
 					processors_available = ALAP_improve(jobAttributesList, jobNumber, present_time, 
 						processors_available, processorsAllocatedList, jobScheduledQueueList);
 					if (GLOBAL_preScheduleList == NULL) {
