@@ -16,7 +16,10 @@ export RGTS_DEBUG_MSG=4
 ./bin/RTG-scheduler --j bin/testData/set1-job --rt bin/testData/set1-jobReleaseTimes.txt
 ./bin/RTG-scheduler --j bin/testData/set1-jobs.txt --rt bin/testData/set1-jobReleaseTimes
 ./bin/RTG-scheduler --j bin/testData/set1-jobs.txt --rt bin/testData/set1-jobReleaseTimes.txt
+./bin/RTG-scheduler --j bin/testData/set1-jobs.txt --rt bin/testData/set1-jobReleaseTimes.txt
 ./bin/RTG-scheduler --rt bin/testData/set1-jobs.txt --j bin/testData/set1-jobReleaseTimes.txt
+./bin/RTG-scheduler --rt bin/testData/set1-jobs.txt --j bin/testData/set1-jobs.txt
+./bin/RTG-scheduler --rt bin/testData/set1-jobReleaseTimes.txt --j bin/testData/set1-jobReleaseTimes.txt
 RTGS_DEBUG_MSG=3 ./bin/RTG-scheduler --j bin/testData/set12-jobs.txt --rt bin/testData/set12-jobReleaseTimes.txt --m 99
 #Job Set 1
 RTGS_DEBUG_MSG=3 ./bin/RTG-scheduler --j bin/testData/set1-jobs.txt --rt bin/testData/set1-jobReleaseTimes.txt --m
