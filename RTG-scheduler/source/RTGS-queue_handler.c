@@ -7,61 +7,62 @@
 #include"RTGS.h"
 
 
-/* Function to add future kernel_info_list releases and arrange kernel_info_list execution times in ascending order */
-void Queue_kernel_execution
+/* Function to add future jobAttributesList releases and arrange jobAttributesList execution times in ascending order */
+void queue_job_execution
 (
 	int processorReleased,
 	int processor_release_time,
 	int present_time,
 	int schedule_method,
-	int kernel_number,
-	scheduledNode **processor_alloc_list
+	int jobNumber,
+	scheduledResourceNode **processorsAllocatedList
 )
 {
-	PROFILER_START(SRTG, Queue_kernel_execution)
-	// TBD:: Sending Data and Kernels
-	*processor_alloc_list = ascending_insert(*processor_alloc_list, processor_release_time, processor_release_time,
-		processorReleased, kernel_number, schedule_method);
+	PROFILER_START(SRTG, queue_job_execution)
+	// TBD:: Sending Data and Jobs to GPU
+	*processorsAllocatedList = ascending_insert(*processorsAllocatedList, processor_release_time, processor_release_time,
+		processorReleased, jobNumber, schedule_method);
 	if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-		print(*processor_alloc_list);
+		print_processorsAllocated_list(*processorsAllocatedList);
 	}
-	PROFILER_STOP(SRTG, Queue_kernel_execution)
+	PROFILER_STOP(SRTG, queue_job_execution)
 	return;
 }
 
-/* Function to add future kernel_info_list releases and arrange kernel_info_list execution times in ascending order */
-void Kernel_queue_handler
+/* Function to add future jobAttributesList releases and arrange jobAttributesList execution times in ascending order */
+void job_queue_handler
 (
 	int processorReleased,
-	int kernel_release_time,
+	int job_release_time,
 	int processor_release_time,
 	int schedule_method,
-	int kernel_number,
-	scheduledNode **kernel_queue_list
+	int jobNumber,
+	scheduledResourceNode **jobScheduledQueueList
 )
 {
-	PROFILER_START(SRTG, Kernel_queue_handler)
-	// TBD:: Sending Data and Kernels
-	if (schedule_method == RTGS_SCHEDULE_METHOD_ALAP)
-	{
-		*kernel_queue_list = ascending_insert(*kernel_queue_list, kernel_release_time, processor_release_time,
-			processorReleased, kernel_number, schedule_method);
-		if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-			Kernel_queue_print(*kernel_queue_list);
-		}
+	PROFILER_START(SRTG, job_queue_handler)
+	// TBD:: Sending Data and Jobs
+	if (schedule_method == RTGS_SCHEDULE_METHOD_ALAP){
+		*jobScheduledQueueList = ascending_insert(*jobScheduledQueueList, job_release_time, processor_release_time,
+			processorReleased, jobNumber, schedule_method);
 	}
-	else if (schedule_method == RTGS_SCHEDULE_METHOD_AEAP)
-	{
-		*kernel_queue_list = ascending_insert(*kernel_queue_list, kernel_release_time, kernel_release_time,
-			processorReleased, kernel_number, schedule_method);
-		if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-			Kernel_queue_print(*kernel_queue_list);
-		}
+	else if (schedule_method == RTGS_SCHEDULE_METHOD_AEAP_ADVANCED) {
+		*jobScheduledQueueList = ascending_insert(*jobScheduledQueueList, job_release_time, processor_release_time,
+			processorReleased, jobNumber, schedule_method);
 	}
-	else
-	{
-		printf("Kernel_queue_handler ERROR NOT IMPLEMENTED");
+	else if (schedule_method == RTGS_SCHEDULE_METHOD_AEAP) {
+		*jobScheduledQueueList = ascending_insert(*jobScheduledQueueList, job_release_time, job_release_time,
+			processorReleased, jobNumber, schedule_method);
 	}
-	PROFILER_STOP(SRTG, Kernel_queue_handler)
+	else {
+		printf("job_queue_handler ERROR NOT IMPLEMENTED\n");
+	}
+
+	if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+		print_preScheduledJob_list(*jobScheduledQueueList);
+		if(GLOBAL_preScheduleList != NULL)
+			print_preQueuedJob_list(GLOBAL_preScheduleList);
+	}
+	PROFILER_STOP(SRTG, job_queue_handler)
 	return;
 }
