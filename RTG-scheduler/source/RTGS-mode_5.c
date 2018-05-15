@@ -123,8 +123,8 @@ int  RTGS_mode_5(char *jobsListFileName, char *releaseTimeFilename)
 			printf("\n******* Scheduler Mode 5 *******\n");
 			printf("Processors Available -- %d\n", processorsAvailable);
 			printf("Total Jobs Scheduled -- %d\n", kernelMax);
-			printf("	GPU Scheduled Jobs -- %d\n", GLOBAL_GPU_JOBS);
-			printf("	CPU Scheduled Jobs -- %d\n", GLOBAL_CPU_JOBS);
+			printf("	GPU Scheduled Jobs    -- %d\n", GLOBAL_GPU_JOBS);
+			printf("	Jobs Sent Back To CPU -- %d\n", GLOBAL_CPU_JOBS);
 		}
 
 		if (RTGS_PrintScheduleSummary(5, kernelMax, jobAttributesList)) {
