@@ -25,7 +25,7 @@ source/RTGS-mode_3.c
 source/RTGS-mode_4.c 
 source/RTGS-mode_5.c 
 source/RTGS-queue_handler.c 
-source/RTGS_ALAP.c
+source/RTGS-ALAP.c
 source/RTGS-AEAP.c 
 source/RTGS-AEAP_ALAP_improve.c 
 source/RTGS-AEAP_ALT.c 
