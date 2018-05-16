@@ -142,7 +142,7 @@ int  RTGS_mode_5(char *jobsListFileName, char *releaseTimeFilename)
 	}
 
 	if (processorsAllocatedList || GLOBAL_preScheduleList) {
-		printf("\nERROR -- processorsAllocatedList/GLOBAL_preScheduleList Failed\n");
+		printf("\nERROR -- processorsAllocatedList/GLOBAL_preScheduleList Failed %d/%d\n",processorsAllocatedList == NULL ? 0 : 1, GLOBAL_preScheduleList == NULL ? 0 : 1);
 		return RTGS_FAILURE;
 	}
 	PROFILER_STOP(SRTG, RTGS_mode_5)

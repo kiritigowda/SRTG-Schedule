@@ -556,11 +556,8 @@ genericBackupNode *position_delete_preScheduledJob(genericBackupNode *head, int 
 	genericBackupNode *temp1;
 	int count = 1;
 	temp = head;
-
 	if (temp == NULL) {
-		if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-			printf("The List is empty\n");
-		}
+		if (GLOBAL_RTGS_DEBUG_MSG > 1) { printf("The List is empty\n"); }
 		return head;
 	}
 
@@ -571,15 +568,16 @@ genericBackupNode *position_delete_preScheduledJob(genericBackupNode *head, int 
 	}
 
 	while (temp->next != NULL) {
-		if (count == position ) {
+		if (count == (position - 1)) {
 			temp1 = temp->next;
 			temp->next = temp1->next;
 			free(temp1);
-			return head;
+			break;
 		}
 		temp = temp->next;
 		++count;
 	}
+
 	return head;
 }
 
@@ -593,13 +591,13 @@ genericBackupNode *insert_node(genericBackupNode *head, int x)
 	temp->processors_allocated = 0;
 	temp->next = NULL;
 
-	if (head == NULL)	head = temp;
-	else
-	{
+	if (head == NULL) {
+		head = temp;
+	}
+	else{
 		genericBackupNode *temp1;
 		temp1 = head;
-		while (temp1 != NULL)
-		{
+		while (temp1 != NULL){
 			if (temp1->next == NULL) {
 				temp1->next = temp;
 				return head;
@@ -773,23 +771,19 @@ scheduledResourceNode *position_insert(scheduledResourceNode *head, scheduledRes
 	temp = head;
 	temp1 = positionInsertVariable;
 
-	if (p == 1)
-	{
+	if (p == 1)	{
 		temp1->next = head;
 		head = temp1;
 		return head;
 	}
 
-	if (temp == NULL)
-	{
+	if (temp == NULL) {
 		head = temp1;
 		return head;
 	}
 
-	while (temp->next != NULL)
-	{
-		if (count == (p - 1))
-		{
+	while (temp->next != NULL) {
+		if (count == (p - 1)) {
 			temp1->next = temp->next;
 			temp->next = temp1;
 			return head;

@@ -306,7 +306,7 @@ int RTGS_mode_2(char *jobsListFileName, char *releaseTimeFilename)
 	}
 
 	if (processorsAllocatedList) {
-		printf("\nERROR -- processorsAllocatedList Failed\n");
+		printf("\nERROR -- processorsAllocatedList Failed %d\n", processorsAllocatedList == NULL ? 0 : 1);
 		return RTGS_FAILURE;
 	}
 	return RTGS_SUCCESS;
