@@ -282,6 +282,7 @@ int RTGS_PrintScheduleSummary(int mode, int maxKernels, jobAttributes *kernelInf
 	char pCSVfile[1024]; sprintf(pCSVfile, "%s-Mode-%d-Job-Summary.csv", profiler, mode);
 	char pHTMLfile[1024]; sprintf(pHTMLfile, "%s-Mode-%d-Job-Summary.html", profiler, mode);
 	char pSummaryfile[1024]; sprintf(pSummaryfile, "%s-Mode-%d-Summary.html", profiler, mode);
+	char pModeSummaryFile[1024]; sprintf(pModeSummaryFile, "%s-Mode-%d-Summary.csv", profiler, mode);
 
 	FILE *fp = fopen(pCSVfile, "w"); if (!fp) { printf("ERROR: unable to create '%s'\n", pCSVfile); return RTGS_ERROR_NO_RESOURCES; }
 
@@ -301,7 +302,7 @@ int RTGS_PrintScheduleSummary(int mode, int maxKernels, jobAttributes *kernelInf
 	}
 	fclose(fp);
 
-	FILE *fh = fopen(pHTMLfile, "w"); if (!fp) { printf("ERROR: unable to create '%s'\n", pHTMLfile); return RTGS_ERROR_NO_RESOURCES; }
+	FILE *fh = fopen(pHTMLfile, "w"); if (!fh) { printf("ERROR: unable to create '%s'\n", pHTMLfile); return RTGS_ERROR_NO_RESOURCES; }
 	fprintf(fh, HTML_header, mode);
 	int width = 1000, height = 400;
 	int xstart = 300, max_time = 0;
@@ -391,7 +392,7 @@ int RTGS_PrintScheduleSummary(int mode, int maxKernels, jobAttributes *kernelInf
 	fprintf(fh, HTML_footer, xstart - 50, width - xstart + 200, height);
 	fclose(fh);
 
-	FILE * fs = fopen(pSummaryfile, "w"); if (!fp) { printf("ERROR: unable to create '%s'\n", pSummaryfile); return RTGS_ERROR_NO_RESOURCES; }
+	FILE * fs = fopen(pSummaryfile, "w"); if (!fs) { printf("ERROR: unable to create '%s'\n", pSummaryfile); return RTGS_ERROR_NO_RESOURCES; }
 	fprintf(fs, "%s", summaryHTMLHeader);
 	// table summary
 	for (int i = 0; i < maxKernels; i++) {
@@ -415,6 +416,11 @@ int RTGS_PrintScheduleSummary(int mode, int maxKernels, jobAttributes *kernelInf
 	}
 	fprintf(fs, "%s", summaryHTMLFooter);
 	fclose(fs);
+
+
+	FILE * fms = fopen(pModeSummaryFile, "a"); if (!fms) { printf("ERROR: unable to create '%s'\n", pModeSummaryFile); return RTGS_ERROR_NO_RESOURCES; }
+	fprintf(fms, "%d,%d",GLOBAL_GPU_JOBS,(GLOBAL_GPU_JOBS+ GLOBAL_CPU_JOBS));
+	fclose(fms);
 	return RTGS_SUCCESS;
 }
 
