@@ -447,9 +447,16 @@ static int Mode_3_AEAP
 					int processor_release_time = job_release_time + jobAttributesList[jobNumber].execution_time;
 					int presentTime = present_time;
 					int schedule_method = RTGS_SCHEDULE_METHOD_AEAP;
+
 					int availAlapProcessors = localProcessors - jobAttributesList[GLOBAL_preScheduleList->jobNumber].processor_req;
-					// condition 1
-					if (jobAttributesList[jobNumber].processor_req <= availAlapProcessors)
+					int futureRelease = 0;
+					if (GLOBAL_preScheduleList->next != NULL) {
+						genericBackupNode *future_preScheduleList = GLOBAL_preScheduleList->next;
+						futureRelease = future_preScheduleList->data;
+					}
+					// condition 3
+					if (jobAttributesList[jobNumber].processor_req <= availAlapProcessors &&
+						(futureRelease == 0 || (job_release_time + jobAttributesList[jobNumber].execution_time) <= futureRelease))
 					{
 						localProcessorsAllocatedList->processors_allocated = localProcessors - jobAttributesList[jobNumber].processor_req;
 						processorsDistList = clean_list(processorsDistList);
@@ -460,7 +467,7 @@ static int Mode_3_AEAP
 						jobAttributesList[jobNumber].completion_time = jobAttributesList[jobNumber].execution_time + job_release_time;
 						GLOBAL_GPU_JOBS++;
 						if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-							printf("Mode 3 AEAP: Condition-1 The Job:%d scheduled\n", jobNumber);
+							printf("Mode 3 AEAP: Condition-3 The Job:%d scheduled\n", jobNumber);
 							printf("Mode 3 AEAP: Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
 						}
 						queue_job_execution(processorsInUse, processor_release_time, presentTime,

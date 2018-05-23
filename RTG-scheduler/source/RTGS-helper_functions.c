@@ -284,142 +284,156 @@ int RTGS_PrintScheduleSummary(int mode, int maxKernels, jobAttributes *kernelInf
 	char pSummaryfile[1024]; sprintf(pSummaryfile, "%s-Mode-%d-Summary.html", profiler, mode);
 	char pModeSummaryFile[1024]; sprintf(pModeSummaryFile, "%s-Mode-%d-Summary.csv", profiler, mode);
 
-	FILE *fp = fopen(pCSVfile, "w"); if (!fp) { printf("ERROR: unable to create '%s'\n", pCSVfile); return RTGS_ERROR_NO_RESOURCES; }
+	if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+		FILE *fp = fopen(pCSVfile, "w"); if (!fp) { printf("ERROR: unable to create '%s'\n", pCSVfile); return RTGS_ERROR_NO_RESOURCES; }
+		fprintf(fp, "Job,Processors,Execution Time,Deadline,Release Time,Scheduler Overhead (microSec),Scheduled At,Rescheduled to,Completion Time,Scheduled Hardware\n");
+		for (int i = 0; i < maxKernels; i++) {
+			fprintf(fp, "%d,%d,%d,%d,%d,%.2f,%d,%d,%d,%d\n", i,
+				kernelInfoList[i].processor_req,
+				kernelInfoList[i].execution_time,
+				kernelInfoList[i].deadline,
+				kernelInfoList[i].release_time,
+				kernelInfoList[i].schedule_overhead * 100,
+				kernelInfoList[i].scheduled_execution,
+				kernelInfoList[i].rescheduled_execution,
+				kernelInfoList[i].completion_time,
+				kernelInfoList[i].schedule_hardware
+			);
+		}
+		fclose(fp);
 
-	fprintf(fp, "Job,Processors,Execution Time,Deadline,Release Time,Scheduler Overhead (microSec),Scheduled At,Rescheduled to,Completion Time,Scheduled Hardware\n");
-	for (int i = 0; i < maxKernels; i++) {
-		fprintf(fp, "%d,%d,%d,%d,%d,%.2f,%d,%d,%d,%d\n", i,
-			kernelInfoList[i].processor_req,
-			kernelInfoList[i].execution_time,
-			kernelInfoList[i].deadline,
-			kernelInfoList[i].release_time,
-			kernelInfoList[i].schedule_overhead * 100,
-			kernelInfoList[i].scheduled_execution,
-			kernelInfoList[i].rescheduled_execution,
-			kernelInfoList[i].completion_time,
-			kernelInfoList[i].schedule_hardware
-		);
-	}
-	fclose(fp);
-
-	FILE *fh = fopen(pHTMLfile, "w"); if (!fh) { printf("ERROR: unable to create '%s'\n", pHTMLfile); return RTGS_ERROR_NO_RESOURCES; }
-	fprintf(fh, HTML_header, mode);
-	int width = 1000, height = 400;
-	int xstart = 300, max_time = 0;
-	int offset = 50;
-	for (int i = 0; i < maxKernels; i++) { max_time = MAX(max_time, kernelInfoList[i].completion_time); }
-	max_time += 10;
-	// Timing header
-	for (int k = 0; k <= max_time; k += 5) {
-		int barx = xstart + (k * 10);
-		fprintf(fh, "    d = document.createElement('div'); d.title = '%d T'; d.className='time0'; d.style.backgroundColor='#800000'; d.style.top='%dpx'; d.style.left='%dpx'; d.style.width='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
-			k, 15, barx - 1, 1);
-		fprintf(fh, "    d = document.createElement('div'); e = document.createTextNode('%3d T'); d.appendChild(e); d.className='time1'; d.style.backgroundColor='#FFFFFF'; d.style.top='%dpx'; d.style.left='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
-			k, 15, barx + 2);
-	}
-
-	// Jobs scheduling pattern
-	for (int k = 0; k < maxKernels; k++) {
-
-		float schedulerOverhead = kernelInfoList[k].schedule_overhead * 100;
-
-		// plot release time
-		float start = (float)kernelInfoList[k].release_time, duration = 0.2f;
-		int barx = xstart + (int)(start * 10);
-		int barw = (int)(duration * 10);
-		fprintf(fh, "    d = document.createElement('div'); d.title = 'Release'; d.className='time1'; d.style.top='%dpx'; d.style.left='%dpx'; d.style.width='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
-			(offset + 50 * (k + 1)), barx, barw);
-		fprintf(fh, "    d = document.createElement('div'); d.title = 'Release @ %5.3f T'; d.className='time0'; d.style.backgroundColor='yellow'; d.style.top='%dpx'; d.style.left='%dpx'; d.style.width='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
-			start, (offset + 50 * (k + 1)), barx, barw);
-
-		// plot scheduler overhead
-		start = (float)(0.2 + kernelInfoList[k].release_time); duration = 0.2f;
-		barx = xstart + (int)(start * 10);
-		barw = (int)(duration * 10);
-		fprintf(fh, "    d = document.createElement('div'); d.title = 'Scheduler-Overhead'; d.className='time1'; d.style.top='%dpx'; d.style.left='%dpx'; d.style.width='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
-			(offset + 50 * (k + 1)), barx, barw);
-		fprintf(fh, "    d = document.createElement('div'); d.title = 'Scheduler Overhead of %5.3f microsec'; d.className='time0'; d.style.backgroundColor='blue'; d.style.top='%dpx'; d.style.left='%dpx'; d.style.width='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
-			schedulerOverhead, (offset + 50 * (k + 1)), barx, barw);
-
-		// plot scheduled jobs
-		if (kernelInfoList[k].completion_time != -1) {
-			if (kernelInfoList[k].scheduled_execution == kernelInfoList[k].release_time) {
-				start = (float)(0.4 + kernelInfoList[k].scheduled_execution);
-				duration = (float)kernelInfoList[k].execution_time;
-				barx = xstart + (int)(start * 10);
-				barw = (int)(duration * 10);
-
-			}
-			else {
-				start = (float)kernelInfoList[k].scheduled_execution; duration = (float)kernelInfoList[k].execution_time;
-				barx = xstart + (int)(start * 10);
-				barw = (int)(duration * 10);
-			}
-			float ScheduledTime = (float)kernelInfoList[k].scheduled_execution;
-			float completionTime = (float)kernelInfoList[k].completion_time;
-			fprintf(fh, "    d = document.createElement('div'); d.title = 'Scheduled'; d.className='time1'; d.style.top='%dpx'; d.style.left='%dpx'; d.style.width='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
-				(offset + 50 * (k + 1)), barx, barw);
-			fprintf(fh, "    d = document.createElement('div'); d.title = 'Scheduled @ %5.3f T -- Completion @ %5.3f T'; d.className='time0'; d.style.backgroundColor='green'; d.style.top='%dpx'; d.style.left='%dpx'; d.style.width='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
-				ScheduledTime, completionTime, (offset + 50 * (k + 1)), barx, barw);
+		FILE *fh = fopen(pHTMLfile, "w"); if (!fh) { printf("ERROR: unable to create '%s'\n", pHTMLfile); return RTGS_ERROR_NO_RESOURCES; }
+		fprintf(fh, HTML_header, mode);
+		int width = 1000, height = 400;
+		int xstart = 300, max_time = 0;
+		int offset = 50;
+		for (int i = 0; i < maxKernels; i++) { max_time = MAX(max_time, kernelInfoList[i].completion_time); }
+		max_time += 10;
+		// Timing header
+		for (int k = 0; k <= max_time; k += 5) {
+			int barx = xstart + (k * 10);
+			fprintf(fh, "    d = document.createElement('div'); d.title = '%d T'; d.className='time0'; d.style.backgroundColor='#800000'; d.style.top='%dpx'; d.style.left='%dpx'; d.style.width='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
+				k, 15, barx - 1, 1);
+			fprintf(fh, "    d = document.createElement('div'); e = document.createTextNode('%3d T'); d.appendChild(e); d.className='time1'; d.style.backgroundColor='#FFFFFF'; d.style.top='%dpx'; d.style.left='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
+				k, 15, barx + 2);
 		}
 
-		// plot returned jobs
-		if (kernelInfoList[k].completion_time == -1) {
-			start = (float)(kernelInfoList[k].release_time + 0.4); duration = 0.5f;
+		// Jobs scheduling pattern
+		for (int k = 0; k < maxKernels; k++) {
+
+			float schedulerOverhead = kernelInfoList[k].schedule_overhead * 100;
+
+			// plot release time
+			float start = (float)kernelInfoList[k].release_time, duration = 0.2f;
+			int barx = xstart + (int)(start * 10);
+			int barw = (int)(duration * 10);
+			fprintf(fh, "    d = document.createElement('div'); d.title = 'Release'; d.className='time1'; d.style.top='%dpx'; d.style.left='%dpx'; d.style.width='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
+				(offset + 50 * (k + 1)), barx, barw);
+			fprintf(fh, "    d = document.createElement('div'); d.title = 'Release @ %5.3f T'; d.className='time0'; d.style.backgroundColor='yellow'; d.style.top='%dpx'; d.style.left='%dpx'; d.style.width='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
+				start, (offset + 50 * (k + 1)), barx, barw);
+
+			// plot scheduler overhead
+			start = (float)(0.2 + kernelInfoList[k].release_time); duration = 0.2f;
 			barx = xstart + (int)(start * 10);
 			barw = (int)(duration * 10);
-			float releaseTime = (float)kernelInfoList[k].release_time;
-			fprintf(fh, "    d = document.createElement('div'); d.title = 'CPU-JOB'; d.className='time1'; d.style.top='%dpx'; d.style.left='%dpx'; d.style.width='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
+			fprintf(fh, "    d = document.createElement('div'); d.title = 'Scheduler-Overhead'; d.className='time1'; d.style.top='%dpx'; d.style.left='%dpx'; d.style.width='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
 				(offset + 50 * (k + 1)), barx, barw);
-			fprintf(fh, "    d = document.createElement('div'); d.title = 'Sent Back to CPU @ Release-%5.3f T + overhead-%5.3f microsec'; d.className='time0'; d.style.backgroundColor='red'; d.style.top='%dpx'; d.style.left='%dpx'; d.style.width='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
-				releaseTime, schedulerOverhead, (offset + 50 * (k + 1)), barx, barw);
+			fprintf(fh, "    d = document.createElement('div'); d.title = 'Scheduler Overhead of %5.3f microsec'; d.className='time0'; d.style.backgroundColor='blue'; d.style.top='%dpx'; d.style.left='%dpx'; d.style.width='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
+				schedulerOverhead, (offset + 50 * (k + 1)), barx, barw);
+
+			// plot scheduled jobs
+			if (kernelInfoList[k].completion_time != -1) {
+				if (kernelInfoList[k].scheduled_execution == kernelInfoList[k].release_time) {
+					start = (float)(0.4 + kernelInfoList[k].scheduled_execution);
+					duration = (float)kernelInfoList[k].execution_time;
+					barx = xstart + (int)(start * 10);
+					barw = (int)(duration * 10);
+
+				}
+				else {
+					start = (float)kernelInfoList[k].scheduled_execution; duration = (float)kernelInfoList[k].execution_time;
+					barx = xstart + (int)(start * 10);
+					barw = (int)(duration * 10);
+				}
+				float ScheduledTime = (float)kernelInfoList[k].scheduled_execution;
+				float completionTime = (float)kernelInfoList[k].completion_time;
+				fprintf(fh, "    d = document.createElement('div'); d.title = 'Scheduled'; d.className='time1'; d.style.top='%dpx'; d.style.left='%dpx'; d.style.width='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
+					(offset + 50 * (k + 1)), barx, barw);
+				fprintf(fh, "    d = document.createElement('div'); d.title = 'Scheduled @ %5.3f T -- Completion @ %5.3f T'; d.className='time0'; d.style.backgroundColor='green'; d.style.top='%dpx'; d.style.left='%dpx'; d.style.width='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
+					ScheduledTime, completionTime, (offset + 50 * (k + 1)), barx, barw);
+			}
+
+			// plot returned jobs
+			if (kernelInfoList[k].completion_time == -1) {
+				start = (float)(kernelInfoList[k].release_time + 0.4); duration = 0.5f;
+				barx = xstart + (int)(start * 10);
+				barw = (int)(duration * 10);
+				float releaseTime = (float)kernelInfoList[k].release_time;
+				fprintf(fh, "    d = document.createElement('div'); d.title = 'CPU-JOB'; d.className='time1'; d.style.top='%dpx'; d.style.left='%dpx'; d.style.width='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
+					(offset + 50 * (k + 1)), barx, barw);
+				fprintf(fh, "    d = document.createElement('div'); d.title = 'Sent Back to CPU @ Release-%5.3f T + overhead-%5.3f microsec'; d.className='time0'; d.style.backgroundColor='red'; d.style.top='%dpx'; d.style.left='%dpx'; d.style.width='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
+					releaseTime, schedulerOverhead, (offset + 50 * (k + 1)), barx, barw);
+			}
+
+
+			if (width < (barx + barw)) {
+				width = barx + barw;
+			}
 		}
 
-
-		if (width < (barx + barw)) {
-			width = barx + barw;
+		// Job ids
+		for (int e = 0; e < maxKernels; e++) {
+			fprintf(fh, "    d = document.createElement('div'); e = document.createTextNode('Job-%d'); d.appendChild(e); d.className='name0'; d.style.top='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
+				e, (offset + 50 * (e + 1)) + 3);
+			fprintf(fh, "    d = document.createElement('div'); e = document.createTextNode('%d(Pn) %d(Texe) %d(Td) %d(Tls)'); d.appendChild(e); d.className='name1'; d.style.top='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
+				kernelInfoList[e].processor_req, kernelInfoList[e].execution_time, kernelInfoList[e].deadline, kernelInfoList[e].latest_schedulable_time, (offset + 50 * (e + 1)) + 3 + 18);
 		}
+		height = offset + maxKernels * 50;
+		fprintf(fh, HTML_footer, xstart - 50, width - xstart + 200, height);
+		fclose(fh);
+
+		FILE * fs = fopen(pSummaryfile, "w"); if (!fs) { printf("ERROR: unable to create '%s'\n", pSummaryfile); return RTGS_ERROR_NO_RESOURCES; }
+		fprintf(fs, "%s", summaryHTMLHeader);
+		// table summary
+		for (int i = 0; i < maxKernels; i++) {
+			fprintf(fs, "<tr>\n");
+			fprintf(fs, "<td align = \"center\"><font color = \"black\"><b>%d</b></font></td>\n", i);
+			fprintf(fs, "<td align = \"center\"><font color = \"black\"><b>%d</b></font></td>\n", kernelInfoList[i].processor_req);
+			fprintf(fs, "<td align = \"center\"><font color = \"black\"><b>%d</b></font></td>\n", kernelInfoList[i].execution_time);
+			fprintf(fs, "<td align = \"center\"><font color = \"black\"><b>%d</b></font></td>\n", kernelInfoList[i].deadline);
+			fprintf(fs, "<td align = \"center\"><font color = \"black\"><b>%d</b></font></td>\n", kernelInfoList[i].release_time);
+			fprintf(fs, "<td align = \"center\"><font color = \"black\"><b>%.4f</b></font></td>\n", kernelInfoList[i].schedule_overhead * 100);
+			fprintf(fs, "<td align = \"center\"><font color = \"black\"><b>%d</b></font></td>\n", kernelInfoList[i].scheduled_execution);
+			fprintf(fs, "<td align = \"center\"><font color = \"black\"><b>%d</b></font></td>\n", kernelInfoList[i].rescheduled_execution);
+			fprintf(fs, "<td align = \"center\"><font color = \"black\"><b>%d</b></font></td>\n", kernelInfoList[i].completion_time);
+			if (kernelInfoList[i].schedule_hardware == 1)
+				fprintf(fs, "<td align = \"center\"><font color = \"green\"><b>GPU</b></font></td>\n");
+			else if (kernelInfoList[i].schedule_hardware == 2)
+				fprintf(fs, "<td align = \"center\"><font color = \"red\"><b>CPU</b></font></td>\n");
+			else
+				fprintf(fs, "<td align = \"center\"><font color = \"blue\"><b>MISSING</b></font></td>\n");
+			fprintf(fs, "</tr>\n");
+		}
+		fprintf(fs, "%s", summaryHTMLFooter);
+		fclose(fs);
 	}
 
-	// Job ids
-	for (int e = 0; e < maxKernels; e++) {
-		fprintf(fh, "    d = document.createElement('div'); e = document.createTextNode('Job-%d'); d.appendChild(e); d.className='name0'; d.style.top='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
-			e, (offset + 50 * (e + 1)) + 3);
-		fprintf(fh, "    d = document.createElement('div'); e = document.createTextNode('%d(Pn) %d(Texe) %d(Td) %d(Tls)'); d.appendChild(e); d.className='name1'; d.style.top='%dpx'; document.getElementsByTagName('body')[0].appendChild(d);\n",
-			kernelInfoList[e].processor_req, kernelInfoList[e].execution_time, kernelInfoList[e].deadline, kernelInfoList[e].latest_schedulable_time, (offset + 50 * (e + 1)) + 3 + 18);
-	}
-	height = offset + maxKernels * 50;
-	fprintf(fh, HTML_footer, xstart - 50, width - xstart + 200, height);
-	fclose(fh);
-
-	FILE * fs = fopen(pSummaryfile, "w"); if (!fs) { printf("ERROR: unable to create '%s'\n", pSummaryfile); return RTGS_ERROR_NO_RESOURCES; }
-	fprintf(fs, "%s", summaryHTMLHeader);
-	// table summary
+	float avgProcessorUsage = 0, avgExecTime = 0; 
+	float GPU_usageTime = 0;
 	for (int i = 0; i < maxKernels; i++) {
-		fprintf(fs, "<tr>\n");
-		fprintf(fs, "<td align = \"center\"><font color = \"black\"><b>%d</b></font></td>\n", i);
-		fprintf(fs, "<td align = \"center\"><font color = \"black\"><b>%d</b></font></td>\n", kernelInfoList[i].processor_req);
-		fprintf(fs, "<td align = \"center\"><font color = \"black\"><b>%d</b></font></td>\n", kernelInfoList[i].execution_time);
-		fprintf(fs, "<td align = \"center\"><font color = \"black\"><b>%d</b></font></td>\n", kernelInfoList[i].deadline);
-		fprintf(fs, "<td align = \"center\"><font color = \"black\"><b>%d</b></font></td>\n", kernelInfoList[i].release_time);
-		fprintf(fs, "<td align = \"center\"><font color = \"black\"><b>%.4f</b></font></td>\n", kernelInfoList[i].schedule_overhead * 100);
-		fprintf(fs, "<td align = \"center\"><font color = \"black\"><b>%d</b></font></td>\n", kernelInfoList[i].scheduled_execution);
-		fprintf(fs, "<td align = \"center\"><font color = \"black\"><b>%d</b></font></td>\n", kernelInfoList[i].rescheduled_execution);
-		fprintf(fs, "<td align = \"center\"><font color = \"black\"><b>%d</b></font></td>\n", kernelInfoList[i].completion_time);
-		if (kernelInfoList[i].schedule_hardware == 1)
-			fprintf(fs, "<td align = \"center\"><font color = \"green\"><b>GPU</b></font></td>\n");
-		else if(kernelInfoList[i].schedule_hardware == 2)
-			fprintf(fs, "<td align = \"center\"><font color = \"red\"><b>CPU</b></font></td>\n");
-		else
-			fprintf(fs, "<td align = \"center\"><font color = \"blue\"><b>MISSING</b></font></td>\n");
-		fprintf(fs, "</tr>\n");
+		if (kernelInfoList[i].schedule_hardware == 1) {
+			avgProcessorUsage += kernelInfoList[i].processor_req;
+			avgExecTime += kernelInfoList[i].execution_time;
+			float processors = kernelInfoList[i].processor_req;
+			float maxProcessors = MAX_GPU_PROCESSOR;
+			GPU_usageTime += ((processors / maxProcessors)*kernelInfoList[i].execution_time);
+		}
 	}
-	fprintf(fs, "%s", summaryHTMLFooter);
-	fclose(fs);
-
-
+	avgProcessorUsage = avgProcessorUsage / GLOBAL_GPU_JOBS;
+	avgExecTime = avgExecTime / GLOBAL_GPU_JOBS;
+	
 	FILE * fms = fopen(pModeSummaryFile, "a"); if (!fms) { printf("ERROR: unable to create '%s'\n", pModeSummaryFile); return RTGS_ERROR_NO_RESOURCES; }
-	fprintf(fms, "%d,%d\n",GLOBAL_GPU_JOBS,(GLOBAL_GPU_JOBS+ GLOBAL_CPU_JOBS));
+	fprintf(fms, "%d,%d,%f,%f,%f\n",GLOBAL_GPU_JOBS, maxKernels, avgProcessorUsage, avgExecTime, GPU_usageTime);
 	fclose(fms);
 	return RTGS_SUCCESS;
 }
