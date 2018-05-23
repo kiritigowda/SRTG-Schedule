@@ -419,7 +419,7 @@ int RTGS_PrintScheduleSummary(int mode, int maxKernels, jobAttributes *kernelInf
 
 
 	FILE * fms = fopen(pModeSummaryFile, "a"); if (!fms) { printf("ERROR: unable to create '%s'\n", pModeSummaryFile); return RTGS_ERROR_NO_RESOURCES; }
-	fprintf(fms, "%d,%d",GLOBAL_GPU_JOBS,(GLOBAL_GPU_JOBS+ GLOBAL_CPU_JOBS));
+	fprintf(fms, "%d,%d\n",GLOBAL_GPU_JOBS,(GLOBAL_GPU_JOBS+ GLOBAL_CPU_JOBS));
 	fclose(fms);
 	return RTGS_SUCCESS;
 }
