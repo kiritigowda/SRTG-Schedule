@@ -89,13 +89,13 @@ int RTGS_mode_1(char *jobsListFileName, char *releaseTimeFilename)
 	int processorsAvailable = MAX_GPU_PROCESSOR;
 	int jobNumber = 0;
 
-	int kernelMax = get_job_information(jobAttributesList, jobsListFileName);
-	if (kernelMax <= RTGS_FAILURE) { printf("ERROR - get_job_information failed with %d code\n", kernelMax); return  RTGS_FAILURE; }
+	int jobMax = get_job_information(jobAttributesList, jobsListFileName);
+	if (jobMax <= RTGS_FAILURE) { printf("ERROR - get_job_information failed with %d code\n", jobMax); return  RTGS_FAILURE; }
 	int maxReleases = get_job_release_times(releaseTimeInfo, releaseTimeFilename);
 	if (maxReleases <= RTGS_FAILURE) { printf("ERROR - get_job_release_times failed with %d code\n", maxReleases); return  RTGS_FAILURE; }
 
 	if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-		printf("\n**************** The GPU Scheduler will Schedule %d Jobs ****************\n", kernelMax);
+		printf("\n**************** The GPU Scheduler will Schedule %d Jobs ****************\n", jobMax);
 	}
 
 	int numReleases = 0;
@@ -185,23 +185,23 @@ int RTGS_mode_1(char *jobsListFileName, char *releaseTimeFilename)
 		if (GLOBAL_RTGS_DEBUG_MSG) {
 			printf("\n******* Scheduler Mode 1 *******\n");
 			printf("Processors Available -- %d\n", processorsAvailable);
-			printf("Total Jobs Scheduled -- %d\n", kernelMax);
+			printf("Total Jobs Scheduled -- %d\n", jobMax);
 			printf("	GPU Scheduled Jobs    -- %d\n", GLOBAL_GPU_JOBS);
 			printf("	Jobs Sent Back To CPU -- %d\n", GLOBAL_CPU_JOBS);
 		}
 
-		if (RTGS_PrintScheduleSummary(1, kernelMax, jobAttributesList)) {
+		if (RTGS_PrintScheduleSummary(1, jobMax, jobAttributesList)) {
 			printf("\nSummary Failed\n");
 		}
 
-		if ((kernelMax != (GLOBAL_GPU_JOBS + GLOBAL_CPU_JOBS)) || processorsAvailable != MAX_GPU_PROCESSOR) {
+		if ((jobMax != (GLOBAL_GPU_JOBS + GLOBAL_CPU_JOBS)) || processorsAvailable != MAX_GPU_PROCESSOR) {
 			return RTGS_FAILURE;
 		}
 
-		for (int j = 0; j <= kernelMax; j++) {
+		for (int j = 0; j <= jobMax; j++) {
 			jobAttributesList[j].processor_req = jobAttributesList[j].deadline = jobAttributesList[j].execution_time = jobAttributesList[j].latest_schedulable_time = 0;
 		}
-		kernelMax = 0; maxReleases = 0; jobNumber = 0; GLOBAL_GPU_JOBS = 0; GLOBAL_CPU_JOBS = 0;
+		jobMax = 0; maxReleases = 0; jobNumber = 0; GLOBAL_GPU_JOBS = 0; GLOBAL_CPU_JOBS = 0;
 	}
 
 	if (processorsAllocatedList) {

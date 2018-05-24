@@ -40,7 +40,6 @@ int scheduler_main(char *jobsListFileName, char *releaseTimeFilename, int schedu
 		printf("The Scheduler Mode 5 returned Status ->%d\n", status);
 		status = 0;
 		break;
-
 	default:
 		printf("\nMode  Not Specified/Not implemented, switched to default mode\n");
 		printf("Mode 5:: AEAP/ALAP BP with APLAP improver mode->AEAP/ALAP BP Improve\n");

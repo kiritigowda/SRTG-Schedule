@@ -471,7 +471,8 @@ int AEAP_advanced
 					}
 					// condition 8 b - job scheduled in between pre scheduled jobs
 					if (jobAttributesList[jobNumber].execution_time + latestProcessorRelTime <= nextJobReleased &&
-						jobAttributesList[jobNumber].processor_req <= nextJobProcessorsRequired)
+						jobAttributesList[jobNumber].processor_req <= nextJobProcessorsRequired &&
+						processorsReleaseTime <= latestProcessorRelTime)
 					{
 						localPreScheduledList->processors_allocated = 0;
 						job_release_time = latestProcessorRelTime;
@@ -579,6 +580,7 @@ int AEAP_advanced
 		printf("AEAP advanced: The Job:%d Cannot be scheduled\n", jobNumber);
 		printf("AEAP advanced: Jobs REJECTED count --> %d\n", GLOBAL_CPU_JOBS);
 	}
+
 	PROFILER_STOP(SRTG, AEAP_advanced)
 	return processors_available;
 }

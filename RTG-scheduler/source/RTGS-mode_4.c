@@ -771,7 +771,8 @@ static int Mode_4_AEAP_advanced
 					}
 					// condition 8 b - job scheduled in between pre scheduled jobs
 					if (jobAttributesList[jobNumber].execution_time + latestProcessorRelTime <= nextJobReleased &&
-						jobAttributesList[jobNumber].processor_req <= nextJobProcessorsRequired)
+						jobAttributesList[jobNumber].processor_req <= nextJobProcessorsRequired &&
+						processorsReleaseTime <= latestProcessorRelTime)
 					{
 						localPreScheduledList->processors_allocated = 0;
 						job_release_time = latestProcessorRelTime;
@@ -1351,13 +1352,13 @@ int RTGS_mode_4(char *jobsListFileName, char *releaseTimeFilename) {
 	int processorsAvailable = MAX_GPU_PROCESSOR;
 	int jobNumber = 0;
 
-	int kernelMax = get_job_information(jobAttributesList, jobsListFileName);
-	if (kernelMax <= RTGS_FAILURE) { return  RTGS_FAILURE; }
+	int jobMax = get_job_information(jobAttributesList, jobsListFileName);
+	if (jobMax <= RTGS_FAILURE) { return  RTGS_FAILURE; }
 	int maxReleases = get_job_release_times(releaseTimeInfo, releaseTimeFilename);
 	if (maxReleases <= RTGS_FAILURE) { return  RTGS_FAILURE; }
 
 	if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-		printf("\n**************** The GPU Scheduler will Schedule %d Jobs ****************\n", kernelMax);
+		printf("\n**************** The GPU Scheduler will Schedule %d Jobs ****************\n", jobMax);
 	}
 
 	int numReleases = 0;
@@ -1448,27 +1449,27 @@ int RTGS_mode_4(char *jobsListFileName, char *releaseTimeFilename) {
 		if (GLOBAL_RTGS_DEBUG_MSG) {
 			printf("\n******* Scheduler Mode 4 *******\n");
 			printf("Processors Available -- %d\n", processorsAvailable);
-			printf("Total Jobs Scheduled -- %d\n", kernelMax);
+			printf("Total Jobs Scheduled -- %d\n", jobMax);
 			printf("	GPU Scheduled Jobs    -- %d\n", GLOBAL_GPU_JOBS);
 			printf("	Jobs Sent Back To CPU -- %d\n", GLOBAL_CPU_JOBS);
 		}
 
-		if (RTGS_PrintScheduleSummary(4, kernelMax, jobAttributesList)) {
+		if (RTGS_PrintScheduleSummary(4, jobMax, jobAttributesList)) {
 			printf("\nSummary Failed\n");
 		}
 
-		if ((kernelMax != (GLOBAL_GPU_JOBS + GLOBAL_CPU_JOBS)) || processorsAvailable != MAX_GPU_PROCESSOR) {
+		if ((jobMax != (GLOBAL_GPU_JOBS + GLOBAL_CPU_JOBS)) || processorsAvailable != MAX_GPU_PROCESSOR) {
 			return RTGS_FAILURE;
 		}
 
-		for (int j = 0; j <= kernelMax; j++) {
+		for (int j = 0; j <= jobMax; j++) {
 			jobAttributesList[j].processor_req = jobAttributesList[j].deadline = jobAttributesList[j].execution_time = jobAttributesList[j].latest_schedulable_time = 0;
 		}
-		kernelMax = 0; maxReleases = 0; jobNumber = 0; GLOBAL_GPU_JOBS = 0; GLOBAL_CPU_JOBS = 0;
+		jobMax = 0; maxReleases = 0; jobNumber = 0; GLOBAL_GPU_JOBS = 0; GLOBAL_CPU_JOBS = 0;
 	}
 
 	if (processorsAllocatedList || GLOBAL_preScheduleList) {
-		printf("\nERROR -- processorsAllocatedList/GLOBAL_preScheduleList Failed\n");
+		printf("\nERROR -- processorsAllocatedList/GLOBAL_preScheduleList Failed %d/%d\n", processorsAllocatedList == NULL ? 0 : 1, GLOBAL_preScheduleList == NULL ? 0 : 1);
 		return RTGS_FAILURE;
 	}
 
