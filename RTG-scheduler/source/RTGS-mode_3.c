@@ -252,9 +252,8 @@ static int Mode_3_ALAP
 		if ((localProcessorsAllocatedList->processor_release_time + jobAttributesList[jobNumber].execution_time) > jobAttributesList[jobNumber].deadline)
 		{
 			int count = 0;
-			scheduledResourceNode*temp1 = *processorsAllocatedList;
-			genericBackupNode* temp2 = processorsDistList;
-
+			scheduledResourceNode *temp1 = *processorsAllocatedList;
+			genericBackupNode *temp2 = processorsDistList;
 			while (temp2 != NULL)
 			{
 				if (count == 0)
@@ -654,7 +653,6 @@ static int Mode_3_book_keeper
 					}
 					if (jobAttributesList[jobNumber].execution_time + presentTime <= jobAttributesList[jobNumber].deadline)
 					{
-
 						processors_available = processors_available - jobAttributesList[jobNumber].processor_req;
 						processorsInUse = jobAttributesList[jobNumber].processor_req;
 						processor_release_time = jobAttributesList[jobNumber].execution_time + presentTime;

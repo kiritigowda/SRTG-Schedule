@@ -576,6 +576,7 @@ genericBackupNode *position_delete_preScheduledJob(genericBackupNode *head, int 
 	genericBackupNode *temp1;
 	int count = 1;
 	temp = head;
+
 	if (temp == NULL) {
 		if (GLOBAL_RTGS_DEBUG_MSG > 1) { printf("The List is empty\n"); }
 		return head;
@@ -597,7 +598,6 @@ genericBackupNode *position_delete_preScheduledJob(genericBackupNode *head, int 
 		temp = temp->next;
 		++count;
 	}
-
 	return head;
 }
 
@@ -741,7 +741,6 @@ scheduledResourceNode *remove_recurring_node(scheduledResourceNode* head)
 				free(t2);
 				temp->job_next = temp1->job_next;
 				kernel_check = temp1->job_next;
-
 				while (kernel_check->job_next != NULL)
 					kernel_check = kernel_check->job_next;
 

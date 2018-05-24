@@ -148,7 +148,7 @@ int main(int argc, char * argv[])
 	int64_t end_t = RTGS_GetClockCounter();
 
 	PROFILER_STOP(SRTG, RTG_Schedule)
-		PROFILER_SHUTDOWN();
+	PROFILER_SHUTDOWN();
 
 	if (status != RTGS_SUCCESS) {
 		printf("The Scheduler Failed with error code ->%d\n", status);
