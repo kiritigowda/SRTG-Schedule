@@ -771,7 +771,8 @@ static int Mode_4_AEAP_advanced
 					}
 					// condition 8 b - job scheduled in between pre scheduled jobs
 					if (jobAttributesList[jobNumber].execution_time + latestProcessorRelTime <= nextJobReleased &&
-						jobAttributesList[jobNumber].processor_req <= nextJobProcessorsRequired)
+						jobAttributesList[jobNumber].processor_req <= nextJobProcessorsRequired &&
+						processorsReleaseTime <= latestProcessorRelTime)
 					{
 						localPreScheduledList->processors_allocated = 0;
 						job_release_time = latestProcessorRelTime;
@@ -1468,7 +1469,7 @@ int RTGS_mode_4(char *jobsListFileName, char *releaseTimeFilename) {
 	}
 
 	if (processorsAllocatedList || GLOBAL_preScheduleList) {
-		printf("\nERROR -- processorsAllocatedList/GLOBAL_preScheduleList Failed\n");
+		printf("\nERROR -- processorsAllocatedList/GLOBAL_preScheduleList Failed %d/%d\n", processorsAllocatedList == NULL ? 0 : 1, GLOBAL_preScheduleList == NULL ? 0 : 1);
 		return RTGS_FAILURE;
 	}
 

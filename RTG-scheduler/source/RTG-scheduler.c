@@ -9,7 +9,7 @@ Scheduler Main - Mode Selector
 ***********************************************************************************************************/
 int scheduler_main(char *jobsListFileName, char *releaseTimeFilename, int schedulerMode)
 {
-	PROFILER_START(SRTG, scheduler_main)
+	//PROFILER_START(SRTG, scheduler_main)
 	RTGS_Status status = RTGS_SUCCESS;
 	switch (schedulerMode) {
 	case 1:
@@ -40,13 +40,12 @@ int scheduler_main(char *jobsListFileName, char *releaseTimeFilename, int schedu
 		printf("The Scheduler Mode 5 returned Status ->%d\n", status);
 		status = 0;
 		break;
-
 	default:
 		printf("\nMode  Not Specified/Not implemented, switched to default mode\n");
 		printf("Mode 5:: AEAP/ALAP BP with APLAP improver mode->AEAP/ALAP BP Improve\n");
 		status = RTGS_mode_5(jobsListFileName, releaseTimeFilename);
 		break;
 	}
-	PROFILER_STOP(SRTG, scheduler_main)
+	//PROFILER_STOP(SRTG, scheduler_main)
 	return status;
 }

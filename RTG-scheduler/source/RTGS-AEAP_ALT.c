@@ -471,7 +471,8 @@ int AEAP_advanced
 					}
 					// condition 8 b - job scheduled in between pre scheduled jobs
 					if (jobAttributesList[jobNumber].execution_time + latestProcessorRelTime <= nextJobReleased &&
-						jobAttributesList[jobNumber].processor_req <= nextJobProcessorsRequired)
+						jobAttributesList[jobNumber].processor_req <= nextJobProcessorsRequired &&
+						processorsReleaseTime <= latestProcessorRelTime)
 					{
 						localPreScheduledList->processors_allocated = 0;
 						job_release_time = latestProcessorRelTime;
