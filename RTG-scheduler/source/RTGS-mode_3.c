@@ -5,6 +5,190 @@
 
 #include"RTGS.h"
 
+
+/**********************************************************************************************************
+Mode 3 FUNCTION
+***********************************************************************************************************/
+static int Mode_3_ALAP_advanced
+(
+	jobAttributes *jobAttributesList,
+	int jobNumber,
+	int present_time,
+	int processors_available,
+	scheduledResourceNode **processorsAllocatedList,
+	scheduledResourceNode **jobScheduledQueueList
+)
+{
+	if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+		printf("Mode 3 ALAP advanced: Job:%d is verified for ALAP advanced scheduling\n", jobNumber);
+	}
+
+	int localProcessors = 0, job_release_time = 0, processor_release_time = 0, processorsInUse = 0;
+	processorsInUse = jobAttributesList[jobNumber].processor_req;
+	processor_release_time = jobAttributesList[jobNumber].deadline;
+	job_release_time = jobAttributesList[jobNumber].deadline - jobAttributesList[jobNumber].execution_time;
+	int schedule_method = RTGS_SCHEDULE_METHOD_ALAP;
+
+	scheduledResourceNode *localProcessorsAllocatedList = *processorsAllocatedList;
+	genericBackupNode *lastALAPJobScheduled = GLOBAL_preScheduleList;
+
+	// fail case return
+	if (present_time >= job_release_time) {
+		jobAttributesList[jobNumber].schedule_hardware = 2;
+		jobAttributesList[jobNumber].rescheduled_execution = -1;
+		jobAttributesList[jobNumber].completion_time = -1;
+		jobAttributesList[jobNumber].scheduled_execution = -1;
+		GLOBAL_CPU_JOBS++;
+		if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+			printf("Mode 3 ALAP: The Job:%d Cannot be scheduled\n", jobNumber);
+			printf("Mode 3 ALAP: Jobs REJECTED count --> %d\n", GLOBAL_CPU_JOBS);
+		}
+		return processors_available;
+	}
+
+	int processorsQueued = 0;
+	int processorsQueuedRelease = 0;
+	while (lastALAPJobScheduled != NULL) {
+		processorsQueued += lastALAPJobScheduled->processors_allocated;
+		if (processorsQueuedRelease < lastALAPJobScheduled->processor_release_time)
+			processorsQueuedRelease = lastALAPJobScheduled->processor_release_time;
+		if (processorsQueued >= jobAttributesList[jobNumber].processor_req)
+			break;
+		lastALAPJobScheduled = lastALAPJobScheduled->next;
+	}
+	lastALAPJobScheduled = GLOBAL_preScheduleList;
+
+	int processorsRetrived = 0;
+	int processorsReleaseTime = 0;
+	while (localProcessorsAllocatedList != NULL) {
+		processorsRetrived += localProcessorsAllocatedList->processors_allocated;
+		if (processorsReleaseTime <localProcessorsAllocatedList->processor_release_time)
+			processorsReleaseTime = localProcessorsAllocatedList->processor_release_time;
+		if (processorsRetrived >= jobAttributesList[jobNumber].processor_req)
+			break;
+		localProcessorsAllocatedList = localProcessorsAllocatedList->next;
+	}
+	localProcessorsAllocatedList = *processorsAllocatedList;
+
+	if ((processorsQueuedRelease + jobAttributesList[jobNumber].execution_time) <= jobAttributesList[jobNumber].deadline &&
+		(processorsReleaseTime + jobAttributesList[jobNumber].execution_time) <= jobAttributesList[jobNumber].deadline)
+	{
+		// condition 3
+		if (processors_available >= jobAttributesList[jobNumber].processor_req)
+		{
+			processorsQueued = 0;
+			while (lastALAPJobScheduled != NULL) {
+				processorsQueued += lastALAPJobScheduled->processors_allocated;
+				if (processorsQueued >= jobAttributesList[jobNumber].processor_req) {
+					lastALAPJobScheduled->processors_allocated = processorsQueued - jobAttributesList[jobNumber].processor_req;
+					break;
+				}
+				else {
+					lastALAPJobScheduled->processors_allocated = 0;
+				}
+				lastALAPJobScheduled = lastALAPJobScheduled->next;
+			}
+			lastALAPJobScheduled = GLOBAL_preScheduleList;
+
+			jobAttributesList[jobNumber].schedule_hardware = 1;
+			jobAttributesList[jobNumber].rescheduled_execution = -1;
+			jobAttributesList[jobNumber].scheduled_execution = job_release_time;
+			jobAttributesList[jobNumber].completion_time = jobAttributesList[jobNumber].execution_time + job_release_time;
+			GLOBAL_GPU_JOBS++;
+			if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+				printf("Mode 3 ALAP advanced: Condition 3 pass, The Job:%d scheduled\n", jobNumber);
+				printf("Mode 3 ALAP advanced: Condition 3 pass, Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
+			}
+			GLOBAL_preScheduleList = insert_preScheduledJob_list(GLOBAL_preScheduleList, job_release_time, processor_release_time,
+				processorsInUse, jobNumber);
+			job_queue_handler(processorsInUse, job_release_time, processor_release_time,
+				schedule_method, jobNumber, jobScheduledQueueList);
+			return processors_available;
+		}
+		// condition 4
+		else if (processorsQueued >= jobAttributesList[jobNumber].processor_req)
+		{
+			processorsQueued = 0;
+			while (lastALAPJobScheduled != NULL) {
+				processorsQueued += lastALAPJobScheduled->processors_allocated;
+				if (processorsQueued >= jobAttributesList[jobNumber].processor_req) {
+					lastALAPJobScheduled->processors_allocated = processorsQueued - jobAttributesList[jobNumber].processor_req;
+					break;
+				}
+				else {
+					lastALAPJobScheduled->processors_allocated = 0;
+				}
+				lastALAPJobScheduled = lastALAPJobScheduled->next;
+			}
+			lastALAPJobScheduled = GLOBAL_preScheduleList;
+
+			jobAttributesList[jobNumber].schedule_hardware = 1;
+			jobAttributesList[jobNumber].rescheduled_execution = -1;
+			jobAttributesList[jobNumber].scheduled_execution = job_release_time;
+			jobAttributesList[jobNumber].completion_time = jobAttributesList[jobNumber].execution_time + job_release_time;
+			GLOBAL_GPU_JOBS++;
+			if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+				printf("Mode 3 ALAP advanced: Condition 4 pass, The Job:%d scheduled\n", jobNumber);
+				printf("Mode 3 ALAP advanced: Condition 4 pass, Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
+			}
+			GLOBAL_preScheduleList = insert_preScheduledJob_list(GLOBAL_preScheduleList, job_release_time, processor_release_time,
+				processorsInUse, jobNumber);
+			job_queue_handler(processorsInUse, job_release_time, processor_release_time,
+				schedule_method, jobNumber, jobScheduledQueueList);
+			return processors_available;
+		}
+		else
+		{
+			localProcessors = MAX_GPU_PROCESSOR;
+			if (jobAttributesList[jobNumber].processor_req <= localProcessors)
+			{
+				processorsQueued = 0;
+				while (lastALAPJobScheduled != NULL) {
+					processorsQueued += lastALAPJobScheduled->processors_allocated;
+					if (processorsQueued >= jobAttributesList[jobNumber].processor_req) {
+						lastALAPJobScheduled->processors_allocated = processorsQueued - jobAttributesList[jobNumber].processor_req;
+						break;
+					}
+					else {
+						lastALAPJobScheduled->processors_allocated = 0;
+					}
+					lastALAPJobScheduled = lastALAPJobScheduled->next;
+				}
+				lastALAPJobScheduled = GLOBAL_preScheduleList;
+
+				jobAttributesList[jobNumber].schedule_hardware = 1;
+				jobAttributesList[jobNumber].rescheduled_execution = -1;
+				jobAttributesList[jobNumber].scheduled_execution = job_release_time;
+				jobAttributesList[jobNumber].completion_time = jobAttributesList[jobNumber].execution_time + job_release_time;
+				GLOBAL_GPU_JOBS++;
+				if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+					printf("Mode 3 ALAP advanced: Condition 4 b pass, The Job:%d scheduled\n", jobNumber);
+					printf("Mode 3 ALAP advanced: Condition 4 b pass, Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
+				}
+				GLOBAL_preScheduleList = insert_preScheduledJob_list(GLOBAL_preScheduleList, job_release_time, processor_release_time,
+					processorsInUse, jobNumber);
+				job_queue_handler(processorsInUse, job_release_time, processor_release_time,
+					schedule_method, jobNumber, jobScheduledQueueList);
+				return processors_available;
+			}
+		}
+	}
+	else
+	{
+		jobAttributesList[jobNumber].schedule_hardware = 2;
+		jobAttributesList[jobNumber].rescheduled_execution = -1;
+		jobAttributesList[jobNumber].completion_time = -1;
+		jobAttributesList[jobNumber].scheduled_execution = -1;
+		GLOBAL_CPU_JOBS++;
+		if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+			printf("Mode 3 ALAP advanced: The Job:%d Cannot be scheduled\n", jobNumber);
+			printf("Mode 3 ALAP advanced: Jobs REJECTED count --> %d\n", GLOBAL_CPU_JOBS);
+		}
+	}
+	return processors_available;
+}
+
+
 /**********************************************************************************************************
 MODE 3 FUNCTION
 ***********************************************************************************************************/
@@ -20,11 +204,45 @@ static int Mode_3_ALAP
 {
 	int localProcessors = 0, job_release_time = 0, processor_release_time = 0, processors_allocated = 0;
 	genericBackupNode *processorsDistList = NULL;
-
 	processors_allocated = jobAttributesList[jobNumber].processor_req;
 	processor_release_time = jobAttributesList[jobNumber].deadline;
 	job_release_time = processor_release_time - jobAttributesList[jobNumber].execution_time;
 	localProcessors = processors_available;
+
+	// fail case return
+	if (present_time >= job_release_time) {
+		jobAttributesList[jobNumber].schedule_hardware = 2;
+		jobAttributesList[jobNumber].rescheduled_execution = -1;
+		jobAttributesList[jobNumber].completion_time = -1;
+		jobAttributesList[jobNumber].scheduled_execution = -1;
+		GLOBAL_CPU_JOBS++;
+		if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+			printf("Mode 3 ALAP: The Job:%d Cannot be scheduled\n", jobNumber);
+			printf("Mode 3 ALAP: Jobs REJECTED count --> %d\n", GLOBAL_CPU_JOBS);
+		}
+		return processors_available;
+	}
+
+	if (localProcessors >= jobAttributesList[jobNumber].processor_req)
+	{
+		int processorsInUse = jobAttributesList[jobNumber].processor_req;
+		int schedule_method = RTGS_SCHEDULE_METHOD_ALAP;
+
+		jobAttributesList[jobNumber].schedule_hardware = 1;
+		jobAttributesList[jobNumber].rescheduled_execution = -1;
+		jobAttributesList[jobNumber].scheduled_execution = job_release_time;
+		jobAttributesList[jobNumber].completion_time = jobAttributesList[jobNumber].execution_time + job_release_time;
+		GLOBAL_GPU_JOBS++;
+		if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+			printf("Mode 3 ALAP: The Job:%d scheduled\n", jobNumber);
+			printf("Mode 3 ALAP: Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
+		}
+		GLOBAL_preScheduleList = insert_preScheduledJob_list(GLOBAL_preScheduleList, job_release_time,
+			processor_release_time, processors_allocated, jobNumber);
+		job_queue_handler(processorsInUse, job_release_time, processor_release_time,
+			schedule_method, jobNumber, jobScheduledQueueList);
+		return processors_available;
+	}
 
 	processorsDistList = insert_preScheduledJob_list(processorsDistList, job_release_time, processor_release_time, processors_available, jobNumber);
 	scheduledResourceNode *localProcessorsAllocatedList = *processorsAllocatedList;
@@ -34,13 +252,13 @@ static int Mode_3_ALAP
 		if ((localProcessorsAllocatedList->processor_release_time + jobAttributesList[jobNumber].execution_time) > jobAttributesList[jobNumber].deadline)
 		{
 			int count = 0;
-			scheduledResourceNode *temp1 = *processorsAllocatedList;
-			genericBackupNode *temp2 = processorsDistList;
+			scheduledResourceNode*temp1 = *processorsAllocatedList;
+			genericBackupNode* temp2 = processorsDistList;
+
 			while (temp2 != NULL)
 			{
 				if (count == 0)
 					temp2 = temp2->next;
-
 				else {
 					temp1->job_release_time = 0;
 					temp1 = temp1->next;
@@ -55,8 +273,7 @@ static int Mode_3_ALAP
 			jobAttributesList[jobNumber].scheduled_execution = -1;
 			GLOBAL_CPU_JOBS++;
 			if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-				// TBD:: Return Job to CPU - Function to send Job to CPU execution
-				printf("Mode 3 ALAP: Job:%d Cannot be scheduled", jobNumber);
+				printf("Mode 3 ALAP: The Job:%d Cannot be scheduled\n", jobNumber);
 				printf("Mode 3 ALAP: Jobs REJECTED count --> %d\n", GLOBAL_CPU_JOBS);
 			}
 			break;
@@ -64,12 +281,10 @@ static int Mode_3_ALAP
 		else
 		{
 			localProcessors = localProcessors + localProcessorsAllocatedList->processors_allocated;
-
 			if (localProcessors >= jobAttributesList[jobNumber].processor_req)
 			{
 				localProcessorsAllocatedList->job_release_time = job_release_time;
 				processorsDistList = clean_list(processorsDistList);
-
 				int processorsInUse = jobAttributesList[jobNumber].processor_req;
 				int schedule_method = RTGS_SCHEDULE_METHOD_ALAP;
 
@@ -79,21 +294,22 @@ static int Mode_3_ALAP
 				jobAttributesList[jobNumber].completion_time = jobAttributesList[jobNumber].execution_time + job_release_time;
 				GLOBAL_GPU_JOBS++;
 				if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-					printf("Mode 3 ALAP: Job:%d scheduled", jobNumber);
+					printf("Mode 3 ALAP: The Job:%d scheduled\n", jobNumber);
 					printf("Mode 3 ALAP: Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
 				}
-				GLOBAL_preScheduleList = insert_preScheduledJob_list(GLOBAL_preScheduleList, job_release_time, processor_release_time, processors_allocated, jobNumber);
+				GLOBAL_preScheduleList = insert_preScheduledJob_list(GLOBAL_preScheduleList, job_release_time, processor_release_time,
+					processors_allocated, jobNumber);
 				job_queue_handler(processorsInUse, job_release_time, processor_release_time,
 					schedule_method, jobNumber, jobScheduledQueueList);
 				break;
 			}
 			else
 			{
-				processorsDistList = insert_preScheduledJob_list(processorsDistList, job_release_time, processor_release_time, localProcessorsAllocatedList->processors_allocated, jobNumber);
+				processorsDistList = insert_preScheduledJob_list(processorsDistList, job_release_time, processor_release_time, localProcessorsAllocatedList->processors_allocated, localProcessorsAllocatedList->jobNumber);
 				localProcessorsAllocatedList->job_release_time = job_release_time;
-				localProcessorsAllocatedList = localProcessorsAllocatedList->next;
 			}
 		}
+		localProcessorsAllocatedList = localProcessorsAllocatedList->next;
 	}
 	return processors_available;
 }
@@ -231,9 +447,16 @@ static int Mode_3_AEAP
 					int processor_release_time = job_release_time + jobAttributesList[jobNumber].execution_time;
 					int presentTime = present_time;
 					int schedule_method = RTGS_SCHEDULE_METHOD_AEAP;
+
 					int availAlapProcessors = localProcessors - jobAttributesList[GLOBAL_preScheduleList->jobNumber].processor_req;
-					// condition 1
-					if (jobAttributesList[jobNumber].processor_req <= availAlapProcessors)
+					int futureRelease = 0;
+					if (GLOBAL_preScheduleList->next != NULL) {
+						genericBackupNode *future_preScheduleList = GLOBAL_preScheduleList->next;
+						futureRelease = future_preScheduleList->data;
+					}
+					// condition 3
+					if (jobAttributesList[jobNumber].processor_req <= availAlapProcessors &&
+						(futureRelease == 0 || (job_release_time + jobAttributesList[jobNumber].execution_time) <= futureRelease))
 					{
 						localProcessorsAllocatedList->processors_allocated = localProcessors - jobAttributesList[jobNumber].processor_req;
 						processorsDistList = clean_list(processorsDistList);
@@ -244,7 +467,7 @@ static int Mode_3_AEAP
 						jobAttributesList[jobNumber].completion_time = jobAttributesList[jobNumber].execution_time + job_release_time;
 						GLOBAL_GPU_JOBS++;
 						if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-							printf("Mode 3 AEAP: Condition-1 The Job:%d scheduled\n", jobNumber);
+							printf("Mode 3 AEAP: Condition-3 The Job:%d scheduled\n", jobNumber);
 							printf("Mode 3 AEAP: Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
 						}
 						queue_job_execution(processorsInUse, processor_release_time, presentTime,
@@ -337,14 +560,11 @@ static int Mode_3_Processors_Unavailable
 	}
 	else
 	{
-		jobAttributesList[jobNumber].schedule_hardware = 2;
-		jobAttributesList[jobNumber].rescheduled_execution = -1;
-		jobAttributesList[jobNumber].completion_time = -1;
-		jobAttributesList[jobNumber].scheduled_execution = -1;
-		GLOBAL_CPU_JOBS++;
-		if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-			printf("Mode-3 Processors Unavailable: Job:%d sent BACK TO CPU as ALAP is already set\n", jobNumber);
+		if (GLOBAL_RTGS_DEBUG_MSG > 2) {
+			printf("Mode 3 Processors unavailable:: Job:%d sent for ALAP Advanced execution\n", jobNumber);
 		}
+		processors_available = Mode_3_ALAP_advanced(jobAttributesList, jobNumber, present_time,
+			processors_available, processorsAllocatedList, jobScheduledQueueList);
 	}
 	return processors_available;
 }
@@ -373,61 +593,130 @@ static int Mode_3_book_keeper
 	{
 		if (GLOBAL_preScheduleList == NULL)
 		{
-			if (jobAttributesList[jobNumber].execution_time + presentTime <= jobAttributesList[jobNumber].deadline)
+			// Processors needed lesser than the ALAP limit
+			if (jobAttributesList[jobNumber].processor_req < PROCESSOR_LIMIT)
 			{
-				processors_available = processors_available - jobAttributesList[jobNumber].processor_req;
-				processorsInUse = jobAttributesList[jobNumber].processor_req;
-				processor_release_time = jobAttributesList[jobNumber].execution_time + presentTime;
-				schedule_method = RTGS_SCHEDULE_METHOD_IMMEDIATE;
-				// Job call for the GPU to handle the given Jobs and number of blocks//
-				queue_job_execution(processorsInUse, processor_release_time, presentTime, schedule_method, jobNumber, processorsAllocatedList);
-				jobAttributesList[jobNumber].schedule_hardware = 1;
-				jobAttributesList[jobNumber].rescheduled_execution = -1;
-				jobAttributesList[jobNumber].scheduled_execution = presentTime;
-				jobAttributesList[jobNumber].completion_time = jobAttributesList[jobNumber].execution_time + presentTime;
-				GLOBAL_GPU_JOBS++;
-				if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-					printf("Mode-3 Book Keeper:: Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
+				if (jobAttributesList[jobNumber].execution_time + presentTime <= jobAttributesList[jobNumber].deadline)
+				{
+					processors_available = processors_available - jobAttributesList[jobNumber].processor_req;
+					processorsInUse = jobAttributesList[jobNumber].processor_req;
+					processor_release_time = jobAttributesList[jobNumber].execution_time + presentTime;
+					schedule_method = RTGS_SCHEDULE_METHOD_IMMEDIATE;
+					// Job call for the GPU to handle the given Jobs and number of blocks//
+					queue_job_execution(processorsInUse, processor_release_time, presentTime, schedule_method, jobNumber, processorsAllocatedList);
+					jobAttributesList[jobNumber].schedule_hardware = 1;
+					jobAttributesList[jobNumber].rescheduled_execution = -1;
+					jobAttributesList[jobNumber].scheduled_execution = presentTime;
+					jobAttributesList[jobNumber].completion_time = jobAttributesList[jobNumber].execution_time + presentTime;
+					GLOBAL_GPU_JOBS++;
+					if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+						printf("Mode-3 Book Keeper:: Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
+					}
+				}
+				else
+				{
+					jobAttributesList[jobNumber].schedule_hardware = 2;
+					jobAttributesList[jobNumber].rescheduled_execution = -1;
+					jobAttributesList[jobNumber].completion_time = -1;
+					jobAttributesList[jobNumber].scheduled_execution = -1;
+					GLOBAL_CPU_JOBS++;
+					if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+						printf("Mode-3 Book Keeper:: Job-%d will not complete before it's deadline, Job REJECTED\n", jobNumber);
+						printf("Mode-3 Book Keeper:: Jobs REJECTED count --> %d\n", GLOBAL_CPU_JOBS);
+					}
 				}
 			}
-			else
-			{
-				jobAttributesList[jobNumber].schedule_hardware = 2;
-				jobAttributesList[jobNumber].rescheduled_execution = -1;
-				jobAttributesList[jobNumber].completion_time = -1;
-				jobAttributesList[jobNumber].scheduled_execution = -1;
-				GLOBAL_CPU_JOBS++;
+			else {
 				if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-					printf("Mode-3 Book Keeper:: Job-%d will not complete before it's deadline, Job REJECTED\n", jobNumber);
-					printf("Mode-3 Book Keeper:: Jobs REJECTED count --> %d\n", GLOBAL_CPU_JOBS);
+					printf("Mode 3 Book Keeper:: Job:%d is compute intensive, sent for ALAP execution\n", jobNumber);
 				}
+				processors_available = Mode_3_ALAP(jobAttributesList, jobNumber, present_time,
+					processors_available, processorsAllocatedList, jobScheduledQueueList);
 			}
 		}
 		else
 		{
-			int availAlapProcessors = processors_available - jobAttributesList[GLOBAL_preScheduleList->jobNumber].processor_req;
-			// condition 1
-			if (jobAttributesList[jobNumber].processor_req <= availAlapProcessors)
+			// Processors needed lesser than the limit
+			if (jobAttributesList[jobNumber].processor_req < PROCESSOR_LIMIT)
 			{
-				if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-					printf("Mode-3 Book Keeper:: Job:%d SATISFIED CONDITION 1\n", jobNumber);
+				int availAlapProcessors = processors_available - jobAttributesList[GLOBAL_preScheduleList->jobNumber].processor_req;
+				int futureRelease = 0;
+				if (GLOBAL_preScheduleList->next != NULL) {
+					genericBackupNode *future_preScheduleList = GLOBAL_preScheduleList->next;
+					futureRelease = future_preScheduleList->data;
 				}
-				if (jobAttributesList[jobNumber].execution_time + presentTime <= jobAttributesList[jobNumber].deadline)
+				// condition 1
+				if (jobAttributesList[jobNumber].processor_req <= availAlapProcessors &&
+					(futureRelease == 0 || (presentTime + jobAttributesList[jobNumber].execution_time) <= futureRelease))
 				{
-
-					processors_available = processors_available - jobAttributesList[jobNumber].processor_req;
-					processorsInUse = jobAttributesList[jobNumber].processor_req;
-					processor_release_time = jobAttributesList[jobNumber].execution_time + presentTime;
-					schedule_method = RTGS_SCHEDULE_METHOD_IMMEDIATE;
-					queue_job_execution(processorsInUse, processor_release_time, presentTime, schedule_method, jobNumber, processorsAllocatedList);
-					// TBD:: Job call for the GPU to handle the given Jobs and number of blocks//
-					jobAttributesList[jobNumber].schedule_hardware = 1;
-					jobAttributesList[jobNumber].rescheduled_execution = -1;
-					jobAttributesList[jobNumber].scheduled_execution = presentTime;
-					jobAttributesList[jobNumber].completion_time = jobAttributesList[jobNumber].execution_time + presentTime;
-					GLOBAL_GPU_JOBS++;
 					if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-						printf("Mode-3 Book Keeper:: Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
+						printf("Mode-3 Book Keeper:: Job:%d SATISFIED CONDITION 1\n", jobNumber);
+					}
+					if (jobAttributesList[jobNumber].execution_time + presentTime <= jobAttributesList[jobNumber].deadline)
+					{
+						processors_available = processors_available - jobAttributesList[jobNumber].processor_req;
+						processorsInUse = jobAttributesList[jobNumber].processor_req;
+						processor_release_time = jobAttributesList[jobNumber].execution_time + presentTime;
+						schedule_method = RTGS_SCHEDULE_METHOD_IMMEDIATE;
+						queue_job_execution(processorsInUse, processor_release_time, presentTime, schedule_method, jobNumber, processorsAllocatedList);
+						// TBD:: Job call for the GPU to handle the given Jobs and number of blocks//
+						jobAttributesList[jobNumber].schedule_hardware = 1;
+						jobAttributesList[jobNumber].rescheduled_execution = -1;
+						jobAttributesList[jobNumber].scheduled_execution = presentTime;
+						jobAttributesList[jobNumber].completion_time = jobAttributesList[jobNumber].execution_time + presentTime;
+						GLOBAL_GPU_JOBS++;
+						if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+							printf("Mode-3 Book Keeper:: Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
+						}
+					}
+					else
+					{
+						jobAttributesList[jobNumber].schedule_hardware = 2;
+						jobAttributesList[jobNumber].rescheduled_execution = -1;
+						jobAttributesList[jobNumber].completion_time = -1;
+						jobAttributesList[jobNumber].scheduled_execution = -1;
+						GLOBAL_CPU_JOBS++;
+						if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+							printf("Mode-3 Book Keeper:: Job-%d will not complete before it's deadline, Job REJECTED\n", jobNumber);
+							printf("Mode-3 Book Keeper:: Jobs REJECTED count --> %d\n", GLOBAL_CPU_JOBS);
+						}
+					}
+				}
+				// condition 2
+				else if ((presentTime + jobAttributesList[jobNumber].execution_time) <= GLOBAL_preScheduleList->data)
+				{
+					if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+						printf("Mode-3 Book Keeper:: Job:%d SATISFIED CONDITION 2\n", jobNumber);
+					}
+					if (jobAttributesList[jobNumber].execution_time + presentTime <= jobAttributesList[jobNumber].deadline)
+					{
+
+						processors_available = processors_available - jobAttributesList[jobNumber].processor_req;
+						processorsInUse = jobAttributesList[jobNumber].processor_req;
+						processor_release_time = jobAttributesList[jobNumber].execution_time + presentTime;
+						schedule_method = RTGS_SCHEDULE_METHOD_IMMEDIATE;
+						queue_job_execution(processorsInUse, processor_release_time, presentTime, schedule_method, jobNumber, processorsAllocatedList);
+						// TBD:: Job call for the GPU to handle the given Jobs and number of blocks//
+						jobAttributesList[jobNumber].schedule_hardware = 1;
+						jobAttributesList[jobNumber].rescheduled_execution = -1;
+						jobAttributesList[jobNumber].scheduled_execution = presentTime;
+						jobAttributesList[jobNumber].completion_time = jobAttributesList[jobNumber].execution_time + presentTime;
+						GLOBAL_GPU_JOBS++;
+						if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+							printf("Mode-3 Book Keeper:: Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
+						}
+					}
+					else
+					{
+						jobAttributesList[jobNumber].schedule_hardware = 2;
+						jobAttributesList[jobNumber].rescheduled_execution = -1;
+						jobAttributesList[jobNumber].completion_time = -1;
+						jobAttributesList[jobNumber].scheduled_execution = -1;
+						GLOBAL_CPU_JOBS++;
+						if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+							printf("Mode-3 Book Keeper:: Job-%d will not complete before it's deadline, Job REJECTED\n", jobNumber);
+							printf("Mode-3 Book Keeper:: Jobs REJECTED count --> %d\n", GLOBAL_CPU_JOBS);
+						}
 					}
 				}
 				else
@@ -438,59 +727,14 @@ static int Mode_3_book_keeper
 					jobAttributesList[jobNumber].scheduled_execution = -1;
 					GLOBAL_CPU_JOBS++;
 					if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-						printf("Mode-3 Book Keeper:: Job-%d will not complete before it's deadline, Job REJECTED\n", jobNumber);
+						printf("Mode-3 Book Keeper:: Job-%d REJECTED ALAP job is set\n", jobNumber);
 						printf("Mode-3 Book Keeper:: Jobs REJECTED count --> %d\n", GLOBAL_CPU_JOBS);
 					}
 				}
 			}
-			// condition 2
-			else if ((presentTime + jobAttributesList[jobNumber].execution_time) <= GLOBAL_preScheduleList->data)
-			{
-				if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-					printf("Mode-3 Book Keeper:: Job:%d SATISFIED CONDITION 2\n", jobNumber);
-				}
-				if (jobAttributesList[jobNumber].execution_time + presentTime <= jobAttributesList[jobNumber].deadline)
-				{
-
-					processors_available = processors_available - jobAttributesList[jobNumber].processor_req;
-					processorsInUse = jobAttributesList[jobNumber].processor_req;
-					processor_release_time = jobAttributesList[jobNumber].execution_time + presentTime;
-					schedule_method = RTGS_SCHEDULE_METHOD_IMMEDIATE;
-					queue_job_execution(processorsInUse, processor_release_time, presentTime, schedule_method, jobNumber, processorsAllocatedList);
-					// TBD:: Job call for the GPU to handle the given Jobs and number of blocks//
-					jobAttributesList[jobNumber].schedule_hardware = 1;
-					jobAttributesList[jobNumber].rescheduled_execution = -1;
-					jobAttributesList[jobNumber].scheduled_execution = presentTime;
-					jobAttributesList[jobNumber].completion_time = jobAttributesList[jobNumber].execution_time + presentTime;
-					GLOBAL_GPU_JOBS++;
-					if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-						printf("Mode-3 Book Keeper:: Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
-					}
-				}
-				else
-				{
-					jobAttributesList[jobNumber].schedule_hardware = 2;
-					jobAttributesList[jobNumber].rescheduled_execution = -1;
-					jobAttributesList[jobNumber].completion_time = -1;
-					jobAttributesList[jobNumber].scheduled_execution = -1;
-					GLOBAL_CPU_JOBS++;
-					if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-						printf("Mode-3 Book Keeper:: Job-%d will not complete before it's deadline, Job REJECTED\n", jobNumber);
-						printf("Mode-3 Book Keeper:: Jobs REJECTED count --> %d\n", GLOBAL_CPU_JOBS);
-					}
-				}
-			}
-			else
-			{
-				jobAttributesList[jobNumber].schedule_hardware = 2;
-				jobAttributesList[jobNumber].rescheduled_execution = -1;
-				jobAttributesList[jobNumber].completion_time = -1;
-				jobAttributesList[jobNumber].scheduled_execution = -1;
-				GLOBAL_CPU_JOBS++;
-				if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-					printf("Mode-3 Book Keeper:: Job-%d REJECTED ALAP job is set\n", jobNumber);
-					printf("Mode-3 Book Keeper:: Jobs REJECTED count --> %d\n", GLOBAL_CPU_JOBS);
-				}
+			else {
+				processors_available = Mode_3_ALAP_advanced(jobAttributesList, jobNumber, present_time,
+					processors_available, processorsAllocatedList, jobScheduledQueueList);
 			}
 		}
 	}
@@ -639,7 +883,7 @@ int RTGS_mode_3(char *jobsListFileName, char *releaseTimeFilename)
 	}
 
 	if (processorsAllocatedList || GLOBAL_preScheduleList) {
-		printf("\nERROR -- processorsAllocatedList/GLOBAL_preScheduleList Failed\n");
+		printf("\nERROR -- processorsAllocatedList/GLOBAL_preScheduleList Failed %d/%d\n", processorsAllocatedList == NULL ? 0 : 1, GLOBAL_preScheduleList == NULL ? 0 : 1);
 		return RTGS_FAILURE;
 	}
 
