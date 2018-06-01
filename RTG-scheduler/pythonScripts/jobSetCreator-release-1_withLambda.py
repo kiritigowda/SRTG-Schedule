@@ -4,7 +4,7 @@ import sys
 import random
 import collections
 
-opts, args = getopt.getopt(sys.argv[1:], 'd:s:n:j:p:l:a')
+opts, args = getopt.getopt(sys.argv[1:], 'd:s:n:j:p:l:a:')
  
 outputDirectory = ''
 jobSetName = ''
