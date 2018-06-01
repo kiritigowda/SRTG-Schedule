@@ -5,21 +5,25 @@ import random
 import collections
 import csv
 
-opts, args = getopt.getopt(sys.argv[1:], 'i:o:')
+opts, args = getopt.getopt(sys.argv[1:], 'i:o:f:')
 
 inputDirectory = '';
 outputDirectory = '';
+fileName = '';
 
 for opt, arg in opts:
     if opt == '-i':
         inputDirectory = arg;
     elif opt == '-o':
         outputDirectory = arg;
+    elif opt == '-f':
+        fileName = arg;
 
 
-if inputDirectory == '' or outputDirectory == '':
+if inputDirectory == '' or outputDirectory == '' or fileName == '':
     print('Invalid command line arguments.	 -i [input Directory - required] '\
-											'-o [input Directory - required] ')
+											'-o [output Directory - required] '\
+                                            '-f [output file name Directory - required] ')
     exit();
 
 if not os.path.exists(inputDirectory):
@@ -53,7 +57,7 @@ with open(inputDirectory+'RTGS-Mode-5-Summary.csv') as mode5:
     row_count = len(data_5)
 
 orig_stdout = sys.stdout
-sys.stdout = open(outputDirectory+'/SchedulerResults.html','w')
+sys.stdout = open(outputDirectory+'/'+fileName+'-SchedulerResults.html','w')
 print"<html>"
 print"\t<head>"
 print"\t\t<script type=\"text/javascript\" src=\"https://www.gstatic.com/charts/loader.js\"></script>"
@@ -73,11 +77,11 @@ print"\t\t\tdata.addColumn('number', 'Mode 5');"
 print"\t\t\tdata.addRows(["
 for x in range(row_count):
     if(x < row_count-1):
-        print '['+str(x)+','+str(data_1[x][0])+','+str(data_2[x][0])+','+str(data_3[x][0])+','+str(data_4[x][0])+','+str(data_5[x][0])+'],'
+        print '\t\t\t\t['+str(x)+','+str(data_1[x][0])+','+str(data_2[x][0])+','+str(data_3[x][0])+','+str(data_4[x][0])+','+str(data_5[x][0])+'],'
     else:
-        print '['+str(x)+','+str(data_1[x][0])+','+str(data_2[x][0])+','+str(data_3[x][0])+','+str(data_4[x][0])+','+str(data_5[x][0])+']'
+        print '\t\t\t\t['+str(x)+','+str(data_1[x][0])+','+str(data_2[x][0])+','+str(data_3[x][0])+','+str(data_4[x][0])+','+str(data_5[x][0])+']'
 print"\t\t\t]);"
-print"\t\t\tvar options = {  title:'Average Jobs Scheduled', hAxis: { title: 'JobSet ID'}, vAxis: {title: 'Number of Jobs'}, series: { 0.01: {curveType: 'function'} }, width:1200, height:800 };"
+print"\t\t\tvar options = {  title:'Average Jobs Scheduled', hAxis: { title: 'JobSet ID'}, vAxis: {title: 'Number of Jobs'}, series: { 0.01: {curveType: 'function'} }, width:1600, height:1000 };"
 print"\t\t\tvar chart = new google.visualization.LineChart(document.getElementById('jobScheduled_chart'));"
 print"\t\t\tchart.draw(data, options);}"
 print"\n\n\n"
@@ -94,11 +98,11 @@ print"\t\t\tdata.addColumn('number', 'Mode 5');"
 print"\t\t\tdata.addRows(["
 for x in range(row_count):
     if(x < row_count-1):
-        print '['+str(x)+','+str(data_1[x][4])+','+str(data_2[x][4])+','+str(data_3[x][4])+','+str(data_4[x][4])+','+str(data_5[x][4])+'],'
+        print '\t\t\t\t['+str(x)+','+str(data_1[x][4])+','+str(data_2[x][4])+','+str(data_3[x][4])+','+str(data_4[x][4])+','+str(data_5[x][4])+'],'
     else:
-        print '['+str(x)+','+str(data_1[x][4])+','+str(data_2[x][4])+','+str(data_3[x][4])+','+str(data_4[x][4])+','+str(data_5[x][4])+']'
+        print '\t\t\t\t['+str(x)+','+str(data_1[x][4])+','+str(data_2[x][4])+','+str(data_3[x][4])+','+str(data_4[x][4])+','+str(data_5[x][4])+']'
 print"\t\t\t]);"
-print"\t\t\tvar options = {  title:'Total GPU Usage', hAxis: { title: 'JobSet ID'}, vAxis: {title: 'Total GPU Usage'}, series: { 0.01: {curveType: 'function'} }, width:1200, height:800 };"
+print"\t\t\tvar options = {  title:'Total GPU Usage', hAxis: { title: 'JobSet ID'}, vAxis: {title: 'Total GPU Usage'}, series: { 0.01: {curveType: 'function'} }, width:1600, height:1000 };"
 print"\t\t\tvar chart = new google.visualization.LineChart(document.getElementById('GPUUsage_chart'));"
 print"\t\t\tchart.draw(data, options);}"
 print"\n\n\n"
@@ -115,11 +119,11 @@ print"\t\t\tdata.addColumn('number', 'Mode 5');"
 print"\t\t\tdata.addRows(["
 for x in range(row_count):
     if(x < row_count-1):
-        print '['+str(x)+','+str(data_1[x][5])+','+str(data_2[x][5])+','+str(data_3[x][5])+','+str(data_4[x][5])+','+str(data_5[x][5])+'],'
+        print '\t\t\t\t['+str(x)+','+str(data_1[x][5])+','+str(data_2[x][5])+','+str(data_3[x][5])+','+str(data_4[x][5])+','+str(data_5[x][5])+'],'
     else:
-        print '['+str(x)+','+str(data_1[x][5])+','+str(data_2[x][5])+','+str(data_3[x][5])+','+str(data_4[x][5])+','+str(data_5[x][5])+']'
+        print '\t\t\t\t['+str(x)+','+str(data_1[x][5])+','+str(data_2[x][5])+','+str(data_3[x][5])+','+str(data_4[x][5])+','+str(data_5[x][5])+']'
 print"\t\t\t]);"
-print"\t\t\tvar options = {  title:'Average Response Time', hAxis: { title: 'JobSet ID'}, vAxis: {title: 'Response Time'}, series: { 0.01: {curveType: 'function'} }, width:1200, height:800 };"
+print"\t\t\tvar options = {  title:'Average Response Time', hAxis: { title: 'JobSet ID'}, vAxis: {title: 'Response Time'}, series: { 0.01: {curveType: 'function'} }, width:1600, height:1000 };"
 print"\t\t\tvar chart = new google.visualization.LineChart(document.getElementById('responseTime_chart'));"
 print"\t\t\tchart.draw(data, options);}"
 print"\n\n\n"
@@ -136,11 +140,11 @@ print"\t\t\tdata.addColumn('number', 'Mode 5');"
 print"\t\t\tdata.addRows(["
 for x in range(row_count):
     if(x < row_count-1):
-        print '['+str(x)+','+str(data_1[x][6])+','+str(data_2[x][6])+','+str(data_3[x][6])+','+str(data_4[x][6])+','+str(data_5[x][6])+'],'
+        print '\t\t\t\t['+str(x)+','+str(data_1[x][6])+','+str(data_2[x][6])+','+str(data_3[x][6])+','+str(data_4[x][6])+','+str(data_5[x][6])+'],'
     else:
-        print '['+str(x)+','+str(data_1[x][6])+','+str(data_2[x][6])+','+str(data_3[x][6])+','+str(data_4[x][6])+','+str(data_5[x][6])+']'
+        print '\t\t\t\t['+str(x)+','+str(data_1[x][6])+','+str(data_2[x][6])+','+str(data_3[x][6])+','+str(data_4[x][6])+','+str(data_5[x][6])+']'
 print"\t\t\t]);"
-print"\t\t\tvar options = {  title:'Average Response Factor', hAxis: { title: 'JobSet ID'}, vAxis: {title: 'Response Factor'}, series: { 0.01: {curveType: 'function'} }, width:1200, height:800 };"
+print"\t\t\tvar options = {  title:'Average Response Factor', hAxis: { title: 'JobSet ID'}, vAxis: {title: 'Response Factor'}, series: { 0.01: {curveType: 'function'} }, width:1600, height:1000 };"
 print"\t\t\tvar chart = new google.visualization.LineChart(document.getElementById('responseFactor_chart'));"
 print"\t\t\tchart.draw(data, options);}"
 print"\n"
