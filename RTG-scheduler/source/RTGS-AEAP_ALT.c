@@ -507,7 +507,7 @@ int AEAP_advanced
 			}
 
 			int processorsQueued = 0;
-			int processorsQueuedRelease = 0;
+			int processorsQueuedRelease = processorsReleaseTime;
 			localPreScheduledList = GLOBAL_preScheduleList;
 			while (localPreScheduledList != NULL) {
 				processorsQueued += localPreScheduledList->processors_allocated;
