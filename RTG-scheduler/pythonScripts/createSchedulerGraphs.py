@@ -21,9 +21,10 @@ for opt, arg in opts:
 
 
 if inputDirectory == '' or outputDirectory == '' or fileName == '':
-    print('Invalid command line arguments.	 -i [input Directory - required] '\
-						'-o [output Directory - required] '\
-                                                '-f [output file name Directory - required] ')
+    print('Invalid command line arguments.\n'
+        '\t\t\t\t-i [input Directory - required]\n'\
+        '\t\t\t\t-o [output Directory - required]\n'\
+        '\t\t\t\t-f [output file name Directory - required]\n')
     exit();
 
 if not os.path.exists(inputDirectory):
