@@ -33,12 +33,12 @@ for opt, arg in opts:
 
 if outputDirectory == '' or jobSetName == '' or numJobSet == -1 or numJobsPerSet == -1 or maxProcessors == -1 or lambdaVar == -1:
     print('Invalid command line arguments.	-d [output Directory - required] ' \
-											'-s [job set name - required] ' \
-											'-n [number of job sets to be created - required] ' \
-											'-j [number of job per set to be created - required]  ' \
-											'-p [max processors available - required]' \
-											'-l [lambda job arrival rate [range:0.001 to 1] - required]'\
-											'-a [Schedule ALAP processor limit - optional [default: 0.75 * max processors]]')
+						'-s [job set name - required] ' \
+						'-n [number of job sets to be created - required] ' \
+						'-j [number of job per set to be created - required]  ' \
+						'-p [max processors available - required] ' \
+						'-l [lambda job arrival rate [range:0.001 to 1] - required] '\
+						'-a [Schedule ALAP processor limit - optional [default: 0.75 * max processors]] ')
     exit()
 
 if not os.path.exists(outputDirectory):
