@@ -418,30 +418,40 @@ int RTGS_PrintScheduleSummary(int mode, int maxKernels, jobAttributes *kernelInf
 		fclose(fs);
 	}
 
-	float avgProcessorUsage = 0, avgExecTime = 0; 
-	float GPU_usageTime = 0;
-	float responseTimeAvg = 0;
-	float responseFactorAvg = 0;
+	float avgProcessorUsage = 0, avgExecTime = 0, gpuJobs = 0, totalJobs = 0;
+	float GPU_usageTime = 0, responseTimeAvg = 0, responseFactorAvg = 0;
+	float totalGPUUsage = 0, maxReleaseTime = 0;
+
 	for (int i = 0; i < maxKernels; i++) {
+		if (maxReleaseTime < (float)kernelInfoList[i].release_time) {
+			maxReleaseTime = (float)kernelInfoList[i].release_time;
+		}
+		float processors = (float)kernelInfoList[i].processor_req;
+		float maxProcessors = MAX_GPU_PROCESSOR;
 		if (kernelInfoList[i].schedule_hardware == 1) {
 			avgProcessorUsage += kernelInfoList[i].processor_req;
 			avgExecTime += kernelInfoList[i].execution_time;
-			float processors = kernelInfoList[i].processor_req;
-			float maxProcessors = MAX_GPU_PROCESSOR;
-			float response = kernelInfoList[i].completion_time - kernelInfoList[i].release_time;
-			float totalTime = kernelInfoList[i].deadline - kernelInfoList[i].release_time;
+			float response = (float)kernelInfoList[i].completion_time - kernelInfoList[i].release_time;
+			float totalTime = (float)kernelInfoList[i].deadline - kernelInfoList[i].release_time;
 			responseTimeAvg += response;
 			responseFactorAvg += response/totalTime;
 			GPU_usageTime += ((processors / maxProcessors)*kernelInfoList[i].execution_time);
 		}
+		totalGPUUsage += ((processors / maxProcessors)*kernelInfoList[i].execution_time);
 	}
 	avgProcessorUsage = avgProcessorUsage / GLOBAL_GPU_JOBS;
 	avgExecTime = avgExecTime / GLOBAL_GPU_JOBS;
 	responseTimeAvg = responseTimeAvg / GLOBAL_GPU_JOBS;
 	responseFactorAvg = responseFactorAvg / GLOBAL_GPU_JOBS;
+	float GPUTimePercentage = (GPU_usageTime / totalGPUUsage) * 100;
+	gpuJobs = (float)GLOBAL_GPU_JOBS;
+	totalJobs = (float)maxKernels;
+	float jobScheduledPercentage = (gpuJobs / maxKernels) * 100;
+	float releaseLambda = totalJobs / maxReleaseTime;
 	
 	FILE * fms = fopen(pModeSummaryFile, "a"); if (!fms) { printf("ERROR: unable to create '%s'\n", pModeSummaryFile); return RTGS_ERROR_NO_RESOURCES; }
-	fprintf(fms, "%d,%d,%.4f,%.4f,%.4f,%.4f,%.4f\n",GLOBAL_GPU_JOBS, maxKernels, avgProcessorUsage, avgExecTime, GPU_usageTime, responseTimeAvg, responseFactorAvg);
+	fprintf(fms, "%d,%d,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f\n",GLOBAL_GPU_JOBS, maxKernels, avgProcessorUsage,
+		avgExecTime, GPU_usageTime, responseTimeAvg, responseFactorAvg, GPUTimePercentage, jobScheduledPercentage, releaseLambda);
 	fclose(fms);
 	return RTGS_SUCCESS;
 }
