@@ -68,6 +68,7 @@ for s in range(numJobSet):
 
 	# create a job set - job_file.txt
 	releaseTime = 0;
+	releaseTime_prev = 0
 	releaseDistribution = 0;
 	with open(fileName_Jobs,'w') as f:
 	
@@ -85,8 +86,10 @@ for s in range(numJobSet):
 				deadlineVar = numProcessorInverseVar/10;
 			deadLine = lastestTimeSchedulable + int(random.expovariate(deadlineVar));
 			releaseTimeArray[x] = releaseTime
-			releaseTime = releaseTime + 1
+			if releaseTime == releaseTime_prev:
+				releaseTime = releaseTime + 1
 			f.write(str(jobNumber)+','+str(numProcessors)+','+str(executionTime)+','+str(deadLine)+','+str(lastestTimeSchedulable)+'\n')
+			releaseTime_prev = releaseTime;
 
 	# create a job release set - job_releaseTime.txt
 	from collections import Counter
