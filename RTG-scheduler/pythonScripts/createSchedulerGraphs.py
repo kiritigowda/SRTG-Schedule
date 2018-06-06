@@ -209,19 +209,22 @@ print"\t\t</script>"
 print"\t</head>"
 print"\t<body>"
 print'\t\t<br><br><h1><center> RTG Schedule Summary</center></h2><br>'
-print"\t\t<table align=\"center\" style=\"width: 90%\">"
+print"\t\t<table align=\"center\" style=\"width: 95%\">"
 print"\t\t\t<tr>"
 print"\t\t\t\t<td><center></center></td>"
 print"\t\t\t\t<td><center>Average Jobs</center></td>"
 print"\t\t\t\t<td><center>Jobs Scheduled</center></td>"
-print"\t\t\t\t<td><center>Avg Processors</center></td>"
-print"\t\t\t\t<td><center>Avg Execution Time</center></td>"
+print"\t\t\t\t<td><center>Avg Processors/Job</center></td>"
+print"\t\t\t\t<td><center>Avg Execution Time/Job</center></td>"
 print"\t\t\t\t<td><center>Total GPU Usage</center></td>"
-print"\t\t\t\t<td><center>Avg Response Time</center></td>"
-print"\t\t\t\t<td><center>Avg Response Factor</center></td>"
+print"\t\t\t\t<td><center>Avg Response Time/Job</center></td>"
+print"\t\t\t\t<td><center>Avg Response Factor/Job</center></td>"
 print"\t\t\t\t<td><center>GPU usage Percentage</center></td>"
 print"\t\t\t\t<td><center>Job Scheduled Percentage</center></td>"
+print"\t\t\t\t<td><center>Avg GPU Schedule Overhead/Job</center></td>"
+print"\t\t\t\t<td><center>Avg Scheduler Overhead/Job</center></td>"
 print"\t\t\t</tr>"
+# Mode 1
 avgJobsScheduled = 0;
 avgJobs = 0;
 avgProc = 0;
@@ -231,6 +234,9 @@ avgResponseTime = 0;
 avgResponseFactor = 0;
 GPUUsagePercentage = 0;
 avgJobPercentage = 0;
+GPUScheduleOverhead = 0;
+AvgSchedulerOverhead = 0;
+
 for x in range(row_count):
     avgJobsScheduled = avgJobsScheduled + float(data_1[x][0]);
     avgJobs = avgJobs + int(data_1[x][1]);
@@ -241,6 +247,8 @@ for x in range(row_count):
     avgResponseFactor = avgResponseFactor + float(data_1[x][6]);
     GPUUsagePercentage = GPUUsagePercentage + float(data_1[x][7]);
     avgJobPercentage = avgJobPercentage + float(data_1[x][8]);
+    GPUScheduleOverhead = GPUScheduleOverhead + float(data_1[x][10]);
+    AvgSchedulerOverhead = AvgSchedulerOverhead + float(data_1[x][11]);
 
 avgJobsScheduled = float(avgJobsScheduled)/row_count;
 avgJobs = float(avgJobs)/row_count;
@@ -251,6 +259,9 @@ avgResponseTime = float(avgResponseTime)/row_count;
 avgResponseFactor = float(avgResponseFactor)/row_count;
 GPUUsagePercentage = float(GPUUsagePercentage)/row_count;
 avgJobPercentage = float(avgJobPercentage)/row_count;
+GPUScheduleOverhead = float(GPUScheduleOverhead)/row_count;
+AvgSchedulerOverhead = float(AvgSchedulerOverhead)/row_count;
+
 print"\t\t\t<tr>"
 print"\t\t\t\t<td><center>Mode 1</center></td>"
 print'\t\t\t\t<td><center>'+str(avgJobs)+'</center></td>'
@@ -262,7 +273,10 @@ print'\t\t\t\t<td><center>'+str(avgResponseTime)+'</center></td>'
 print'\t\t\t\t<td><center>'+str(avgResponseFactor)+'</center></td>'
 print'\t\t\t\t<td><center>'+str(GPUUsagePercentage)+'</center></td>'
 print'\t\t\t\t<td><center>'+str(avgJobPercentage)+'</center></td>'
+print'\t\t\t\t<td><center>'+str(GPUScheduleOverhead)+'</center></td>'
+print'\t\t\t\t<td><center>'+str(AvgSchedulerOverhead)+'</center></td>'
 print"\t\t\t</tr>"
+# Mode 2
 avgJobsScheduled = 0;
 avgJobs = 0;
 avgProc = 0;
@@ -272,6 +286,9 @@ avgResponseTime = 0;
 avgResponseFactor = 0;
 GPUUsagePercentage = 0;
 avgJobPercentage = 0;
+GPUScheduleOverhead = 0;
+AvgSchedulerOverhead = 0;
+
 for x in range(row_count):
     avgJobsScheduled = avgJobsScheduled + float(data_2[x][0]);
     avgJobs = avgJobs + int(data_2[x][1]);
@@ -282,6 +299,8 @@ for x in range(row_count):
     avgResponseFactor = avgResponseFactor + float(data_2[x][6]);
     GPUUsagePercentage = GPUUsagePercentage + float(data_2[x][7]);
     avgJobPercentage = avgJobPercentage + float(data_2[x][8]);
+    GPUScheduleOverhead = GPUScheduleOverhead + float(data_2[x][10]);
+    AvgSchedulerOverhead = AvgSchedulerOverhead + float(data_2[x][11]);
 
 avgJobsScheduled = float(avgJobsScheduled)/row_count;
 avgJobs = float(avgJobs)/row_count;
@@ -292,6 +311,9 @@ avgResponseTime = float(avgResponseTime)/row_count;
 avgResponseFactor = float(avgResponseFactor)/row_count;
 GPUUsagePercentage = float(GPUUsagePercentage)/row_count;
 avgJobPercentage = float(avgJobPercentage)/row_count;
+GPUScheduleOverhead = float(GPUScheduleOverhead)/row_count;
+AvgSchedulerOverhead = float(AvgSchedulerOverhead)/row_count;
+
 print"\t\t\t<tr>"
 print"\t\t\t\t<td><center>Mode 2</center></td>"
 print'\t\t\t\t<td><center>'+str(avgJobs)+'</center></td>'
@@ -303,7 +325,10 @@ print'\t\t\t\t<td><center>'+str(avgResponseTime)+'</center></td>'
 print'\t\t\t\t<td><center>'+str(avgResponseFactor)+'</center></td>'
 print'\t\t\t\t<td><center>'+str(GPUUsagePercentage)+'</center></td>'
 print'\t\t\t\t<td><center>'+str(avgJobPercentage)+'</center></td>'
+print'\t\t\t\t<td><center>'+str(GPUScheduleOverhead)+'</center></td>'
+print'\t\t\t\t<td><center>'+str(AvgSchedulerOverhead)+'</center></td>'
 print"\t\t\t</tr>"
+# Mode 3
 avgJobsScheduled = 0;
 avgJobs = 0;
 avgProc = 0;
@@ -313,6 +338,9 @@ avgResponseTime = 0;
 avgResponseFactor = 0;
 GPUUsagePercentage = 0;
 avgJobPercentage = 0;
+GPUScheduleOverhead = 0;
+AvgSchedulerOverhead = 0;
+
 for x in range(row_count):
     avgJobsScheduled = avgJobsScheduled + float(data_3[x][0]);
     avgJobs = avgJobs + int(data_3[x][1]);
@@ -323,6 +351,8 @@ for x in range(row_count):
     avgResponseFactor = avgResponseFactor + float(data_3[x][6]);
     GPUUsagePercentage = GPUUsagePercentage + float(data_3[x][7]);
     avgJobPercentage = avgJobPercentage + float(data_3[x][8]);
+    GPUScheduleOverhead = GPUScheduleOverhead + float(data_3[x][10]);
+    AvgSchedulerOverhead = AvgSchedulerOverhead + float(data_3[x][11]);
 
 avgJobsScheduled = float(avgJobsScheduled)/row_count;
 avgJobs = float(avgJobs)/row_count;
@@ -333,6 +363,9 @@ avgResponseTime = float(avgResponseTime)/row_count;
 avgResponseFactor = float(avgResponseFactor)/row_count;
 GPUUsagePercentage = float(GPUUsagePercentage)/row_count;
 avgJobPercentage = float(avgJobPercentage)/row_count;
+GPUScheduleOverhead = float(GPUScheduleOverhead)/row_count;
+AvgSchedulerOverhead = float(AvgSchedulerOverhead)/row_count;
+
 print"\t\t\t<tr>"
 print"\t\t\t\t<td><center>Mode 3</center></td>"
 print'\t\t\t\t<td><center>'+str(avgJobs)+'</center></td>'
@@ -344,7 +377,10 @@ print'\t\t\t\t<td><center>'+str(avgResponseTime)+'</center></td>'
 print'\t\t\t\t<td><center>'+str(avgResponseFactor)+'</center></td>'
 print'\t\t\t\t<td><center>'+str(GPUUsagePercentage)+'</center></td>'
 print'\t\t\t\t<td><center>'+str(avgJobPercentage)+'</center></td>'
+print'\t\t\t\t<td><center>'+str(GPUScheduleOverhead)+'</center></td>'
+print'\t\t\t\t<td><center>'+str(AvgSchedulerOverhead)+'</center></td>'
 print"\t\t\t</tr>"
+# Mode 4
 avgJobsScheduled = 0;
 avgJobs = 0;
 avgProc = 0;
@@ -354,6 +390,9 @@ avgResponseTime = 0;
 avgResponseFactor = 0;
 GPUUsagePercentage = 0;
 avgJobPercentage = 0;
+GPUScheduleOverhead = 0;
+AvgSchedulerOverhead = 0;
+
 for x in range(row_count):
     avgJobsScheduled = avgJobsScheduled + float(data_4[x][0]);
     avgJobs = avgJobs + int(data_4[x][1]);
@@ -364,6 +403,8 @@ for x in range(row_count):
     avgResponseFactor = avgResponseFactor + float(data_4[x][6]);
     GPUUsagePercentage = GPUUsagePercentage + float(data_4[x][7]);
     avgJobPercentage = avgJobPercentage + float(data_4[x][8]);
+    GPUScheduleOverhead = GPUScheduleOverhead + float(data_4[x][10]);
+    AvgSchedulerOverhead = AvgSchedulerOverhead + float(data_4[x][11]);
 
 avgJobsScheduled = float(avgJobsScheduled)/row_count;
 avgJobs = float(avgJobs)/row_count;
@@ -374,6 +415,9 @@ avgResponseTime = float(avgResponseTime)/row_count;
 avgResponseFactor = float(avgResponseFactor)/row_count;
 GPUUsagePercentage = float(GPUUsagePercentage)/row_count;
 avgJobPercentage = float(avgJobPercentage)/row_count;
+GPUScheduleOverhead = float(GPUScheduleOverhead)/row_count;
+AvgSchedulerOverhead = float(AvgSchedulerOverhead)/row_count;
+
 print"\t\t\t<tr>"
 print"\t\t\t\t<td><center>Mode 4</center></td>"
 print'\t\t\t\t<td><center>'+str(avgJobs)+'</center></td>'
@@ -385,7 +429,10 @@ print'\t\t\t\t<td><center>'+str(avgResponseTime)+'</center></td>'
 print'\t\t\t\t<td><center>'+str(avgResponseFactor)+'</center></td>'
 print'\t\t\t\t<td><center>'+str(GPUUsagePercentage)+'</center></td>'
 print'\t\t\t\t<td><center>'+str(avgJobPercentage)+'</center></td>'
+print'\t\t\t\t<td><center>'+str(GPUScheduleOverhead)+'</center></td>'
+print'\t\t\t\t<td><center>'+str(AvgSchedulerOverhead)+'</center></td>'
 print"\t\t\t</tr>"
+# Mode 5
 avgJobsScheduled = 0;
 avgJobs = 0;
 avgProc = 0;
@@ -395,7 +442,10 @@ avgResponseTime = 0;
 avgResponseFactor = 0;
 GPUUsagePercentage = 0;
 avgJobPercentage = 0;
+GPUScheduleOverhead = 0;
+AvgSchedulerOverhead = 0;
 avgReleaseLambda = 0;
+
 for x in range(row_count):
     avgJobsScheduled = avgJobsScheduled + float(data_5[x][0]);
     avgJobs = avgJobs + int(data_5[x][1]);
@@ -407,6 +457,8 @@ for x in range(row_count):
     GPUUsagePercentage = GPUUsagePercentage + float(data_5[x][7]);
     avgJobPercentage = avgJobPercentage + float(data_5[x][8]);
     avgReleaseLambda = avgReleaseLambda + float(data_5[x][9]);
+    GPUScheduleOverhead = GPUScheduleOverhead + float(data_5[x][10]);
+    AvgSchedulerOverhead = AvgSchedulerOverhead + float(data_5[x][11]);
 
 avgJobsScheduled = float(avgJobsScheduled)/row_count;
 avgJobs = float(avgJobs)/row_count;
@@ -417,7 +469,11 @@ avgResponseTime = float(avgResponseTime)/row_count;
 avgResponseFactor = float(avgResponseFactor)/row_count;
 GPUUsagePercentage = float(GPUUsagePercentage)/row_count;
 avgJobPercentage = float(avgJobPercentage)/row_count;
+GPUScheduleOverhead = float(GPUScheduleOverhead)/row_count;
+AvgSchedulerOverhead = float(AvgSchedulerOverhead)/row_count;
+
 avgReleaseLambda = float(avgReleaseLambda)/row_count;
+
 print"\t\t\t<tr>"
 print"\t\t\t\t<td><center>Mode 5</center></td>"
 print'\t\t\t\t<td><center>'+str(avgJobs)+'</center></td>'
@@ -429,6 +485,8 @@ print'\t\t\t\t<td><center>'+str(avgResponseTime)+'</center></td>'
 print'\t\t\t\t<td><center>'+str(avgResponseFactor)+'</center></td>'
 print'\t\t\t\t<td><center>'+str(GPUUsagePercentage)+'</center></td>'
 print'\t\t\t\t<td><center>'+str(avgJobPercentage)+'</center></td>'
+print'\t\t\t\t<td><center>'+str(GPUScheduleOverhead)+'</center></td>'
+print'\t\t\t\t<td><center>'+str(AvgSchedulerOverhead)+'</center></td>'
 print"\t\t\t</tr>"
 print"\t\t</table>"
 print'\t\t<br><br><h2><center> Avg Release Time Lambda:'+str(avgReleaseLambda)+'</center></h2><br>'
