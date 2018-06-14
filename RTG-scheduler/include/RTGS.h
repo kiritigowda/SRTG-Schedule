@@ -27,11 +27,11 @@
 #include <string.h>
 
 #define MAX_GPU_PROCESSOR 14                    // Total streaming multi-processors available on the GPU
-#define MAX_JOBS 1000                           // Max jobs to be scheduled
+#define MAX_JOBS 1200                           // Max jobs to be scheduled
 #define PROCESSOR_LIMIT 10                      // ALAP Processor Limit
-#define MAX_RUN_TIME 10000                      // Max run time
+#define MAX_RUN_TIME 50000                      // Max run time
 
-#define MULTIPLE_JOBS_SCHEDULED -99				// multiple jobs scheduled at a given time
+#define MULTIPLE_JOBS_SCHEDULED -99             // multiple jobs scheduled at a given time
 
 // PROFILER_MODE:
 //   0 - no profiling
