@@ -100,12 +100,12 @@ struct jobInformation {
 	int deadline;                   // deadline
 	int latest_schedulable_time;    // latest schedule time
 	int release_time;               // latest schedule time
-	float schedule_overhead;        // scheduler Overhead
 	int data_send_time;             // data for the job sent
 	int scheduled_execution;        // scheduled for GPU exec
 	int completion_time;            // job completion time
 	int rescheduled_execution;      // job rescheduled for gpu exe
 	int schedule_hardware;          // job scheduled on 0: ERROR, 1: GPU, 2: CPU
+	float schedule_overhead;        // scheduler Overhead
 };
 //! \brief jobInformation structure
 typedef struct jobInformation jobAttributes;
