@@ -29,7 +29,7 @@
 #define MAX_GPU_PROCESSOR 14                    // Total streaming multi-processors available on the GPU
 #define MAX_JOBS 1200                           // Max jobs to be scheduled
 #define PROCESSOR_LIMIT 10                      // ALAP Processor Limit
-#define MAX_RUN_TIME 50000                      // Max run time
+#define MAX_RUN_TIME 500000                     // Max run time
 
 #define MULTIPLE_JOBS_SCHEDULED -99             // multiple jobs scheduled at a given time
 
@@ -149,6 +149,8 @@ typedef struct jobBackupList genericBackupNode;
 int GLOBAL_GPU_JOBS;
 int GLOBAL_CPU_JOBS;
 int GLOBAL_RELEASE_TIME[MAX_RUN_TIME];
+int GLOBAL_MAX_PROCESSORS;
+int GLOBAL_DELAY_SCHEDULE_PROCESSOR_LIMIT;
 genericBackupNode *GLOBAL_preScheduleList;
 
 // debug message setup variable

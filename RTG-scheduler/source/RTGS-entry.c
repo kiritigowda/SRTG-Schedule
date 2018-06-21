@@ -72,6 +72,8 @@ int main(int argc, char * argv[])
 	// global vaiable intitialize 
 	GLOBAL_RTGS_MODE = -1;
 	GLOBAL_KERNEL_FILE_NAME = NULL;
+	GLOBAL_MAX_PROCESSORS = -1;
+	GLOBAL_DELAY_SCHEDULE_PROCESSOR_LIMIT = -1;
 
 	// get default debug msg control
 	GLOBAL_RTGS_DEBUG_MSG = 1;
@@ -126,6 +128,37 @@ int main(int argc, char * argv[])
 				schedulerMode = atoi(argv[arg]);
 			}
 		}
+		else if (!strcasecmp(argv[arg], "--maxProcessors") || !strcasecmp(argv[arg], "--P") || !strcasecmp(argv[arg], "--p"))
+		{
+			if ((arg + 1) == argc)
+			{
+				printf("\n\nMissing Max Processors Value on command-line. Default Max Processors will be used\n");
+				printf("Default Max Processors: %d\n", MAX_GPU_PROCESSOR);
+				GLOBAL_MAX_PROCESSORS = MAX_GPU_PROCESSOR;
+			}
+			else {
+				arg++;
+				GLOBAL_MAX_PROCESSORS = atoi(argv[arg]);
+			}
+		}
+		else if (!strcasecmp(argv[arg], "--delayLimitPercentage") || !strcasecmp(argv[arg], "--D") || !strcasecmp(argv[arg], "--d"))
+		{
+			if ((arg + 1) == argc)
+			{
+				printf("\n\nMissing delay limit percentage for processors Value on command-line. Default Delay Limit Processors will be used\n");
+				printf("Default Max Processors: %d\n", PROCESSOR_LIMIT);
+				GLOBAL_DELAY_SCHEDULE_PROCESSOR_LIMIT = PROCESSOR_LIMIT;
+			}
+			else {
+				arg++;
+				int Percentage = atoi(argv[arg]);
+				float processorsAvailable = 0;
+				if (GLOBAL_MAX_PROCESSORS != -1) { processorsAvailable = (float)GLOBAL_MAX_PROCESSORS; }
+				else{ processorsAvailable = MAX_GPU_PROCESSOR; }
+				float delaylimitProcessors = (float)floor((processorsAvailable * Percentage)/100);
+				GLOBAL_DELAY_SCHEDULE_PROCESSOR_LIMIT = (int)delaylimitProcessors;
+			}
+		}
 	}
 	// check if all the files needed was passed
 	if (error != 2)
@@ -139,6 +172,10 @@ int main(int argc, char * argv[])
 	// profiler  - output name initialize, profiler initialize and shutdown
 	GLOBAL_RTGS_MODE = schedulerMode;
 	GLOBAL_KERNEL_FILE_NAME = jobsListFileName;
+	if(GLOBAL_MAX_PROCESSORS == -1){ GLOBAL_MAX_PROCESSORS = MAX_GPU_PROCESSOR; }
+	if(GLOBAL_DELAY_SCHEDULE_PROCESSOR_LIMIT == -1){ 
+		GLOBAL_DELAY_SCHEDULE_PROCESSOR_LIMIT = floor(GLOBAL_MAX_PROCESSORS * 0.75);
+	}
 	PROFILER_FILE_INITIALIZE(schedulerMode, jobsListFileName);
 	PROFILER_INITIALIZE();
 	PROFILER_START(SRTG, RTG_Schedule)

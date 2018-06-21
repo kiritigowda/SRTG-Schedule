@@ -113,9 +113,11 @@ print"\t\t\tdata.addColumn('number', 'Mode 3');"
 print"\t\t\tdata.addColumn('number', 'Mode 4');"
 print"\t\t\tdata.addColumn('number', 'Mode 5');"
 print"\t\t\tdata.addRows([[0,0,0,0,0,0],"
-numJobs = 0;
+numProc = 2;
+mul = 1;
 for x in range(row_count):
-    numJobs = numJobs + 100
+    numProc = numProc + mul;
+    mul = 2;
     if(x < row_count-1):
         print '\t\t\t\t['+str(numJobs)+','+str(data_1[x][6])+','+str(data_2[x][6])+','+str(data_3[x][6])+','+str(data_4[x][6])+','+str(data_5[x][6])+'],'
     else:
@@ -184,8 +186,8 @@ print"\t\t\tdata.addColumn('number', 'Mode 5');"
 print"\t\t\tdata.addRows([[0,0,0,0,0,0],"
 numJobs = 0;
 for x in range(row_count):
-    numJobs = numJobs + 100;
     if(x < row_count-1):
+        numJobs = numJobs + 100;
         print '\t\t\t\t['+str(numJobs)+','+str(data_1[x][7])+','+str(data_2[x][7])+','+str(data_3[x][7])+','+str(data_4[x][7])+','+str(data_5[x][7])+'],'
     else:
         print '\t\t\t\t['+str(numJobs)+','+str(data_1[x][7])+','+str(data_2[x][7])+','+str(data_3[x][7])+','+str(data_4[x][7])+','+str(data_5[x][7])+']'

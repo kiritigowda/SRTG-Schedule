@@ -157,7 +157,7 @@ int AEAP_advanced
 				}
 
 				// condition 6 b - job scheduled after all scheduled jobs are completed
-				localProcessors = MAX_GPU_PROCESSOR;
+				localProcessors = GLOBAL_MAX_PROCESSORS;
 				if (jobAttributesList[jobNumber].execution_time + latestProcessorRelTime <= jobAttributesList[jobNumber].deadline &&
 					jobAttributesList[jobNumber].processor_req <= localProcessors)
 				{
@@ -198,7 +198,7 @@ int AEAP_advanced
 			{
 				int latestProcessorRelTime = GLOBAL_preScheduleList->processor_release_time;
 				// condition 6 c - job scheduled after all Pre Scheduled jobs are completed
-				localProcessors = MAX_GPU_PROCESSOR;
+				localProcessors = GLOBAL_MAX_PROCESSORS;
 				if (jobAttributesList[jobNumber].execution_time + latestProcessorRelTime <= jobAttributesList[jobNumber].deadline &&
 					jobAttributesList[jobNumber].processor_req <= localProcessors)
 				{
@@ -341,7 +341,7 @@ int AEAP_advanced
 			localPreScheduledList = GLOBAL_preScheduleList;
 
 			// condition 7 c - job scheduled after all pre scheduled jobs are completed
-			localProcessors = MAX_GPU_PROCESSOR;
+			localProcessors = GLOBAL_MAX_PROCESSORS;
 			if (jobAttributesList[jobNumber].execution_time + processorsQueuedRelease <= jobAttributesList[jobNumber].deadline &&
 				jobAttributesList[jobNumber].processor_req <= localProcessors)
 			{
@@ -520,7 +520,7 @@ int AEAP_advanced
 			localPreScheduledList = GLOBAL_preScheduleList;
 
 			// condition 8 c - job scheduled after all pre scheduled jobs are completed
-			localProcessors = MAX_GPU_PROCESSOR;
+			localProcessors = GLOBAL_MAX_PROCESSORS;
 			if (jobAttributesList[jobNumber].execution_time + processorsQueuedRelease <= jobAttributesList[jobNumber].deadline &&
 				jobAttributesList[jobNumber].processor_req <= localProcessors)
 			{

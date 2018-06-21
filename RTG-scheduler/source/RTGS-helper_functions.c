@@ -428,7 +428,7 @@ int RTGS_PrintScheduleSummary(int mode, int maxKernels, jobAttributes *kernelInf
 			maxReleaseTime = (float)kernelInfoList[i].release_time;
 		}
 		float processors = (float)kernelInfoList[i].processor_req;
-		float maxProcessors = MAX_GPU_PROCESSOR;
+		float maxProcessors = GLOBAL_MAX_PROCESSORS;
 		if (kernelInfoList[i].schedule_hardware == 1) {
 			avgProcessorUsage += kernelInfoList[i].processor_req;
 			avgExecTime += kernelInfoList[i].execution_time;

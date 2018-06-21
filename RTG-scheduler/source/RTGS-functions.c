@@ -33,7 +33,7 @@ int Kernel_book_keeper
 		if (GLOBAL_preScheduleList == NULL)
 		{
 			// Processors needed lesser than the ALAP limit
-			if (jobAttributesList[jobNumber].processor_req < PROCESSOR_LIMIT)
+			if (jobAttributesList[jobNumber].processor_req < GLOBAL_DELAY_SCHEDULE_PROCESSOR_LIMIT)
 			{
 				if (jobAttributesList[jobNumber].execution_time + present_time <= jobAttributesList[jobNumber].deadline)
 				{
@@ -86,7 +86,7 @@ int Kernel_book_keeper
 				futureRelease = future_preScheduleList->data;
 			}
 			// Processors needed lesser than the limit
-			if (jobAttributesList[jobNumber].processor_req < PROCESSOR_LIMIT)
+			if (jobAttributesList[jobNumber].processor_req < GLOBAL_DELAY_SCHEDULE_PROCESSOR_LIMIT)
 			{
 				// Condition 1
 				if (jobAttributesList[jobNumber].processor_req <= availAlapProcessors &&
@@ -206,7 +206,7 @@ int Processors_unavailable
 )
 {
 	PROFILER_START(SRTG, Processors_unavailable)
-		if (jobAttributesList[jobNumber].processor_req < PROCESSOR_LIMIT)
+		if (jobAttributesList[jobNumber].processor_req < GLOBAL_DELAY_SCHEDULE_PROCESSOR_LIMIT)
 		{
 			if (GLOBAL_RTGS_DEBUG_MSG > 2) {
 				printf("Processors unavailable:: Job:%d sent for AEAP execution\n", jobNumber);
@@ -214,7 +214,7 @@ int Processors_unavailable
 			processors_available = AEAP(jobAttributesList, jobNumber, present_time,
 				processors_available, processorsAllocatedList, jobScheduledQueueList);
 		}
-		else if (jobAttributesList[jobNumber].processor_req >= PROCESSOR_LIMIT && GLOBAL_preScheduleList == NULL)
+		else if (jobAttributesList[jobNumber].processor_req >= GLOBAL_DELAY_SCHEDULE_PROCESSOR_LIMIT && GLOBAL_preScheduleList == NULL)
 		{
 			if (GLOBAL_RTGS_DEBUG_MSG > 2) {
 				printf("Processors unavailable:: Job:%d sent for ALAP execution\n", jobNumber);

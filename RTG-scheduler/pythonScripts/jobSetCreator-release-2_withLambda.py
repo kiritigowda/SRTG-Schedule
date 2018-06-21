@@ -74,7 +74,10 @@ for s in range(numJobSet):
 	
 		for x in range(numJobsPerSet):
 			jobNumber = x;
-			numProcessors = random.randrange(2,maxProcessors,2);
+			if(maxProcessors == 2):
+				numProcessors = 2;
+			else:
+				numProcessors = random.randrange(2,maxProcessors,2);
 			numProcessorInverseVar = float(1)/numProcessors;
 			executionTime = random.randint(numProcessors, max( numProcessors, int(random.expovariate(numProcessorInverseVar)) ));
 			releaseDistribution = int(random.expovariate(lambdaVar));
