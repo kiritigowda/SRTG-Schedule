@@ -266,9 +266,10 @@ GPUScheduleOverhead = float(GPUScheduleOverhead)/row_count;
 AvgSchedulerOverhead = float(AvgSchedulerOverhead)/row_count;
 
 sys.stdout = open(outputDirectory+'/Mode1-SchedulerResults.csv','a')
-print str(avgReleaseLambda)+','+str(avgJobs)+','+str(avgJobsScheduled)+str(avgProc)+','+str(avgExec)+','+str(avgProc)+','+str(totalGPUUsage)+','\
-+str(avgResponseTime)+','+str(avgResponseFactor)+','+str(GPUUsagePercentage)+','+str(avgJobPercentage)+','\
-+str(GPUScheduleOverhead)+','+str(AvgSchedulerOverhead)+','+str(avgJobPercentage)
+print str(avgReleaseLambda)+','+str(avgJobs)+','+str(avgJobsScheduled)+','+str(avgJobPercentage)+','\
++str(avgProc)+','+str(avgExec)+','+str(totalGPUUsage)+','+str(GPUUsagePercentage)+','\
++str(avgResponseTime)+','+str(avgResponseFactor)+','\
++str(GPUScheduleOverhead)+','+str(AvgSchedulerOverhead)
 sys.stdout = open(outputDirectory+'/'+fileName+'-SchedulerResults.html','a')
 
 print"\t\t\t<tr>"
@@ -324,9 +325,10 @@ GPUScheduleOverhead = float(GPUScheduleOverhead)/row_count;
 AvgSchedulerOverhead = float(AvgSchedulerOverhead)/row_count;
 
 sys.stdout = open(outputDirectory+'/Mode2-SchedulerResults.csv','a')
-print str(avgReleaseLambda)+','+str(avgJobs)+','+str(avgJobsScheduled)+str(avgProc)+','+str(avgExec)+','+str(avgProc)+','+str(totalGPUUsage)+','\
-+str(avgResponseTime)+','+str(avgResponseFactor)+','+str(GPUUsagePercentage)+','+str(avgJobPercentage)+','\
-+str(GPUScheduleOverhead)+','+str(AvgSchedulerOverhead)+','+str(avgJobPercentage)
+print str(avgReleaseLambda)+','+str(avgJobs)+','+str(avgJobsScheduled)+','+str(avgJobPercentage)+','\
++str(avgProc)+','+str(avgExec)+','+str(totalGPUUsage)+','+str(GPUUsagePercentage)+','\
++str(avgResponseTime)+','+str(avgResponseFactor)+','\
++str(GPUScheduleOverhead)+','+str(AvgSchedulerOverhead)
 sys.stdout = open(outputDirectory+'/'+fileName+'-SchedulerResults.html','a')
 
 print"\t\t\t<tr>"
@@ -382,9 +384,10 @@ GPUScheduleOverhead = float(GPUScheduleOverhead)/row_count;
 AvgSchedulerOverhead = float(AvgSchedulerOverhead)/row_count;
 
 sys.stdout = open(outputDirectory+'/Mode3-SchedulerResults.csv','a')
-print str(avgReleaseLambda)+','+str(avgJobs)+','+str(avgJobsScheduled)+str(avgProc)+','+str(avgExec)+','+str(avgProc)+','+str(totalGPUUsage)+','\
-+str(avgResponseTime)+','+str(avgResponseFactor)+','+str(GPUUsagePercentage)+','+str(avgJobPercentage)+','\
-+str(GPUScheduleOverhead)+','+str(AvgSchedulerOverhead)+','+str(avgJobPercentage)
+print str(avgReleaseLambda)+','+str(avgJobs)+','+str(avgJobsScheduled)+','+str(avgJobPercentage)+','\
++str(avgProc)+','+str(avgExec)+','+str(totalGPUUsage)+','+str(GPUUsagePercentage)+','\
++str(avgResponseTime)+','+str(avgResponseFactor)+','\
++str(GPUScheduleOverhead)+','+str(AvgSchedulerOverhead)
 sys.stdout = open(outputDirectory+'/'+fileName+'-SchedulerResults.html','a')
 
 print"\t\t\t<tr>"
@@ -440,9 +443,10 @@ GPUScheduleOverhead = float(GPUScheduleOverhead)/row_count;
 AvgSchedulerOverhead = float(AvgSchedulerOverhead)/row_count;
 
 sys.stdout = open(outputDirectory+'/Mode4-SchedulerResults.csv','a')
-print str(avgReleaseLambda)+','+str(avgJobs)+','+str(avgJobsScheduled)+str(avgProc)+','+str(avgExec)+','+str(avgProc)+','+str(totalGPUUsage)+','\
-+str(avgResponseTime)+','+str(avgResponseFactor)+','+str(GPUUsagePercentage)+','+str(avgJobPercentage)+','\
-+str(GPUScheduleOverhead)+','+str(AvgSchedulerOverhead)+','+str(avgJobPercentage)
+print str(avgReleaseLambda)+','+str(avgJobs)+','+str(avgJobsScheduled)+','+str(avgJobPercentage)+','\
++str(avgProc)+','+str(avgExec)+','+str(totalGPUUsage)+','+str(GPUUsagePercentage)+','\
++str(avgResponseTime)+','+str(avgResponseFactor)+','\
++str(GPUScheduleOverhead)+','+str(AvgSchedulerOverhead)
 sys.stdout = open(outputDirectory+'/'+fileName+'-SchedulerResults.html','a')
 
 print"\t\t\t<tr>"
@@ -498,9 +502,10 @@ GPUScheduleOverhead = float(GPUScheduleOverhead)/row_count;
 AvgSchedulerOverhead = float(AvgSchedulerOverhead)/row_count;
 
 sys.stdout = open(outputDirectory+'/Mode5-SchedulerResults.csv','a')
-print str(avgReleaseLambda)+','+str(avgJobs)+','+str(avgJobsScheduled)+str(avgProc)+','+str(avgExec)+','+str(avgProc)+','+str(totalGPUUsage)+','\
-+str(avgResponseTime)+','+str(avgResponseFactor)+','+str(GPUUsagePercentage)+','+str(avgJobPercentage)+','\
-+str(GPUScheduleOverhead)+','+str(AvgSchedulerOverhead)+','+str(avgJobPercentage)
+print str(avgReleaseLambda)+','+str(avgJobs)+','+str(avgJobsScheduled)+','+str(avgJobPercentage)+','\
++str(avgProc)+','+str(avgExec)+','+str(totalGPUUsage)+','+str(GPUUsagePercentage)+','\
++str(avgResponseTime)+','+str(avgResponseFactor)+','\
++str(GPUScheduleOverhead)+','+str(AvgSchedulerOverhead)
 sys.stdout = open(outputDirectory+'/'+fileName+'-SchedulerResults.html','a')
 
 print"\t\t\t<tr>"
