@@ -90,15 +90,17 @@ print"\t\t\tdata.addColumn('number', 'Mode 3');"
 print"\t\t\tdata.addColumn('number', 'Mode 4');"
 print"\t\t\tdata.addColumn('number', 'Mode 5');"
 print"\t\t\tdata.addRows([[0,0,0,0,0,0],"
-numJobs = 100;
+numProc = 2;
+mul = 1;
 for x in range(row_count):
-    numJobs = numJobs + 100;
+    numProc = numProc * mul;
+    mul = 2;
     if(x < row_count-1):
-        print '\t\t\t\t['+str(numJobs)+','+str(data_1[x][3])+','+str(data_2[x][3])+','+str(data_3[x][3])+','+str(data_4[x][3])+','+str(data_5[x][3])+'],'
+        print '\t\t\t\t['+str(numProc)+','+str(data_1[x][3])+','+str(data_2[x][3])+','+str(data_3[x][3])+','+str(data_4[x][3])+','+str(data_5[x][3])+'],'
     else:
-        print '\t\t\t\t['+str(numJobs)+','+str(data_1[x][3])+','+str(data_2[x][3])+','+str(data_3[x][3])+','+str(data_4[x][3])+','+str(data_5[x][3])+']'
+        print '\t\t\t\t['+str(numProc)+','+str(data_1[x][3])+','+str(data_2[x][3])+','+str(data_3[x][3])+','+str(data_4[x][3])+','+str(data_5[x][3])+']'
 print"\t\t\t]);"
-print"\t\t\tvar options = {  title:'Average Jobs Scheduled Percentage', hAxis: { title: 'Num Jobs in Test Set'}, vAxis: {title: 'Avg Number of Jobs Scheduled Percentage'}, series: { 0.01: {curveType: 'function'} }, width:900, height:600 };"
+print"\t\t\tvar options = {  title:'Average Jobs Scheduled Percentage', hAxis: { title: 'Num Processors Available'}, vAxis: {title: 'Avg Number of Jobs Scheduled Percentage'}, series: { 0.01: {curveType: 'function'} }, width:900, height:600 };"
 print"\t\t\tvar chart = new google.visualization.LineChart(document.getElementById('jobScheduled_chart'));"
 print"\t\t\tchart.draw(data, options);}"
 print"\n\n\n"
@@ -116,14 +118,14 @@ print"\t\t\tdata.addRows([[0,0,0,0,0,0],"
 numProc = 2;
 mul = 1;
 for x in range(row_count):
-    numProc = numProc + mul;
+    numProc = numProc * mul;
     mul = 2;
     if(x < row_count-1):
-        print '\t\t\t\t['+str(numJobs)+','+str(data_1[x][6])+','+str(data_2[x][6])+','+str(data_3[x][6])+','+str(data_4[x][6])+','+str(data_5[x][6])+'],'
+        print '\t\t\t\t['+str(numProc)+','+str(data_1[x][6])+','+str(data_2[x][6])+','+str(data_3[x][6])+','+str(data_4[x][6])+','+str(data_5[x][6])+'],'
     else:
-        print '\t\t\t\t['+str(numJobs)+','+str(data_1[x][6])+','+str(data_2[x][6])+','+str(data_3[x][6])+','+str(data_4[x][6])+','+str(data_5[x][6])+']'
+        print '\t\t\t\t['+str(numProc)+','+str(data_1[x][6])+','+str(data_2[x][6])+','+str(data_3[x][6])+','+str(data_4[x][6])+','+str(data_5[x][6])+']'
 print"\t\t\t]);"
-print"\t\t\tvar options = {  title:'Total GPU Usage', hAxis: { title: 'Num Jobs in Test Set'}, vAxis: {title: 'Total GPU Usage'}, series: { 0.01: {curveType: 'function'} }, width:900, height:600 };"
+print"\t\t\tvar options = {  title:'Total GPU Usage', hAxis: { title: 'Num Processors Available'}, vAxis: {title: 'Total GPU Usage'}, series: { 0.01: {curveType: 'function'} }, width:900, height:600 };"
 print"\t\t\tvar chart = new google.visualization.LineChart(document.getElementById('GPUUsage_chart'));"
 print"\t\t\tchart.draw(data, options);}"
 print"\n\n\n"
@@ -138,15 +140,17 @@ print"\t\t\tdata.addColumn('number', 'Mode 3');"
 print"\t\t\tdata.addColumn('number', 'Mode 4');"
 print"\t\t\tdata.addColumn('number', 'Mode 5');"
 print"\t\t\tdata.addRows([[0,0,0,0,0,0],"
-numJobs = 0;
+numProc = 2;
+mul = 1;
 for x in range(row_count):
-    numJobs = numJobs + 100;
+    numProc = numProc * mul;
+    mul = 2;
     if(x < row_count-1):
-        print '\t\t\t\t['+str(numJobs)+','+str(data_1[x][8])+','+str(data_2[x][8])+','+str(data_3[x][8])+','+str(data_4[x][8])+','+str(data_5[x][8])+'],'
+        print '\t\t\t\t['+str(numProc)+','+str(data_1[x][8])+','+str(data_2[x][8])+','+str(data_3[x][8])+','+str(data_4[x][8])+','+str(data_5[x][8])+'],'
     else:
-        print '\t\t\t\t['+str(numJobs)+','+str(data_1[x][8])+','+str(data_2[x][8])+','+str(data_3[x][8])+','+str(data_4[x][8])+','+str(data_5[x][8])+']'
+        print '\t\t\t\t['+str(numProc)+','+str(data_1[x][8])+','+str(data_2[x][8])+','+str(data_3[x][8])+','+str(data_4[x][8])+','+str(data_5[x][8])+']'
 print"\t\t\t]);"
-print"\t\t\tvar options = {  title:'Average Response Time', hAxis: { title: 'Num Jobs in Test Set'}, vAxis: {title: 'Response Time'}, series: { 0.01: {curveType: 'function'} }, width:900, height:600 };"
+print"\t\t\tvar options = {  title:'Average Response Time', hAxis: { title: 'Num Processors Available'}, vAxis: {title: 'Response Time'}, series: { 0.01: {curveType: 'function'} }, width:900, height:600 };"
 print"\t\t\tvar chart = new google.visualization.LineChart(document.getElementById('responseTime_chart'));"
 print"\t\t\tchart.draw(data, options);}"
 print"\n\n\n"
@@ -161,15 +165,17 @@ print"\t\t\tdata.addColumn('number', 'Mode 3');"
 print"\t\t\tdata.addColumn('number', 'Mode 4');"
 print"\t\t\tdata.addColumn('number', 'Mode 5');"
 print"\t\t\tdata.addRows([[0,0,0,0,0,0],"
-numJobs = 0;
+numProc = 2;
+mul = 1;
 for x in range(row_count):
-    numJobs = numJobs + 100;
+    numProc = numProc * mul;
+    mul = 2;
     if(x < row_count-1):
-        print '\t\t\t\t['+str(numJobs)+','+str(data_1[x][9])+','+str(data_2[x][9])+','+str(data_3[x][9])+','+str(data_4[x][9])+','+str(data_5[x][9])+'],'
+        print '\t\t\t\t['+str(numProc)+','+str(data_1[x][9])+','+str(data_2[x][9])+','+str(data_3[x][9])+','+str(data_4[x][9])+','+str(data_5[x][9])+'],'
     else:
-        print '\t\t\t\t['+str(numJobs)+','+str(data_1[x][9])+','+str(data_2[x][9])+','+str(data_3[x][9])+','+str(data_4[x][9])+','+str(data_5[x][9])+']'
+        print '\t\t\t\t['+str(numProc)+','+str(data_1[x][9])+','+str(data_2[x][9])+','+str(data_3[x][9])+','+str(data_4[x][9])+','+str(data_5[x][9])+']'
 print"\t\t\t]);"
-print"\t\t\tvar options = {  title:'Average Response Factor', hAxis: { title: 'Num Jobs in Test Set'}, vAxis: {title: 'Response Factor'}, series: { 0.01: {curveType: 'function'} }, width:900, height:600 };"
+print"\t\t\tvar options = {  title:'Average Response Factor', hAxis: { title: 'Num Processors Available'}, vAxis: {title: 'Response Factor'}, series: { 0.01: {curveType: 'function'} }, width:900, height:600 };"
 print"\t\t\tvar chart = new google.visualization.LineChart(document.getElementById('responseFactor_chart'));"
 print"\t\t\tchart.draw(data, options);}"
 print"\n\n\n"
@@ -184,15 +190,17 @@ print"\t\t\tdata.addColumn('number', 'Mode 3');"
 print"\t\t\tdata.addColumn('number', 'Mode 4');"
 print"\t\t\tdata.addColumn('number', 'Mode 5');"
 print"\t\t\tdata.addRows([[0,0,0,0,0,0],"
-numJobs = 0;
+numProc = 2;
+mul = 1;
 for x in range(row_count):
+    numProc = numProc * mul;
+    mul = 2;
     if(x < row_count-1):
-        numJobs = numJobs + 100;
-        print '\t\t\t\t['+str(numJobs)+','+str(data_1[x][7])+','+str(data_2[x][7])+','+str(data_3[x][7])+','+str(data_4[x][7])+','+str(data_5[x][7])+'],'
+        print '\t\t\t\t['+str(numProc)+','+str(data_1[x][7])+','+str(data_2[x][7])+','+str(data_3[x][7])+','+str(data_4[x][7])+','+str(data_5[x][7])+'],'
     else:
-        print '\t\t\t\t['+str(numJobs)+','+str(data_1[x][7])+','+str(data_2[x][7])+','+str(data_3[x][7])+','+str(data_4[x][7])+','+str(data_5[x][7])+']'
+        print '\t\t\t\t['+str(numProc)+','+str(data_1[x][7])+','+str(data_2[x][7])+','+str(data_3[x][7])+','+str(data_4[x][7])+','+str(data_5[x][7])+']'
 print"\t\t\t]);"
-print"\t\t\tvar options = {  title:'GPU Usage Percentage', hAxis: { title: 'Num Jobs in Test Set'}, vAxis: {title: 'GPU Usage Percentage'}, series: { 0.01: {curveType: 'function'} }, width:900, height:600 };"
+print"\t\t\tvar options = {  title:'GPU Usage Percentage', hAxis: { title: 'Num Processors Available'}, vAxis: {title: 'GPU Usage Percentage'}, series: { 0.01: {curveType: 'function'} }, width:900, height:600 };"
 print"\t\t\tvar chart = new google.visualization.LineChart(document.getElementById('GPUUsagePercentage_chart'));"
 print"\t\t\tchart.draw(data, options);}"
 print"\n\n\n"
@@ -207,15 +215,17 @@ print"\t\t\tdata.addColumn('number', 'Mode 3');"
 print"\t\t\tdata.addColumn('number', 'Mode 4');"
 print"\t\t\tdata.addColumn('number', 'Mode 5');"
 print"\t\t\tdata.addRows([[0,0,0,0,0,0],"
-numJobs = 0;
+numProc = 2;
+mul = 1;
 for x in range(row_count):
-    numJobs = numJobs + 100;
+    numProc = numProc * mul;
+    mul = 2;
     if(x < row_count-1):
-        print '\t\t\t\t['+str(numJobs)+','+str(data_1[x][10])+','+str(data_2[x][10])+','+str(data_3[x][10])+','+str(data_4[x][10])+','+str(data_5[x][10])+'],'
+        print '\t\t\t\t['+str(numProc)+','+str(data_1[x][10])+','+str(data_2[x][10])+','+str(data_3[x][10])+','+str(data_4[x][10])+','+str(data_5[x][10])+'],'
     else:
-        print '\t\t\t\t['+str(numJobs)+','+str(data_1[x][10])+','+str(data_2[x][10])+','+str(data_3[x][10])+','+str(data_4[x][10])+','+str(data_5[x][10])+']'
+        print '\t\t\t\t['+str(numProc)+','+str(data_1[x][10])+','+str(data_2[x][10])+','+str(data_3[x][10])+','+str(data_4[x][10])+','+str(data_5[x][10])+']'
 print"\t\t\t]);"
-print"\t\t\tvar options = {  title:'GPU Schedule Overhead Per Job (ms)', hAxis: { title: 'Num Jobs in Test Set'}, vAxis: {title: 'GPU Schedule Overhead'}, series: { 0.01: {curveType: 'function'} }, width:900, height:600 };"
+print"\t\t\tvar options = {  title:'GPU Schedule Overhead Per Job (ms)', hAxis: { title: 'Num Processors Available'}, vAxis: {title: 'GPU Schedule Overhead'}, series: { 0.01: {curveType: 'function'} }, width:900, height:600 };"
 print"\t\t\tvar chart = new google.visualization.LineChart(document.getElementById('GPUScheduleOverhead_chart'));"
 print"\t\t\tchart.draw(data, options);}"
 print"\n"
