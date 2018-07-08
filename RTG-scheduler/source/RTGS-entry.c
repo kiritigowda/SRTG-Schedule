@@ -14,9 +14,9 @@ usage information
 ***********************************************************************************************************/
 static void show_usage()
 {
-	printf("\n*********************************************************************************************************\n");
-	printf("\n				Real Time GPU Scheduler -- RTGS-%s\n", RTGS_VERSION);
-	printf("\n*********************************************************************************************************\n");
+	printf("\n*************************************************************************************************************************************\n");
+	printf("\n                                              Real Time GPU Scheduler -- RTGS-%s\n", RTGS_VERSION);
+	printf("\n*************************************************************************************************************************************\n");
 	printf("\n");
 	printf("Usage:\n\n");
 	printf("\tWindows:\n");
@@ -34,7 +34,7 @@ static void show_usage()
 	printf("\t--p/--maxProcessors -- Max processors available on the GPU [optional - default:14]\n");
 	printf("\t--d/--delayLimitPercentage -- Delay Schedule processor limit in percentage [optional - default:75]\n");
 	printf("\n");
-	printf("The Jobs file is the jobBackupList of jobs to be scheduled: <jobs_file.txt>\n");
+	printf("The Jobs File format - Jobs to be scheduled: <jobs_file.txt>\n");
 	printf("\tThe arguments:\n");
 	printf("			Jid - Job Number\n");
 	printf("			Pn - Processors Needed\n");
@@ -43,7 +43,7 @@ static void show_usage()
 	printf("			Tlts - Lastest Time Schedulable on the GPU\n\n");
 	printf("			\"Jid, Pn, Texe, Td, Tlts\"\n\n");
 	printf("\n");
-	printf("The Release Time File has the jobBackupList of release times of the Jobs: <Release_Time_file.txt>\n");
+	printf("The Release Time File Format - Release times of jobs: <Release_Time_file.txt>\n");
 	printf("\tThe arguments:\n");
 	printf("			Tr - Release Time\n");
 	printf("			Jr - Number of jobs released\n\n");
@@ -51,11 +51,11 @@ static void show_usage()
 	printf("\n");
 	printf("The Modes Supported: <options>\n");
 	printf("\tThe arguments:\n");
-	printf("			1 - Simple GPU Scheduler\n");
-	printf("			2 - As Early As Possible mode->AEAP\n");
-	printf("			3 - AEAP with As Late As Possible mode->AEAP/ALAP\n");
-	printf("			4 - AEAP/ALAP Bin Packer mode->AEAP/ALAP Pack\n");
-	printf("			5 - AEAP/ALAP BP with APLAP improver mode->AEAP/ALAP BP Improve\n");
+	printf("			1 - Greedy Schedule\n");
+	printf("			2 - Event Aware Scheduler\n");
+	printf("			3 - Event Aware Scheduler with Bias\n");
+	printf("			4 - Event Aware Scheduler with Bias and Bias Prediction\n");
+	printf("			5 - Event Aware Scheduler with Bias and Improved Bias Prediction\n");
 	printf("			N - Extended in the next release\n");
 	printf("\n");
 
