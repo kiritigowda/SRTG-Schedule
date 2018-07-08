@@ -7,7 +7,7 @@
 #include"RTGS_Global.h"
 
 // version
-#define RTGS_VERSION "1.0"
+#define RTGS_VERSION "1.0_RC"
 
 /**********************************************************************************************************
 usage information
@@ -174,7 +174,7 @@ int main(int argc, char * argv[])
 	GLOBAL_KERNEL_FILE_NAME = jobsListFileName;
 	if(GLOBAL_MAX_PROCESSORS == -1){ GLOBAL_MAX_PROCESSORS = MAX_GPU_PROCESSOR; }
 	if(GLOBAL_DELAY_SCHEDULE_PROCESSOR_LIMIT == -1){ 
-		GLOBAL_DELAY_SCHEDULE_PROCESSOR_LIMIT = floor(GLOBAL_MAX_PROCESSORS * 0.75);
+		GLOBAL_DELAY_SCHEDULE_PROCESSOR_LIMIT = (int) floor(GLOBAL_MAX_PROCESSORS * 0.75);
 	}
 	PROFILER_FILE_INITIALIZE(schedulerMode, jobsListFileName);
 	PROFILER_INITIALIZE();
