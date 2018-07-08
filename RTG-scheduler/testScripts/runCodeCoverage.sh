@@ -5,11 +5,15 @@ export RGTS_DEBUG_MSG=4
 ./bin/RTG-scheduler --j
 ./bin/RTG-scheduler --rt
 ./bin/RTG-scheduler --m
+./bin/RTG-scheduler --p
+./bin/RTG-scheduler --d
 ./bin/RTG-scheduler --v
 ./bin/RTG-scheduler --h example.txt
 ./bin/RTG-scheduler --j example.txt
 ./bin/RTG-scheduler --rt example.txt
 ./bin/RTG-scheduler --m example.txt
+./bin/RTG-scheduler --p 14
+./bin/RTG-scheduler --d 75
 ./bin/RTG-scheduler --v example.txt
 ./bin/RTG-scheduler --j bin/testData/set1-jobs.txt
 ./bin/RTG-scheduler --j bin/testData/set1-jobs.txt --rt
