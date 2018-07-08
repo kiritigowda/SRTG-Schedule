@@ -20,9 +20,9 @@ static void show_usage()
 	printf("\n");
 	printf("Usage:\n\n");
 	printf("\tWindows:\n");
-	printf("\t\tRTG-scheduler.exe [options] --jobs <jobs_file.txt> --releaseTimes <Release_Time_file.txt> --mode <Option>\n\n");
+	printf("\t\tRTG-scheduler.exe [options] --j <jobs_file.txt> --rt <Release_Time_file.txt> --m <option> --p <option> --d <option>\n\n");
 	printf("\tLinux:\n");
-	printf("\t\t./RTG-scheduler [options] --jobs <jobs_file.txt> --releaseTimes <Release_Time_file.txt> --mode <Option>\n\n");
+	printf("\t\t./RTG-scheduler [options] --j <jobs_file.txt> --rt <Release_Time_file.txt> --m <option> --p <option> --d <option>\n\n");
 	printf("\n");
 	printf("\nScheduler Options Supported\n\n");
 	printf("\t--h/--help -- Show full help\n");
@@ -30,7 +30,9 @@ static void show_usage()
 	printf("\nScheduler Parameters\n\n");
 	printf("\t--j/--jobs -- Jobs to be scheduled [required]\n");
 	printf("\t--rt/--releaseTimes -- Release times for the jobs [required]\n");
-	printf("\t--m/--mode -- Mode options [optional]\n");
+	printf("\t--m/--mode -- Mode options [optional - deafult:5]\n");
+	printf("\t--p/--maxProcessors -- Max processors available on the GPU [optional - default:14]\n");
+	printf("\t--d/--delayLimitPercentage -- Delay Schedule processor limit in percentage [optional - default:75]\n");
 	printf("\n");
 	printf("The Jobs file is the jobBackupList of jobs to be scheduled: <jobs_file.txt>\n");
 	printf("\tThe arguments:\n");
