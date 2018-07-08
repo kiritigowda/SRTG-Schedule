@@ -7,32 +7,34 @@
 #include"RTGS_Global.h"
 
 // version
-#define RTGS_VERSION "0.9.9"
+#define RTGS_VERSION "1.0_RC"
 
 /**********************************************************************************************************
 usage information
 ***********************************************************************************************************/
 static void show_usage()
 {
-	printf("\n*********************************************************************************************************\n");
-	printf("\n				Real Time GPU Scheduler -- RTGS-%s\n", RTGS_VERSION);
-	printf("\n*********************************************************************************************************\n");
+	printf("\n*************************************************************************************************************************************\n");
+	printf("\n                                              Real Time GPU Scheduler -- RTGS-%s\n", RTGS_VERSION);
+	printf("\n*************************************************************************************************************************************\n");
 	printf("\n");
 	printf("Usage:\n\n");
 	printf("\tWindows:\n");
-	printf("\t\tRTG-scheduler.exe [options] --jobs <jobs_file.txt> --releaseTimes <Release_Time_file.txt> --mode <Option>\n\n");
+	printf("\t\tRTG-scheduler.exe [options] --j <jobs_file.txt> --rt <Release_Time_file.txt> --m <option> --p <option> --d <option>\n\n");
 	printf("\tLinux:\n");
-	printf("\t\t./RTG-scheduler [options] --jobs <jobs_file.txt> --releaseTimes <Release_Time_file.txt> --mode <Option>\n\n");
+	printf("\t\t./RTG-scheduler [options] --j <jobs_file.txt> --rt <Release_Time_file.txt> --m <option> --p <option> --d <option>\n\n");
 	printf("\n");
 	printf("\nScheduler Options Supported\n\n");
-	printf("\t--h/--help -- Show full help\n");
-	printf("\t--v/--verbose -- Show detailed messages\n");
+	printf("\t--h/--help\t-- Show full help\n");
+	printf("\t--v/--verbose\t-- Show detailed messages\n");
 	printf("\nScheduler Parameters\n\n");
-	printf("\t--j/--jobs -- Jobs to be scheduled [required]\n");
-	printf("\t--rt/--releaseTimes -- Release times for the jobs [required]\n");
-	printf("\t--m/--mode -- Mode options [optional]\n");
+	printf("\t--j/--jobs \t\t\t -- Jobs to be scheduled [required]\n");
+	printf("\t--rt/--releaseTimes \t\t -- Release times for the jobs [required]\n");
+	printf("\t--m/--mode \t\t\t -- Mode options [optional - deafult:5]\n");
+	printf("\t--p/--maxProcessors \t\t -- Max processors available on the GPU [optional - default:14]\n");
+	printf("\t--d/--delayLimitPercentage \t -- Delay Schedule processor limit in percentage [optional - default:75]\n");
 	printf("\n");
-	printf("The Jobs file is the jobBackupList of jobs to be scheduled: <jobs_file.txt>\n");
+	printf("The Jobs File format - Jobs to be scheduled: <jobs_file.txt>\n");
 	printf("\tThe arguments:\n");
 	printf("			Jid - Job Number\n");
 	printf("			Pn - Processors Needed\n");
@@ -41,7 +43,7 @@ static void show_usage()
 	printf("			Tlts - Lastest Time Schedulable on the GPU\n\n");
 	printf("			\"Jid, Pn, Texe, Td, Tlts\"\n\n");
 	printf("\n");
-	printf("The Release Time File has the jobBackupList of release times of the Jobs: <Release_Time_file.txt>\n");
+	printf("The Release Time File Format - Release times of jobs: <Release_Time_file.txt>\n");
 	printf("\tThe arguments:\n");
 	printf("			Tr - Release Time\n");
 	printf("			Jr - Number of jobs released\n\n");
@@ -49,11 +51,11 @@ static void show_usage()
 	printf("\n");
 	printf("The Modes Supported: <options>\n");
 	printf("\tThe arguments:\n");
-	printf("			1 - Simple GPU Scheduler\n");
-	printf("			2 - As Early As Possible mode->AEAP\n");
-	printf("			3 - AEAP with As Late As Possible mode->AEAP/ALAP\n");
-	printf("			4 - AEAP/ALAP Bin Packer mode->AEAP/ALAP Pack\n");
-	printf("			5 - AEAP/ALAP BP with APLAP improver mode->AEAP/ALAP BP Improve\n");
+	printf("			1 - Greedy Schedule\n");
+	printf("			2 - Event Aware Scheduler\n");
+	printf("			3 - Event Aware Scheduler with Bias\n");
+	printf("			4 - Event Aware Scheduler with Bias and Bias Prediction\n");
+	printf("			5 - Event Aware Scheduler with Bias and Improved Bias Prediction\n");
 	printf("			N - Extended in the next release\n");
 	printf("\n");
 
@@ -72,6 +74,8 @@ int main(int argc, char * argv[])
 	// global vaiable intitialize 
 	GLOBAL_RTGS_MODE = -1;
 	GLOBAL_KERNEL_FILE_NAME = NULL;
+	GLOBAL_MAX_PROCESSORS = -1;
+	GLOBAL_DELAY_SCHEDULE_PROCESSOR_LIMIT = -1;
 
 	// get default debug msg control
 	GLOBAL_RTGS_DEBUG_MSG = 1;
@@ -126,6 +130,37 @@ int main(int argc, char * argv[])
 				schedulerMode = atoi(argv[arg]);
 			}
 		}
+		else if (!strcasecmp(argv[arg], "--maxProcessors") || !strcasecmp(argv[arg], "--P") || !strcasecmp(argv[arg], "--p"))
+		{
+			if ((arg + 1) == argc)
+			{
+				printf("\n\nMissing Max Processors Value on command-line. Default Max Processors will be used\n");
+				printf("Default Max Processors: %d\n", MAX_GPU_PROCESSOR);
+				GLOBAL_MAX_PROCESSORS = MAX_GPU_PROCESSOR;
+			}
+			else {
+				arg++;
+				GLOBAL_MAX_PROCESSORS = atoi(argv[arg]);
+			}
+		}
+		else if (!strcasecmp(argv[arg], "--delayLimitPercentage") || !strcasecmp(argv[arg], "--D") || !strcasecmp(argv[arg], "--d"))
+		{
+			if ((arg + 1) == argc)
+			{
+				printf("\n\nMissing delay limit percentage for processors Value on command-line. Default Delay Limit Processors will be used\n");
+				printf("Default Max Processors: %d\n", PROCESSOR_LIMIT);
+				GLOBAL_DELAY_SCHEDULE_PROCESSOR_LIMIT = PROCESSOR_LIMIT;
+			}
+			else {
+				arg++;
+				int Percentage = atoi(argv[arg]);
+				float processorsAvailable = 0;
+				if (GLOBAL_MAX_PROCESSORS != -1) { processorsAvailable = (float)GLOBAL_MAX_PROCESSORS; }
+				else{ processorsAvailable = MAX_GPU_PROCESSOR; }
+				float delaylimitProcessors = (float)floor((processorsAvailable * Percentage)/100);
+				GLOBAL_DELAY_SCHEDULE_PROCESSOR_LIMIT = (int)delaylimitProcessors;
+			}
+		}
 	}
 	// check if all the files needed was passed
 	if (error != 2)
@@ -139,6 +174,10 @@ int main(int argc, char * argv[])
 	// profiler  - output name initialize, profiler initialize and shutdown
 	GLOBAL_RTGS_MODE = schedulerMode;
 	GLOBAL_KERNEL_FILE_NAME = jobsListFileName;
+	if(GLOBAL_MAX_PROCESSORS == -1){ GLOBAL_MAX_PROCESSORS = MAX_GPU_PROCESSOR; }
+	if(GLOBAL_DELAY_SCHEDULE_PROCESSOR_LIMIT == -1){ 
+		GLOBAL_DELAY_SCHEDULE_PROCESSOR_LIMIT = (int) floor(GLOBAL_MAX_PROCESSORS * 0.75);
+	}
 	PROFILER_FILE_INITIALIZE(schedulerMode, jobsListFileName);
 	PROFILER_INITIALIZE();
 	PROFILER_START(SRTG, RTG_Schedule)

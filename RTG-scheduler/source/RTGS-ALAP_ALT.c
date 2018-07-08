@@ -136,7 +136,7 @@ int ALAP_advanced
 		}
 		else
 		{
-			localProcessors = MAX_GPU_PROCESSOR;
+			localProcessors = GLOBAL_MAX_PROCESSORS;
 			if (jobAttributesList[jobNumber].processor_req <= localProcessors)
 			{
 				processorsQueued = 0;

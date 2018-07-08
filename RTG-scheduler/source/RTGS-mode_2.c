@@ -185,7 +185,7 @@ int RTGS_mode_2(char *jobsListFileName, char *releaseTimeFilename)
 	GLOBAL_CPU_JOBS = 0;
 	GLOBAL_preScheduleList = NULL;
 
-	int processorsAvailable = MAX_GPU_PROCESSOR;
+	int processorsAvailable = GLOBAL_MAX_PROCESSORS;
 	int jobNumber = 0;
 
 	int kernelMax = get_job_information(jobAttributesList, jobsListFileName);
@@ -295,7 +295,7 @@ int RTGS_mode_2(char *jobsListFileName, char *releaseTimeFilename)
 			printf("\nSummary Failed\n");
 		}
 
-		if ((kernelMax != (GLOBAL_GPU_JOBS + GLOBAL_CPU_JOBS)) || processorsAvailable != MAX_GPU_PROCESSOR) {
+		if ((kernelMax != (GLOBAL_GPU_JOBS + GLOBAL_CPU_JOBS)) || processorsAvailable != GLOBAL_MAX_PROCESSORS) {
 			return RTGS_FAILURE;
 		}
 

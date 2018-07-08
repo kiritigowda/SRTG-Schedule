@@ -2,15 +2,15 @@
 [![codecov](https://codecov.io/gh/kiritigowda/SRTG-Schedule/branch/master/graph/badge.svg)](https://codecov.io/gh/kiritigowda/SRTG-Schedule)
 
 # RTGS
-The current release verion is 0.9.9.1 (beta preview).
+The current release verion is 1.0_RC (Release Candidate).
 
 ### Windows
 ```
-RTG-scheduler [options] --jobs <jobs_file.txt> --releaseTimes <Release_Time_file.txt> --mode <mode option> 
+RTG-scheduler [options] --j <jobs_file.txt> --rt <Release_Time_file.txt> --m <option> --p <option> --d <option> 
 ```
 ### Linux
 ```
-./RTG-scheduler [options] --jobs <jobs_file.txt> --releaseTimes <Release_Time_file.txt> --mode <mode option> 
+./RTG-scheduler [options] --j <jobs_file.txt> --rt <Release_Time_file.txt> --m <option> --p <option> --d <option>
 ```
 
 ## Scheduler Options Supported
@@ -20,9 +20,11 @@ RTG-scheduler [options] --jobs <jobs_file.txt> --releaseTimes <Release_Time_file
 ````
 ## Scheduler Parameters
 ````
-        --j/--jobs              -- Jobs to be scheduled [required]
-        --rt/--releaseTimes     -- Release times for the jobs [required]
-        --m/--mode              -- Mode options [optional]
+        --j/--jobs                 -- Jobs to be scheduled [required]
+        --rt/--releaseTimes        -- Release times for the jobs [required]
+        --m/--mode                 -- Mode options [optional - default:5]
+        --p/--maxProcessors        -- Max processors available on the GPU [optional - default:14]
+        --d/--delayLimitPercentage -- Delay Schedule processor limit in percentage [optional - default:75]
 ````
 
 - #### --j/--jobs -- The Jobs File is the list of Jobs to be scheduled: <jobs_file.txt>
@@ -46,11 +48,11 @@ RTG-scheduler [options] --jobs <jobs_file.txt> --releaseTimes <Release_Time_file
 
 - #### --m/--mode -- The Modes Supported: <mode option>
 ```
-        1 - Simple GPU Scheduler
-        2 - As Early As Possible mode->AEAP
-        3 - AEAP with As Late As Possible mode->AEAP/ALAP
-        4 - AEAP/ALAP Bin Packer mode->AEAP/ALAP Pack
-        5 - AEAP/ALAP BP with APLAP improver mode->AEAP/ALAP BP Improve
+        1 - Greedy Schedule
+        2 - Event Aware Scheduler
+        3 - Event Aware Scheduler with Bias
+        4 - Event Aware Scheduler with Bias and Bias Prediction
+        5 - Event Aware Scheduler with Bias and Improved Bias Prediction
         N - Extended in the next release
 ```
 

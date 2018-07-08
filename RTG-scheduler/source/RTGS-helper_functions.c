@@ -421,13 +421,14 @@ int RTGS_PrintScheduleSummary(int mode, int maxKernels, jobAttributes *kernelInf
 	float avgProcessorUsage = 0, avgExecTime = 0, gpuJobs = 0, totalJobs = 0;
 	float GPU_usageTime = 0, responseTimeAvg = 0, responseFactorAvg = 0;
 	float totalGPUUsage = 0, maxReleaseTime = 0;
+	float GPUJobsSchedulerOverHead = 0, avgSchedulerOverHeadAll = 0;
 
 	for (int i = 0; i < maxKernels; i++) {
 		if (maxReleaseTime < (float)kernelInfoList[i].release_time) {
 			maxReleaseTime = (float)kernelInfoList[i].release_time;
 		}
 		float processors = (float)kernelInfoList[i].processor_req;
-		float maxProcessors = MAX_GPU_PROCESSOR;
+		float maxProcessors = GLOBAL_MAX_PROCESSORS;
 		if (kernelInfoList[i].schedule_hardware == 1) {
 			avgProcessorUsage += kernelInfoList[i].processor_req;
 			avgExecTime += kernelInfoList[i].execution_time;
@@ -436,8 +437,10 @@ int RTGS_PrintScheduleSummary(int mode, int maxKernels, jobAttributes *kernelInf
 			responseTimeAvg += response;
 			responseFactorAvg += response/totalTime;
 			GPU_usageTime += ((processors / maxProcessors)*kernelInfoList[i].execution_time);
+			GPUJobsSchedulerOverHead += kernelInfoList[i].schedule_overhead;
 		}
 		totalGPUUsage += ((processors / maxProcessors)*kernelInfoList[i].execution_time);
+		avgSchedulerOverHeadAll += kernelInfoList[i].schedule_overhead;
 	}
 	avgProcessorUsage = avgProcessorUsage / GLOBAL_GPU_JOBS;
 	avgExecTime = avgExecTime / GLOBAL_GPU_JOBS;
@@ -448,10 +451,13 @@ int RTGS_PrintScheduleSummary(int mode, int maxKernels, jobAttributes *kernelInf
 	totalJobs = (float)maxKernels;
 	float jobScheduledPercentage = (gpuJobs / maxKernels) * 100;
 	float releaseLambda = totalJobs / maxReleaseTime;
-	
+	avgSchedulerOverHeadAll = avgSchedulerOverHeadAll / totalJobs;
+	GPUJobsSchedulerOverHead = GPUJobsSchedulerOverHead / gpuJobs;
+
 	FILE * fms = fopen(pModeSummaryFile, "a"); if (!fms) { printf("ERROR: unable to create '%s'\n", pModeSummaryFile); return RTGS_ERROR_NO_RESOURCES; }
-	fprintf(fms, "%d,%d,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f\n",GLOBAL_GPU_JOBS, maxKernels, avgProcessorUsage,
-		avgExecTime, GPU_usageTime, responseTimeAvg, responseFactorAvg, GPUTimePercentage, jobScheduledPercentage, releaseLambda);
+	fprintf(fms, "%d,%d,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.6f,%.6f\n",GLOBAL_GPU_JOBS, maxKernels, avgProcessorUsage,
+		avgExecTime, GPU_usageTime, responseTimeAvg, responseFactorAvg, GPUTimePercentage, jobScheduledPercentage, 
+		releaseLambda, GPUJobsSchedulerOverHead, avgSchedulerOverHeadAll);
 	fclose(fms);
 	return RTGS_SUCCESS;
 }

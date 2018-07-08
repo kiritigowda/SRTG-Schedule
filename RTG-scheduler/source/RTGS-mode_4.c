@@ -136,7 +136,7 @@ static int Mode_4_ALAP_advanced
 		}
 		else
 		{
-			localProcessors = MAX_GPU_PROCESSOR;
+			localProcessors = GLOBAL_MAX_PROCESSORS;
 			if (jobAttributesList[jobNumber].processor_req <= localProcessors)
 			{
 				processorsQueued = 0;
@@ -551,7 +551,7 @@ static int Mode_4_Processors_unavailable
 	scheduledResourceNode **jobScheduledQueueList
 )
 {
-	if (jobAttributesList[jobNumber].processor_req < PROCESSOR_LIMIT)
+	if (jobAttributesList[jobNumber].processor_req < GLOBAL_DELAY_SCHEDULE_PROCESSOR_LIMIT)
 	{
 		if (GLOBAL_RTGS_DEBUG_MSG > 2) {
 			printf("Mode 4 Processors unavailable:: Job:%d sent for AEAP execution\n", jobNumber);
@@ -559,7 +559,7 @@ static int Mode_4_Processors_unavailable
 		processors_available = Mode_4_AEAP(jobAttributesList, jobNumber, present_time,
 			processors_available, processorsAllocatedList, jobScheduledQueueList);
 	}
-	else if (jobAttributesList[jobNumber].processor_req >= PROCESSOR_LIMIT && GLOBAL_preScheduleList == NULL)
+	else if (jobAttributesList[jobNumber].processor_req >= GLOBAL_DELAY_SCHEDULE_PROCESSOR_LIMIT && GLOBAL_preScheduleList == NULL)
 	{
 		if (GLOBAL_RTGS_DEBUG_MSG > 2) {
 			printf("Mode 4 Processors unavailable:: Job:%d sent for ALAP execution\n", jobNumber);
@@ -605,7 +605,7 @@ static int Mode_4_book_keeper
 		if (GLOBAL_preScheduleList == NULL)
 		{
 			// Processors needed lesser than the ALAP limit
-			if (jobAttributesList[jobNumber].processor_req < PROCESSOR_LIMIT)
+			if (jobAttributesList[jobNumber].processor_req < GLOBAL_DELAY_SCHEDULE_PROCESSOR_LIMIT)
 			{
 				if (jobAttributesList[jobNumber].execution_time + present_time <= jobAttributesList[jobNumber].deadline)
 				{
@@ -658,7 +658,7 @@ static int Mode_4_book_keeper
 				futureRelease = future_preScheduleList->data;
 			}
 			// Processors needed lesser than the limit
-			if (jobAttributesList[jobNumber].processor_req < PROCESSOR_LIMIT)
+			if (jobAttributesList[jobNumber].processor_req < GLOBAL_DELAY_SCHEDULE_PROCESSOR_LIMIT)
 			{
 				// Condition 1
 				if (jobAttributesList[jobNumber].processor_req <= availAlapProcessors &&
@@ -773,7 +773,7 @@ int RTGS_mode_4(char *jobsListFileName, char *releaseTimeFilename) {
 	GLOBAL_CPU_JOBS = 0;
 	GLOBAL_preScheduleList = NULL;
 
-	int processorsAvailable = MAX_GPU_PROCESSOR;
+	int processorsAvailable = GLOBAL_MAX_PROCESSORS;
 	int jobNumber = 0;
 
 	int kernelMax = get_job_information(jobAttributesList, jobsListFileName);
@@ -882,7 +882,7 @@ int RTGS_mode_4(char *jobsListFileName, char *releaseTimeFilename) {
 			printf("\nSummary Failed\n");
 		}
 
-		if ((kernelMax != (GLOBAL_GPU_JOBS + GLOBAL_CPU_JOBS)) || processorsAvailable != MAX_GPU_PROCESSOR) {
+		if ((kernelMax != (GLOBAL_GPU_JOBS + GLOBAL_CPU_JOBS)) || processorsAvailable != GLOBAL_MAX_PROCESSORS) {
 			return RTGS_FAILURE;
 		}
 

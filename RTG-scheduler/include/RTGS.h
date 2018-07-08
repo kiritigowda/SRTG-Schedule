@@ -27,11 +27,11 @@
 #include <string.h>
 
 #define MAX_GPU_PROCESSOR 14                    // Total streaming multi-processors available on the GPU
-#define MAX_JOBS 500                            // Max jobs to be scheduled
+#define MAX_JOBS 1200                           // Max jobs to be scheduled
 #define PROCESSOR_LIMIT 10                      // ALAP Processor Limit
-#define MAX_RUN_TIME 10000                      // Max run time
+#define MAX_RUN_TIME 500000                     // Max run time
 
-#define MULTIPLE_JOBS_SCHEDULED -99				// multiple jobs scheduled at a given time
+#define MULTIPLE_JOBS_SCHEDULED -99             // multiple jobs scheduled at a given time
 
 // PROFILER_MODE:
 //   0 - no profiling
@@ -100,12 +100,12 @@ struct jobInformation {
 	int deadline;                   // deadline
 	int latest_schedulable_time;    // latest schedule time
 	int release_time;               // latest schedule time
-	float schedule_overhead;        // scheduler Overhead
 	int data_send_time;             // data for the job sent
 	int scheduled_execution;        // scheduled for GPU exec
 	int completion_time;            // job completion time
 	int rescheduled_execution;      // job rescheduled for gpu exe
 	int schedule_hardware;          // job scheduled on 0: ERROR, 1: GPU, 2: CPU
+	float schedule_overhead;        // scheduler Overhead
 };
 //! \brief jobInformation structure
 typedef struct jobInformation jobAttributes;
@@ -149,6 +149,8 @@ typedef struct jobBackupList genericBackupNode;
 int GLOBAL_GPU_JOBS;
 int GLOBAL_CPU_JOBS;
 int GLOBAL_RELEASE_TIME[MAX_RUN_TIME];
+int GLOBAL_MAX_PROCESSORS;
+int GLOBAL_DELAY_SCHEDULE_PROCESSOR_LIMIT;
 genericBackupNode *GLOBAL_preScheduleList;
 
 // debug message setup variable
