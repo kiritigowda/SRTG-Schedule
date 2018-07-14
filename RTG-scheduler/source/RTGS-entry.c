@@ -30,7 +30,7 @@ static void show_usage()
 	printf("\nScheduler Parameters\n\n");
 	printf("\t--j/--jobs \t\t\t -- Jobs to be scheduled [required]\n");
 	printf("\t--rt/--releaseTimes \t\t -- Release times for the jobs [required]\n");
-	printf("\t--m/--mode \t\t\t -- Mode options [optional - deafult:5]\n");
+	printf("\t--m/--mode \t\t\t -- Scheduler Mode [optional - default:5]\n");
 	printf("\t--p/--maxProcessors \t\t -- Max processors available on the GPU [optional - default:16]\n");
 	printf("\t--d/--delayLimitPercentage \t -- Delay Schedule processor limit in percentage [optional - default:60]\n");
 	printf("\n");

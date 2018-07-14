@@ -2,7 +2,7 @@
 [![codecov](https://codecov.io/gh/kiritigowda/SRTG-Schedule/branch/master/graph/badge.svg)](https://codecov.io/gh/kiritigowda/SRTG-Schedule)
 
 # RTGS
-The current release verion is 1.0_RC (Release Candidate).
+The current release verion is 1.0.0
 
 ### Windows
 ```
@@ -22,9 +22,9 @@ RTG-scheduler [options] --j <jobs_file.txt> --rt <Release_Time_file.txt> --m <op
 ````
         --j/--jobs                 -- Jobs to be scheduled [required]
         --rt/--releaseTimes        -- Release times for the jobs [required]
-        --m/--mode                 -- Mode options [optional - default:5]
-        --p/--maxProcessors        -- Max processors available on the GPU [optional - default:14]
-        --d/--delayLimitPercentage -- Delay Schedule processor limit in percentage [optional - default:75]
+        --m/--mode                 -- Scheduler Mode [optional - default:5]
+        --p/--maxProcessors        -- Max processors available on the GPU [optional - default:16]
+        --d/--delayLimitPercentage -- Delay Schedule processor limit in percentage [optional - default:60]
 ````
 
 - #### --j/--jobs -- The Jobs File is the list of Jobs to be scheduled: <jobs_file.txt>
