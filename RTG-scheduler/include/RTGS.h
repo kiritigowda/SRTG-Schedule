@@ -26,9 +26,9 @@
 #include <stdbool.h>
 #include <string.h>
 
-#define MAX_GPU_PROCESSOR 14                    // Total streaming multi-processors available on the GPU
+#define MAX_GPU_PROCESSOR 16                    // Total streaming multi-processors available on the GPU -- default:16
 #define MAX_JOBS 1200                           // Max jobs to be scheduled
-#define PROCESSOR_LIMIT 10                      // ALAP Processor Limit
+#define PROCESSOR_LIMIT 60                      // ALAP Processor Limit -- default:60%
 #define MAX_RUN_TIME 500000                     // Max run time
 
 #define MULTIPLE_JOBS_SCHEDULED -99             // multiple jobs scheduled at a given time

@@ -50,10 +50,10 @@ if lambdaVar <= 0:
 	exit();
 
 if ALAP_limit == '':
-	alapLimit = int(0.75*maxProcessors);
+	alapLimit = int(0.60*maxProcessors);
 else:
 	ALAP_limit.strip();
-	alapLimit = int(ALAP_limit);
+	alapLimit = int(ALAP_limit*maxProcessors);
 
 
 # num job sets required to be created
