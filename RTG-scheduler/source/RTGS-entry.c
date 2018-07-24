@@ -7,7 +7,7 @@
 #include"RTGS_Global.h"
 
 // version
-#define RTGS_VERSION "1.0_RC"
+#define RTGS_VERSION "1.0.0"
 
 /**********************************************************************************************************
 usage information
@@ -15,7 +15,7 @@ usage information
 static void show_usage()
 {
 	printf("\n*************************************************************************************************************************************\n");
-	printf("\n                                              Real Time GPU Scheduler -- RTGS-%s\n", RTGS_VERSION);
+	printf("\n                                              Real Time GPU Scheduler -- RTGS - %s\n", RTGS_VERSION);
 	printf("\n*************************************************************************************************************************************\n");
 	printf("\n");
 	printf("Usage:\n\n");
@@ -30,9 +30,9 @@ static void show_usage()
 	printf("\nScheduler Parameters\n\n");
 	printf("\t--j/--jobs \t\t\t -- Jobs to be scheduled [required]\n");
 	printf("\t--rt/--releaseTimes \t\t -- Release times for the jobs [required]\n");
-	printf("\t--m/--mode \t\t\t -- Mode options [optional - deafult:5]\n");
-	printf("\t--p/--maxProcessors \t\t -- Max processors available on the GPU [optional - default:14]\n");
-	printf("\t--d/--delayLimitPercentage \t -- Delay Schedule processor limit in percentage [optional - default:75]\n");
+	printf("\t--m/--mode \t\t\t -- Scheduler Mode [optional - default:5]\n");
+	printf("\t--p/--maxProcessors \t\t -- Max processors available on the GPU [optional - default:16]\n");
+	printf("\t--d/--delayLimitPercentage \t -- Delay Schedule processor limit in percentage [optional - default:60]\n");
 	printf("\n");
 	printf("The Jobs File format - Jobs to be scheduled: <jobs_file.txt>\n");
 	printf("\tThe arguments:\n");
@@ -148,8 +148,11 @@ int main(int argc, char * argv[])
 			if ((arg + 1) == argc)
 			{
 				printf("\n\nMissing delay limit percentage for processors Value on command-line. Default Delay Limit Processors will be used\n");
-				printf("Default Max Processors: %d\n", PROCESSOR_LIMIT);
-				GLOBAL_DELAY_SCHEDULE_PROCESSOR_LIMIT = PROCESSOR_LIMIT;
+				printf("Default Delay Schedule Processor limit percentage: %d %%\n", PROCESSOR_LIMIT);
+				int maxProcessorsLocal = 0;
+				if (GLOBAL_MAX_PROCESSORS != -1) maxProcessorsLocal = GLOBAL_MAX_PROCESSORS;
+				else maxProcessorsLocal = MAX_GPU_PROCESSOR;
+				GLOBAL_DELAY_SCHEDULE_PROCESSOR_LIMIT = (int) floor((maxProcessorsLocal * PROCESSOR_LIMIT)/100);
 			}
 			else {
 				arg++;

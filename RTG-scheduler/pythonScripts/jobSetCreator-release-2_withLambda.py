@@ -39,7 +39,7 @@ if outputDirectory == '' or jobSetName == '' or numJobSet == -1 or numJobsPerSet
     	'\t\t\t\t-j [number of job per set to be created - required]\n' \
     	'\t\t\t\t-p [max processors available - required]\n' \
     	'\t\t\t\t-l [lambda job arrival rate [range:0.001 to 1] - required]\n'\
-    	'\t\t\t\t-a [Schedule ALAP processor limit - optional [default: 0.75 * max processors]]\n')
+    	'\t\t\t\t-a [Delay Schedule processor limit in percentage - optional [default: 60% -- 0.6 * max processor]]\n')
     exit()
 
 if not os.path.exists(outputDirectory):
@@ -50,10 +50,10 @@ if lambdaVar <= 0:
 	exit();
 
 if ALAP_limit == '':
-	alapLimit = int(0.75*maxProcessors);
+	alapLimit = int(0.60*maxProcessors);
 else:
 	ALAP_limit.strip();
-	alapLimit = int(ALAP_limit);
+	alapLimit = int(ALAP_limit*maxProcessors);
 
 
 # num job sets required to be created
