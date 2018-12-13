@@ -2,7 +2,7 @@
 [![codecov](https://codecov.io/gh/kiritigowda/SRTG-Schedule/branch/master/graph/badge.svg)](https://codecov.io/gh/kiritigowda/SRTG-Schedule)
 
 # RTGS
-The current release verion is 1.0.0
+The current release version is 1.0.0
 
 ### Windows
 ```
