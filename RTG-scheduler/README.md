@@ -8,7 +8,7 @@ The current release version is 1.0.0
 ```
 RTG-scheduler [options] --j <jobs_file.txt> --rt <Release_Time_file.txt> --m <option> --p <option> --d <option> 
 ```
-### Linux
+### Linux / MAC OS X
 ```
 ./RTG-scheduler [options] --j <jobs_file.txt> --rt <Release_Time_file.txt> --m <option> --p <option> --d <option>
 ```
