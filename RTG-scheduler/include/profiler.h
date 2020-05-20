@@ -16,8 +16,8 @@
 
 #define PROFILER_DEFINE_EVENT(g,e) ePROFILER_EVENT_ENUM_ ## g ## e,
 enum ProfilerEventEnum {
-	#include "profilerEvents.h"
-	PROFILER_NUM_EVENTS
+#include "profilerEvents.h"
+    PROFILER_NUM_EVENTS
 };
 extern "C" void __stdcall PROFILER_INITIALIZE();
 extern "C" void __stdcall PROFILER_SHUTDOWN();
