@@ -84,13 +84,13 @@ Mode_2: Job ::
 				CPU_Evaluation( Job )
 				return false
                 
-		status = check( GCU_Request_Satisfied( GCU_A, Job ) )
-		if( status == true )
-			Update_GCU_Distribution_List( Dispatch_Time, GCU_A, Job )
-			Dispatch_Job( Job, FUTURE_GPU_EXECUTION )
-			return true
+			status = check( GCU_Request_Satisfied( GCU_A, Job ) )
+			if( status == true )
+				Update_GCU_Distribution_List( Dispatch_Time, GCU_A, Job )
+				Dispatch_Job( Job, FUTURE_GPU_EXECUTION )
+				return true
                 
-		i = i->next
+			i = i->next
 		}
 	}
 ```
