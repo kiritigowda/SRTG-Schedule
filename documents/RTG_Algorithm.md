@@ -192,7 +192,7 @@ Optimize_Non_Compute_Intensive_Job_Schedule: Job ::
 
 **Algorithm 9:** Event Aware Schedule with Bias and Bias Predicition
 
-``
+````
 Mode_4: Job ::
 	Status = Query_Compute_Intensive_Job( Job )
 	if( Status == False)
@@ -234,7 +234,7 @@ Mode_4: Job ::
 			}
 		}
 	}
-``		
+````		
 
 ## Mode 5 - Event Aware Schedule with Bias and Advanced Bias Prediction
 
