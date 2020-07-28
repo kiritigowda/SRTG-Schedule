@@ -244,35 +244,17 @@ Mode_4: Job ::
 * Step 10: If condition-1 is not meet at the latest schedulable time, send the job for CPU evaluation. Else go to * Step 10.
 * Step 11: Accept the job for GPU execution and send the job to the smart queue for future execution and return.
 
-**Algorithm 9:** Schedule In-Between Compute Intensive Jobs And Optimize
+**Algorithm 9:** Reschedule Compute Intensive Jobs And Optimize
 
 ````
-Optimize_Non_Compute_And_Compute_Intensive_Job_Schedule: Job ::
+Optimize_Compute_Intensive_Job_Schedule: Job ::
     while( GCU_Distribution_List != NULL )
     {
         status = Check(Query_List_For_Consecutive_Compute_Intensive_Jobs( i ))
         if( status == true )
             (Job1, Job2) = List_Consecutive_Compute_Intensive_Jobs( i )
-            status = check( Job.Exection_time <= Query_Time_Gap_Between_Compute_Intensive_Jobs(i) )
-            if( status == true )
-                Dispatch_Time = Job1.Completion_Time
-
-                if ( !Deadline_Fullfilled( Dispatch_Time, Job ) )
-                    return false
-
-                GCU_A = Job2.GCU_Required
-                status = check( GCU_Request_Satisfied( GCU_A, Job ) && Query_Time_Gap_Empty() )
-                if status == true
-                    Flag_Job_With_Virtual_Token( Job )
-                    Update_GCU_Distribution_List( Dispatch_Time, GCU_A, Job )
-                    Dispatch_Job( Job, ALAP_TIME_GAP_GPU_EXECUTION )
-                    return true
-
-                status = check( GCU_Request_Satisfied( GCU_A, Job ) && !Query_Time_Gap_Empty() )
-                if status == true
-                    TBD:: (Add evaluation on NON Compute Jobs accepted)
-
-            else TBD::
+            status = check( Job.Exection_time >> Query_Time_Gap_Between_Compute_Intensive_Jobs(i) )
+            if( status == true ) TBD::
                 Dispatch-Time = Compute Intensive J1 completion time
                 Move Compute Intensive J2 to Dispatch-Time
                 status = check (Scheduling Ji after J2)
@@ -285,6 +267,7 @@ Optimize_Non_Compute_And_Compute_Intensive_Job_Schedule: Job ::
     }
 ````
 
+
 **Algorithm 10:** Event Aware Schedule with Bias and Improved Bias Predicition
 ```
 Mode_5: Job ::
@@ -295,6 +278,10 @@ Mode_5: Job ::
         if( Status == false )
         {
             Status = Optimize_Non_Compute_Intensive_Job_Schedule( Job )
+            if( Status == false )
+            {
+                Status = Optimize_Compute_Intensive_Job_Schedule( Job )
+            }
         }
         return Status
     }
