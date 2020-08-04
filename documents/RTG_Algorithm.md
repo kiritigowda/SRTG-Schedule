@@ -175,14 +175,39 @@ Optimize_Non_Compute_Intensive_Job_Schedule: Job ::
                 status = check( GCU_Request_Satisfied( GCU_A, Job ) && Query_Time_Gap_Empty() )
                 if(status == true)
                     Flag_Job_With_Virtual_Token( Job )
-                    Update_GCU_Distribution_List( Dispatch_Time, GCU_A, Job )
+                    Update_GCU_Virtual_Distribution_List( Dispatch_Time, GCU_A, Job )
                     Dispatch_Job( Job, ALAP_TIME_GAP_GPU_EXECUTION )
                     return true
 
                 status = check( GCU_Request_Satisfied( GCU_A, Job ) && !Query_Time_Gap_Empty() )
                 if(status == true)
-                    TBD:: (Add evaluation on NON Compute Jobs accepted)
-
+                    GCU_V = Query_Virtual_Tokens_Inbtw_Jobs(Job1, Job2)
+                    GCU_A = GCU_A - GCU_V
+                    status = GCU_Request_Satisfied( GCU_A, Job )
+                    if(status == true)
+                        Flag_Job_With_Virtual_Token( Job )
+                        Update_GCU_Virtual_Distribution_List( Dispatch_Time, GCU_A, Job )
+                        Dispatch_Job( Job, ALAP_TIME_GAP_GPU_EXECUTION )
+                        return true
+                    else
+                    {
+                        Virtual_Distribution_List = Query_Virtual_List_Inbtw_Jobs( Job1, Job2 )
+                        while( Virtual_Distribution_List != NULL )
+                        {
+                            ( GCU_FA, T_GCU_FA ) = Query_Future_Available_Virtual_Distribution_List( i )
+                            GCU_A = GCU_A + GCU_FA
+                            Dispatch_Time = Dispatch_Time + T_GCU_FA
+                            if ( !Deadline_Fullfilled( Dispatch_Time, Job ) )
+                                return false                
+                            status = check( GCU_Request_Satisfied( GCU_A, Job ) )
+                            if( status == true )
+                                Flag_Job_With_Virtual_Token( Job )
+                                Update_GCU_Virtual_Distribution_List( Dispatch_Time, GCU_A, Job )
+                                Dispatch_Job( Job, ALAP_TIME_GAP_GPU_EXECUTION )
+                                return true
+                            i = i->next
+                        }                       
+                    }
         i = i->next
     }
 ```
@@ -247,24 +272,28 @@ Mode_4: Job ::
 **Algorithm 9:** Reschedule Compute Intensive Jobs And Optimize
 
 ````
-Optimize_Compute_Intensive_Job_Schedule: Job ::
+Optimize_Compute_Intensive_Job_Schedule:
     while( GCU_Distribution_List != NULL )
     {
-        status = Check(Query_List_For_Consecutive_Compute_Intensive_Jobs( i ))
-        if( status == true )
+        status = Check ( Query_List_For_Consecutive_Compute_Intensive_Jobs( i ) )
+        if(status == true)
             (Job1, Job2) = List_Consecutive_Compute_Intensive_Jobs( i )
-            status = check( Job.Exection_time >> Query_Time_Gap_Between_Compute_Intensive_Jobs(i) )
-            if( status == true ) TBD::
-                Dispatch-Time = Compute Intensive J1 completion time
-                Move Compute Intensive J2 to Dispatch-Time
-                status = check (Scheduling Ji after J2)
-                if status == true
-                    Allocate Virtual Tokens
-                    GCU_distributed_list update
-                    dispatch job for look ahead GPU execution
-
+            status = Consecutive_Compute_Intensive_Jobs_Analyzed( Job1, Job2 )
+            if(status == true)
+                if(Query_Time_Gap_Empty(Job1, Job2))
+                    Dispatch_Time = Job1.Completion_Time
+                    Update_Distribution_List( Dispatch_Time, Job2 )
+                    Update_Dispatched_Job( Job2, ALAP_GPU_EXECUTION )
+                    return
+                else
+                    Virtual_Distribution_List = Query_Virtual_List_Inbtw_Jobs( Job1, Job2 )
+                    Dispatch_Time = Query_Completion_time(Virtual_Distribution_List)
+                    Update_Distribution_List( Dispatch_Time, Job2 )
+                    Update_Dispatched_Job( Job2, ALAP_GPU_EXECUTION )
+                    return
         i = i->next
     }
+    return
 ````
 
 
@@ -280,7 +309,7 @@ Mode_5: Job ::
             Status = Optimize_Non_Compute_Intensive_Job_Schedule( Job )
             if( Status == false )
             {
-                Status = Optimize_Compute_Intensive_Job_Schedule( Job )
+                Optimize_Compute_Intensive_Job_Schedule()
             }
         }
         return Status
@@ -311,7 +340,7 @@ Mode_5: Job ::
                     Dispatch_Job( Job, ALAP_GPU_EXECUTION )
                     return true
             
-            i = i->next
+                i = i->next
             }
         }
     }
