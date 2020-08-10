@@ -4,7 +4,7 @@
 [![codecov](https://codecov.io/gh/kiritigowda/SRTG-Schedule/branch/master/graph/badge.svg)](https://codecov.io/gh/kiritigowda/SRTG-Schedule)
 <a href="https://codeclimate.com/github/kiritigowda/SRTG-Schedule/maintainability"><img src="https://api.codeclimate.com/v1/badges/dc43dc1b470535e927ac/maintainability" /></a>
 
-# Dynamic Schedule Management Framework For Graphic Processing Units
+# Dynamic Schedule Management Framework For GPUs
 
 ## Soft Real Time GPU Scheduler
 A schedule management framework for aperiodic soft-real-time jobs that may be used by a CPU - GPU system designer/integrator to select, configure and deploy a suitable architectural platform and to perform concurrent scheduling of these jobs.
