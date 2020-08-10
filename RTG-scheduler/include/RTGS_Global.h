@@ -8,6 +8,9 @@
 
 #include <stdio.h>
 
+// version
+#define RTGS_VERSION "1.0.1"
+
 // global variables
 int GLOBAL_RTGS_MODE;
 char *GLOBAL_KERNEL_FILE_NAME;

@@ -11,7 +11,7 @@ The scheduler supports multiple policies for scheduling aperiodic soft-real-time
 * **Mode 4** - Event Aware Schedule with Bias and Bias Prediction
 * **Mode 5** - Event Aware Schedule with Bias and Improved Bias Prediction
 
-**Input:** Aperiodic jobs compatible with GPU execution
+**Input:** **Aperiodic Soft-Real-Time** jobs compatible with GPU execution
 
 ### Mode 1 - Greedy Schedule
 

@@ -17,12 +17,9 @@ However, in a real-time system, predictability and meeting temporal requirements
 
 <p align="center"><img width="70%" src="documents/images/RTGS-ConcurrentJobExecution.PNG" /></p>
 
-
-
 <p align="center"><img width="70%" src="documents/images/RTG-Scheduler.PNG" /></p>
 
 **The above image depicts our framework. As seen in the figure, our scheduling framework resides on a CPU core and dispatches kernels to the GPU.**
-
 
 <p align="center"><img width="70%" src="documents/images/RTGS-Thread_life_Cycle.PNG" /></p>
 
