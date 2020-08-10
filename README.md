@@ -13,11 +13,11 @@ A schedule management framework for soft-real-time jobs that may be used by a CP
 
 Graphics Processing Units (GPUs) are computational powerhouses that were originally designed for accelerating graphics applications. However, in recent years, there has been a tremendous increase in support for general purpose computing on GPUs (GPGPU). GPU based architectures provide unprecedented magnitudes of computation at a fraction of the power used by traditional CPU based architectures. As real-time systems integrate more and more functionality, GPU based architectures are very attractive for their deployment.
 
-Based on where they are located and how they are used in a computing system, GPUs may be broadly classified into discrete GPUs (dGPUs), integrated GPUs (iGPUs), virtual GPUs (vGPU), and external GPUs (eGPUs). Personal computers generally use either discrete, also known as dedicated, GPUs (dGPUs) or integrated, also known as shared or unified memory architecture, GPUs (iGPUs).<a href="#note1" id="note1ref"><sup>1</sup></a>
+Based on where they are located and how they are used in a computing system, GPUs may be broadly classified into discrete GPUs (dGPUs), integrated GPUs (iGPUs), virtual GPUs (vGPU), and external GPUs (eGPUs). Personal computers generally use either discrete, also known as dedicated, GPUs (dGPUs) or integrated, also known as shared or unified memory architecture, GPUs (iGPUs).<a href="#note1" id="note1ref"><sup>[1]</sup></a>
+
+<p align="center"><img width="60%" src="documents/images/RTGS-ConcurrentJobExecution.PNG" /></p>
 
 However, in a real-time system, predictability and meeting temporal requirements are much more important than raw performance. While some realtime jobs may benefit from the performance that all cores of the GPU can provide, most jobs may require only a subset of cores in order to successfully meet their temporal requirements.  In this work, we implement concurrent scheduling of softreal-time jobs and a-periodic jobs on a GPU based platform, while optimizing the memory usage on the GPGPU.
-
-<p align="center"><img width="70%" src="documents/images/RTGS-ConcurrentJobExecution.PNG" /></p>
 
 <p align="center"><img width="70%" src="documents/images/RTG-Scheduler.PNG" /></p>
 
@@ -25,5 +25,7 @@ However, in a real-time system, predictability and meeting temporal requirements
 
 <p align="center"><img width="70%" src="documents/images/RTGS-Thread_life_Cycle.PNG" /></p>
 
-<a id="note1" href="#note1ref"><sup>1</sup></a>The disparity in the nomenclature of these GPUs is due to the fact that naming conventions of GPUs are dependent on their manufacturers.
+**note:**
+
+<a id="note1" href="#note1ref"><sup>[1]</sup></a>The disparity in the nomenclature of these GPUs is due to the fact that naming conventions of GPUs are dependent on their manufacturers.
 
