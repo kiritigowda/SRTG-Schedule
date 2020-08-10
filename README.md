@@ -7,9 +7,9 @@
 # Dynamic Schedule Management Framework For GPUs
 
 ## Soft Real Time GPU Scheduler
-A schedule management framework for aperiodic soft-real-time jobs that may be used by a CPU - GPU system designer/integrator to select, configure and deploy a suitable architectural platform and to perform concurrent scheduling of these jobs.
+A schedule management framework for soft-real-time jobs that may be used by a CPU - GPU system designer/integrator to select, configure and deploy a suitable architectural platform and to perform concurrent scheduling of these jobs.
 
-## Dynamic schedule management framework for soft-real-time jobs on GPU based architectures
+### Dynamic schedule management framework for aperiodic soft-real-time jobs on GPU based architectures
 
 Graphics Processing Units (GPUs) are computational powerhouses that were originally designed for accelerating graphics applications. However, in recent years, there has been a tremendous increase in support for general purpose computing on GPUs (GPGPU). GPU based architectures provide unprecedented magnitudes of computation at a fraction of the power used by traditional CPU based architectures. As real-time systems integrate more and more functionality, GPU based architectures are very attractive for their deployment. 
 
