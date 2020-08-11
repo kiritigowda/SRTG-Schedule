@@ -72,7 +72,7 @@ jobs on GPU based architectures.
 
 We propose to exploit this basic idea to perform coarse grained scheduling of jobs on GCUs.
 
-<p align="center"><img width="70%" src="documents/images/readme_images/body/RTG_Scheduler_block_diagram.png" /></p>
+<p align="center"><img width="100%" src="documents/images/readme_images/body/RTG_Scheduler_block_diagram.png" /></p>
 
 Our work lays emphasis on minimal programmer involvement.
 
