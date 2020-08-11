@@ -29,7 +29,6 @@ A schedule management framework for soft-real-time jobs that may be used by a CP
 * Power needed for GPU to carry out an operation lesser than CPUs
 * Ideal for use in real time embedded system
 
-
 <p align="left"><img width="35%" src="documents/images/readme_images/header/what_are_the_challenges.png" /></p>
 
 * Significant hardware and firmware challenges
