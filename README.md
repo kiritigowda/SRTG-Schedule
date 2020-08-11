@@ -14,9 +14,9 @@ A schedule management framework for soft-real-time jobs that may be used by a CP
 
 ## Dynamic schedule management framework for soft-real-time jobs on GPU based architectures
 
-<p align="left"><img width="30%" src="documents/images/readme_images/header/why_gpus.png" /></p>
+<p align="left"> <a href="scheduler_info.md#graphics-processing-units-in-real-time"> <img width="30%" src="documents/images/readme_images/header/why_gpus.png" /> </a></p>
 
-#### GPUs execute at higher frequencies 
+#### [GPUs](scheduler_info.md#graphics-processing-units-in-real-time) execute at higher frequencies 
 
 * Accelerates execution of jobs allocated to it
 * Improves System response time
@@ -24,12 +24,12 @@ A schedule management framework for soft-real-time jobs that may be used by a CP
 <p align="center"><img width="70%" src="documents/images/readme_images/body/flops_per_year.png" /></p>
 <p align="center"> The above image compares FLOPs per Cycle improvements over the years <a href="#note1" id="note1ref"><sup>[1]</sup></a> </p>
 
-#### GPUs are energy efficient
+#### [GPUs](scheduler_info.md#graphics-processing-units-in-real-time) are energy efficient
 
 * Power needed for GPU to carry out an operation lesser than CPUs
 * Ideal for use in real time embedded system
 
-<p align="left"><img width="35%" src="documents/images/readme_images/header/what_are_the_challenges.png" /></p>
+<p align="left"> <a href="scheduler_info.md#gpu-challenges"> <img width="35%" src="documents/images/readme_images/header/what_are_the_challenges.png" /> </a></p>
 
 * Significant hardware and firmware challenges
 * Executions are non-preemptive 
@@ -44,7 +44,7 @@ A schedule management framework for soft-real-time jobs that may be used by a CP
 
 This entire body of work assumes that only one kernel may execute on a GPU at a given time(partly due to lack of hardware support)
 
-<p align="left"><img width="30%" src="documents/images/readme_images/header/our_approach.png" /></p>
+<p align="left"><a href="scheduler_info.md#motivation"> <img width="30%" src="documents/images/readme_images/header/our_approach.png" /></a></p>
 
 #### What's the problem?
 
@@ -62,7 +62,7 @@ Concurrent Kernels Execution on GPU <a href="#note2" id="note2ref"><sup>[2]</sup
 * Performance boost
 * Execution units available
 
-<p align="left"><img width="30%" src="documents/images/readme_images/header/our_ongoing_work.png" /></p>
+<p align="left"><a href="scheduler_info.md#motivation"> <img width="30%" src="documents/images/readme_images/header/our_ongoing_work.png" /></a></p>
 
 Aims to develop a dynamic schedule management framework for soft-real-time
 jobs on GPU based architectures. 
@@ -81,7 +81,7 @@ A dynamic schedule management framework that is responsible for
 * Determining which kernel(s) to dispatch to the GPU at a given time
 * Determining how many GCUs to assign for a given kernel.
 
-<p align="left"><img width="30%" src="documents/images/readme_images/header/summary.png" /></p>
+<p align="left"><a href="RTG-scheduler#real-time-gpu-scheduler"><img width="30%" src="documents/images/readme_images/header/summary.png" /></a></p>
 
 #### Advantages
 
@@ -91,8 +91,8 @@ A dynamic schedule management framework that is responsible for
 
 #### Results
 
-* Dynamic schedule management framework for soft-real-time jobs
-* Support for a-periodic and recurring (periodic) soft-real-time tasks.
+* Dynamic schedule management [framework](RTG-scheduler#real-time-gpu-scheduler) for soft-real-time jobs
+* Support for [a-periodic](RTG-scheduler#real-time-gpu-scheduler) and recurring (periodic) soft-real-time tasks.
 * Smart GPU Memory Management
 
 **note:**
