@@ -23,39 +23,39 @@ The scheduler supports multiple policies for scheduling aperiodic soft-real-time
 
 ### Mode 1 - Greedy Schedule
 
-<p align="center"><img width="100%" src="../documents/images/algo/gcu_request_satisfied.png" /></p>
+<p align="center"><img width="60%" src="../documents/images/algo/gcu_request_satisfied.png" /></p>
 
-<p align="center"><img width="100%" src="../documents/images/algo/deadline_fulfilled.png" /></p>
+<p align="center"><img width="60%" src="../documents/images/algo/deadline_fulfilled.png" /></p>
 
-<p align="center"><img width="100%" src="../documents/images/algo/query_available_gcus.png" /></p>
+<p align="center"><img width="60%" src="../documents/images/algo/query_available_gcus.png" /></p>
 
-<p align="center"><img width="100%" src="../documents/images/algo/gpu_offload.png" /></p>
+<p align="center"><img width="60%" src="../documents/images/algo/gpu_offload.png" /></p>
 
-<p align="center"><img width="100%" src="../documents/images/algo/mode_1.png"/></p>
+<p align="center"><img width="60%" src="../documents/images/algo/mode_1.png"/></p>
 
 ### Mode 2 - Event Aware Schedule
 
-<p align="center"><img width="100%" src="../documents/images/algo/mode_2.png" /></p>
+<p align="center"><img width="60%" src="../documents/images/algo/mode_2.png" /></p>
 
 ### Mode 3 - Event Aware Schedule With Bias
 
-<p align="center"><img width="100%" src="../documents/images/algo/schedule_with_bias.png" /></p>
+<p align="center"><img width="60%" src="../documents/images/algo/schedule_with_bias.png" /></p>
 
-<p align="center"><img width="100%" src="../documents/images/algo/mode_3.png" /></p>
+<p align="center"><img width="60%" src="../documents/images/algo/mode_3.png" /></p>
 
 ### Mode 4 - Event Aware Schedule with Bias and Bias Prediction
 
-<p align="center"><img width="100%" src="../documents/images/algo/schedule_bin_pack.png" /></p>
+<p align="center"><img width="60%" src="../documents/images/algo/schedule_bin_pack.png" /></p>
 
-<p align="center"><img width="100%" src="../documents/images/algo/optimize_non_compute_intensive.png" /></p>
+<p align="center"><img width="60%" src="../documents/images/algo/optimize_non_compute_intensive.png" /></p>
 
-<p align="center"><img width="100%" src="../documents/images/algo/mode_4.png" /></p>
+<p align="center"><img width="60%" src="../documents/images/algo/mode_4.png" /></p>
 
 ### Mode 5 - Event Aware Schedule with Bias and Improved Bias Prediction
 
-<p align="center"><img width="100%" src="../documents/images/algo/optimize_compute_intensive.png" /></p>
+<p align="center"><img width="60%" src="../documents/images/algo/optimize_compute_intensive.png" /></p>
 
-<p align="center"><img width="100%" src="../documents/images/algo/mode_5.png" /></p>
+<p align="center"><img width="60%" src="../documents/images/algo/mode_5.png" /></p>
 
 ## SRTG-JobCreator
 
