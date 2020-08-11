@@ -22,7 +22,7 @@ A schedule management framework for soft-real-time jobs that may be used by a CP
 * Improves System response time
 
 <p align="center"><img width="50%" src="documents/images/readme_images/body/flops_per_year.png" /></p>
-<p align="center"> The above image compares GFlops improvements over the years<a href="#note1" id="note1ref"><sup>[1]</sup></a>
+<p align="center"> The above image compares GFlops improvements over the years <a href="#note1" id="note1ref"><sup>[1]</sup></a> </p>
 
 #### GPUs are energy efficient
 
@@ -57,7 +57,7 @@ Sending a single non-preemptive kernel on to a GPU, is under utilizing the GPU
 
 <p align="center"><img width="40%" src="documents/images/readme_images/body/parallel_kernels.png" /></p>
 
-Concurrent Kernel Execution on GPU
+Concurrent Kernels Execution on GPU <a href="#note2" id="note2ref"><sup>[2]</sup></a>
 
 * Safe concurrent kernels
 * Performance boost
@@ -66,7 +66,7 @@ Concurrent Kernel Execution on GPU
 <p align="left"><img width="30%" src="documents/images/readme_images/header/our_ongoing_work.png" /></p>
 
 Aims to develop a dynamic schedule management framework for soft-real-time
-jobs on GPU based architectures.
+jobs on GPU based architectures. 
 
 <p align="center"><img width="60%" src="documents/images/readme_images/body/RTG-Scheduler.png" /></p>
 
@@ -98,6 +98,8 @@ A dynamic schedule management framework that is responsible for
 
 **note:**
 
-<a id="note1" href="#note1ref"><sup>[1]</sup></a> [FLOPs per Cycle for CPUs, GPUs and Xeon Phis](https://www.karlrupp.net/2016/08/flops-per-cycle-for-cpus-gpus-and-xeon-phis/)
+* <a id="note1" href="#note1ref"><sup>[1]</sup></a> [FLOPs per Cycle for CPUs, GPUs and Xeon Phis](https://www.karlrupp.net/2016/08/flops-per-cycle-for-cpus-gpus-and-xeon-phis/)
+
+* <a id="note2" href="#note2ref"><sup>[2]</sup></a> [Concurrent soft-real-time job execution on GPUs - Page 13 & 14](https://people.mpi-sws.org/~bbb/proceedings/rtas14-wip-proceedings.pdf)
 
 
