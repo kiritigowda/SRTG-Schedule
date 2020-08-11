@@ -9,7 +9,7 @@ RTG-Scheduler is a dynamic scheduler for aperiodic soft-real-time jobs on GPU ba
 
 The RTG-scheduler itself resides on the CPU. When a GPU compatible job is released, it is sent to the SRTG-scheduler, which checks if this job can be executed on the GPU before its deadline. If yes, the job is offloaded to the GPU and any data that it needs is transferred to GPU memory. Otherwise, the job is rejected and sent back to the CPU scheduler immediately.
 
-<p align="center"><img width="70%" src="../documents/images/RTG_Scheduler_block_diagram.PNG" /></p>
+<p align="center"><img width="100%" src="../documents/images/RTG_Scheduler_block_diagram.png" /></p>
 
 The scheduler supports multiple policies for scheduling aperiodic soft-real-time jobs on the GPU, captured via five different modes.
 
@@ -45,7 +45,7 @@ The scheduler supports multiple policies for scheduling aperiodic soft-real-time
 
 ### Mode 4 - Event Aware Schedule with Bias and Bias Prediction
 
-<p align="center"><img width="100%" src="../documents/images/algo/schedule_with_bin_pack.png" /></p>
+<p align="center"><img width="100%" src="../documents/images/algo/schedule_bin_pack.png" /></p>
 
 <p align="center"><img width="100%" src="../documents/images/algo/optimize_non_compute_intensive.png" /></p>
 
