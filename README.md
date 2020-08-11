@@ -21,8 +21,8 @@ A schedule management framework for soft-real-time jobs that may be used by a CP
 * Accelerates execution of jobs allocated to it
 * Improves System response time
 
-<p align="center"><img width="50%" src="documents/images/readme_images/body/flops_per_year.png" /></p>
-<p align="center"> The above image compares GFlops improvements over the years <a href="#note1" id="note1ref"><sup>[1]</sup></a> </p>
+<p align="center"><img width="70%" src="documents/images/readme_images/body/flops_per_year.png" /></p>
+<p align="center"> The above image compares FLOPs per Cycle improvements over the years <a href="#note1" id="note1ref"><sup>[1]</sup></a> </p>
 
 #### GPUs are energy efficient
 
