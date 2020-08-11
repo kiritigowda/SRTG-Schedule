@@ -66,7 +66,7 @@ As we already established that there has been a tremendous increase in support f
 
 Our Scheduling framework resides on a CPU core and dispatches kernels to the GPU.
 
-<p align="center"><img width="70%" src="documents/images/RTG_Scheduler_block_diagram.PNG" /></p>
+<p align="center"><img width="100%" src="documents/images/RTG_Scheduler_block_diagram.png" /></p>
 
 **note:**
 
