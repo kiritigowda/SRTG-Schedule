@@ -1,8 +1,71 @@
 [![Build Status](https://travis-ci.org/kiritigowda/SRTG-Schedule.svg?branch=master)](https://travis-ci.org/kiritigowda/SRTG-Schedule)
 [![codecov](https://codecov.io/gh/kiritigowda/SRTG-Schedule/branch/master/graph/badge.svg)](https://codecov.io/gh/kiritigowda/SRTG-Schedule)
 
-# RTGS
-The current release version is 1.0.0
+# Dynamic Schedule Management Framework For GPUs
+
+## Real-Time GPU Scheduler
+
+RTG-Scheduler is a dynamic scheduler for aperiodic soft-real-time jobs on GPU based architectures, with a simple, easy-to-use command-line interface (CLI). The project is provided under the [MIT license](https://opensource.org/licenses/MIT). It is currently supported on Windows, Linux, and macOS platforms.
+
+The RTG-scheduler itself resides on the CPU. When a GPU compatible job is released, it is sent to the SRTG-scheduler, which checks if this job can be executed on the GPU before its deadline. If yes, the job is offloaded to the GPU and any data that it needs is transferred to GPU memory. Otherwise, the job is rejected and sent back to the CPU scheduler immediately.
+
+<p align="center"><img width="100%" src="../documents/images/RTG_Scheduler_block_diagram.png" /></p>
+
+The scheduler supports multiple policies for scheduling aperiodic soft-real-time jobs on the GPU, captured via five different modes.
+
+* **Mode 1** - Greedy Schedule
+* **Mode 2** - Event Aware Schedule
+* **Mode 3** - Event Aware Schedule with Bias
+* **Mode 4** - Event Aware Schedule with Bias and Bias Prediction
+* **Mode 5** - Event Aware Schedule with Bias and Improved Bias Prediction
+
+**Input:** **Aperiodic Soft-Real-Time** jobs compatible with GPU execution
+
+### Mode 1 - Greedy Schedule
+
+<p align="center"><img width="100%" src="../documents/images/algo/gcu_request_satisfied.png" /></p>
+
+<p align="center"><img width="100%" src="../documents/images/algo/deadline_fulfilled.png" /></p>
+
+<p align="center"><img width="100%" src="../documents/images/algo/query_available_gcus.png" /></p>
+
+<p align="center"><img width="100%" src="../documents/images/algo/gpu_offload.png" /></p>
+
+<p align="center"><img width="100%" src="../documents/images/algo/mode_1.png"/></p>
+
+### Mode 2 - Event Aware Schedule
+
+<p align="center"><img width="100%" src="../documents/images/algo/mode_2.png" /></p>
+
+### Mode 3 - Event Aware Schedule With Bias
+
+<p align="center"><img width="100%" src="../documents/images/algo/schedule_with_bias.png" /></p>
+
+<p align="center"><img width="100%" src="../documents/images/algo/mode_3.png" /></p>
+
+### Mode 4 - Event Aware Schedule with Bias and Bias Prediction
+
+<p align="center"><img width="100%" src="../documents/images/algo/schedule_bin_pack.png" /></p>
+
+<p align="center"><img width="100%" src="../documents/images/algo/optimize_non_compute_intensive.png" /></p>
+
+<p align="center"><img width="100%" src="../documents/images/algo/mode_4.png" /></p>
+
+### Mode 5 - Event Aware Schedule with Bias and Improved Bias Prediction
+
+<p align="center"><img width="100%" src="../documents/images/algo/optimize_compute_intensive.png" /></p>
+
+<p align="center"><img width="100%" src="../documents/images/algo/mode_5.png" /></p>
+
+## SRTG-JobCreator
+
+We have developed a comprehensive job set creator tool, SRTG-JobCreator, that generates aperiodic soft-real-time job sets and associated data based on parameters such as job arrival rates, number of GCUs available, even/odd GCU requests and delay schedule GCU limit.
+
+## SRTG-ResultAnalysis
+
+Once the jobs are scheduled and the schedule data is obtained from SRTG-Scheduler, we use a result analysis tool, SRTG-ResultAnalysis to generate relevant data plots and provide insights into the results.
+
+## RTG-Scheduler Usage
 
 ### Windows
 ```
@@ -13,12 +76,12 @@ RTG-scheduler [options] --j <jobs_file.txt> --rt <Release_Time_file.txt> --m <op
 ./RTG-scheduler [options] --j <jobs_file.txt> --rt <Release_Time_file.txt> --m <option> --p <option> --d <option>
 ```
 
-## Scheduler Options Supported
+### Scheduler Options Supported
 ````
         --h/--help      -- Show full help
         --v/--verbose   -- Show detailed messages
 ````
-## Scheduler Parameters
+### Scheduler Parameters
 ````
         --j/--jobs                 -- Jobs to be scheduled [required]
         --rt/--releaseTimes        -- Release times for the jobs [required]
@@ -27,7 +90,7 @@ RTG-scheduler [options] --j <jobs_file.txt> --rt <Release_Time_file.txt> --m <op
         --d/--delayLimitPercentage -- Delay Schedule processor limit in percentage [optional - default:60]
 ````
 
-- #### --j/--jobs -- The Jobs File is the list of Jobs to be scheduled: <jobs_file.txt>
+#### --j/--jobs -- The Jobs File is the list of Jobs to be scheduled: <jobs_file.txt>
 ```
         Jid     - Job Number
         Pn      - Processors Needed
@@ -38,7 +101,7 @@ RTG-scheduler [options] --j <jobs_file.txt> --rt <Release_Time_file.txt> --m <op
         "Jid, Pn, Texe, Td, Tlts"
 ```
 
-- #### --rt/--releaseTimes -- The Release Time File has the list of release times of the kernels: <Release_Time_file.txt>
+#### --rt/--releaseTimes -- The Release Time File has the list of release times of the kernels: <Release_Time_file.txt>
 ```
         Tr      - Release Time
         Jr      - Number of jobs released
@@ -46,7 +109,7 @@ RTG-scheduler [options] --j <jobs_file.txt> --rt <Release_Time_file.txt> --m <op
         "Tr, Jr"
 ```
 
-- #### --m/--mode -- The Modes Supported: <mode option>
+#### --m/--mode -- The Modes Supported: <mode option>
 ```
         1 - Greedy Schedule
         2 - Event Aware Scheduler
@@ -56,22 +119,3 @@ RTG-scheduler [options] --j <jobs_file.txt> --rt <Release_Time_file.txt> --m <op
         N - Extended in the next release
 ```
 
-## RTGS Function Summary
-
-### DESCRIPTION
-This guide provides an overview of the content and usage of the Scheduler tool. This tool is used to schedule jobs on a hetrogenous computing enviornment, with a simple, easy-to-use interface. It encapsulates most of the real time constraints, thus scheduling jobs safely.
-
-* Scheduler Main – This function resides on the CPU and dispatches work to the GPU 
-* Get Job Information – Gets the user’s jobs for dispatch 
-* Get Job Release Information – Gets the user’s job release times for dispatch 
-* Kernel  Book  Keeper –  When  a  kernel  is  released  the  Scheduler  calls  this  function  as  it  has  all  the  information  of  the  available  SMs and future release times 
-* Queue job execution– The function safely dispatches the kernels on the GPU and allocates the kernel with required SMs 
-* Retrieve  Processors –  Releases  all  the  Kernels  which  have  completed  their  execution  and  frees  up  the  Streaming  Multiprocessors (SM) 
-* Processors  Unavailable –  If  processors  are  not  available  at  the  present  times,  this  function  safes  schedules  the  kernels  on  to  the future available time 
-* Queue kernel  handler –  The  function  safely  queues  kernels  to  be  dispatched  on  to  the  GPU  and  allocates  the  kernel  with  required SMs 
-* Dispatch Queued Kernels – Dispatches the Kernels set for future release times 
-* AEAP SCHEDULER – The future scheduler calls the As Early As Possible algorithm to schedule the Kernel on to the GPU 
-* AEAP ADVANCED SCHEDULER – once a kernel is scheduled for a  ALAP, this function tries to fit the kernels  before the ALAP kernel release time and after if not possible after the ALAP kernel execution.  
-* ALAP SCHEDULER – If the Kernel needs a large chunk of the SMs, then they are scheduled As Late As Possible on to the GPU 
-* ALAP ADVANCED SCHEDULER – if another Kernel requires a large chunk of SMs, then it is scheduled ALAP by this function. It takes into account that there are other ALAP kernels scheduled and does not allow overlap.
-* ALAP  IMPROVE SCHEDULER –  if  an  ALAP  set  Kernel  can  be  scheduled  without  interfering  with  other  kernels  and  if  it  improves  response  time  of another kernel, the ALAP is called on to modify the schedule to improve system response times.
