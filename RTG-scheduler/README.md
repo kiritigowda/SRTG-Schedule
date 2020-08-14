@@ -69,11 +69,19 @@ Once the jobs are scheduled and the schedule data is obtained from SRTG-Schedule
 
 ### Windows
 ```
-RTG-scheduler [options] --j <jobs_file.txt> --rt <Release_Time_file.txt> --m <option> --p <option> --d <option> 
+RTG-scheduler [options] --j <jobs_file.txt> 
+                        --rt <Release_Time_file.txt> 
+                        --m <option> 
+                        --p <option> 
+                        --d <option> 
 ```
 ### Linux / MAC OS X
 ```
-./RTG-scheduler [options] --j <jobs_file.txt> --rt <Release_Time_file.txt> --m <option> --p <option> --d <option>
+./RTG-scheduler [options] --j <jobs_file.txt> 
+                          --rt <Release_Time_file.txt> 
+                          --m <option> 
+                          --p <option> 
+                          --d <option>
 ```
 
 ### Scheduler Options Supported
