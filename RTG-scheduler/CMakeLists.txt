@@ -34,25 +34,25 @@ include_directories(include)
 
 # Add the source files to a variable
 set(SOURCES 
-    source/RTGS-file_handler.c 
-    source/RTGS-functions.c 
-    source/RTGS-helper_functions.c 
-    source/RTGS-mode_1.c 
+    source/profiler.cpp
+    source/RTG-scheduler.c
+    source/RTGS-AEAP_ALAP_improve.c
+    source/RTGS-AEAP_ALT.c
+    source/RTGS-AEAP.c
+    source/RTGS-ALAP_ALT.c
+    source/RTGS-ALAP_improve.c
+    source/RTGS-ALAP.c
+    source/RTGS-dispatch.c
+    source/RTGS-entry.c
+    source/RTGS-file_handler.c
+    source/RTGS-functions.c
+    source/RTGS-helper_functions.c
+    source/RTGS-mode_1.c
     source/RTGS-mode_2.c 
     source/RTGS-mode_3.c 
     source/RTGS-mode_4.c 
     source/RTGS-mode_5.c 
-    source/RTGS-queue_handler.c 
-    source/RTGS-ALAP.c
-    source/RTGS-AEAP.c 
-    source/RTGS-AEAP_ALAP_improve.c 
-    source/RTGS-AEAP_ALT.c 
-    source/RTGS-ALAP_ALT.c 
-    source/RTGS-ALAP_improve.c 
-    source/RTG-scheduler.c 
-    source/RTGS-dispatch.c 
-    source/RTGS-entry.c
-    source/profiler.cpp
+    source/RTGS-queue_handler.c
     )
 
 # executable target and the source files
