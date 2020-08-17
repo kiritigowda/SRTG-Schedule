@@ -42,7 +42,7 @@ int scheduler_main(char *jobsListFileName, char *releaseTimeFilename, int schedu
 		break;
 	default:
 		printf("\nMode  Not Specified/Not implemented, switched to default mode\n");
-		printf("Mode 5:: AEAP/ALAP BP with APLAP improver mode->AEAP/ALAP BP Improve\n");
+		printf("Mode 5: Event Aware Schedule with Bias and Improved Bias Prediction\n");
 		status = RTGS_mode_5(jobsListFileName, releaseTimeFilename);
 		break;
 	}

@@ -17,9 +17,9 @@ static void show_usage()
 	printf("\n");
 	printf("Usage:\n\n");
 	printf("\tWindows:\n");
-	printf("\t\tRTG-scheduler.exe [options] --j <jobs_file.txt> --rt <Release_Time_file.txt> --m <option> --p <option> --d <option>\n\n");
+	printf("\t\tRTG-scheduler.exe [options] --j <jobs_file.csv> --rt <Release_Time_file.csv> --m <option> --p <option> --d <option>\n\n");
 	printf("\tLinux:\n");
-	printf("\t\t./RTG-scheduler [options] --j <jobs_file.txt> --rt <Release_Time_file.txt> --m <option> --p <option> --d <option>\n\n");
+	printf("\t\t./RTG-scheduler [options] --j <jobs_file.csv> --rt <Release_Time_file.csv> --m <option> --p <option> --d <option>\n\n");
 	printf("\n");
 	printf("\nScheduler Options Supported\n\n");
 	printf("\t--h/--help\t-- Show full help\n");
@@ -31,18 +31,18 @@ static void show_usage()
 	printf("\t--p/--maxProcessors \t\t -- Max processors available on the GPU [optional - default:16]\n");
 	printf("\t--d/--delayLimitPercentage \t -- Delay Schedule processor limit in percentage [optional - default:60]\n");
 	printf("\n");
-	printf("The Jobs File format - Jobs to be scheduled: <jobs_file.txt>\n");
+	printf("The Jobs File format - Jobs to be scheduled: <jobs_file.csv>\n");
 	printf("\tThe arguments:\n");
-	printf("			Jid - Job Number\n");
-	printf("			Pn - Processors Needed\n");
+	printf("			Jid  - Job ID\n");
+	printf("			GCUs - Job GCU Requirement\n");
 	printf("			Texe - Execution Time\n");
-	printf("			Td - Deadline\n");
+	printf("			Td 	 - Deadline\n");
 	printf("			Tlts - Lastest Time Schedulable on the GPU\n\n");
-	printf("			\"Jid, Pn, Texe, Td, Tlts\"\n\n");
+	printf("			\"Jid, GCUs, Texe, Td, Tlts\"\n\n");
 	printf("\n");
-	printf("The Release Time File Format - Release times of jobs: <Release_Time_file.txt>\n");
+	printf("The Release Time File Format - Release times of jobs: <Release_Time_file.csv>\n");
 	printf("\tThe arguments:\n");
-	printf("			Tr - Release Time\n");
+	printf("			Tr - Job Release Time\n");
 	printf("			Jr - Number of jobs released\n\n");
 	printf("			\"Tr, Jr\"\n");
 	printf("\n");
@@ -176,7 +176,7 @@ int main(int argc, char * argv[])
 	GLOBAL_KERNEL_FILE_NAME = jobsListFileName;
 	if(GLOBAL_MAX_PROCESSORS == -1){ GLOBAL_MAX_PROCESSORS = MAX_GPU_PROCESSOR; }
 	if(GLOBAL_DELAY_SCHEDULE_PROCESSOR_LIMIT == -1){ 
-		GLOBAL_DELAY_SCHEDULE_PROCESSOR_LIMIT = (int) floor(GLOBAL_MAX_PROCESSORS * 0.75);
+		GLOBAL_DELAY_SCHEDULE_PROCESSOR_LIMIT = (int) floor(GLOBAL_MAX_PROCESSORS * 0.6);
 	}
 	PROFILER_FILE_INITIALIZE(schedulerMode, jobsListFileName);
 	PROFILER_INITIALIZE();
