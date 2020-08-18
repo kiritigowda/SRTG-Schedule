@@ -243,7 +243,6 @@ int main(int argc, char * argv[])
 		printf("\nSRTG-Scheduler Simulation\n");
 	}
 
-
 	// profiler  - output name initialize, profiler initialize and shutdown
 	GLOBAL_RTGS_MODE = schedulerMode;
 	GLOBAL_KERNEL_FILE_NAME = jobsListFileName;
