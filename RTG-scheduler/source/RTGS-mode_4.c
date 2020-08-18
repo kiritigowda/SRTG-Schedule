@@ -554,7 +554,7 @@ static int Mode_4_Processors_unavailable
 	if (jobAttributesList[jobNumber].processor_req < GLOBAL_DELAY_SCHEDULE_PROCESSOR_LIMIT)
 	{
 		if (GLOBAL_RTGS_DEBUG_MSG > 2) {
-			printf("Mode 4 Processors unavailable:: Job:%d sent for AEAP execution\n", jobNumber);
+			printf("Mode 4 GCUs unavailable:: Job:%d sent for AEAP execution\n", jobNumber);
 		}
 		processors_available = Mode_4_AEAP(jobAttributesList, jobNumber, present_time,
 			processors_available, processorsAllocatedList, jobScheduledQueueList);
@@ -562,7 +562,7 @@ static int Mode_4_Processors_unavailable
 	else if (jobAttributesList[jobNumber].processor_req >= GLOBAL_DELAY_SCHEDULE_PROCESSOR_LIMIT && GLOBAL_preScheduleList == NULL)
 	{
 		if (GLOBAL_RTGS_DEBUG_MSG > 2) {
-			printf("Mode 4 Processors unavailable:: Job:%d sent for ALAP execution\n", jobNumber);
+			printf("Mode 4 GCUs unavailable:: Job:%d sent for ALAP execution\n", jobNumber);
 		}
 		processors_available = Mode_4_ALAP(jobAttributesList, jobNumber, present_time,
 			processors_available, processorsAllocatedList, jobScheduledQueueList);
@@ -570,7 +570,7 @@ static int Mode_4_Processors_unavailable
 	else
 	{
 		if (GLOBAL_RTGS_DEBUG_MSG > 2) {
-			printf("Mode 4 Processors unavailable:: Job:%d sent for ALAP Advanced execution\n", jobNumber);
+			printf("Mode 4 GCUs unavailable:: Job:%d sent for ALAP Advanced execution\n", jobNumber);
 		}
 		processors_available = Mode_4_ALAP_advanced(jobAttributesList, jobNumber, present_time,
 			processors_available, processorsAllocatedList, jobScheduledQueueList);
@@ -604,7 +604,7 @@ static int Mode_4_book_keeper
 	{
 		if (GLOBAL_preScheduleList == NULL)
 		{
-			// Processors needed lesser than the ALAP limit
+			// GCUs needed lesser than the ALAP limit
 			if (jobAttributesList[jobNumber].processor_req < GLOBAL_DELAY_SCHEDULE_PROCESSOR_LIMIT)
 			{
 				if (jobAttributesList[jobNumber].execution_time + present_time <= jobAttributesList[jobNumber].deadline)
@@ -657,7 +657,7 @@ static int Mode_4_book_keeper
 				genericBackupNode *future_preScheduleList = GLOBAL_preScheduleList->next;
 				futureRelease = future_preScheduleList->data;
 			}
-			// Processors needed lesser than the limit
+			// GCUs needed lesser than the limit
 			if (jobAttributesList[jobNumber].processor_req < GLOBAL_DELAY_SCHEDULE_PROCESSOR_LIMIT)
 			{
 				// Condition 1
@@ -790,16 +790,16 @@ int RTGS_mode_4(char *jobsListFileName, char *releaseTimeFilename) {
 	{
 		// Freeing-up processors
 		processorsAvailable = Retrieve_processors(present_time, processorsAvailable, &processorsAllocatedList);
-		if (processorsAvailable < 0) { printf("Retrieve_processors ERROR - Time:%d Processors Available:%d\n", present_time, processorsAvailable); return RTGS_ERROR_NOT_IMPLEMENTED; }
+		if (processorsAvailable < 0) { printf("Retrieve_processors ERROR - Time:%d GCUs Available:%d\n", present_time, processorsAvailable); return RTGS_ERROR_NOT_IMPLEMENTED; }
 		processorsAvailable = Dispatch_queued_kernels(present_time, processorsAvailable, &jobScheduledQueueList, &processorsAllocatedList);
-		if (processorsAvailable < 0) { printf("Dispatch_queued_kernels ERROR - Time:%d Processors Available:%d\n", present_time, processorsAvailable); return RTGS_ERROR_NOT_IMPLEMENTED; }
+		if (processorsAvailable < 0) { printf("Dispatch_queued_kernels ERROR - Time:%d GCUs Available:%d\n", present_time, processorsAvailable); return RTGS_ERROR_NOT_IMPLEMENTED; }
 
 		if (releaseTimeInfo[numReleases].release_time == present_time) {
 
 			if (releaseTimeInfo[numReleases].num_job_released == 1)
 			{
 				if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-					printf("\nRTGS Mode 4 -- Total Processors Available at time %d = %d\n", present_time, processorsAvailable);
+					printf("\nRTGS Mode 4 -- Total GCUs Available at time %d = %d\n", present_time, processorsAvailable);
 					printf("RTGS Mode 4 -- Job-%d Released\n", jobNumber);
 				}
 				jobAttributesList[jobNumber].release_time = present_time;
@@ -822,7 +822,7 @@ int RTGS_mode_4(char *jobsListFileName, char *releaseTimeFilename) {
 				jobAttributesList[k2].release_time = present_time;
 
 				if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-					printf("\nRTGS Mode 4 -- Total Processors Available at time %d = %d\n", present_time, processorsAvailable);
+					printf("\nRTGS Mode 4 -- Total GCUs Available at time %d = %d\n", present_time, processorsAvailable);
 					printf("RTGS Mode 4 -- Job-%d Released\n", k1);
 					printf("RTGS Mode 4 -- Job-%d Released\n", k2);
 				}
@@ -872,7 +872,7 @@ int RTGS_mode_4(char *jobsListFileName, char *releaseTimeFilename) {
 	if (maxReleases != 0) {
 		if (GLOBAL_RTGS_DEBUG_MSG) {
 			printf("\n******* Scheduler Mode 4 *******\n");
-			printf("Processors Available -- %d\n", processorsAvailable);
+			printf("GCUs Available -- %d\n", processorsAvailable);
 			printf("Total Jobs Scheduled -- %d\n", kernelMax);
 			printf("	GPU Scheduled Jobs    -- %d\n", GLOBAL_GPU_JOBS);
 			printf("	Jobs Sent Back To CPU -- %d\n", GLOBAL_CPU_JOBS);

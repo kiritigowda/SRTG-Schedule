@@ -202,16 +202,16 @@ int RTGS_mode_2(char *jobsListFileName, char *releaseTimeFilename)
 	{
 		// Freeing-up processors
 		processorsAvailable = Retrieve_processors(present_time, processorsAvailable, &processorsAllocatedList);
-		if (processorsAvailable < 0) { printf("Retrieve_processors ERROR- Processors Available:%d\n", processorsAvailable); return RTGS_ERROR_NOT_IMPLEMENTED; }
+		if (processorsAvailable < 0) { printf("Retrieve_processors ERROR- GCUs Available:%d\n", processorsAvailable); return RTGS_ERROR_NOT_IMPLEMENTED; }
 		processorsAvailable = Dispatch_queued_kernels(present_time, processorsAvailable, &jobScheduledQueueList, &processorsAllocatedList);
-		if (processorsAvailable < 0) { printf("Dispatch_queued_kernels ERROR - Processors Available:%d\n", processorsAvailable); return RTGS_ERROR_NOT_IMPLEMENTED; }
+		if (processorsAvailable < 0) { printf("Dispatch_queued_kernels ERROR - GCUs Available:%d\n", processorsAvailable); return RTGS_ERROR_NOT_IMPLEMENTED; }
 
 		if (releaseTimeInfo[numReleases].release_time == present_time) {
 
 			if (releaseTimeInfo[numReleases].num_job_released == 1)
 			{
 				if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-					printf("\nRTGS Mode 2 -- Total Processors Available at time %d = %d\n", present_time, processorsAvailable);
+					printf("\nRTGS Mode 2 -- Total GCUs Available at time %d = %d\n", present_time, processorsAvailable);
 					printf("RTGS Mode 2 -- Job-%d Released\n", jobNumber);
 				}
 				jobAttributesList[jobNumber].release_time = present_time;
@@ -234,7 +234,7 @@ int RTGS_mode_2(char *jobsListFileName, char *releaseTimeFilename)
 				jobAttributesList[k2].release_time = present_time;
 
 				if (GLOBAL_RTGS_DEBUG_MSG > 1) {
-					printf("\nRTGS Mode 2 -- Total Processors Available at time %d = %d\n", present_time, processorsAvailable);
+					printf("\nRTGS Mode 2 -- Total GCUs Available at time %d = %d\n", present_time, processorsAvailable);
 					printf("RTGS Mode 2 -- Job-%d Released\n", k1);
 					printf("RTGS Mode 2 -- Job-%d Released\n", k2);
 				}
@@ -285,7 +285,7 @@ int RTGS_mode_2(char *jobsListFileName, char *releaseTimeFilename)
 
 		if (GLOBAL_RTGS_DEBUG_MSG) {
 			printf("\n******* Scheduler Mode 2 *******\n");
-			printf("Processors Available -- %d\n", processorsAvailable);
+			printf("GCUs Available -- %d\n", processorsAvailable);
 			printf("Total Jobs Scheduled -- %d\n", kernelMax);
 			printf("	GPU Scheduled Jobs    -- %d\n", GLOBAL_GPU_JOBS);
 			printf("	Jobs Sent Back To CPU -- %d\n", GLOBAL_CPU_JOBS);
