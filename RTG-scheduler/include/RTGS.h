@@ -70,6 +70,7 @@ typedef int RTGS_Status;
 * \see rtgs_status.
 */
 enum RTGS_status_e {
+	RTGS_ERROR_RECOMPILE = -10,				/*!< \brief Indicates that the compiler need to be recompiled with GPU Support Enabled. */
 	RTGS_ERROR_INVALID_PARAMETERS = -9,		/*!< \brief Indicates that the supplied parameter information does not match the jobAttibutesList. */
 	RTGS_ERROR_NO_MEMORY = -8,				/*!< \brief Indicates that an internal or implicit allocation failed. Typically catastrophic. */
 	RTGS_ERROR_NO_RESOURCES = -7,			/*!< \brief Indicates that an internal or implicit resource can not be acquired (not memory). */
@@ -237,6 +238,9 @@ bool RTGS_GetEnvironmentVariable(const char *name, char *value, size_t valueSize
 
 //! \brief print_processorsAllocated_list summary
 int RTGS_PrintScheduleSummary(int mode, int maxKernels, jobAttributes *jobAttributesList);
+
+//! \brief Check GPU Offload readiness
+int RTGS_checkGPUReadiness();
 
 // jobBackupList functions
 scheduledResourceNode *insert(scheduledResourceNode *head, scheduledResourceNode *data);

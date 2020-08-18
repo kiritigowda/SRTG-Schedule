@@ -69,11 +69,23 @@ Once the jobs are scheduled and the schedule data is obtained from SRTG-Schedule
 
 ### Windows
 ```
-RTG-scheduler [options] --j <jobs_file.txt> --rt <Release_Time_file.txt> --m <option> --p <option> --d <option> 
+RTG-scheduler [options] --j <jobs_file.csv>
+                        --r <Release_Time_file.csv>
+                        --m <option> 
+                        --p <option> 
+                        --d <option> 
+                        --simulation <1/0>
+                        --hardware <AMD/NVIDIA>
 ```
 ### Linux / MAC OS X
 ```
-./RTG-scheduler [options] --j <jobs_file.txt> --rt <Release_Time_file.txt> --m <option> --p <option> --d <option>
+./RTG-scheduler [options] --j <jobs_file.csv>
+                          --r <Release_Time_file.csv>
+                          --m <option> 
+                          --p <option> 
+                          --d <option>
+                          --simulation <1/0>
+                          --hardware <AMD/NVIDIA>
 ```
 
 ### Scheduler Options Supported
@@ -81,18 +93,21 @@ RTG-scheduler [options] --j <jobs_file.txt> --rt <Release_Time_file.txt> --m <op
         --h/--help      -- Show full help
         --v/--verbose   -- Show detailed messages
 ````
+
 ### Scheduler Parameters
 ````
         --j/--jobs                 -- Jobs to be scheduled [required]
-        --rt/--releaseTimes        -- Release times for the jobs [required]
+        --r/--releaseTimes         -- Release times for the jobs [required]
         --m/--mode                 -- Scheduler Mode [optional - default:5]
         --p/--maxProcessors        -- Max processors available on the GPU [optional - default:16]
         --d/--delayLimitPercentage -- Delay Schedule processor limit in percentage [optional - default:60]
+        --s/--simulation 	   -- simulation mode turn ON/OFF [optional - default:ON]
+        --h/--hardware 	           -- Jobs Scheduled on hardware <AMD/NVIDIA> - [optional - default:OFF]
 ````
 
-#### --j/--jobs -- The Jobs File is the list of Jobs to be scheduled: <jobs_file.txt>
+#### A-periodic Jobs -- The Jobs File is the list of Jobs to be scheduled: <jobs_file.csv>
 ```
-        Jid     - Job Number
+        Jid     - Job ID
         Pn      - Processors Needed
         Texe    - Execution Time
         Td      - Deadline
@@ -101,7 +116,7 @@ RTG-scheduler [options] --j <jobs_file.txt> --rt <Release_Time_file.txt> --m <op
         "Jid, Pn, Texe, Td, Tlts"
 ```
 
-#### --rt/--releaseTimes -- The Release Time File has the list of release times of the kernels: <Release_Time_file.txt>
+#### A-periodic Job Release Times -- The Release Time File has the list of release times of the kernels: <Release_Time_file.csv>
 ```
         Tr      - Release Time
         Jr      - Number of jobs released
@@ -109,13 +124,11 @@ RTG-scheduler [options] --j <jobs_file.txt> --rt <Release_Time_file.txt> --m <op
         "Tr, Jr"
 ```
 
-#### --m/--mode -- The Modes Supported: <mode option>
+#### Scheduler Policies -- The Modes Supported: <mode option>
 ```
         1 - Greedy Schedule
         2 - Event Aware Scheduler
         3 - Event Aware Scheduler with Bias
         4 - Event Aware Scheduler with Bias and Bias Prediction
         5 - Event Aware Scheduler with Bias and Improved Bias Prediction
-        N - Extended in the next release
 ```
-
