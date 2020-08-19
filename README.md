@@ -1,28 +1,103 @@
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![CodeFactor](https://www.codefactor.io/repository/github/kiritigowda/srtg-schedule/badge)](https://www.codefactor.io/repository/github/kiritigowda/srtg-schedule)
 [![Build Status](https://travis-ci.org/kiritigowda/SRTG-Schedule.svg?branch=master)](https://travis-ci.org/kiritigowda/SRTG-Schedule)
 [![codecov](https://codecov.io/gh/kiritigowda/SRTG-Schedule/branch/master/graph/badge.svg)](https://codecov.io/gh/kiritigowda/SRTG-Schedule)
-<a href="https://codeclimate.com/github/kiritigowda/SRTG-Schedule/maintainability"><img src="https://api.codeclimate.com/v1/badges/dc43dc1b470535e927ac/maintainability" /></a>
+[![CodeFactor](https://www.codefactor.io/repository/github/kiritigowda/srtg-schedule/badge)](https://www.codefactor.io/repository/github/kiritigowda/srtg-schedule)
 
-# Real Time Scheduler for Graphic Processing Units
+# Dynamic Schedule Management Framework For GPUs
+
+## Soft Real-Time GPU Scheduler
+
+A schedule management framework for soft-real-time jobs that may be used by a CPU - GPU system designer/integrator to select, configure, and deploy a suitable architectural platform and to perform concurrent scheduling of these jobs. 
+
+[Real-Time GPU Scheduler](RTG-scheduler) (RTG-Scheduler) is a dynamic scheduler for aperiodic soft-real-time jobs on GPU based architectures, with a simple, easy-to-use command-line interface (CLI). The SRTG-Scheduler is provided under the [MIT license](https://opensource.org/licenses/MIT). It is currently supported on Windows, Linux, and macOS platforms.
 
 ## Dynamic schedule management framework for soft-real-time jobs on GPU based architectures
 
-Graphics Processing Units (GPUs) are computational powerhouses that were originally designed for accelerating graphics applications. However, in recent years, there has been a tremendous increase in support for general purpose computing on GPUs (GPGPU). GPU based architectures provide unprecedented magnitudes of computation at a fraction of the power used by traditional CPU based architectures. As real-time systems integrate more and more functionality, GPU based architectures are very attractive for their deployment. 
+<p align="left"> <a href="scheduler_info.md#graphics-processing-units-in-real-time"> <img width="30%" src="documents/images/readme_images/header/why_gpus.png" /> </a></p>
 
-However, in a real-time system, predictability and meeting temporal requirements are much more important than raw performance. While some realtime jobs may benefit from the performance that all cores of the GPU can provide, most jobs may require only a subset of cores in order to successfully meet their temporal requirements.  In this work, we implement concurrent scheduling of softreal-time jobs and a-periodic jobs on a GPU based platform, while optimizing the memory usage on the GPGPU.
+#### [GPUs](scheduler_info.md#graphics-processing-units-in-real-time) execute at higher frequencies 
 
-<p align="center"><img width="70%" src="documents/images/RTGS-ConcurrentJobExecution.PNG" /></p>
+* Accelerates execution of jobs allocated to it
+* Improves System response time
 
-Our ongoing work aims to develop a schedule management framework for soft-real-time jobs on GPU based architectures. Cores on a platform such as the NVIDIA Fermi architecture are organized into clusters, termed streaming multiprocessors (SMs). Cores within each SM share resources (register file, control units, L1 cache, etc.) and execute a common kernel. Our goal is to divide a real-time job into kernels and schedule kernels on the GPU, treating each SM as an indivisible unit. We propose to achieve this goal with minimal programmer involvement.
+<p align="center"><img width="70%" src="documents/images/readme_images/body/flops_per_year.png" /></p>
+<p align="center"> The above image compares FLOPs per Cycle improvements over the years <a href="#note1" id="note1ref"><sup>[1]</sup></a> </p>
 
-<p align="center"><img width="70%" src="documents/images/RTG-Scheduler.PNG" /></p>
+#### [GPUs](scheduler_info.md#graphics-processing-units-in-real-time) are energy efficient
 
-**The above image depicts our framework. As seen in the figure, our scheduling framework resides on a CPU core and dispatches kernels to the GPU.**
+* Power needed for GPU to carry out an operation lesser than CPUs
+* Ideal for use in real time embedded system
 
-In general, a kernel consists of a set of thread blocks. When a kernel is dispatched to the GPU, a work distribution engine in the GPU schedules thread blocks on available SMs. The fundamental idea behind our technique is to divide a kernel into a set of controlled blocks of threads such that the number of threads per block is close to the total number of threads that a single SM can handle concurrently. For example, in the NVIDIA Fermi architecture, every SM is capable of supporting 1536 threads, among which 1024 threads can execute concurrently with minimal context switch costs. So, for this architecture, block sizes of 1024 threads are found to be a suitable choice. In this way, no more that one block may reside on a SM at a given time and hence, the number of blocks is a measure of the number of SMs that a kernel will occupy. We have conducted preliminary experimentation
-on the NVIDIA Fermi platform to verify and evaluate the feasibility of this basic approach towards SM scheduling. Thus far, we have found the results to be encouraging.
+<p align="left"> <a href="scheduler_info.md#gpu-challenges"> <img width="35%" src="documents/images/readme_images/header/what_are_the_challenges.png" /> </a></p>
 
-<p align="center"><img width="70%" src="documents/images/RTGS-Thread_life_Cycle.PNG" /></p>
+* Significant hardware and firmware challenges
+* Executions are non-preemptive 
+* Low degree of controllability of cores
 
-We propose to exploit this basic idea to perform coarse-grained scheduling of jobs on SMs. Our work lays emphasis on minimal programmer involvement. To this end, we are developing a dynamic schedule management framework that is responsible for 1) keeping track of current and expected SM availability; 2) determining which kernel(s) to dispatch to the GPU at a given time; and 3) determining how many SMs to assign for a given kernel. These decisions will be made based on observed and predicted system state and on job characteristics (expected execution times, deadlines, etc.). 
+<p align="left"><img width="30%" src="documents/images/readme_images/header/whats_been_done.png" /></p>
+
+* Policies for scheduling Real-Time jobs 
+* Decoding the driver
+* Managing the GPU as a resource
+* Targeting a Multi-GPU model
+
+This entire body of work assumes that only one kernel may execute on a GPU at a given time(partly due to lack of hardware support)
+
+<p align="left"><a href="scheduler_info.md#motivation"> <img width="30%" src="documents/images/readme_images/header/our_approach.png" /></a></p>
+
+#### What's the problem?
+
+<p align="center"><img width="30%" src="documents/images/readme_images/body/serial_kernels.png" /></p>
+
+Sending a single non-preemptive kernel on to a GPU, is under utilizing the GPU
+
+#### Solution
+
+<p align="center"><img width="40%" src="documents/images/readme_images/body/parallel_kernels.png" /></p>
+
+Concurrent Kernels Execution on GPU <a href="#note2" id="note2ref"><sup>[2]</sup></a>
+
+* Safe concurrent kernels
+* Performance boost
+* Execution units available
+
+<p align="left"><a href="scheduler_info.md#motivation"> <img width="30%" src="documents/images/readme_images/header/our_ongoing_work.png" /></a></p>
+
+Aims to develop a dynamic schedule management framework for soft-real-time
+jobs on GPU based architectures. 
+
+<p align="center"><img width="60%" src="documents/images/readme_images/body/RTG-Scheduler.png" /></p>
+
+We propose to exploit this basic idea to perform coarse grained scheduling of jobs on GCUs.
+
+<p align="center"><img width="100%" src="documents/images/readme_images/body/RTG_Scheduler_block_diagram.png" /></p>
+
+Our work lays emphasis on minimal programmer involvement.
+
+A dynamic schedule management framework that is responsible for
+
+* Keeping track of current and expected GUC availability
+* Determining which kernel(s) to dispatch to the GPU at a given time
+* Determining how many GCUs to assign for a given kernel.
+
+<p align="left"><a href="RTG-scheduler#real-time-gpu-scheduler"><img width="30%" src="documents/images/readme_images/header/summary.png" /></a></p>
+
+#### Advantages
+
+* GPU provides tremendous computational power under reasonable power/energy budgets
+* Our work exploits concurrent kernel execution for real-time scheduling
+* More economical than multi-GPU model
+
+#### Results
+
+* Dynamic schedule management [framework](RTG-scheduler#real-time-gpu-scheduler) for soft-real-time jobs
+* Support for [a-periodic](RTG-scheduler#real-time-gpu-scheduler) and recurring (periodic) soft-real-time tasks.
+* Smart GPU Memory Management
+
+**note:**
+
+* <a id="note1" href="#note1ref"><sup>[1]</sup></a> [FLOPs per Cycle for CPUs, GPUs and Xeon Phis](https://www.karlrupp.net/2016/08/flops-per-cycle-for-cpus-gpus-and-xeon-phis/)
+
+* <a id="note2" href="#note2ref"><sup>[2]</sup></a> [Concurrent soft-real-time job execution on GPUs - Page 13 & 14](https://people.mpi-sws.org/~bbb/proceedings/rtas14-wip-proceedings.pdf)
+
+

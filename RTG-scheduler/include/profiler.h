@@ -1,7 +1,6 @@
 #ifndef __profiler_h__
 #define __profiler_h__
 
-
 // PROFILER_MODE:
 //   0 - no profiling
 //   1 - default profiling
@@ -50,5 +49,4 @@ extern "C" void dump_profile_log();
 #define PROFILER_DATA_INDEX(g,e,i,v)
 #define PROFILER_DATA2_INDEX(g,e,i,v0,v1)
 #endif
-
 #endif

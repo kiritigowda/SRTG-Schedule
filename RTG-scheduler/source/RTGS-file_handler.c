@@ -27,6 +27,8 @@ int get_job_information(jobAttributes *kernelInfoList, const char *jobsListFileN
 
 	while (fgets(kernelLine, LINE_SIZE_MAX, fp) != NULL)
 	{
+		if (kernelLine[0] == 'J'){ continue; } // skip headers
+
 		int j = 0, ctr = 0;
 		for (int i = 0; i <= (strlen(kernelLine)); i++)
 		{
@@ -92,6 +94,8 @@ int get_job_release_times(jobReleaseInfo *releaseTimeInfo, const char *releaseTi
 
 	while (fgets(kernelLine, LINE_SIZE_MAX, fp) != NULL)
 	{
+		if (kernelLine[0] == 'J'){ continue; } // skip headers
+
 		int j = 0, ctr = 0;
 		for (int i = 0; i <= (strlen(kernelLine)); i++)
 		{

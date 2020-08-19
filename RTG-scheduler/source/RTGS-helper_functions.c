@@ -462,6 +462,25 @@ int RTGS_PrintScheduleSummary(int mode, int maxKernels, jobAttributes *kernelInf
 	return RTGS_SUCCESS;
 }
 
+//! \brief Check GPU Offload readiness
+int RTGS_checkGPUReadiness()
+{
+		printf("GPU Offloading Usage:\n\n");
+		printf("\tPlease check instructions on how to recompile the SRTG-Scheduler to use AMD or NVIDIA GPU in the documentation\n\n");
+		printf("GPU Offloading Requirements:\n");
+		printf("\tAMD GPU:\n");
+		printf("\t\t ROCm Supported AMD GPU - https://rocmdocs.amd.com/en/latest/ \n");
+		printf("\t\t Latest AMD GPU Driver\n");
+		printf("\t\t OpenCL\n");
+		printf("\t\t AMD HSA Runtime API\n");
+		printf("\tNVIDIA GPU:\n");
+		printf("\t\t CUDA 6 and Above Supported NVIDIA GPU - https://developer.nvidia.com/cuda-toolkit \n");
+		printf("\t\t Latest NVIDIA GPU Driver\n");
+		printf("\t\t CUDA Toolkit\n");
+		printf("\n\n");
+		return RTGS_ERROR_RECOMPILE;
+}
+
 // insert a pre-scheduled job in a given position
 genericBackupNode *position_insert_preScheduledJobs
 (
