@@ -12,7 +12,7 @@ Based on where they are located and how they are used in a computing system, GPU
 
 However, in a real-time system, predictability and meeting temporal requirements are much more important than raw performance. While some realtime jobs may benefit from the performance that all cores of the GPU can provide, most jobs may require only a subset of cores to successfully meet their temporal requirements.  In this work, we implement concurrent scheduling of a-periodic soft-real-time jobs on a GPU based platform, while optimizing the memory usage on the GPGPU. We target dGPUs as they are widely used.
 
-<p align="center"><img width="60%" src="documents/images/RTGS-ConcurrentJobExecution.PNG" /></p>
+<p align="center"><img width="60%" src="images/RTGS-ConcurrentJobExecution.PNG" /></p>
 
 ### Real-Time Jobs
 
@@ -62,11 +62,11 @@ The statistical analysis method to generate WCET for jobs on the GPU as includes
 
 As we already established that there has been a tremendous increase in support for general-purpose computing on GPUs. More and more GPUs are being integrated into traditional CPU based architectural systems. As real-time systems integrate more and more functionality, GPU based architectures are very attractive for their deployment. But if the software support for the GPU off-load is limited or non-existent, a lot of computing is under-utilized. The GPU compute is also power-efficient, which makes it more attractive to offload as many jobs as possible on to the GPU and minimize the power utilization.
 
-<p align="center"><img width="70%" src="documents/images/RTG-Scheduler.PNG" /></p>
+<p align="center"><img width="70%" src="images/RTG-Scheduler.PNG" /></p>
 
 Our Scheduling framework resides on a CPU core and dispatches kernels to the GPU.
 
-<p align="center"><img width="100%" src="documents/images/RTG_Scheduler_block_diagram.png" /></p>
+<p align="center"><img width="100%" src="images/RTG_Scheduler_block_diagram.png" /></p>
 
 **note:**
 
