@@ -7,39 +7,39 @@ import csv
 
 opts, args = getopt.getopt(sys.argv[1:], 'i:o:f:')
 
-inputDirectory = '';
-outputDirectory = '';
-fileName = '';
+inputDirectory = ''
+outputDirectory = ''
+fileName = ''
 
 for opt, arg in opts:
     if opt == '-i':
-        inputDirectory = arg;
+        inputDirectory = arg
     elif opt == '-o':
-        outputDirectory = arg;
+        outputDirectory = arg
     elif opt == '-f':
-        fileName = arg;
+        fileName = arg
 
 
 if inputDirectory == '' or outputDirectory == '' or fileName == '':
     print('Invalid command line arguments.\n'
-        '\t\t\t\t-i [input Directory - required]\n'\
-        '\t\t\t\t-o [output Directory - required]\n'\
-        '\t\t\t\t-f [output file name Directory - required]\n')
-    exit();
+          '\t\t\t\t-i [input Directory - required]\n'
+          '\t\t\t\t-o [output Directory - required]\n'
+          '\t\t\t\t-f [output file name Directory - required]\n')
+    exit()
 
 if not os.path.exists(inputDirectory):
-    print "ERROR Invalid Input Directory";
-    exit();
+    print "ERROR Invalid Input Directory"
+    exit()
 
 if not os.path.exists(outputDirectory):
-    os.makedirs(outputDirectory);
+    os.makedirs(outputDirectory)
 
-row_count = 0;
-row_count_1 = 0;
-row_count_2 = 0;
-row_count_3 = 0;
-row_count_4 = 0;
-row_count_5 = 0;
+row_count = 0
+row_count_1 = 0
+row_count_2 = 0
+row_count_3 = 0
+row_count_4 = 0
+row_count_5 = 0
 with open(inputDirectory+'Mode1-SchedulerResults.csv') as mode1:
     reader_1 = csv.reader(mode1)
     data_1 = [r for r in reader_1]
@@ -66,13 +66,14 @@ with open(inputDirectory+'Mode5-SchedulerResults.csv') as mode5:
     row_count_5 = len(data_5)
 
 if row_count_1 != row_count_2 or row_count_2 != row_count_3 or row_count_3 != row_count_4 or row_count_4 != row_count_5:
-    print "ERROR: Number of entries in Summary File are different";
-    exit();
+    print "ERROR: Number of entries in Summary File are different"
+    exit()
 else:
-    row_count = row_count_1;
+    row_count = row_count_1
 
 orig_stdout = sys.stdout
-sys.stdout = open(outputDirectory+'/'+fileName+'-SchedulerResultsSummary.html','w')
+sys.stdout = open(outputDirectory+'/'+fileName +
+                  '-SchedulerResultsSummary.html', 'w')
 print"<html>"
 print"\t<head>"
 print"\t\t<script type=\"text/javascript\" src=\"https://www.gstatic.com/charts/loader.js\"></script>"
@@ -90,9 +91,9 @@ print"\t\t\tdata.addColumn('number', 'Mode 3');"
 print"\t\t\tdata.addColumn('number', 'Mode 4');"
 print"\t\t\tdata.addColumn('number', 'Mode 5');"
 print"\t\t\tdata.addRows([[0,0,0,0,0,0],"
-numJobs = 0;
+numJobs = 0
 for x in range(row_count):
-    numJobs = numJobs + 100;
+    numJobs = numJobs + 100
     if(x < row_count-1):
         print '\t\t\t\t['+str(numJobs)+','+str(data_1[x][3])+','+str(data_2[x][3])+','+str(data_3[x][3])+','+str(data_4[x][3])+','+str(data_5[x][3])+'],'
     else:
@@ -113,7 +114,7 @@ print"\t\t\tdata.addColumn('number', 'Mode 3');"
 print"\t\t\tdata.addColumn('number', 'Mode 4');"
 print"\t\t\tdata.addColumn('number', 'Mode 5');"
 print"\t\t\tdata.addRows([[0,0,0,0,0,0],"
-numJobs = 0;
+numJobs = 0
 for x in range(row_count):
     numJobs = numJobs + 100
     if(x < row_count-1):
@@ -136,9 +137,9 @@ print"\t\t\tdata.addColumn('number', 'Mode 3');"
 print"\t\t\tdata.addColumn('number', 'Mode 4');"
 print"\t\t\tdata.addColumn('number', 'Mode 5');"
 print"\t\t\tdata.addRows([[0,0,0,0,0,0],"
-numJobs = 0;
+numJobs = 0
 for x in range(row_count):
-    numJobs = numJobs + 100;
+    numJobs = numJobs + 100
     if(x < row_count-1):
         print '\t\t\t\t['+str(numJobs)+','+str(data_1[x][8])+','+str(data_2[x][8])+','+str(data_3[x][8])+','+str(data_4[x][8])+','+str(data_5[x][8])+'],'
     else:
@@ -159,9 +160,9 @@ print"\t\t\tdata.addColumn('number', 'Mode 3');"
 print"\t\t\tdata.addColumn('number', 'Mode 4');"
 print"\t\t\tdata.addColumn('number', 'Mode 5');"
 print"\t\t\tdata.addRows([[0,0,0,0,0,0],"
-numJobs = 0;
+numJobs = 0
 for x in range(row_count):
-    numJobs = numJobs + 100;
+    numJobs = numJobs + 100
     if(x < row_count-1):
         print '\t\t\t\t['+str(numJobs)+','+str(data_1[x][9])+','+str(data_2[x][9])+','+str(data_3[x][9])+','+str(data_4[x][9])+','+str(data_5[x][9])+'],'
     else:
@@ -182,9 +183,9 @@ print"\t\t\tdata.addColumn('number', 'Mode 3');"
 print"\t\t\tdata.addColumn('number', 'Mode 4');"
 print"\t\t\tdata.addColumn('number', 'Mode 5');"
 print"\t\t\tdata.addRows([[0,0,0,0,0,0],"
-numJobs = 0;
+numJobs = 0
 for x in range(row_count):
-    numJobs = numJobs + 100;
+    numJobs = numJobs + 100
     if(x < row_count-1):
         print '\t\t\t\t['+str(numJobs)+','+str(data_1[x][7])+','+str(data_2[x][7])+','+str(data_3[x][7])+','+str(data_4[x][7])+','+str(data_5[x][7])+'],'
     else:
@@ -205,9 +206,9 @@ print"\t\t\tdata.addColumn('number', 'Mode 3');"
 print"\t\t\tdata.addColumn('number', 'Mode 4');"
 print"\t\t\tdata.addColumn('number', 'Mode 5');"
 print"\t\t\tdata.addRows([[0,0,0,0,0,0],"
-numJobs = 0;
+numJobs = 0
 for x in range(row_count):
-    numJobs = numJobs + 100;
+    numJobs = numJobs + 100
     if(x < row_count-1):
         print '\t\t\t\t['+str(numJobs)+','+str(data_1[x][10])+','+str(data_2[x][10])+','+str(data_3[x][10])+','+str(data_4[x][10])+','+str(data_5[x][10])+'],'
     else:

@@ -3,15 +3,13 @@
 *      Author: Kiriti Nagesh Gowda
 */
 
-#include"RTGS.h"
+#include "RTGS.h"
 
 /* Function to free processors at times their execution is complete  */
-int Retrieve_processors
-(
+int Retrieve_processors(
 	int present_time,
 	int processors_available,
-	scheduledResourceNode **processorsAllocatedList
-)
+	scheduledResourceNode **processorsAllocatedList)
 {
 	PROFILER_START(SRTG, Retrieve_processors)
 	scheduledResourceNode *localProcessorsAllocatedList = *processorsAllocatedList;
@@ -21,7 +19,8 @@ int Retrieve_processors
 		if (localProcessorsAllocatedList->data == present_time)
 		{
 			processors_available = processors_available + localProcessorsAllocatedList->processors_allocated;
-			if (GLOBAL_RTGS_DEBUG_MSG > 2) {
+			if (GLOBAL_RTGS_DEBUG_MSG > 2)
+			{
 				// TBD:: Data return handling needed
 				printf("\nRetrieve Processors - Present Time:%d, Processors Available:%d\n", present_time, processors_available);
 				printf("Retrieve Processors - GPU Execution Completed for Job-%d Processors Retrieved:%d\n", localProcessorsAllocatedList->jobNumber, localProcessorsAllocatedList->processors_allocated);
@@ -33,14 +32,21 @@ int Retrieve_processors
 				t1 = localProcessorsAllocatedList->job_next;
 				while (t1 != NULL)
 				{
-					if (GLOBAL_RTGS_DEBUG_MSG > 2) { printf("Retrieve Processors -- Job-%d data sent back\n", t1->jobNumber); }
+					if (GLOBAL_RTGS_DEBUG_MSG > 2)
+					{
+						printf("Retrieve Processors -- Job-%d data sent back\n", t1->jobNumber);
+					}
 					t2 = t1->job_next;
 					free(t1);
 					t1 = t2;
 				}
 			}
-			else{
-				if (GLOBAL_RTGS_DEBUG_MSG > 2) { printf("Retrieve Processors -- Job-%d data sent back\n", localProcessorsAllocatedList->jobNumber); }
+			else
+			{
+				if (GLOBAL_RTGS_DEBUG_MSG > 2)
+				{
+					printf("Retrieve Processors -- Job-%d data sent back\n", localProcessorsAllocatedList->jobNumber);
+				}
 			}
 
 			localProcessorsAllocatedList = position_delete(*processorsAllocatedList, 1);
@@ -52,13 +58,11 @@ int Retrieve_processors
 }
 
 /* Function to dispatch jobs for execution  */
-int Dispatch_queued_kernels
-(
+int Dispatch_queued_kernels(
 	int present_time,
 	int processors_available,
 	scheduledResourceNode **jobScheduledQueueList,
-	scheduledResourceNode **processorsAllocatedList
-)
+	scheduledResourceNode **processorsAllocatedList)
 {
 	PROFILER_START(SRTG, Dispatch_queued_kernels)
 	scheduledResourceNode *localJobScheduledQueueList = *jobScheduledQueueList;
@@ -74,14 +78,17 @@ int Dispatch_queued_kernels
 				while (t1 != NULL)
 				{
 					t2 = t1->job_next;
-					if (t1->schedule_method == RTGS_SCHEDULE_METHOD_ALAP) 
+					if (t1->schedule_method == RTGS_SCHEDULE_METHOD_ALAP)
 					{
 						int processorsAllocatedALAP = 0;
-						if (GLOBAL_preScheduleList != NULL) {
+						if (GLOBAL_preScheduleList != NULL)
+						{
 							genericBackupNode *localListALAP = GLOBAL_preScheduleList;
 							int jobCount = 1;
-							while (localListALAP != NULL) {
-								if (t1->jobNumber == localListALAP->jobNumber && localListALAP->data == present_time) {
+							while (localListALAP != NULL)
+							{
+								if (t1->jobNumber == localListALAP->jobNumber && localListALAP->data == present_time)
+								{
 									processorsAllocatedALAP = localListALAP->processors_requested;
 									GLOBAL_preScheduleList = position_delete_preScheduledJob(GLOBAL_preScheduleList, jobCount);
 									break;
@@ -90,27 +97,32 @@ int Dispatch_queued_kernels
 								localListALAP = localListALAP->next;
 							}
 						}
-						else {
+						else
+						{
 							printf("Dispatch Queued Jobs -- RTGS_SCHEDULE_METHOD_ALAP -- ERROR At TIME: %d while dispatching Job-%d\n", present_time, t1->jobNumber);
 							return RTGS_FAILURE;
 						}
 						processors_available = processors_available - processorsAllocatedALAP;
 						queue_job_execution(processorsAllocatedALAP, t1->processor_release_time, present_time,
-							t1->schedule_method, t1->jobNumber, processorsAllocatedList);
+											t1->schedule_method, t1->jobNumber, processorsAllocatedList);
 
-						if (GLOBAL_RTGS_DEBUG_MSG > 2) {
+						if (GLOBAL_RTGS_DEBUG_MSG > 2)
+						{
 							printf("Dispatch Queued Jobs -- Present Time:%d Dispatched RTGS_SCHEDULE_METHOD_ALAP Job-%d ProcAlloc:%d for GPU EXECUTION\n",
-								present_time, t1->jobNumber, processorsAllocatedALAP);
+								   present_time, t1->jobNumber, processorsAllocatedALAP);
 						}
 					}
 					else if (t1->schedule_method == RTGS_SCHEDULE_METHOD_AEAP_ADVANCED)
 					{
 						int processorsAllocatedAEAP_ADV = 0;
-						if (GLOBAL_preScheduleList != NULL) {
+						if (GLOBAL_preScheduleList != NULL)
+						{
 							genericBackupNode *localListAEAP_ADV = GLOBAL_preScheduleList;
 							int jobCount = 1;
-							while (localListAEAP_ADV != NULL) {
-								if (t1->jobNumber == localListAEAP_ADV->jobNumber && localListAEAP_ADV->data == present_time) {
+							while (localListAEAP_ADV != NULL)
+							{
+								if (t1->jobNumber == localListAEAP_ADV->jobNumber && localListAEAP_ADV->data == present_time)
+								{
 									processorsAllocatedAEAP_ADV = localListAEAP_ADV->processors_requested;
 									GLOBAL_preScheduleList = position_delete_preScheduledJob(GLOBAL_preScheduleList, jobCount);
 									break;
@@ -119,27 +131,32 @@ int Dispatch_queued_kernels
 								localListAEAP_ADV = localListAEAP_ADV->next;
 							}
 						}
-						else{
+						else
+						{
 							printf("Dispatch Queued Jobs -- RTGS_SCHEDULE_METHOD_AEAP_ADVANCED -- ERROR At TIME: %d while dispatching Job-%d\n", present_time, t1->jobNumber);
 							return RTGS_FAILURE;
 						}
 
 						processors_available = processors_available - processorsAllocatedAEAP_ADV;
 						queue_job_execution(processorsAllocatedAEAP_ADV, t1->processor_release_time, present_time,
-							t1->schedule_method, t1->jobNumber, processorsAllocatedList);
+											t1->schedule_method, t1->jobNumber, processorsAllocatedList);
 
-						if (GLOBAL_RTGS_DEBUG_MSG > 2) {
+						if (GLOBAL_RTGS_DEBUG_MSG > 2)
+						{
 							printf("Dispatch Queued Jobs -- Present Time:%d Dispatched RTGS_SCHEDULE_METHOD_AEAP_ADVANCED Job-%d ProcAlloc:%d for GPU EXECUTION\n",
-								present_time, t1->jobNumber, t1->processors_allocated);
+								   present_time, t1->jobNumber, t1->processors_allocated);
 						}
 					}
-					else if (t1->schedule_method == RTGS_SCHEDULE_METHOD_AEAP) {
-						if (GLOBAL_RTGS_DEBUG_MSG > 2) {
+					else if (t1->schedule_method == RTGS_SCHEDULE_METHOD_AEAP)
+					{
+						if (GLOBAL_RTGS_DEBUG_MSG > 2)
+						{
 							printf("Dispatch Queued Jobs -- Present Time:%d Dispatched RTGS_SCHEDULE_METHOD_AEAP Job-%d ProcAlloc:%d for GPU EXECUTION\n",
-								present_time, t1->jobNumber, t1->processors_allocated);
+								   present_time, t1->jobNumber, t1->processors_allocated);
 						}
 					}
-					else { 
+					else
+					{
 						printf("Dispatch Queued Jobs -- ERROR NOT IMPLEMENTED");
 						return RTGS_ERROR_NOT_IMPLEMENTED;
 					}
@@ -152,11 +169,14 @@ int Dispatch_queued_kernels
 				if (localJobScheduledQueueList->schedule_method == RTGS_SCHEDULE_METHOD_ALAP)
 				{
 					int processorsAllocatedALAP = 0;
-					if (GLOBAL_preScheduleList != NULL) {
+					if (GLOBAL_preScheduleList != NULL)
+					{
 						genericBackupNode *localListALAP = GLOBAL_preScheduleList;
 						int jobCount = 1;
-						while (localListALAP != NULL) {
-							if (localJobScheduledQueueList->jobNumber == localListALAP->jobNumber && localListALAP->data == present_time) {
+						while (localListALAP != NULL)
+						{
+							if (localJobScheduledQueueList->jobNumber == localListALAP->jobNumber && localListALAP->data == present_time)
+							{
 								processorsAllocatedALAP = localListALAP->processors_requested;
 								GLOBAL_preScheduleList = position_delete_preScheduledJob(GLOBAL_preScheduleList, jobCount);
 								break;
@@ -165,27 +185,32 @@ int Dispatch_queued_kernels
 							localListALAP = localListALAP->next;
 						}
 					}
-					else {
+					else
+					{
 						printf("Dispatch Queued Jobs -- RTGS_SCHEDULE_METHOD_ALAP -- ERROR At TIME: %d while dispatching Job-%d\n", present_time, localJobScheduledQueueList->jobNumber);
 						return RTGS_FAILURE;
 					}
 					processors_available = processors_available - processorsAllocatedALAP;
 					queue_job_execution(processorsAllocatedALAP, localJobScheduledQueueList->processor_release_time, present_time,
-						localJobScheduledQueueList->schedule_method, localJobScheduledQueueList->jobNumber, processorsAllocatedList);
+										localJobScheduledQueueList->schedule_method, localJobScheduledQueueList->jobNumber, processorsAllocatedList);
 
-					if (GLOBAL_RTGS_DEBUG_MSG > 2) {
+					if (GLOBAL_RTGS_DEBUG_MSG > 2)
+					{
 						printf("Dispatch Queued Jobs -- Present Time:%d Dispatched RTGS_SCHEDULE_METHOD_ALAP Job-%d ProcAlloc:%d for GPU EXECUTION\n",
-							present_time, localJobScheduledQueueList->jobNumber, processorsAllocatedALAP);
+							   present_time, localJobScheduledQueueList->jobNumber, processorsAllocatedALAP);
 					}
 				}
 				else if (localJobScheduledQueueList->schedule_method == RTGS_SCHEDULE_METHOD_AEAP_ADVANCED)
 				{
 					int processorsAllocatedAEAP_ADV = 0;
-					if (GLOBAL_preScheduleList != NULL) {
+					if (GLOBAL_preScheduleList != NULL)
+					{
 						genericBackupNode *localListAEAP_ADV = GLOBAL_preScheduleList;
 						int jobCount = 1;
-						while (localListAEAP_ADV != NULL) {
-							if (localJobScheduledQueueList->jobNumber == localListAEAP_ADV->jobNumber && localListAEAP_ADV->data == present_time) {
+						while (localListAEAP_ADV != NULL)
+						{
+							if (localJobScheduledQueueList->jobNumber == localListAEAP_ADV->jobNumber && localListAEAP_ADV->data == present_time)
+							{
 								processorsAllocatedAEAP_ADV = localListAEAP_ADV->processors_requested;
 								GLOBAL_preScheduleList = position_delete_preScheduledJob(GLOBAL_preScheduleList, jobCount);
 								break;
@@ -194,26 +219,31 @@ int Dispatch_queued_kernels
 							localListAEAP_ADV = localListAEAP_ADV->next;
 						}
 					}
-					else {
+					else
+					{
 						printf("Dispatch Queued Jobs -- RTGS_SCHEDULE_METHOD_AEAP_ADVANCED -- ERROR At TIME: %d while dispatching Job-%d\n", present_time, localJobScheduledQueueList->jobNumber);
 						return RTGS_FAILURE;
 					}
 					processors_available = processors_available - processorsAllocatedAEAP_ADV;
 					queue_job_execution(processorsAllocatedAEAP_ADV, localJobScheduledQueueList->processor_release_time, present_time,
-						localJobScheduledQueueList->schedule_method, localJobScheduledQueueList->jobNumber, processorsAllocatedList);
+										localJobScheduledQueueList->schedule_method, localJobScheduledQueueList->jobNumber, processorsAllocatedList);
 
-					if (GLOBAL_RTGS_DEBUG_MSG > 2) {
+					if (GLOBAL_RTGS_DEBUG_MSG > 2)
+					{
 						printf("Dispatch Queued Jobs -- Present Time:%d Dispatched RTGS_SCHEDULE_METHOD_AEAP_ADVANCED Job-%d ProcAlloc:%d for GPU EXECUTION\n",
-							present_time, localJobScheduledQueueList->jobNumber, processorsAllocatedAEAP_ADV);
+							   present_time, localJobScheduledQueueList->jobNumber, processorsAllocatedAEAP_ADV);
 					}
 				}
-				else if (localJobScheduledQueueList->schedule_method == RTGS_SCHEDULE_METHOD_AEAP) {
-					if (GLOBAL_RTGS_DEBUG_MSG > 2) {
+				else if (localJobScheduledQueueList->schedule_method == RTGS_SCHEDULE_METHOD_AEAP)
+				{
+					if (GLOBAL_RTGS_DEBUG_MSG > 2)
+					{
 						printf("Dispatch Queued Jobs -- Present Time:%d Dispatched RTGS_SCHEDULE_METHOD_AEAP Job-%d ProcAlloc:%d for GPU EXECUTION\n",
-							present_time, localJobScheduledQueueList->jobNumber, localJobScheduledQueueList->processors_allocated);
+							   present_time, localJobScheduledQueueList->jobNumber, localJobScheduledQueueList->processors_allocated);
 					}
 				}
-				else { 
+				else
+				{
 					printf("Dispatch Queued Jobs -- ERROR NOT IMPLEMENTED");
 					return RTGS_ERROR_NOT_IMPLEMENTED;
 				}

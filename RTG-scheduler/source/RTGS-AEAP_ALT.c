@@ -3,25 +3,25 @@
 *      Author: Kiriti Nagesh Gowda
 */
 
-#include"RTGS.h"
+#include "RTGS.h"
 
-int AEAP_advanced
-(
+int AEAP_advanced(
 	jobAttributes *jobAttributesList,
 	int jobNumber,
 	int present_time,
 	int processors_available,
 	scheduledResourceNode **processorsAllocatedList,
-	scheduledResourceNode **jobScheduledQueueList
-)
+	scheduledResourceNode **jobScheduledQueueList)
 {
 	PROFILER_START(SRTG, AEAP_advanced)
 
-	if (GLOBAL_preScheduleList == NULL) {
+	if (GLOBAL_preScheduleList == NULL)
+	{
 		printf("AEAP advanced: ERROR - Bad Entry Case\n");
 		return RTGS_ERROR_NOT_SUPPORTED;
 	}
-	if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+	if (GLOBAL_RTGS_DEBUG_MSG > 1)
+	{
 		printf("AEAP advanced: Job->%d is verified for AEAP advanced scheduling\n", jobNumber);
 	}
 
@@ -47,12 +47,15 @@ int AEAP_advanced
 				int count = 0;
 				scheduledResourceNode *temp1 = *processorsAllocatedList;
 				genericBackupNode *temp2 = processorsDistList;
-				while (temp2 != NULL) {
-					if (count == 0) {
+				while (temp2 != NULL)
+				{
+					if (count == 0)
+					{
 						processors_available = temp2->data;
 						temp2 = temp2->next;
 					}
-					else {
+					else
+					{
 						temp1->processors_allocated = temp2->data;
 						temp1 = temp1->next;
 						temp2 = temp2->next;
@@ -81,7 +84,8 @@ int AEAP_advanced
 					jobAttributesList[jobNumber].scheduled_execution = job_release_time;
 					jobAttributesList[jobNumber].completion_time = jobAttributesList[jobNumber].execution_time + job_release_time;
 					GLOBAL_GPU_JOBS++;
-					if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+					if (GLOBAL_RTGS_DEBUG_MSG > 1)
+					{
 						printf("AEAP Advanced: Condition-5 The Job:%d scheduled\n", jobNumber);
 						printf("AEAP Advanced: Condition-5 Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
 					}
@@ -89,7 +93,8 @@ int AEAP_advanced
 					job_queue_handler(processorsInUse, job_release_time, presentTime, schedule_method, jobNumber, jobScheduledQueueList);
 					return processors_available;
 				}
-				else {
+				else
+				{
 					processorsDistList = insert_node(processorsDistList, localProcessorsAllocatedList->processors_allocated);
 					localProcessorsAllocatedList->processors_allocated = 0;
 				}
@@ -121,7 +126,8 @@ int AEAP_advanced
 				jobAttributesList[jobNumber].scheduled_execution = job_release_time;
 				jobAttributesList[jobNumber].completion_time = jobAttributesList[jobNumber].execution_time + job_release_time;
 				GLOBAL_GPU_JOBS++;
-				if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+				if (GLOBAL_RTGS_DEBUG_MSG > 1)
+				{
 					printf("AEAP Advanced: Condition-6 a The Job:%d scheduled\n", jobNumber);
 					printf("AEAP Advanced: Condition-6 a Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
 				}
@@ -135,7 +141,8 @@ int AEAP_advanced
 				jobAttributesList[jobNumber].completion_time = -1;
 				jobAttributesList[jobNumber].scheduled_execution = -1;
 				GLOBAL_CPU_JOBS++;
-				if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+				if (GLOBAL_RTGS_DEBUG_MSG > 1)
+				{
 					printf("AEAP Advanced: Job-%d will not complete before it's deadline, Job REJECTED\n", jobNumber);
 					printf("AEAP Advanced: Condition-5&6 Fail, Jobs REJECTED count --> %d\n", GLOBAL_CPU_JOBS);
 				}
@@ -149,8 +156,10 @@ int AEAP_advanced
 			{
 				int latestProcessorRelTime = GLOBAL_preScheduleList->processor_release_time;
 				localProcessorsAllocatedList = *processorsAllocatedList;
-				while (localProcessorsAllocatedList != NULL) {
-					if (latestProcessorRelTime < localProcessorsAllocatedList->processor_release_time) {
+				while (localProcessorsAllocatedList != NULL)
+				{
+					if (latestProcessorRelTime < localProcessorsAllocatedList->processor_release_time)
+					{
 						latestProcessorRelTime = localProcessorsAllocatedList->processor_release_time;
 					}
 					localProcessorsAllocatedList = localProcessorsAllocatedList->next;
@@ -172,7 +181,8 @@ int AEAP_advanced
 					jobAttributesList[jobNumber].scheduled_execution = job_release_time;
 					jobAttributesList[jobNumber].completion_time = jobAttributesList[jobNumber].execution_time + job_release_time;
 					GLOBAL_GPU_JOBS++;
-					if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+					if (GLOBAL_RTGS_DEBUG_MSG > 1)
+					{
 						printf("AEAP Advanced: Condition-6 b The Job:%d scheduled\n", jobNumber);
 						printf("AEAP Advanced: Condition-6 b Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
 					}
@@ -186,7 +196,8 @@ int AEAP_advanced
 					jobAttributesList[jobNumber].completion_time = -1;
 					jobAttributesList[jobNumber].scheduled_execution = -1;
 					GLOBAL_CPU_JOBS++;
-					if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+					if (GLOBAL_RTGS_DEBUG_MSG > 1)
+					{
 						printf("AEAP Advanced: Job-%d will not complete before it's deadline, Job REJECTED\n", jobNumber);
 						printf("AEAP Advanced: Condition-5&6 Fail, Jobs REJECTED count --> %d\n", GLOBAL_CPU_JOBS);
 					}
@@ -213,7 +224,8 @@ int AEAP_advanced
 					jobAttributesList[jobNumber].scheduled_execution = job_release_time;
 					jobAttributesList[jobNumber].completion_time = jobAttributesList[jobNumber].execution_time + job_release_time;
 					GLOBAL_GPU_JOBS++;
-					if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+					if (GLOBAL_RTGS_DEBUG_MSG > 1)
+					{
 						printf("AEAP Advanced: Condition-6 c The Job:%d scheduled\n", jobNumber);
 						printf("AEAP Advanced: Condition-6 c Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
 					}
@@ -227,7 +239,8 @@ int AEAP_advanced
 					jobAttributesList[jobNumber].completion_time = -1;
 					jobAttributesList[jobNumber].scheduled_execution = -1;
 					GLOBAL_CPU_JOBS++;
-					if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+					if (GLOBAL_RTGS_DEBUG_MSG > 1)
+					{
 						printf("AEAP Advanced: Job-%d will not complete before it's deadline, Job REJECTED\n", jobNumber);
 						printf("AEAP Advanced: Condition-5&6 Fail, Jobs REJECTED count --> %d\n", GLOBAL_CPU_JOBS);
 					}
@@ -260,7 +273,8 @@ int AEAP_advanced
 					jobAttributesList[jobNumber].completion_time = -1;
 					jobAttributesList[jobNumber].scheduled_execution = -1;
 					GLOBAL_CPU_JOBS++;
-					if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+					if (GLOBAL_RTGS_DEBUG_MSG > 1)
+					{
 						printf("AEAP Advanced: Job-%d will not complete before it's deadline, Job REJECTED\n", jobNumber);
 						printf("AEAP Advanced: Condition-5&6 Fail, Jobs REJECTED count --> %d\n", GLOBAL_CPU_JOBS);
 					}
@@ -283,7 +297,8 @@ int AEAP_advanced
 						jobAttributesList[jobNumber].scheduled_execution = job_release_time;
 						jobAttributesList[jobNumber].completion_time = jobAttributesList[jobNumber].execution_time + job_release_time;
 						GLOBAL_GPU_JOBS++;
-						if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+						if (GLOBAL_RTGS_DEBUG_MSG > 1)
+						{
 							printf("AEAP Advanced: Condition-7 a The Job:%d scheduled\n", jobNumber);
 							printf("AEAP Advanced: Condition-7 a Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
 						}
@@ -306,7 +321,8 @@ int AEAP_advanced
 						jobAttributesList[jobNumber].scheduled_execution = job_release_time;
 						jobAttributesList[jobNumber].completion_time = jobAttributesList[jobNumber].execution_time + job_release_time;
 						GLOBAL_GPU_JOBS++;
-						if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+						if (GLOBAL_RTGS_DEBUG_MSG > 1)
+						{
 							printf("AEAP Advanced: Condition-7 b The Job:%d scheduled\n", jobNumber);
 							printf("AEAP Advanced: Condition-7 b Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
 						}
@@ -314,8 +330,10 @@ int AEAP_advanced
 						job_queue_handler(processorsInUse, job_release_time, processor_release_time, schedule_method, jobNumber, jobScheduledQueueList);
 						// processors allocated set to zero
 						localPreScheduledList = GLOBAL_preScheduleList;
-						while (localPreScheduledList != NULL) {
-							if (localPreScheduledList->jobNumber == jobNumber) {
+						while (localPreScheduledList != NULL)
+						{
+							if (localPreScheduledList->jobNumber == jobNumber)
+							{
 								localPreScheduledList->processors_allocated = 0;
 								break;
 							}
@@ -330,7 +348,8 @@ int AEAP_advanced
 			int processorsQueued = 0;
 			int processorsQueuedRelease = 0;
 			localPreScheduledList = GLOBAL_preScheduleList;
-			while (localPreScheduledList != NULL) {
+			while (localPreScheduledList != NULL)
+			{
 				processorsQueued += localPreScheduledList->processors_allocated;
 				if (processorsQueuedRelease < localPreScheduledList->processor_release_time)
 					processorsQueuedRelease = localPreScheduledList->processor_release_time;
@@ -346,13 +365,16 @@ int AEAP_advanced
 				jobAttributesList[jobNumber].processor_req <= localProcessors)
 			{
 				processorsQueued = 0;
-				while (localPreScheduledList != NULL) {
+				while (localPreScheduledList != NULL)
+				{
 					processorsQueued += localPreScheduledList->processors_allocated;
-					if (processorsQueued >= jobAttributesList[jobNumber].processor_req) {
+					if (processorsQueued >= jobAttributesList[jobNumber].processor_req)
+					{
 						localPreScheduledList->processors_allocated = processorsQueued - jobAttributesList[jobNumber].processor_req;
 						break;
 					}
-					else {
+					else
+					{
 						localPreScheduledList->processors_allocated = 0;
 					}
 					localPreScheduledList = localPreScheduledList->next;
@@ -369,7 +391,8 @@ int AEAP_advanced
 				jobAttributesList[jobNumber].scheduled_execution = job_release_time;
 				jobAttributesList[jobNumber].completion_time = jobAttributesList[jobNumber].execution_time + job_release_time;
 				GLOBAL_GPU_JOBS++;
-				if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+				if (GLOBAL_RTGS_DEBUG_MSG > 1)
+				{
 					printf("AEAP Advanced: Condition-7 c The Job:%d scheduled\n", jobNumber);
 					printf("AEAP Advanced: Condition-7 c Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
 				}
@@ -383,7 +406,8 @@ int AEAP_advanced
 				jobAttributesList[jobNumber].completion_time = -1;
 				jobAttributesList[jobNumber].scheduled_execution = -1;
 				GLOBAL_CPU_JOBS++;
-				if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+				if (GLOBAL_RTGS_DEBUG_MSG > 1)
+				{
 					printf("AEAP Advanced: Job-%d will not complete before it's deadline, Job REJECTED\n", jobNumber);
 					printf("AEAP Advanced: Condition-5,6&7 Fail, Jobs REJECTED count --> %d\n", GLOBAL_CPU_JOBS);
 				}
@@ -394,9 +418,11 @@ int AEAP_advanced
 		{
 			int processorsRetrived = 0;
 			int processorsReleaseTime = 0;
-			while (localProcessorsAllocatedList != NULL) {
+			while (localProcessorsAllocatedList != NULL)
+			{
 				processorsRetrived += localProcessorsAllocatedList->processors_allocated;
-				if (processorsReleaseTime < localProcessorsAllocatedList->processor_release_time) {
+				if (processorsReleaseTime < localProcessorsAllocatedList->processor_release_time)
+				{
 					processorsReleaseTime = localProcessorsAllocatedList->processor_release_time;
 				}
 				if (processorsRetrived >= jobAttributesList[jobNumber].processor_req)
@@ -413,7 +439,8 @@ int AEAP_advanced
 				jobAttributesList[jobNumber].completion_time = -1;
 				jobAttributesList[jobNumber].scheduled_execution = -1;
 				GLOBAL_CPU_JOBS++;
-				if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+				if (GLOBAL_RTGS_DEBUG_MSG > 1)
+				{
 					printf("AEAP Advanced: Job-%d will not complete before it's deadline, Job REJECTED\n", jobNumber);
 					printf("AEAP Advanced: Condition-5,6,7&8 Fail, Jobs REJECTED count --> %d\n", GLOBAL_CPU_JOBS);
 				}
@@ -438,7 +465,8 @@ int AEAP_advanced
 					jobAttributesList[jobNumber].completion_time = -1;
 					jobAttributesList[jobNumber].scheduled_execution = -1;
 					GLOBAL_CPU_JOBS++;
-					if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+					if (GLOBAL_RTGS_DEBUG_MSG > 1)
+					{
 						printf("AEAP Advanced: Job-%d will not complete before it's deadline, Job REJECTED\n", jobNumber);
 						printf("AEAP Advanced: Condition-5,6,7,& 8 Fail, Jobs REJECTED count --> %d\n", GLOBAL_CPU_JOBS);
 					}
@@ -461,7 +489,8 @@ int AEAP_advanced
 						jobAttributesList[jobNumber].scheduled_execution = job_release_time;
 						jobAttributesList[jobNumber].completion_time = jobAttributesList[jobNumber].execution_time + job_release_time;
 						GLOBAL_GPU_JOBS++;
-						if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+						if (GLOBAL_RTGS_DEBUG_MSG > 1)
+						{
 							printf("AEAP Advanced: Condition-8 a The Job:%d scheduled\n", jobNumber);
 							printf("AEAP Advanced: Condition-8 a Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
 						}
@@ -485,7 +514,8 @@ int AEAP_advanced
 						jobAttributesList[jobNumber].scheduled_execution = job_release_time;
 						jobAttributesList[jobNumber].completion_time = jobAttributesList[jobNumber].execution_time + job_release_time;
 						GLOBAL_GPU_JOBS++;
-						if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+						if (GLOBAL_RTGS_DEBUG_MSG > 1)
+						{
 							printf("AEAP Advanced: Condition-8 b The Job:%d scheduled\n", jobNumber);
 							printf("AEAP Advanced: Condition-8 b Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
 						}
@@ -493,8 +523,10 @@ int AEAP_advanced
 						job_queue_handler(processorsInUse, job_release_time, processor_release_time, schedule_method, jobNumber, jobScheduledQueueList);
 						// processors allocated set to zero
 						localPreScheduledList = GLOBAL_preScheduleList;
-						while (localPreScheduledList != NULL) {
-							if (localPreScheduledList->jobNumber == jobNumber) {
+						while (localPreScheduledList != NULL)
+						{
+							if (localPreScheduledList->jobNumber == jobNumber)
+							{
 								localPreScheduledList->processors_allocated = 0;
 								break;
 							}
@@ -509,7 +541,8 @@ int AEAP_advanced
 			int processorsQueued = 0;
 			int processorsQueuedRelease = processorsReleaseTime;
 			localPreScheduledList = GLOBAL_preScheduleList;
-			while (localPreScheduledList != NULL) {
+			while (localPreScheduledList != NULL)
+			{
 				processorsQueued += localPreScheduledList->processors_allocated;
 				if (processorsQueuedRelease < localPreScheduledList->processor_release_time)
 					processorsQueuedRelease = localPreScheduledList->processor_release_time;
@@ -525,13 +558,16 @@ int AEAP_advanced
 				jobAttributesList[jobNumber].processor_req <= localProcessors)
 			{
 				processorsQueued = 0;
-				while (localPreScheduledList != NULL) {
+				while (localPreScheduledList != NULL)
+				{
 					processorsQueued += localPreScheduledList->processors_allocated;
-					if (processorsQueued >= jobAttributesList[jobNumber].processor_req) {
+					if (processorsQueued >= jobAttributesList[jobNumber].processor_req)
+					{
 						localPreScheduledList->processors_allocated = processorsQueued - jobAttributesList[jobNumber].processor_req;
 						break;
 					}
-					else {
+					else
+					{
 						localPreScheduledList->processors_allocated = 0;
 					}
 					localPreScheduledList = localPreScheduledList->next;
@@ -548,7 +584,8 @@ int AEAP_advanced
 				jobAttributesList[jobNumber].scheduled_execution = job_release_time;
 				jobAttributesList[jobNumber].completion_time = jobAttributesList[jobNumber].execution_time + job_release_time;
 				GLOBAL_GPU_JOBS++;
-				if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+				if (GLOBAL_RTGS_DEBUG_MSG > 1)
+				{
 					printf("AEAP Advanced: Condition-8 c The Job:%d scheduled\n", jobNumber);
 					printf("AEAP Advanced: Condition-8 c Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
 				}
@@ -562,7 +599,8 @@ int AEAP_advanced
 				jobAttributesList[jobNumber].completion_time = -1;
 				jobAttributesList[jobNumber].scheduled_execution = -1;
 				GLOBAL_CPU_JOBS++;
-				if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+				if (GLOBAL_RTGS_DEBUG_MSG > 1)
+				{
 					printf("AEAP Advanced: Job-%d will not complete before it's deadline, Job REJECTED\n", jobNumber);
 					printf("AEAP Advanced: Condition-5,6,7 & 8 Fail, Jobs REJECTED count --> %d\n", GLOBAL_CPU_JOBS);
 				}
@@ -576,7 +614,8 @@ int AEAP_advanced
 	jobAttributesList[jobNumber].completion_time = -1;
 	jobAttributesList[jobNumber].scheduled_execution = -1;
 	GLOBAL_CPU_JOBS++;
-	if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+	if (GLOBAL_RTGS_DEBUG_MSG > 1)
+	{
 		printf("AEAP advanced: The Job:%d Cannot be scheduled\n", jobNumber);
 		printf("AEAP advanced: Jobs REJECTED count --> %d\n", GLOBAL_CPU_JOBS);
 	}

@@ -3,17 +3,15 @@
 *      Author: Kiriti Nagesh Gowda
 */
 
-#include"RTGS.h"
+#include "RTGS.h"
 
-int ALAP
-(
+int ALAP(
 	jobAttributes *jobAttributesList,
 	int jobNumber,
 	int present_time,
 	int processors_available,
 	scheduledResourceNode **processorsAllocatedList,
-	scheduledResourceNode **jobScheduledQueueList
-)
+	scheduledResourceNode **jobScheduledQueueList)
 {
 	int localProcessors = 0, job_release_time, processor_release_time = 0, processors_allocated = 0;
 	genericBackupNode *processorsDistList = NULL;
@@ -23,13 +21,15 @@ int ALAP
 	localProcessors = processors_available;
 
 	// fail case return
-	if (present_time >= job_release_time) {
+	if (present_time >= job_release_time)
+	{
 		jobAttributesList[jobNumber].schedule_hardware = 2;
 		jobAttributesList[jobNumber].rescheduled_execution = -1;
 		jobAttributesList[jobNumber].completion_time = -1;
 		jobAttributesList[jobNumber].scheduled_execution = -1;
 		GLOBAL_CPU_JOBS++;
-		if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+		if (GLOBAL_RTGS_DEBUG_MSG > 1)
+		{
 			printf("Mode 4 ALAP: The Job:%d Cannot be scheduled\n", jobNumber);
 			printf("Mode 4 ALAP: Jobs REJECTED count --> %d\n", GLOBAL_CPU_JOBS);
 		}
@@ -46,14 +46,15 @@ int ALAP
 		jobAttributesList[jobNumber].scheduled_execution = job_release_time;
 		jobAttributesList[jobNumber].completion_time = jobAttributesList[jobNumber].execution_time + job_release_time;
 		GLOBAL_GPU_JOBS++;
-		if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+		if (GLOBAL_RTGS_DEBUG_MSG > 1)
+		{
 			printf("Mode 4 ALAP: The Job:%d scheduled\n", jobNumber);
 			printf("Mode 4 ALAP: Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
 		}
 		GLOBAL_preScheduleList = insert_preScheduledJob_list(GLOBAL_preScheduleList, job_release_time,
-			processor_release_time, processors_allocated, jobNumber);
+															 processor_release_time, processors_allocated, jobNumber);
 		job_queue_handler(processorsInUse, job_release_time, processor_release_time,
-			schedule_method, jobNumber, jobScheduledQueueList);
+						  schedule_method, jobNumber, jobScheduledQueueList);
 		return processors_available;
 	}
 
@@ -65,14 +66,15 @@ int ALAP
 		if ((localProcessorsAllocatedList->processor_release_time + jobAttributesList[jobNumber].execution_time) > jobAttributesList[jobNumber].deadline)
 		{
 			int count = 0;
-			scheduledResourceNode*temp1 = *processorsAllocatedList;
-			genericBackupNode* temp2 = processorsDistList;
+			scheduledResourceNode *temp1 = *processorsAllocatedList;
+			genericBackupNode *temp2 = processorsDistList;
 
 			while (temp2 != NULL)
 			{
 				if (count == 0)
 					temp2 = temp2->next;
-				else {
+				else
+				{
 					temp1->job_release_time = 0;
 					temp1 = temp1->next;
 					temp2 = temp2->next;
@@ -85,7 +87,8 @@ int ALAP
 			jobAttributesList[jobNumber].completion_time = -1;
 			jobAttributesList[jobNumber].scheduled_execution = -1;
 			GLOBAL_CPU_JOBS++;
-			if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+			if (GLOBAL_RTGS_DEBUG_MSG > 1)
+			{
 				printf("Mode 4 ALAP: The Job:%d Cannot be scheduled\n", jobNumber);
 				printf("Mode 4 ALAP: Jobs REJECTED count --> %d\n", GLOBAL_CPU_JOBS);
 			}
@@ -106,14 +109,15 @@ int ALAP
 				jobAttributesList[jobNumber].scheduled_execution = job_release_time;
 				jobAttributesList[jobNumber].completion_time = jobAttributesList[jobNumber].execution_time + job_release_time;
 				GLOBAL_GPU_JOBS++;
-				if (GLOBAL_RTGS_DEBUG_MSG > 1) {
+				if (GLOBAL_RTGS_DEBUG_MSG > 1)
+				{
 					printf("Mode 4 ALAP: The Job:%d scheduled\n", jobNumber);
 					printf("Mode 4 ALAP: Jobs ACCEPTED count --> %d\n", GLOBAL_GPU_JOBS);
 				}
 				GLOBAL_preScheduleList = insert_preScheduledJob_list(GLOBAL_preScheduleList, job_release_time, processor_release_time,
-					processors_allocated, jobNumber);
+																	 processors_allocated, jobNumber);
 				job_queue_handler(processorsInUse, job_release_time, processor_release_time,
-					schedule_method, jobNumber, jobScheduledQueueList);
+								  schedule_method, jobNumber, jobScheduledQueueList);
 				break;
 			}
 			else

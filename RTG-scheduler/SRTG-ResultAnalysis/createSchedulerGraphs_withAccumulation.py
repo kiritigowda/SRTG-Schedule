@@ -7,39 +7,39 @@ import csv
 
 opts, args = getopt.getopt(sys.argv[1:], 'i:o:f:')
 
-inputDirectory = '';
-outputDirectory = '';
-fileName = '';
+inputDirectory = ''
+outputDirectory = ''
+fileName = ''
 
 for opt, arg in opts:
     if opt == '-i':
-        inputDirectory = arg;
+        inputDirectory = arg
     elif opt == '-o':
-        outputDirectory = arg;
+        outputDirectory = arg
     elif opt == '-f':
-        fileName = arg;
+        fileName = arg
 
 
 if inputDirectory == '' or outputDirectory == '' or fileName == '':
     print('Invalid command line arguments.\n'
-        '\t\t\t\t-i [input Directory - required]\n'\
-        '\t\t\t\t-o [output Directory - required]\n'\
-        '\t\t\t\t-f [output file name Directory - required]\n')
-    exit();
+          '\t\t\t\t-i [input Directory - required]\n'
+          '\t\t\t\t-o [output Directory - required]\n'
+          '\t\t\t\t-f [output file name Directory - required]\n')
+    exit()
 
 if not os.path.exists(inputDirectory):
-    print "ERROR Invalid Input Directory";
-    exit();
+    print "ERROR Invalid Input Directory"
+    exit()
 
 if not os.path.exists(outputDirectory):
-    os.makedirs(outputDirectory);
+    os.makedirs(outputDirectory)
 
-row_count = 0;
-row_count_1 = 0;
-row_count_2 = 0;
-row_count_3 = 0;
-row_count_4 = 0;
-row_count_5 = 0;
+row_count = 0
+row_count_1 = 0
+row_count_2 = 0
+row_count_3 = 0
+row_count_4 = 0
+row_count_5 = 0
 with open(inputDirectory+'RTGS-Mode-1-Summary.csv') as mode1:
     reader_1 = csv.reader(mode1)
     data_1 = [r for r in reader_1]
@@ -66,13 +66,13 @@ with open(inputDirectory+'RTGS-Mode-5-Summary.csv') as mode5:
     row_count_5 = len(data_5)
 
 if row_count_1 != row_count_2 or row_count_2 != row_count_3 or row_count_3 != row_count_4 or row_count_4 != row_count_5:
-    print "ERROR: Number of entries in Summary File are different";
-    exit();
+    print "ERROR: Number of entries in Summary File are different"
+    exit()
 else:
-    row_count = row_count_1;
+    row_count = row_count_1
 
 orig_stdout = sys.stdout
-sys.stdout = open(outputDirectory+'/'+fileName+'-SchedulerResults.html','w')
+sys.stdout = open(outputDirectory+'/'+fileName+'-SchedulerResults.html', 'w')
 print"<html>"
 print"\t<head>"
 print"\t\t<script type=\"text/javascript\" src=\"https://www.gstatic.com/charts/loader.js\"></script>"
@@ -225,52 +225,52 @@ print"\t\t\t\t<td><center>Avg GPU Schedule Overhead/Job</center></td>"
 print"\t\t\t\t<td><center>Avg Scheduler Overhead/Job</center></td>"
 print"\t\t\t</tr>"
 # Mode 1
-avgJobsScheduled = 0;
-avgJobs = 0;
-avgProc = 0;
-avgExec = 0;
-totalGPUUsage = 0;
-avgResponseTime = 0;
-avgResponseFactor = 0;
-GPUUsagePercentage = 0;
-avgJobPercentage = 0;
-GPUScheduleOverhead = 0;
-AvgSchedulerOverhead = 0;
-avgReleaseLambda = 0;
+avgJobsScheduled = 0
+avgJobs = 0
+avgProc = 0
+avgExec = 0
+totalGPUUsage = 0
+avgResponseTime = 0
+avgResponseFactor = 0
+GPUUsagePercentage = 0
+avgJobPercentage = 0
+GPUScheduleOverhead = 0
+AvgSchedulerOverhead = 0
+avgReleaseLambda = 0
 
 for x in range(row_count):
-    avgJobsScheduled = avgJobsScheduled + float(data_1[x][0]);
-    avgJobs = avgJobs + int(data_1[x][1]);
-    avgProc = avgProc + float(data_1[x][2]);
-    avgExec = avgExec + float(data_1[x][3]);
-    totalGPUUsage = totalGPUUsage + float(data_1[x][4]);
-    avgResponseTime = avgResponseTime + float(data_1[x][5]);
-    avgResponseFactor = avgResponseFactor + float(data_1[x][6]);
-    GPUUsagePercentage = GPUUsagePercentage + float(data_1[x][7]);
-    avgJobPercentage = avgJobPercentage + float(data_1[x][8]);
-    avgReleaseLambda = avgReleaseLambda + float(data_5[x][9]);
-    GPUScheduleOverhead = GPUScheduleOverhead + float(data_1[x][10]);
-    AvgSchedulerOverhead = AvgSchedulerOverhead + float(data_1[x][11]);
+    avgJobsScheduled = avgJobsScheduled + float(data_1[x][0])
+    avgJobs = avgJobs + int(data_1[x][1])
+    avgProc = avgProc + float(data_1[x][2])
+    avgExec = avgExec + float(data_1[x][3])
+    totalGPUUsage = totalGPUUsage + float(data_1[x][4])
+    avgResponseTime = avgResponseTime + float(data_1[x][5])
+    avgResponseFactor = avgResponseFactor + float(data_1[x][6])
+    GPUUsagePercentage = GPUUsagePercentage + float(data_1[x][7])
+    avgJobPercentage = avgJobPercentage + float(data_1[x][8])
+    avgReleaseLambda = avgReleaseLambda + float(data_5[x][9])
+    GPUScheduleOverhead = GPUScheduleOverhead + float(data_1[x][10])
+    AvgSchedulerOverhead = AvgSchedulerOverhead + float(data_1[x][11])
 
-avgJobsScheduled = float(avgJobsScheduled)/row_count;
-avgJobs = float(avgJobs)/row_count;
-avgProc = float(avgProc)/row_count;
-avgExec = float(avgExec)/row_count;
-totalGPUUsage = float(totalGPUUsage)/row_count;
-avgResponseTime = float(avgResponseTime)/row_count;
-avgResponseFactor = float(avgResponseFactor)/row_count;
-GPUUsagePercentage = float(GPUUsagePercentage)/row_count;
-avgJobPercentage = float(avgJobPercentage)/row_count;
-avgReleaseLambda = float(avgReleaseLambda)/row_count;
-GPUScheduleOverhead = float(GPUScheduleOverhead)/row_count;
-AvgSchedulerOverhead = float(AvgSchedulerOverhead)/row_count;
+avgJobsScheduled = float(avgJobsScheduled)/row_count
+avgJobs = float(avgJobs)/row_count
+avgProc = float(avgProc)/row_count
+avgExec = float(avgExec)/row_count
+totalGPUUsage = float(totalGPUUsage)/row_count
+avgResponseTime = float(avgResponseTime)/row_count
+avgResponseFactor = float(avgResponseFactor)/row_count
+GPUUsagePercentage = float(GPUUsagePercentage)/row_count
+avgJobPercentage = float(avgJobPercentage)/row_count
+avgReleaseLambda = float(avgReleaseLambda)/row_count
+GPUScheduleOverhead = float(GPUScheduleOverhead)/row_count
+AvgSchedulerOverhead = float(AvgSchedulerOverhead)/row_count
 
-sys.stdout = open(outputDirectory+'/Mode1-SchedulerResults.csv','a')
+sys.stdout = open(outputDirectory+'/Mode1-SchedulerResults.csv', 'a')
 print str(avgReleaseLambda)+','+str(avgJobs)+','+str(avgJobsScheduled)+','+str(avgJobPercentage)+','\
-+str(avgProc)+','+str(avgExec)+','+str(totalGPUUsage)+','+str(GPUUsagePercentage)+','\
-+str(avgResponseTime)+','+str(avgResponseFactor)+','\
-+str(GPUScheduleOverhead)+','+str(AvgSchedulerOverhead)
-sys.stdout = open(outputDirectory+'/'+fileName+'-SchedulerResults.html','a')
+    + str(avgProc)+','+str(avgExec)+','+str(totalGPUUsage)+','+str(GPUUsagePercentage)+','\
+    + str(avgResponseTime)+','+str(avgResponseFactor)+','\
+    + str(GPUScheduleOverhead)+','+str(AvgSchedulerOverhead)
+sys.stdout = open(outputDirectory+'/'+fileName+'-SchedulerResults.html', 'a')
 
 print"\t\t\t<tr>"
 print"\t\t\t\t<td><center>Mode 1</center></td>"
@@ -287,49 +287,49 @@ print'\t\t\t\t<td><center>'+str(GPUScheduleOverhead)+'</center></td>'
 print'\t\t\t\t<td><center>'+str(AvgSchedulerOverhead)+'</center></td>'
 print"\t\t\t</tr>"
 # Mode 2
-avgJobsScheduled = 0;
-avgJobs = 0;
-avgProc = 0;
-avgExec = 0;
-totalGPUUsage = 0;
-avgResponseTime = 0;
-avgResponseFactor = 0;
-GPUUsagePercentage = 0;
-avgJobPercentage = 0;
-GPUScheduleOverhead = 0;
-AvgSchedulerOverhead = 0;
+avgJobsScheduled = 0
+avgJobs = 0
+avgProc = 0
+avgExec = 0
+totalGPUUsage = 0
+avgResponseTime = 0
+avgResponseFactor = 0
+GPUUsagePercentage = 0
+avgJobPercentage = 0
+GPUScheduleOverhead = 0
+AvgSchedulerOverhead = 0
 
 for x in range(row_count):
-    avgJobsScheduled = avgJobsScheduled + float(data_2[x][0]);
-    avgJobs = avgJobs + int(data_2[x][1]);
-    avgProc = avgProc + float(data_2[x][2]);
-    avgExec = avgExec + float(data_2[x][3]);
-    totalGPUUsage = totalGPUUsage + float(data_2[x][4]);
-    avgResponseTime = avgResponseTime + float(data_2[x][5]);
-    avgResponseFactor = avgResponseFactor + float(data_2[x][6]);
-    GPUUsagePercentage = GPUUsagePercentage + float(data_2[x][7]);
-    avgJobPercentage = avgJobPercentage + float(data_2[x][8]);
-    GPUScheduleOverhead = GPUScheduleOverhead + float(data_2[x][10]);
-    AvgSchedulerOverhead = AvgSchedulerOverhead + float(data_2[x][11]);
+    avgJobsScheduled = avgJobsScheduled + float(data_2[x][0])
+    avgJobs = avgJobs + int(data_2[x][1])
+    avgProc = avgProc + float(data_2[x][2])
+    avgExec = avgExec + float(data_2[x][3])
+    totalGPUUsage = totalGPUUsage + float(data_2[x][4])
+    avgResponseTime = avgResponseTime + float(data_2[x][5])
+    avgResponseFactor = avgResponseFactor + float(data_2[x][6])
+    GPUUsagePercentage = GPUUsagePercentage + float(data_2[x][7])
+    avgJobPercentage = avgJobPercentage + float(data_2[x][8])
+    GPUScheduleOverhead = GPUScheduleOverhead + float(data_2[x][10])
+    AvgSchedulerOverhead = AvgSchedulerOverhead + float(data_2[x][11])
 
-avgJobsScheduled = float(avgJobsScheduled)/row_count;
-avgJobs = float(avgJobs)/row_count;
-avgProc = float(avgProc)/row_count;
-avgExec = float(avgExec)/row_count;
-totalGPUUsage = float(totalGPUUsage)/row_count;
-avgResponseTime = float(avgResponseTime)/row_count;
-avgResponseFactor = float(avgResponseFactor)/row_count;
-GPUUsagePercentage = float(GPUUsagePercentage)/row_count;
-avgJobPercentage = float(avgJobPercentage)/row_count;
-GPUScheduleOverhead = float(GPUScheduleOverhead)/row_count;
-AvgSchedulerOverhead = float(AvgSchedulerOverhead)/row_count;
+avgJobsScheduled = float(avgJobsScheduled)/row_count
+avgJobs = float(avgJobs)/row_count
+avgProc = float(avgProc)/row_count
+avgExec = float(avgExec)/row_count
+totalGPUUsage = float(totalGPUUsage)/row_count
+avgResponseTime = float(avgResponseTime)/row_count
+avgResponseFactor = float(avgResponseFactor)/row_count
+GPUUsagePercentage = float(GPUUsagePercentage)/row_count
+avgJobPercentage = float(avgJobPercentage)/row_count
+GPUScheduleOverhead = float(GPUScheduleOverhead)/row_count
+AvgSchedulerOverhead = float(AvgSchedulerOverhead)/row_count
 
-sys.stdout = open(outputDirectory+'/Mode2-SchedulerResults.csv','a')
+sys.stdout = open(outputDirectory+'/Mode2-SchedulerResults.csv', 'a')
 print str(avgReleaseLambda)+','+str(avgJobs)+','+str(avgJobsScheduled)+','+str(avgJobPercentage)+','\
-+str(avgProc)+','+str(avgExec)+','+str(totalGPUUsage)+','+str(GPUUsagePercentage)+','\
-+str(avgResponseTime)+','+str(avgResponseFactor)+','\
-+str(GPUScheduleOverhead)+','+str(AvgSchedulerOverhead)
-sys.stdout = open(outputDirectory+'/'+fileName+'-SchedulerResults.html','a')
+    + str(avgProc)+','+str(avgExec)+','+str(totalGPUUsage)+','+str(GPUUsagePercentage)+','\
+    + str(avgResponseTime)+','+str(avgResponseFactor)+','\
+    + str(GPUScheduleOverhead)+','+str(AvgSchedulerOverhead)
+sys.stdout = open(outputDirectory+'/'+fileName+'-SchedulerResults.html', 'a')
 
 print"\t\t\t<tr>"
 print"\t\t\t\t<td><center>Mode 2</center></td>"
@@ -346,49 +346,49 @@ print'\t\t\t\t<td><center>'+str(GPUScheduleOverhead)+'</center></td>'
 print'\t\t\t\t<td><center>'+str(AvgSchedulerOverhead)+'</center></td>'
 print"\t\t\t</tr>"
 # Mode 3
-avgJobsScheduled = 0;
-avgJobs = 0;
-avgProc = 0;
-avgExec = 0;
-totalGPUUsage = 0;
-avgResponseTime = 0;
-avgResponseFactor = 0;
-GPUUsagePercentage = 0;
-avgJobPercentage = 0;
-GPUScheduleOverhead = 0;
-AvgSchedulerOverhead = 0;
+avgJobsScheduled = 0
+avgJobs = 0
+avgProc = 0
+avgExec = 0
+totalGPUUsage = 0
+avgResponseTime = 0
+avgResponseFactor = 0
+GPUUsagePercentage = 0
+avgJobPercentage = 0
+GPUScheduleOverhead = 0
+AvgSchedulerOverhead = 0
 
 for x in range(row_count):
-    avgJobsScheduled = avgJobsScheduled + float(data_3[x][0]);
-    avgJobs = avgJobs + int(data_3[x][1]);
-    avgProc = avgProc + float(data_3[x][2]);
-    avgExec = avgExec + float(data_3[x][3]);
-    totalGPUUsage = totalGPUUsage + float(data_3[x][4]);
-    avgResponseTime = avgResponseTime + float(data_3[x][5]);
-    avgResponseFactor = avgResponseFactor + float(data_3[x][6]);
-    GPUUsagePercentage = GPUUsagePercentage + float(data_3[x][7]);
-    avgJobPercentage = avgJobPercentage + float(data_3[x][8]);
-    GPUScheduleOverhead = GPUScheduleOverhead + float(data_3[x][10]);
-    AvgSchedulerOverhead = AvgSchedulerOverhead + float(data_3[x][11]);
+    avgJobsScheduled = avgJobsScheduled + float(data_3[x][0])
+    avgJobs = avgJobs + int(data_3[x][1])
+    avgProc = avgProc + float(data_3[x][2])
+    avgExec = avgExec + float(data_3[x][3])
+    totalGPUUsage = totalGPUUsage + float(data_3[x][4])
+    avgResponseTime = avgResponseTime + float(data_3[x][5])
+    avgResponseFactor = avgResponseFactor + float(data_3[x][6])
+    GPUUsagePercentage = GPUUsagePercentage + float(data_3[x][7])
+    avgJobPercentage = avgJobPercentage + float(data_3[x][8])
+    GPUScheduleOverhead = GPUScheduleOverhead + float(data_3[x][10])
+    AvgSchedulerOverhead = AvgSchedulerOverhead + float(data_3[x][11])
 
-avgJobsScheduled = float(avgJobsScheduled)/row_count;
-avgJobs = float(avgJobs)/row_count;
-avgProc = float(avgProc)/row_count;
-avgExec = float(avgExec)/row_count;
-totalGPUUsage = float(totalGPUUsage)/row_count;
-avgResponseTime = float(avgResponseTime)/row_count;
-avgResponseFactor = float(avgResponseFactor)/row_count;
-GPUUsagePercentage = float(GPUUsagePercentage)/row_count;
-avgJobPercentage = float(avgJobPercentage)/row_count;
-GPUScheduleOverhead = float(GPUScheduleOverhead)/row_count;
-AvgSchedulerOverhead = float(AvgSchedulerOverhead)/row_count;
+avgJobsScheduled = float(avgJobsScheduled)/row_count
+avgJobs = float(avgJobs)/row_count
+avgProc = float(avgProc)/row_count
+avgExec = float(avgExec)/row_count
+totalGPUUsage = float(totalGPUUsage)/row_count
+avgResponseTime = float(avgResponseTime)/row_count
+avgResponseFactor = float(avgResponseFactor)/row_count
+GPUUsagePercentage = float(GPUUsagePercentage)/row_count
+avgJobPercentage = float(avgJobPercentage)/row_count
+GPUScheduleOverhead = float(GPUScheduleOverhead)/row_count
+AvgSchedulerOverhead = float(AvgSchedulerOverhead)/row_count
 
-sys.stdout = open(outputDirectory+'/Mode3-SchedulerResults.csv','a')
+sys.stdout = open(outputDirectory+'/Mode3-SchedulerResults.csv', 'a')
 print str(avgReleaseLambda)+','+str(avgJobs)+','+str(avgJobsScheduled)+','+str(avgJobPercentage)+','\
-+str(avgProc)+','+str(avgExec)+','+str(totalGPUUsage)+','+str(GPUUsagePercentage)+','\
-+str(avgResponseTime)+','+str(avgResponseFactor)+','\
-+str(GPUScheduleOverhead)+','+str(AvgSchedulerOverhead)
-sys.stdout = open(outputDirectory+'/'+fileName+'-SchedulerResults.html','a')
+    + str(avgProc)+','+str(avgExec)+','+str(totalGPUUsage)+','+str(GPUUsagePercentage)+','\
+    + str(avgResponseTime)+','+str(avgResponseFactor)+','\
+    + str(GPUScheduleOverhead)+','+str(AvgSchedulerOverhead)
+sys.stdout = open(outputDirectory+'/'+fileName+'-SchedulerResults.html', 'a')
 
 print"\t\t\t<tr>"
 print"\t\t\t\t<td><center>Mode 3</center></td>"
@@ -405,49 +405,49 @@ print'\t\t\t\t<td><center>'+str(GPUScheduleOverhead)+'</center></td>'
 print'\t\t\t\t<td><center>'+str(AvgSchedulerOverhead)+'</center></td>'
 print"\t\t\t</tr>"
 # Mode 4
-avgJobsScheduled = 0;
-avgJobs = 0;
-avgProc = 0;
-avgExec = 0;
-totalGPUUsage = 0;
-avgResponseTime = 0;
-avgResponseFactor = 0;
-GPUUsagePercentage = 0;
-avgJobPercentage = 0;
-GPUScheduleOverhead = 0;
-AvgSchedulerOverhead = 0;
+avgJobsScheduled = 0
+avgJobs = 0
+avgProc = 0
+avgExec = 0
+totalGPUUsage = 0
+avgResponseTime = 0
+avgResponseFactor = 0
+GPUUsagePercentage = 0
+avgJobPercentage = 0
+GPUScheduleOverhead = 0
+AvgSchedulerOverhead = 0
 
 for x in range(row_count):
-    avgJobsScheduled = avgJobsScheduled + float(data_4[x][0]);
-    avgJobs = avgJobs + int(data_4[x][1]);
-    avgProc = avgProc + float(data_4[x][2]);
-    avgExec = avgExec + float(data_4[x][3]);
-    totalGPUUsage = totalGPUUsage + float(data_4[x][4]);
-    avgResponseTime = avgResponseTime + float(data_4[x][5]);
-    avgResponseFactor = avgResponseFactor + float(data_4[x][6]);
-    GPUUsagePercentage = GPUUsagePercentage + float(data_4[x][7]);
-    avgJobPercentage = avgJobPercentage + float(data_4[x][8]);
-    GPUScheduleOverhead = GPUScheduleOverhead + float(data_4[x][10]);
-    AvgSchedulerOverhead = AvgSchedulerOverhead + float(data_4[x][11]);
+    avgJobsScheduled = avgJobsScheduled + float(data_4[x][0])
+    avgJobs = avgJobs + int(data_4[x][1])
+    avgProc = avgProc + float(data_4[x][2])
+    avgExec = avgExec + float(data_4[x][3])
+    totalGPUUsage = totalGPUUsage + float(data_4[x][4])
+    avgResponseTime = avgResponseTime + float(data_4[x][5])
+    avgResponseFactor = avgResponseFactor + float(data_4[x][6])
+    GPUUsagePercentage = GPUUsagePercentage + float(data_4[x][7])
+    avgJobPercentage = avgJobPercentage + float(data_4[x][8])
+    GPUScheduleOverhead = GPUScheduleOverhead + float(data_4[x][10])
+    AvgSchedulerOverhead = AvgSchedulerOverhead + float(data_4[x][11])
 
-avgJobsScheduled = float(avgJobsScheduled)/row_count;
-avgJobs = float(avgJobs)/row_count;
-avgProc = float(avgProc)/row_count;
-avgExec = float(avgExec)/row_count;
-totalGPUUsage = float(totalGPUUsage)/row_count;
-avgResponseTime = float(avgResponseTime)/row_count;
-avgResponseFactor = float(avgResponseFactor)/row_count;
-GPUUsagePercentage = float(GPUUsagePercentage)/row_count;
-avgJobPercentage = float(avgJobPercentage)/row_count;
-GPUScheduleOverhead = float(GPUScheduleOverhead)/row_count;
-AvgSchedulerOverhead = float(AvgSchedulerOverhead)/row_count;
+avgJobsScheduled = float(avgJobsScheduled)/row_count
+avgJobs = float(avgJobs)/row_count
+avgProc = float(avgProc)/row_count
+avgExec = float(avgExec)/row_count
+totalGPUUsage = float(totalGPUUsage)/row_count
+avgResponseTime = float(avgResponseTime)/row_count
+avgResponseFactor = float(avgResponseFactor)/row_count
+GPUUsagePercentage = float(GPUUsagePercentage)/row_count
+avgJobPercentage = float(avgJobPercentage)/row_count
+GPUScheduleOverhead = float(GPUScheduleOverhead)/row_count
+AvgSchedulerOverhead = float(AvgSchedulerOverhead)/row_count
 
-sys.stdout = open(outputDirectory+'/Mode4-SchedulerResults.csv','a')
+sys.stdout = open(outputDirectory+'/Mode4-SchedulerResults.csv', 'a')
 print str(avgReleaseLambda)+','+str(avgJobs)+','+str(avgJobsScheduled)+','+str(avgJobPercentage)+','\
-+str(avgProc)+','+str(avgExec)+','+str(totalGPUUsage)+','+str(GPUUsagePercentage)+','\
-+str(avgResponseTime)+','+str(avgResponseFactor)+','\
-+str(GPUScheduleOverhead)+','+str(AvgSchedulerOverhead)
-sys.stdout = open(outputDirectory+'/'+fileName+'-SchedulerResults.html','a')
+    + str(avgProc)+','+str(avgExec)+','+str(totalGPUUsage)+','+str(GPUUsagePercentage)+','\
+    + str(avgResponseTime)+','+str(avgResponseFactor)+','\
+    + str(GPUScheduleOverhead)+','+str(AvgSchedulerOverhead)
+sys.stdout = open(outputDirectory+'/'+fileName+'-SchedulerResults.html', 'a')
 
 print"\t\t\t<tr>"
 print"\t\t\t\t<td><center>Mode 4</center></td>"
@@ -464,49 +464,49 @@ print'\t\t\t\t<td><center>'+str(GPUScheduleOverhead)+'</center></td>'
 print'\t\t\t\t<td><center>'+str(AvgSchedulerOverhead)+'</center></td>'
 print"\t\t\t</tr>"
 # Mode 5
-avgJobsScheduled = 0;
-avgJobs = 0;
-avgProc = 0;
-avgExec = 0;
-totalGPUUsage = 0;
-avgResponseTime = 0;
-avgResponseFactor = 0;
-GPUUsagePercentage = 0;
-avgJobPercentage = 0;
-GPUScheduleOverhead = 0;
-AvgSchedulerOverhead = 0;
+avgJobsScheduled = 0
+avgJobs = 0
+avgProc = 0
+avgExec = 0
+totalGPUUsage = 0
+avgResponseTime = 0
+avgResponseFactor = 0
+GPUUsagePercentage = 0
+avgJobPercentage = 0
+GPUScheduleOverhead = 0
+AvgSchedulerOverhead = 0
 
 for x in range(row_count):
-    avgJobsScheduled = avgJobsScheduled + float(data_5[x][0]);
-    avgJobs = avgJobs + int(data_5[x][1]);
-    avgProc = avgProc + float(data_5[x][2]);
-    avgExec = avgExec + float(data_5[x][3]);
-    totalGPUUsage = totalGPUUsage + float(data_5[x][4]);
-    avgResponseTime = avgResponseTime + float(data_5[x][5]);
-    avgResponseFactor = avgResponseFactor + float(data_5[x][6]);
-    GPUUsagePercentage = GPUUsagePercentage + float(data_5[x][7]);
-    avgJobPercentage = avgJobPercentage + float(data_5[x][8]);
-    GPUScheduleOverhead = GPUScheduleOverhead + float(data_5[x][10]);
-    AvgSchedulerOverhead = AvgSchedulerOverhead + float(data_5[x][11]);
+    avgJobsScheduled = avgJobsScheduled + float(data_5[x][0])
+    avgJobs = avgJobs + int(data_5[x][1])
+    avgProc = avgProc + float(data_5[x][2])
+    avgExec = avgExec + float(data_5[x][3])
+    totalGPUUsage = totalGPUUsage + float(data_5[x][4])
+    avgResponseTime = avgResponseTime + float(data_5[x][5])
+    avgResponseFactor = avgResponseFactor + float(data_5[x][6])
+    GPUUsagePercentage = GPUUsagePercentage + float(data_5[x][7])
+    avgJobPercentage = avgJobPercentage + float(data_5[x][8])
+    GPUScheduleOverhead = GPUScheduleOverhead + float(data_5[x][10])
+    AvgSchedulerOverhead = AvgSchedulerOverhead + float(data_5[x][11])
 
-avgJobsScheduled = float(avgJobsScheduled)/row_count;
-avgJobs = float(avgJobs)/row_count;
-avgProc = float(avgProc)/row_count;
-avgExec = float(avgExec)/row_count;
-totalGPUUsage = float(totalGPUUsage)/row_count;
-avgResponseTime = float(avgResponseTime)/row_count;
-avgResponseFactor = float(avgResponseFactor)/row_count;
-GPUUsagePercentage = float(GPUUsagePercentage)/row_count;
-avgJobPercentage = float(avgJobPercentage)/row_count;
-GPUScheduleOverhead = float(GPUScheduleOverhead)/row_count;
-AvgSchedulerOverhead = float(AvgSchedulerOverhead)/row_count;
+avgJobsScheduled = float(avgJobsScheduled)/row_count
+avgJobs = float(avgJobs)/row_count
+avgProc = float(avgProc)/row_count
+avgExec = float(avgExec)/row_count
+totalGPUUsage = float(totalGPUUsage)/row_count
+avgResponseTime = float(avgResponseTime)/row_count
+avgResponseFactor = float(avgResponseFactor)/row_count
+GPUUsagePercentage = float(GPUUsagePercentage)/row_count
+avgJobPercentage = float(avgJobPercentage)/row_count
+GPUScheduleOverhead = float(GPUScheduleOverhead)/row_count
+AvgSchedulerOverhead = float(AvgSchedulerOverhead)/row_count
 
-sys.stdout = open(outputDirectory+'/Mode5-SchedulerResults.csv','a')
+sys.stdout = open(outputDirectory+'/Mode5-SchedulerResults.csv', 'a')
 print str(avgReleaseLambda)+','+str(avgJobs)+','+str(avgJobsScheduled)+','+str(avgJobPercentage)+','\
-+str(avgProc)+','+str(avgExec)+','+str(totalGPUUsage)+','+str(GPUUsagePercentage)+','\
-+str(avgResponseTime)+','+str(avgResponseFactor)+','\
-+str(GPUScheduleOverhead)+','+str(AvgSchedulerOverhead)
-sys.stdout = open(outputDirectory+'/'+fileName+'-SchedulerResults.html','a')
+    + str(avgProc)+','+str(avgExec)+','+str(totalGPUUsage)+','+str(GPUUsagePercentage)+','\
+    + str(avgResponseTime)+','+str(avgResponseFactor)+','\
+    + str(GPUScheduleOverhead)+','+str(AvgSchedulerOverhead)
+sys.stdout = open(outputDirectory+'/'+fileName+'-SchedulerResults.html', 'a')
 
 print"\t\t\t<tr>"
 print"\t\t\t\t<td><center>Mode 5</center></td>"

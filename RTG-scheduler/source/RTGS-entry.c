@@ -3,8 +3,8 @@
 *      Author: Kiriti Nagesh Gowda
 */
 
-#include"RTGS.h"
-#include"RTGS_Global.h"
+#include "RTGS.h"
+#include "RTGS_Global.h"
 
 /**********************************************************************************************************
 usage information
@@ -73,7 +73,7 @@ static void show_usage()
 /**********************************************************************************************************
 Program Entry
 ***********************************************************************************************************/
-int main(int argc, char * argv[])
+int main(int argc, char *argv[])
 {
 	RTGS_Status status = RTGS_SUCCESS;
 	bool simulation = true, hardwareSupport = false;
@@ -82,7 +82,7 @@ int main(int argc, char * argv[])
 	int schedulerMode = 0;
 	int error = 0;
 
-	// global vaiable intitialize 
+	// global vaiable intitialize
 	GLOBAL_RTGS_MODE = -1;
 	GLOBAL_KERNEL_FILE_NAME = NULL;
 	GLOBAL_MAX_PROCESSORS = -1;
@@ -91,7 +91,8 @@ int main(int argc, char * argv[])
 	// get default debug msg control
 	GLOBAL_RTGS_DEBUG_MSG = 1;
 	char textBuffer[1024];
-	if (RTGS_GetEnvironmentVariable("RTGS_DEBUG_MSG", textBuffer, sizeof(textBuffer))) {
+	if (RTGS_GetEnvironmentVariable("RTGS_DEBUG_MSG", textBuffer, sizeof(textBuffer)))
+	{
 		GLOBAL_RTGS_DEBUG_MSG = atoi(textBuffer);
 	}
 
@@ -108,10 +109,12 @@ int main(int argc, char * argv[])
 			{
 				printf("\nMissing Simulation Value on command-line. Scheduler will run Simulation by Default\n");
 			}
-			else {
+			else
+			{
 				arg++;
 				int value = atoi(argv[arg]);
-				if(!value){
+				if (!value)
+				{
 					simulation = false;
 					printf("\nSimulation Turned Off. Make sure the scheduler is compiled with the right hardware options\n\n");
 				}
@@ -123,14 +126,17 @@ int main(int argc, char * argv[])
 			{
 				printf("\nMissing Hardware option on command-line. Scheduler will run Simulation by Default\n");
 			}
-			else {
+			else
+			{
 				arg++;
 				hardwareMode = argv[arg];
-				if(!strcasecmp(hardwareMode, "AMD") || !strcasecmp(hardwareMode, "NVIDIA")){
+				if (!strcasecmp(hardwareMode, "AMD") || !strcasecmp(hardwareMode, "NVIDIA"))
+				{
 					printf("\nScheduler Offloading GPU Compatible Jobs to - %s GPU\n", hardwareMode);
 					hardwareSupport = true;
 				}
-				else{
+				else
+				{
 					printf("\nERROR: Scheduler GPU Hardware Support only extended to 'AMD' / 'NVIDIA'\n\n");
 					status = RTGS_ERROR_NOT_SUPPORTED;
 					exit(status);
@@ -171,7 +177,8 @@ int main(int argc, char * argv[])
 				printf("Mode 5: Event Aware Schedule with Bias and Improved Bias Prediction\n");
 				schedulerMode = 5;
 			}
-			else {
+			else
+			{
 				arg++;
 				schedulerMode = atoi(argv[arg]);
 			}
@@ -184,7 +191,8 @@ int main(int argc, char * argv[])
 				printf("Default Max Processors: %d\n", MAX_GPU_PROCESSOR);
 				GLOBAL_MAX_PROCESSORS = MAX_GPU_PROCESSOR;
 			}
-			else {
+			else
+			{
 				arg++;
 				GLOBAL_MAX_PROCESSORS = atoi(argv[arg]);
 			}
@@ -196,59 +204,76 @@ int main(int argc, char * argv[])
 				printf("\n\nMissing delay limit percentage for processors Value on command-line. Default Delay Limit Processors will be used\n");
 				printf("Default Delay Schedule Processor limit percentage: %d %%\n", PROCESSOR_LIMIT);
 				int maxProcessorsLocal = 0;
-				if (GLOBAL_MAX_PROCESSORS != -1) maxProcessorsLocal = GLOBAL_MAX_PROCESSORS;
-				else maxProcessorsLocal = MAX_GPU_PROCESSOR;
-				GLOBAL_DELAY_SCHEDULE_PROCESSOR_LIMIT = (int) floor((maxProcessorsLocal * PROCESSOR_LIMIT)/100);
+				if (GLOBAL_MAX_PROCESSORS != -1)
+					maxProcessorsLocal = GLOBAL_MAX_PROCESSORS;
+				else
+					maxProcessorsLocal = MAX_GPU_PROCESSOR;
+				GLOBAL_DELAY_SCHEDULE_PROCESSOR_LIMIT = (int)floor((maxProcessorsLocal * PROCESSOR_LIMIT) / 100);
 			}
-			else {
+			else
+			{
 				arg++;
 				int Percentage = atoi(argv[arg]);
 				float processorsAvailable = 0;
-				if (GLOBAL_MAX_PROCESSORS != -1) { processorsAvailable = (float)GLOBAL_MAX_PROCESSORS; }
-				else{ processorsAvailable = MAX_GPU_PROCESSOR; }
-				float delaylimitProcessors = (float)floor((processorsAvailable * Percentage)/100);
+				if (GLOBAL_MAX_PROCESSORS != -1)
+				{
+					processorsAvailable = (float)GLOBAL_MAX_PROCESSORS;
+				}
+				else
+				{
+					processorsAvailable = MAX_GPU_PROCESSOR;
+				}
+				float delaylimitProcessors = (float)floor((processorsAvailable * Percentage) / 100);
 				GLOBAL_DELAY_SCHEDULE_PROCESSOR_LIMIT = (int)delaylimitProcessors;
 			}
 		}
 	}
 	// check if all the files needed was passed
 	if (error != 2)
-	{	
+	{
 		show_usage();
 		status = RTGS_ERROR_NOT_SUFFICIENT;
 		printf("\nMissing 'Jobs' / 'Release Times' in command-line. Please check help for details\n");
 		exit(status);
 	}
 	// Check opertion modes - Simulation or Hardware Dependent
-	if(hardwareSupport && simulation)
+	if (hardwareSupport && simulation)
 	{
 		show_usage();
 		status = RTGS_ERROR_NOT_COMPATIBLE;
 		printf("\nTurn OFF Simulation to enter GPU offloading mode. Please check help for details\n");
 		exit(status);
 	}
-	else if(hardwareSupport && !simulation){
+	else if (hardwareSupport && !simulation)
+	{
 		status = RTGS_checkGPUReadiness();
-		if(status){
+		if (status)
+		{
 			printf("The Scheduler exited with error code: %d\n", status);
 			exit(status);
 		}
 	}
-	else if(!hardwareSupport && !simulation){
+	else if (!hardwareSupport && !simulation)
+	{
 		status = RTGS_ERROR_NOT_COMPATIBLE;
 		printf("GPU Support Options need to be specified. The Scheduler exited with error code: %d\n", status);
 		exit(status);
 	}
-	else{
+	else
+	{
 		printf("\nSRTG-Scheduler Simulation\n");
 	}
 
 	// profiler  - output name initialize, profiler initialize and shutdown
 	GLOBAL_RTGS_MODE = schedulerMode;
 	GLOBAL_KERNEL_FILE_NAME = jobsListFileName;
-	if(GLOBAL_MAX_PROCESSORS == -1){ GLOBAL_MAX_PROCESSORS = MAX_GPU_PROCESSOR; }
-	if(GLOBAL_DELAY_SCHEDULE_PROCESSOR_LIMIT == -1){ 
-		GLOBAL_DELAY_SCHEDULE_PROCESSOR_LIMIT = (int) floor(GLOBAL_MAX_PROCESSORS * 0.6);
+	if (GLOBAL_MAX_PROCESSORS == -1)
+	{
+		GLOBAL_MAX_PROCESSORS = MAX_GPU_PROCESSOR;
+	}
+	if (GLOBAL_DELAY_SCHEDULE_PROCESSOR_LIMIT == -1)
+	{
+		GLOBAL_DELAY_SCHEDULE_PROCESSOR_LIMIT = (int)floor(GLOBAL_MAX_PROCESSORS * 0.6);
 	}
 	PROFILER_FILE_INITIALIZE(schedulerMode, jobsListFileName);
 	PROFILER_INITIALIZE();
@@ -261,10 +286,12 @@ int main(int argc, char * argv[])
 	PROFILER_STOP(SRTG, RTG_Schedule)
 	PROFILER_SHUTDOWN();
 
-	if (status != RTGS_SUCCESS) {
+	if (status != RTGS_SUCCESS)
+	{
 		printf("The Scheduler Failed with error code: %d\n", status);
 	}
-	else {
+	else
+	{
 		int64_t freq = RTGS_GetClockFrequency();
 		float factor = 1000.0f / (float)freq; // to convert clock counter to ms
 		float Scheduler_time = (float)((end_t - start_t) * factor);

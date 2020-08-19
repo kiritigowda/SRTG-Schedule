@@ -5,7 +5,7 @@ import random
 import collections
 
 opts, args = getopt.getopt(sys.argv[1:], 'd:s:n:r:o:')
- 
+
 JobSetDirectory = ''
 jobSetName = ''
 numJobSet = -1
@@ -20,16 +20,16 @@ for opt, arg in opts:
     elif opt == '-n':
         numJobSet = int(arg)
     elif opt == '-r':
-    	RTGSDirectory = arg
+        RTGSDirectory = arg
     elif opt == '-o':
-    	OutputDirectory = arg
+        OutputDirectory = arg
 
 if JobSetDirectory == '' or jobSetName == '' or numJobSet == -1 or RTGSDirectory == '' or OutputDirectory == '':
-    print('Invalid command line arguments. -d [testSet Directory] ' \
-          				                        '-s [job set name] ' \
-          				                        '-n [number of jobs in the set] ' \
-          				                        '-r [RTG Scheduler Location]  ' \
-          				                        '-o [output directory]')
+    print('Invalid command line arguments. -d [testSet Directory] '
+          '-s [job set name] '
+          '-n [number of jobs in the set] '
+          '-r [RTG Scheduler Location]  '
+          '-o [output directory]')
     exit()
 
 if not os.path.exists(JobSetDirectory):
@@ -45,5 +45,6 @@ output_dir = os.path.expanduser(OutputDirectory)
 
 # num job sets required to be created
 for s in range(numJobSet):
-	os.system(exe_dir+'RTG-scheduler.exe --j '+jobs_dir+jobSetName+'-'+str(s)+'-jobs.txt --rt '+jobs_dir+jobSetName+'-'+str(s)+'-releaseTimes.txt --m 99 >> '+output_dir+'outputSummary-'+str(s)+'.txt')
-	os.system('mv '+exe_dir+'RTGS-Summary '+output_dir+'RTGS-Summary-'+str(s));
+    os.system(exe_dir+'RTG-scheduler.exe --j '+jobs_dir+jobSetName+'-'+str(s)+'-jobs.txt --rt '+jobs_dir +
+              jobSetName+'-'+str(s)+'-releaseTimes.txt --m 99 >> '+output_dir+'outputSummary-'+str(s)+'.txt')
+    os.system('mv '+exe_dir+'RTGS-Summary '+output_dir+'RTGS-Summary-'+str(s))
