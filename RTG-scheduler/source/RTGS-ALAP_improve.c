@@ -3,30 +3,31 @@
 *      Author: Kiriti Nagesh Gowda
 */
 
-#include "RTGS.h"
+#include"RTGS.h"
 
-int ALAP_improve(
+int ALAP_improve
+(
 	jobAttributes *jobAttributesList,
 	int jobNumber,
 	int present_time,
 	int processors_available,
 	scheduledResourceNode **processorsAllocatedList,
-	scheduledResourceNode **jobScheduledQueueList)
+	scheduledResourceNode **jobScheduledQueueList
+)
 {
 	PROFILER_START(SRTG, ALAP_improve)
-
-	if (GLOBAL_preScheduleList == NULL)
-	{
+	
+	if (GLOBAL_preScheduleList == NULL) {
 		printf("As Late As Possible Improved (ALAP-I) -- Job:%d BAD ENTRY\n", jobNumber);
 		return RTGS_FAILURE;
 	}
-	if (GLOBAL_RTGS_DEBUG_MSG > 2)
-	{
+	if (GLOBAL_RTGS_DEBUG_MSG > 2) {
 		printf("As Late As Possible Improved (ALAP-I) -- Job-%d is verified, ALAP IMPROVED called\n", jobNumber);
 	}
 
 	scheduledResourceNode *localJobScheduledQueueList = *jobScheduledQueueList;
 	genericBackupNode *localPreScheduleList = GLOBAL_preScheduleList;
+
 
 	if (localJobScheduledQueueList->jobNumber != MULTIPLE_JOBS_SCHEDULED)
 	{
@@ -34,8 +35,7 @@ int ALAP_improve(
 			processors_available >= localPreScheduleList->processors_requested)
 		{
 			int jobImproveID = localJobScheduledQueueList->jobNumber;
-			if (GLOBAL_RTGS_DEBUG_MSG > 2)
-			{
+			if (GLOBAL_RTGS_DEBUG_MSG > 2) {
 				printf("As Late Aa Possible Improved (ALAP-I) -- Job-%d is verified for ALAP IMPROVED scheduling\n", jobImproveID);
 				printf("ALAP-I -- GLOBAL_preScheduleList->data: %d && jobScheduledQueueList: %d\n", localPreScheduleList->data, localJobScheduledQueueList->data);
 			}
@@ -53,7 +53,7 @@ int ALAP_improve(
 	}
 	else
 	{
-		if (localPreScheduleList->data == localJobScheduledQueueList->data &&
+		if (localPreScheduleList->data == localJobScheduledQueueList->data && 
 			processors_available >= localJobScheduledQueueList->processors_allocated)
 		{
 			scheduledResourceNode *t1, *t2;
@@ -70,8 +70,7 @@ int ALAP_improve(
 				if (jobImproveID == local_pre->jobNumber &&
 					local_pre->data == t1->data)
 				{
-					if (GLOBAL_RTGS_DEBUG_MSG > 2)
-					{
+					if (GLOBAL_RTGS_DEBUG_MSG > 2) {
 						printf("As Late Aa Possible Improved (ALAP-I) -- Job-%d is verified for ALAP IMPROVED scheduling\n", jobImproveID);
 						printf("ALAP-I -- GLOBAL_preScheduleList->data: %d && jobScheduledQueueList: %d\n", localPreScheduleList->data, t1->data);
 					}

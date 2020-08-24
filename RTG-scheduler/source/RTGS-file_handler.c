@@ -3,7 +3,7 @@
 *      Author: Kiriti Nagesh Gowda
 */
 
-#include "RTGS.h"
+#include"RTGS.h"
 
 #define LINE_SIZE_MAX 1024
 
@@ -12,14 +12,12 @@ int get_job_information(jobAttributes *kernelInfoList, const char *jobsListFileN
 {
 	PROFILER_START(SRTG, get_job_information)
 
-	FILE *fp = fopen(jobsListFileName, "r");
-	if (fp == NULL)
-	{
+	FILE * fp = fopen(jobsListFileName, "r");
+	if (fp == NULL) {
 		printf("ERROR::get_job_information - error while opening the file -- %s\n", jobsListFileName);
 		return RTGS_FAILURE;
 	}
-	if (GLOBAL_RTGS_DEBUG_MSG > 1)
-	{
+	if (GLOBAL_RTGS_DEBUG_MSG > 1) {
 		printf("Jobs Info File -- %s\n", jobsListFileName);
 	}
 
@@ -29,10 +27,7 @@ int get_job_information(jobAttributes *kernelInfoList, const char *jobsListFileN
 
 	while (fgets(kernelLine, LINE_SIZE_MAX, fp) != NULL)
 	{
-		if (kernelLine[0] == 'J')
-		{
-			continue;
-		} // skip headers
+		if (kernelLine[0] == 'J'){ continue; } // skip headers
 
 		int j = 0, ctr = 0;
 		for (int i = 0; i <= (strlen(kernelLine)); i++)
@@ -40,8 +35,8 @@ int get_job_information(jobAttributes *kernelInfoList, const char *jobsListFileN
 			if (kernelLine[i] == ',' || kernelLine[i] == '\0')
 			{
 				jobAttributes[ctr][j] = '\0';
-				ctr++; //for next job info
-				j = 0; //for next job info, init index to 0
+				ctr++;  //for next job info
+				j = 0;  //for next job info, init index to 0
 			}
 			else
 			{
@@ -49,22 +44,19 @@ int get_job_information(jobAttributes *kernelInfoList, const char *jobsListFileN
 				j++;
 			}
 
-			if (ctr > 5)
-			{
+			if (ctr > 5) {
 				printf("ERROR:get_job_information - Job Info File ERROR -- RTGS_ERROR_INVALID_PARAMETERS-- count: %d\n", ctr);
 				return RTGS_ERROR_INVALID_PARAMETERS;
 			}
 		}
 
-		if (ctr != 5)
-		{
+		if (ctr != 5) {
 			printf("ERROR::get_job_information - Job Info File ERROR -- RTGS_ERROR_NOT_SUFFICIENT -- count: %d\n", ctr);
 			return RTGS_ERROR_NOT_SUFFICIENT;
 		}
 
 		kernel_ID = atoi(jobAttributes[0]);
-		if (kernel_ID < 0)
-		{
+		if (kernel_ID < 0) {
 			printf("ERROR::get_job_information - Job ID needs to be in the range 0 - N\n");
 			return RTGS_ERROR_INVALID_PARAMETERS;
 		}
@@ -80,20 +72,19 @@ int get_job_information(jobAttributes *kernelInfoList, const char *jobsListFileN
 	return num_kernels;
 }
 
+
 /* The Function is to read the time frames in which these Jobs are released */
 int get_job_release_times(jobReleaseInfo *releaseTimeInfo, const char *releaseTimeFilename)
 {
 	PROFILER_START(SRTG, get_job_release_times)
 
-	FILE *fp = fopen(releaseTimeFilename, "r");
-	if (fp == NULL)
-	{
+	FILE * fp = fopen(releaseTimeFilename, "r");
+	if (fp == NULL) {
 		printf("ERROR::get_job_release_times - error while opening the file -- %s\n", releaseTimeFilename);
 		return RTGS_FAILURE;
 	}
 
-	if (GLOBAL_RTGS_DEBUG_MSG > 1)
-	{
+	if (GLOBAL_RTGS_DEBUG_MSG > 1) {
 		printf("Release Times Info File -- %s\n", releaseTimeFilename);
 	}
 
@@ -103,10 +94,7 @@ int get_job_release_times(jobReleaseInfo *releaseTimeInfo, const char *releaseTi
 
 	while (fgets(kernelLine, LINE_SIZE_MAX, fp) != NULL)
 	{
-		if (kernelLine[0] == 'J')
-		{
-			continue;
-		} // skip headers
+		if (kernelLine[0] == 'J'){ continue; } // skip headers
 
 		int j = 0, ctr = 0;
 		for (int i = 0; i <= (strlen(kernelLine)); i++)
@@ -114,7 +102,7 @@ int get_job_release_times(jobReleaseInfo *releaseTimeInfo, const char *releaseTi
 			if (kernelLine[i] == ',' || kernelLine[i] == '\0')
 			{
 				jobAttributes[ctr][j] = '\0';
-				ctr++; //for next job release info
+				ctr++;  //for next job release info
 				j = 0;
 			}
 			else
@@ -123,22 +111,19 @@ int get_job_release_times(jobReleaseInfo *releaseTimeInfo, const char *releaseTi
 				j++;
 			}
 
-			if (ctr > 2)
-			{
+			if (ctr > 2) {
 				printf("ERROR:get_job_release_times - Job Release Info File ERROR -- RTGS_ERROR_INVALID_PARAMETERS-- count: %d\n", ctr);
 				return RTGS_ERROR_INVALID_PARAMETERS;
 			}
 		}
 
-		if (ctr != 2)
-		{
+		if (ctr != 2) {
 			printf("ERROR::get_job_release_times - Job Release Info File ERROR -- RTGS_ERROR_NOT_SUFFICIENT -- count: %d\n", ctr);
 			return RTGS_ERROR_NOT_SUFFICIENT;
 		}
 
 		releaseTime = atoi(jobAttributes[0]);
-		if (releaseTime < 0)
-		{
+		if (releaseTime < 0) {
 			printf("ERROR::get_job_release_times - Job Release time needs to be in the range 0 - N\n");
 			return RTGS_ERROR_INVALID_PARAMETERS;
 		}

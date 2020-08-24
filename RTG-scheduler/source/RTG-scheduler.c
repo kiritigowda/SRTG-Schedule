@@ -2,7 +2,7 @@
 * RTG-scheduler.c
 *      Author: Kiriti Nagesh Gowda
 */
-#include "RTGS.h"
+#include"RTGS.h"
 
 /**********************************************************************************************************
 Scheduler Main - Mode Selector
@@ -11,8 +11,7 @@ int scheduler_main(char *jobsListFileName, char *releaseTimeFilename, int schedu
 {
 	//PROFILER_START(SRTG, scheduler_main)
 	RTGS_Status status = RTGS_SUCCESS;
-	switch (schedulerMode)
-	{
+	switch (schedulerMode) {
 	case 1:
 		status = RTGS_mode_1(jobsListFileName, releaseTimeFilename);
 		break;
