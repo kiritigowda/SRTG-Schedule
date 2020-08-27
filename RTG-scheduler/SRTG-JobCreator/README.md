@@ -1,6 +1,6 @@
 # Soft Real-Time GPU - Job Creator
 
-**SRTG-JobCreator** is comprehensive job set creation tool. The tool generates aperiodic soft-real-time job sets and associated data based on scheduler parameters.
+**SRTG-JobCreator** is a comprehensive job set creation tool. The tool generates aperiodic soft-real-time job sets and associated data based on scheduler parameters.
 
 ## Scheduler Parameters 
 * Job Arrival Rate - `Lambda` 
