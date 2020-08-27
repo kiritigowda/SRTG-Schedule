@@ -244,12 +244,14 @@ int main(int argc, char * argv[])
 	}
 
 	// profiler  - output name initialize, profiler initialize and shutdown
+	if(schedulerMode == 0){ schedulerMode = 5;}
 	GLOBAL_RTGS_MODE = schedulerMode;
 	GLOBAL_KERNEL_FILE_NAME = jobsListFileName;
 	if(GLOBAL_MAX_PROCESSORS == -1){ GLOBAL_MAX_PROCESSORS = MAX_GPU_PROCESSOR; }
 	if(GLOBAL_DELAY_SCHEDULE_PROCESSOR_LIMIT == -1){ 
-		GLOBAL_DELAY_SCHEDULE_PROCESSOR_LIMIT = (int) floor(GLOBAL_MAX_PROCESSORS * 0.6);
+		GLOBAL_DELAY_SCHEDULE_PROCESSOR_LIMIT = (int) floor(GLOBAL_MAX_PROCESSORS * 0.75);
 	}
+
 	PROFILER_FILE_INITIALIZE(schedulerMode, jobsListFileName);
 	PROFILER_INITIALIZE();
 	PROFILER_START(SRTG, RTG_Schedule)
