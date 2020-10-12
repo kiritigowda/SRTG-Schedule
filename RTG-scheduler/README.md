@@ -75,7 +75,7 @@ RTG-scheduler [options] --j <jobs_file.csv>
                         --p <option> 
                         --d <option> 
                         --simulation <1/0>
-                        --hardware <AMD/NVIDIA>
+                        --gpu <AMD/NVIDIA>
 ```
 ### Linux / MAC OS X
 ```
@@ -85,7 +85,7 @@ RTG-scheduler [options] --j <jobs_file.csv>
                           --p <option> 
                           --d <option>
                           --simulation <1/0>
-                          --hardware <AMD/NVIDIA>
+                          --gpu <AMD/NVIDIA>
 ```
 
 ### Scheduler Options Supported
@@ -102,7 +102,7 @@ RTG-scheduler [options] --j <jobs_file.csv>
         --p/--maxProcessors        -- Max processors available on the GPU [optional - default:16]
         --d/--delayLimitPercentage -- Delay Schedule processor limit in percentage [optional - default:60]
         --s/--simulation 	   -- simulation mode turn ON/OFF [optional - default:ON]
-        --h/--hardware 	           -- Jobs Scheduled on hardware <AMD/NVIDIA> - [optional - default:OFF]
+        --g/--gpu 	           -- Jobs Scheduled on hardware <AMD/NVIDIA> - [optional - default:OFF]
 ````
 
 #### A-periodic Jobs -- The Jobs File is the list of Jobs to be scheduled: <jobs_file.csv>
