@@ -42,26 +42,31 @@ row_count_4 = 0
 row_count_5 = 0
 with open(inputDirectory+'RTGS-Mode-1-Summary.csv') as mode1:
     reader_1 = csv.reader(mode1)
+    next(reader_1)
     data_1 = [r for r in reader_1]
     row_count_1 = len(data_1)
 
 with open(inputDirectory+'RTGS-Mode-2-Summary.csv') as mode2:
     reader_2 = csv.reader(mode2)
+    next(reader_2)
     data_2 = [r for r in reader_2]
     row_count_2 = len(data_2)
 
 with open(inputDirectory+'RTGS-Mode-3-Summary.csv') as mode3:
     reader_3 = csv.reader(mode3)
+    next(reader_3)
     data_3 = [r for r in reader_3]
     row_count_3 = len(data_3)
 
 with open(inputDirectory+'RTGS-Mode-4-Summary.csv') as mode4:
     reader_4 = csv.reader(mode4)
+    next(reader_4)
     data_4 = [r for r in reader_4]
     row_count_4 = len(data_4)
 
 with open(inputDirectory+'RTGS-Mode-5-Summary.csv') as mode5:
     reader_5 = csv.reader(mode5)
+    next(reader_5)
     data_5 = [r for r in reader_5]
     row_count_5 = len(data_5)
 
