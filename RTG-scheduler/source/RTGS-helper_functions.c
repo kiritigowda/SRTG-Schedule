@@ -306,7 +306,7 @@ int RTGS_PrintScheduleSummary(int mode, int maxKernels, jobAttributes *kernelInf
 			printf("ERROR: unable to create '%s'\n", pModeSummaryFile);
 			return RTGS_ERROR_NO_RESOURCES;
 		}
-		fprintf(fms, "GPU Jobs Scheduled, Max Jobs, Avg Processor Usage, Avg Exec Time, GPU Usage Time, Response Time Avg, Response Factor Avg, GPU Time Percentage, Job Scheduled Percentage, Release Lambda, GPU Jobs Scheduler OverHead, Avg Scheduler OverHead All\n");
+		fprintf(fms, "Total Jobs, Job Arrival Rate - Lambda, Jobs Scheduled on GPUs, Job Scheduled Percentage, Avg GCUs Requested - Accepted Jobs, Avg Exec Time - Accepted Jobs, Response by Execution Time Avg, Response time by Relative deadline Avg, GPU Usage Time - Accepted Jobs, GPU Time Requested - All Jobs, Avg Scheduler OverHead - Accepted Jobs, Avg Scheduler OverHead - All Jobs\n");
 		fclose(fms);
 	}
 #endif
@@ -485,11 +485,11 @@ int RTGS_PrintScheduleSummary(int mode, int maxKernels, jobAttributes *kernelInf
 		fclose(fs);
 	}
 
-	float avgProcessorUsage = 0, avgExecTime = 0, gpuJobs = 0, totalJobs = 0;
-	float GPU_usageTime = 0, responseTimeAvg = 0, responseFactorAvg = 0;
-	float totalGPUUsage = 0, maxReleaseTime = 0;
-	float GPUJobsSchedulerOverHead = 0, avgSchedulerOverHeadAll = 0;
-
+	float avgProcessorReq = 0, avgExecTime = 0;
+	float GPU_usageTime = 0, responseByExecutionTimeAvg = 0, responseByRelativeDeadlineAvg = 0;
+	float totalGPUUsageRequested = 0, maxReleaseTime = 0;
+	float GPUJobsSchedulerOverHead = 0, avgSchedulerOverHead = 0;
+	// review all jobs
 	for (int i = 0; i < maxKernels; i++)
 	{
 		if (maxReleaseTime < (float)kernelInfoList[i].release_time)
@@ -500,29 +500,30 @@ int RTGS_PrintScheduleSummary(int mode, int maxKernels, jobAttributes *kernelInf
 		float maxProcessors = GLOBAL_MAX_PROCESSORS;
 		if (kernelInfoList[i].schedule_hardware == 1)
 		{
-			avgProcessorUsage += kernelInfoList[i].processor_req;
+			avgProcessorReq += kernelInfoList[i].processor_req;
 			avgExecTime += kernelInfoList[i].execution_time;
-			float response = (float)kernelInfoList[i].completion_time - kernelInfoList[i].release_time;
-			float totalTime = (float)kernelInfoList[i].deadline - kernelInfoList[i].release_time;
-			responseTimeAvg += response;
-			responseFactorAvg += response / totalTime;
+			float response = (float) kernelInfoList[i].completion_time - kernelInfoList[i].release_time;
+			float relativeDeadline = (float) kernelInfoList[i].deadline - kernelInfoList[i].release_time;
+			responseByExecutionTimeAvg += (response / kernelInfoList[i].execution_time);
+			responseByRelativeDeadlineAvg += (response / relativeDeadline);
 			GPU_usageTime += ((processors / maxProcessors) * kernelInfoList[i].execution_time);
 			GPUJobsSchedulerOverHead += kernelInfoList[i].schedule_overhead;
 		}
-		totalGPUUsage += ((processors / maxProcessors) * kernelInfoList[i].execution_time);
-		avgSchedulerOverHeadAll += kernelInfoList[i].schedule_overhead;
+		totalGPUUsageRequested += ((processors / maxProcessors) * kernelInfoList[i].execution_time);
+		avgSchedulerOverHead += kernelInfoList[i].schedule_overhead;
 	}
-	avgProcessorUsage = avgProcessorUsage / GLOBAL_GPU_JOBS;
-	avgExecTime = avgExecTime / GLOBAL_GPU_JOBS;
-	responseTimeAvg = responseTimeAvg / GLOBAL_GPU_JOBS;
-	responseFactorAvg = responseFactorAvg / GLOBAL_GPU_JOBS;
-	float GPUTimePercentage = (GPU_usageTime / totalGPUUsage) * 100;
-	gpuJobs = (float)GLOBAL_GPU_JOBS;
-	totalJobs = (float)maxKernels;
-	float jobScheduledPercentage = (gpuJobs / maxKernels) * 100;
-	float releaseLambda = totalJobs / maxReleaseTime;
-	avgSchedulerOverHeadAll = avgSchedulerOverHeadAll / totalJobs;
+	// summary items
+	int totalJobsReviewed = maxKernels;
+	float totalJobs = (float)totalJobsReviewed;
+	float gpuJobs = (float)GLOBAL_GPU_JOBS;
+	float jobArrivalRateLambda = totalJobs / maxReleaseTime;
+	float jobScheduledPercentage = (gpuJobs / totalJobs) * 100;
+	float avgGCUsRequested = avgProcessorReq / gpuJobs;
+	avgExecTime = avgExecTime / gpuJobs;
+	responseByExecutionTimeAvg = responseByExecutionTimeAvg / gpuJobs;
+	responseByRelativeDeadlineAvg = responseByRelativeDeadlineAvg / gpuJobs;
 	GPUJobsSchedulerOverHead = GPUJobsSchedulerOverHead / gpuJobs;
+	avgSchedulerOverHead =  avgSchedulerOverHead / totalJobs;
 
 	FILE *fms = fopen(pModeSummaryFile, "a");
 	if (!fms)
@@ -530,9 +531,10 @@ int RTGS_PrintScheduleSummary(int mode, int maxKernels, jobAttributes *kernelInf
 		printf("ERROR: unable to create '%s'\n", pModeSummaryFile);
 		return RTGS_ERROR_NO_RESOURCES;
 	}
-	fprintf(fms, "%d,%d,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.6f,%.6f\n", GLOBAL_GPU_JOBS, maxKernels, avgProcessorUsage,
-			avgExecTime, GPU_usageTime, responseTimeAvg, responseFactorAvg, GPUTimePercentage, jobScheduledPercentage,
-			releaseLambda, GPUJobsSchedulerOverHead, avgSchedulerOverHeadAll);
+	fprintf(fms, "%d, %.4f, %d, %.4f, %.4f, %.4f, %.4f, %.4f, %.4f, %.4f, %.6f, %.6f\n", totalJobsReviewed, 
+			jobArrivalRateLambda, GLOBAL_GPU_JOBS, jobScheduledPercentage, avgGCUsRequested, avgExecTime, 
+			responseByExecutionTimeAvg, responseByRelativeDeadlineAvg, GPU_usageTime, totalGPUUsageRequested,
+			GPUJobsSchedulerOverHead, avgSchedulerOverHead);
 	fclose(fms);
 	return RTGS_SUCCESS;
 }
