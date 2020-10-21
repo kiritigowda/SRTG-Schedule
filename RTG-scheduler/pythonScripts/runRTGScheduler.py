@@ -60,14 +60,13 @@ exe_dir = os.path.expanduser(RTGSDirectory)
 output_dir = os.path.expanduser(OutputDirectory)
 
 if not os.path.exists(jobs_dir):
-    print("ERROR No Job Directory")
+    print("ERROR - No Job Directory")
     exit()
 if not os.path.exists(exe_dir):
-    print("ERROR No RTG Scheduler Directory")
+    print("ERROR - No RTG Scheduler Directory")
     exit()
 if not os.path.exists(output_dir):
-    print("ERROR No Output Directory")
-    exit()
+    os.makedirs(output_dir)
 
 # num job sets required to be created
 for s in range(numJobSet):
