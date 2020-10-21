@@ -18,11 +18,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-import collections
-import random
-import os
-import sys
 import argparse
+import collections
+import os
+import random
+import sys
+
 __author__ = "Kiriti Nagesh Gowda"
 __copyright__ = "Copyright 2018 - 2020, Kiriti Nagesh Gowda - SRTG-Scheduler"
 __license__ = "MIT"
@@ -82,6 +83,9 @@ if jobBias not in ('even', 'odd', 'mixed'):
 if releaseBias not in ('single', 'multiple'):
     print("ERROR: Job Release bias [options: single, or multiple]")
     exit()
+
+# help print
+print("\nSRTG-JobCreator - Synthetic Aperiodic Job Creator V-"+__version__+"\n")
 
 # setup output directory
 jobCreatorDir = os.path.expanduser(outputDirectory)
