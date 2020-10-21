@@ -67,7 +67,7 @@ scheduleBiasVar = int((scheduleBias/100) * maxGCUs)
 
 # validate arguments
 if lambdaVar <= 0 or lambdaVar > 5:
-    print("ERROR: Job arrival rate - lambda [type:FLOAT range:0.001 to 1.0]")
+    print("ERROR: Job arrival rate - lambda [type:FLOAT range:0.001 to 5.0]")
     exit()
 
 if scheduleBias <= 0 or scheduleBias > 100:
