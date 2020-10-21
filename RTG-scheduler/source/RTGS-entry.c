@@ -271,7 +271,7 @@ int main(int argc, char * argv[])
 		float factor = 1000.0f / (float)freq; // to convert clock counter to ms
 		float Scheduler_time = (float)((end_t - start_t) * factor);
 		printf("RTG-Scheduler Sucessful\n");
-		printf("Total Time Taken to Schedule  - %0.2f ms\n", Scheduler_time);
+		printf("Total Time Taken by RTG Scheduler  - %0.2f ms\n", Scheduler_time);
 	}
 
 	return status;
