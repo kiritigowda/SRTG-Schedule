@@ -44,11 +44,13 @@ parser.add_argument('--num_jobs',   	type=int, 	default=100,
 parser.add_argument('--max_gcu',    	type=int, 	default=16,
                     help='Maximum GCUs available on the system [type:INT range:1 to N] - optional (default:16)')
 parser.add_argument('--job_lambda',     type=float, default=0.5,
-                    help='Job arrival rate: lambda [type:FLOAT range:0.001 to 1.0] - optional (default:0.5)')
+                    help='Job arrival rate: lambda [type:FLOAT range:0.001 to 5.0] - optional (default:0.5)')
 parser.add_argument('--schedule_bias',	type=int, 	default=60,
                     help='Delay schedule GCU limit percentage [type:INT range:1 to 100] - optional (default:60)')
 parser.add_argument('--job_bias',   	type=str, 	default='even',
                     help='Job GCU request bias [even, odd, or mixed] - optional (default:even)')
+parser.add_argument('--release_bias',   type=str, 	default='single',
+                    help='Job Release bias [single, or multiple] - optional (default:single)')
 args = parser.parse_args()
 
 # get arguments
@@ -60,10 +62,11 @@ maxGCUs = args.max_gcu
 lambdaVar = args.job_lambda
 scheduleBias = args.schedule_bias
 jobBias = args.job_bias
+releaseBias = args.release_bias
 scheduleBiasVar = int((scheduleBias/100) * maxGCUs)
 
 # validate arguments
-if lambdaVar <= 0 or lambdaVar > 1:
+if lambdaVar <= 0 or lambdaVar > 5:
     print("ERROR: Job arrival rate - lambda [type:FLOAT range:0.001 to 1.0]")
     exit()
 
@@ -74,6 +77,10 @@ if scheduleBias <= 0 or scheduleBias > 100:
 
 if jobBias not in ('even', 'odd', 'mixed'):
     print("ERROR: Job GCU request bias [options: even, odd, or mixed]")
+    exit()
+
+if releaseBias not in ('single', 'multiple'):
+    print("ERROR: Job Release bias [options: single, or multiple]")
     exit()
 
 # setup output directory
@@ -134,9 +141,12 @@ for s in range(numJobSet):
             f.write(str(jobNumber)+','+str(numGCUs)+','+str(executionTime) +
                     ','+str(deadLine)+','+str(lastestTimeSchedulable)+'\n')
             # max of 2 jobs released at any given release time - Scheduler Support for N releases TBD
-            if releaseTime == releaseTime_prev:
+            if releaseBias == 'single':
                 releaseTime = releaseTime + 1
-            releaseTime_prev = releaseTime
+            else:
+                if releaseTime == releaseTime_prev:
+                    releaseTime = releaseTime + 1
+                releaseTime_prev = releaseTime
 
     # create a job release set - jobReleaseTimes.csv
     from collections import Counter
