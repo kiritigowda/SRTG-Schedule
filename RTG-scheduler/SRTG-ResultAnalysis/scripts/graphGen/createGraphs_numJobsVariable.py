@@ -1,34 +1,59 @@
-import os
-import getopt
-import sys
-import random
+# Copyright (c) 2017 - 2020 Kiriti Nagesh Gowda, Inc. All rights reserved.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+
 import collections
+import random
+import os
+import sys
+import argparse
 import csv
+from datetime import date
 
-opts, args = getopt.getopt(sys.argv[1:], 'i:o:f:')
+__author__ = "Kiriti Nagesh Gowda"
+__copyright__ = "Copyright 2018 - 2020, Kiriti Nagesh Gowda - SRTG-Scheduler"
+__license__ = "MIT"
+__version__ = "1.0.1"
+__maintainer__ = "Kiriti Nagesh Gowda"
+__email__ = "Kiritigowda@gmail.com"
+__status__ = "Shipping"
 
-inputDirectory = ''
-outputDirectory = ''
-fileName = ''
+# import arguments
+parser = argparse.ArgumentParser()
+parser.add_argument('--input_directory', type=str, default='',
+                    help='Directory - RTGS_summary directory')
+parser.add_argument('--output_directory', type=str, default='',
+                    help='Directory - directory to save results')
+parser.add_argument('--results_filename', type=str, default='',
+                    help='Results File prefix - results .html file prefix')
+args = parser.parse_args()
 
-for opt, arg in opts:
-    if opt == '-i':
-        inputDirectory = arg
-    elif opt == '-o':
-        outputDirectory = arg
-    elif opt == '-f':
-        fileName = arg
-
+inputDirectory = args.input_directory
+outputDirectory = args.output_directory
+fileName = args.results_filename
 
 if inputDirectory == '' or outputDirectory == '' or fileName == '':
-    print('Invalid command line arguments.\n'
-          '\t\t\t\t-i [input Directory - required]\n'
-          '\t\t\t\t-o [output Directory - required]\n'
-          '\t\t\t\t-f [output file name Directory - required]\n')
+    print("ERROR - NO Arguments Passed, use --h option")
     exit()
 
 if not os.path.exists(inputDirectory):
-    print "ERROR Invalid Input Directory"
+    print("ERROR Invalid Input Directory")
     exit()
 
 if not os.path.exists(outputDirectory):
@@ -40,45 +65,56 @@ row_count_2 = 0
 row_count_3 = 0
 row_count_4 = 0
 row_count_5 = 0
-with open(inputDirectory+'Mode1-SchedulerResults.csv') as mode1:
+with open(inputDirectory+'/mode-1-accum-results.csv') as mode1:
     reader_1 = csv.reader(mode1)
     next(reader_1)
     data_1 = [r for r in reader_1]
     row_count_1 = len(data_1)
 
-with open(inputDirectory+'Mode2-SchedulerResults.csv') as mode2:
+with open(inputDirectory+'/mode-2-accum-results.csv') as mode2:
     reader_2 = csv.reader(mode2)
     next(reader_2)
     data_2 = [r for r in reader_2]
     row_count_2 = len(data_2)
 
-with open(inputDirectory+'Mode3-SchedulerResults.csv') as mode3:
+with open(inputDirectory+'/mode-3-accum-results.csv') as mode3:
     reader_3 = csv.reader(mode3)
     next(reader_3)
     data_3 = [r for r in reader_3]
     row_count_3 = len(data_3)
 
-with open(inputDirectory+'Mode4-SchedulerResults.csv') as mode4:
+with open(inputDirectory+'/mode-4-accum-results.csv') as mode4:
     reader_4 = csv.reader(mode4)
     next(reader_4)
     data_4 = [r for r in reader_4]
     row_count_4 = len(data_4)
 
-with open(inputDirectory+'Mode5-SchedulerResults.csv') as mode5:
+with open(inputDirectory+'/mode-5-accum-results.csv') as mode5:
     reader_5 = csv.reader(mode5)
     next(reader_5)
     data_5 = [r for r in reader_5]
     row_count_5 = len(data_5)
 
 if row_count_1 != row_count_2 or row_count_2 != row_count_3 or row_count_3 != row_count_4 or row_count_4 != row_count_5:
-    print "ERROR: Number of entries in Summary File are different"
+    print("ERROR: Number of entries in Summary File are different")
     exit()
 else:
     row_count = row_count_1
 
+# help print
+print("\nSRTG-ResultAnalysis - Aperiodic Job Release Lambda Analyzer V-"+__version__+"\n")
+
+# date
+today = date.today()
+dateCreated = today.strftime("%b-%d-%Y")
+
+# CLI Print
 orig_stdout = sys.stdout
-sys.stdout = open(outputDirectory+'/'+fileName +
-                  '-SchedulerResultsSummary.html', 'w')
+
+# HTML File
+html_output_file = outputDirectory+'/'+fileName+'-numJobsVariationSummary.html'
+sys.stdout = open(html_output_file, 'w+')
+
 print"<html>"
 print"\t<head>"
 print"\t\t<script type=\"text/javascript\" src=\"https://www.gstatic.com/charts/loader.js\"></script>"
@@ -226,7 +262,14 @@ print"\n"
 print"\t\t</script>"
 print"\t</head>"
 print"\t<body>"
-print'\t\t<br><br><h2><center>Release Time Lambda: 1.0</center></h2><br>'
+# Lambda Calculations
+avgLambda = 0
+for x in range(row_count):
+    avgLambda = avgLambda + data_1[x][0]
+avgLambda = (avgLambda/row_count)
+print'\t\t<br><br><h2><center> SRTG-ResultAnalysis: Aperiodic Job Release Number of Jobs Variation Analyzer </center></h2><br>'
+print'\t\t<br><br><h2><center>Release Time Lambda: '+str(avgLambda)+'</center></h2><br>'
+print'\t\t<br><br><h3><center>Created on: '+dateCreated+'</center></h3><br>'
 print"\t\t<center><div id=\"jobScheduled_chart\" style=\"border: 1px solid #ccc\"></div></center>"
 print"\t\t<center><div id=\"GPUScheduleOverhead_chart\" style=\"border: 1px solid #ccc\"></div></center>"
 print"\t\t<center><div id=\"responseTime_chart\" style=\"border: 1px solid #ccc\"></div></center>"
