@@ -69,4 +69,5 @@ install(TARGETS RTG-scheduler DESTINATION bin)
 
 # Bring in default test data
 FILE(GLOB RTG_TEST_DATA "testData/*.txt")
+FILE(GLOB RTG_TEST_DATA "testData/*.csv")
 file(COPY ${RTG_TEST_DATA} DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/testData/)
