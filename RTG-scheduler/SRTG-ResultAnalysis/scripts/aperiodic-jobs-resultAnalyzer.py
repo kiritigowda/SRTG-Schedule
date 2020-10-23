@@ -24,6 +24,7 @@ import os
 import sys
 import argparse
 import csv
+from datetime import date
 
 __author__ = "Kiriti Nagesh Gowda"
 __copyright__ = "Copyright 2018 - 2020, Kiriti Nagesh Gowda - SRTG-Scheduler"
@@ -100,8 +101,55 @@ if row_count_1 != row_count_2 or row_count_2 != row_count_3 or row_count_3 != ro
 else:
     row_count = row_count_1
 
+# help print
+print("\nSRTG-ResultAnalysis - Aperiodic Job Result Accumulator and Analyzer V-"+__version__+"\n")
+
+# date
+today = date.today()
+dateCreated = today.strftime("%b-%d-%Y")
+
+# output accum file
 orig_stdout = sys.stdout
-sys.stdout = open(outputDirectory+'/'+fileName+'-SchedulerResults.html', 'w')
+result_accum_1 = outputDirectory+'/mode-1-accum-results.csv'
+result_accum_2 = outputDirectory+'/mode-2-accum-results.csv'
+result_accum_3 = outputDirectory+'/mode-3-accum-results.csv'
+result_accum_4 = outputDirectory+'/mode-4-accum-results.csv'
+result_accum_5 = outputDirectory+'/mode-5-accum-results.csv'
+if not os.path.isfile(result_accum_1):
+    sys.stdout = open(result_accum_1, 'w+')
+    print'AVG Lambda, AVG Jobs Released, AVG Jobs Accepted, AVG Jobs Accepted Percentage, \
+        Avg GCUs Requested - Accepted Jobs, Avg Exec Time - Accepted Jobs, Avg Response by Execution Time, \
+        Avg Response by Relative deadline, AVG Total GPU Usage Time - Accepted Jobs, AVG Total GPU Usage Time Requested - All Jobs, \
+        Avg Scheduler OverHead - Accepted Jobs, Avg Scheduler OverHead - All Jobs, Num Job Sets, '+dateCreated
+if not os.path.isfile(result_accum_2):
+    sys.stdout = open(result_accum_2, 'w+')
+    print'AVG Lambda, AVG Jobs Released, AVG Jobs Accepted, AVG Jobs Accepted Percentage, \
+        Avg GCUs Requested - Accepted Jobs, Avg Exec Time - Accepted Jobs, Avg Response by Execution Time, \
+        Avg Response by Relative deadline, AVG Total GPU Usage Time - Accepted Jobs, AVG Total GPU Usage Time Requested - All Jobs, \
+        Avg Scheduler OverHead - Accepted Jobs, Avg Scheduler OverHead - All Jobs, Num Job Sets, '+dateCreated
+if not os.path.isfile(result_accum_3):
+    sys.stdout = open(result_accum_3, 'w+')
+    print'AVG Lambda, AVG Jobs Released, AVG Jobs Accepted, AVG Jobs Accepted Percentage, \
+        Avg GCUs Requested - Accepted Jobs, Avg Exec Time - Accepted Jobs, Avg Response by Execution Time, \
+        Avg Response by Relative deadline, AVG Total GPU Usage Time - Accepted Jobs, AVG Total GPU Usage Time Requested - All Jobs, \
+        Avg Scheduler OverHead - Accepted Jobs, Avg Scheduler OverHead - All Jobs, Num Job Sets, '+dateCreated
+if not os.path.isfile(result_accum_4):
+    sys.stdout = open(result_accum_4, 'w+')
+    print'AVG Lambda, AVG Jobs Released, AVG Jobs Accepted, AVG Jobs Accepted Percentage, \
+        Avg GCUs Requested - Accepted Jobs, Avg Exec Time - Accepted Jobs, Avg Response by Execution Time, \
+        Avg Response by Relative deadline, AVG Total GPU Usage Time - Accepted Jobs, AVG Total GPU Usage Time Requested - All Jobs, \
+        Avg Scheduler OverHead - Accepted Jobs, Avg Scheduler OverHead - All Jobs, Num Job Sets, '+dateCreated
+if not os.path.isfile(result_accum_5):
+    sys.stdout = open(result_accum_5, 'w+')
+    print'AVG Lambda, AVG Jobs Released, AVG Jobs Accepted, AVG Jobs Accepted Percentage, \
+        Avg GCUs Requested - Accepted Jobs, Avg Exec Time - Accepted Jobs, Avg Response by Execution Time, \
+        Avg Response by Relative deadline, AVG Total GPU Usage Time - Accepted Jobs, AVG Total GPU Usage Time Requested - All Jobs, \
+        Avg Scheduler OverHead - Accepted Jobs, Avg Scheduler OverHead - All Jobs, Num Job Sets, '+dateCreated
+
+# HTML File
+html_output_file = outputDirectory+'/'+fileName+'-SchedulerResults.html'
+sys.stdout = open(html_output_file, 'w+')
+
 # HTML Header
 print"<html>"
 print"\t<head>"
@@ -128,7 +176,13 @@ for x in range(row_count):
     else:
         print '\t\t\t\t['+str(x)+','+str(data_1[x][2])+','+str(data_2[x][2])+','+str(data_3[x][2])+','+str(data_4[x][2])+','+str(data_5[x][2])+']'
 print"\t\t\t]);"
-print"\t\t\tvar options = {  title:'Average Jobs Accepted', hAxis: { title: 'JobSet ID'}, vAxis: {title: 'Number of Jobs'}, series: { 0.01: {curveType: 'function'} }, width:1600, height:1000 };"
+print"\t\t\tvar options = { title:'Average Jobs Accepted for GPU Schedule', \
+    titleTextStyle: { fontSize: 28, bold: true}, \
+    hAxis:{ title: 'JobSet ID', titleTextStyle: { fontSize: 24, bold: true}, marginTop: '5'}, \
+    vAxis:{ title: 'Number of Jobs Scheduled', titleTextStyle:{ fontSize: 24, bold: true} }, \
+    series:{ 0:{lineDashStyle: [1, 1]}, 1:{lineDashStyle: [2, 2]}, 2:{lineDashStyle: [4, 4]}, 3:{lineDashStyle: [5, 1, 3] }, 4:{ lineDashStyle: [5, 5]}}, \
+    legend:{ position: 'top', alignment: 'center', textStyle:{ fontSize: 26}}, \
+    width:1600, height:1000 };"
 print"\t\t\tvar chart = new google.visualization.LineChart(document.getElementById('jobScheduled_chart'));"
 print"\t\t\tchart.draw(data, options);}"
 print"\n\n\n"
@@ -150,7 +204,13 @@ for x in range(row_count):
     else:
         print '\t\t\t\t['+str(x)+','+str(data_1[x][3])+','+str(data_2[x][3])+','+str(data_3[x][3])+','+str(data_4[x][3])+','+str(data_5[x][3])+']'
 print"\t\t\t]);"
-print"\t\t\tvar options = {  title:'Job Accepted for GPU Schedule Percentage', hAxis: { title: 'JobSet ID'}, vAxis: {title: 'Jobs Accepted Percentage'}, series: { 0.01: {curveType: 'function'} }, width:1600, height:1000 };"
+print"\t\t\tvar options = { title:'Average Jobs Accepted Percentage for GPU Schedule', \
+    titleTextStyle: { fontSize: 28, bold: true}, \
+    hAxis:{ title: 'JobSet ID', titleTextStyle: { fontSize: 24, bold: true}, marginTop: '5'}, \
+    vAxis:{ title: 'Avg Jobs Scheduled %', titleTextStyle:{ fontSize: 24, bold: true}, minValue: 0, maxValue: 100 }, \
+    series:{ 0:{lineDashStyle: [1, 1]}, 1:{lineDashStyle: [2, 2]}, 2:{lineDashStyle: [4, 4]}, 3:{lineDashStyle: [5, 1, 3] }, 4:{ lineDashStyle: [5, 5]}}, \
+    legend:{ position: 'top', alignment: 'center', textStyle:{ fontSize: 26}}, \
+    width:1600, height:1000 };"
 print"\t\t\tvar chart = new google.visualization.LineChart(document.getElementById('JobScheduledPercentage_chart'));"
 print"\t\t\tchart.draw(data, options);}"
 print"\n\n\n"
@@ -247,7 +307,7 @@ print"\t</head>"
 # Result Body
 print"\t<body>"
 # Summary of results
-print'\t\t<br><br><h1><center> RTG Schedule Summary</center></h2><br>'
+print'\t\t<br><br><h1><center>SRTG-ResultAnalysis: A-Periodic Job Schedule Summary</center></h2><br>'
 print"\t\t<table align=\"center\" style=\"width: 95%\">"
 print"\t\t\t<tr>"
 print"\t\t\t\t<td><center></center></td>"
@@ -275,9 +335,11 @@ GPUUsagePercentage = 0
 avgJobPercentage = 0
 GPUScheduleOverhead = 0
 AvgSchedulerOverhead = 0
+avgReleaseLambda = 0
 
 for x in range(row_count):
     avgJobs = avgJobs + int(data_1[x][0])
+    avgReleaseLambda = avgReleaseLambda + float(data_1[x][1])
     avgJobsAccepted = avgJobsAccepted + float(data_1[x][2])
     avgJobPercentage = avgJobPercentage + float(data_1[x][3])
     avgProc = avgProc + float(data_1[x][4])
@@ -300,6 +362,16 @@ GPUUsagePercentage = float(GPUUsagePercentage)/row_count
 avgJobPercentage = float(avgJobPercentage)/row_count
 GPUScheduleOverhead = float(GPUScheduleOverhead)/row_count
 AvgSchedulerOverhead = float(AvgSchedulerOverhead)/row_count
+avgReleaseLambda = float(avgReleaseLambda)/row_count
+
+# accum results
+sys.stdout = open(result_accum_1, 'a')
+print(str(avgReleaseLambda)+', '+str(avgJobs)+', '+str(avgJobsAccepted)+', '+str(avgJobPercentage)+', '
+      + str(avgProc)+', '+str(avgExec)+', ' +
+      str(avgResponseTime)+', '+str(avgResponseFactor)+', '
+      + str(GPUUsagePercentage)+', '+str(totalGPUUsage)+', '
+      + str(GPUScheduleOverhead)+','+str(AvgSchedulerOverhead)+','+str(row_count))
+sys.stdout = open(html_output_file, 'a')
 
 print"\t\t\t<tr>"
 print"\t\t\t\t<td><center>Mode 1</center></td>"
@@ -353,6 +425,15 @@ avgJobPercentage = float(avgJobPercentage)/row_count
 GPUScheduleOverhead = float(GPUScheduleOverhead)/row_count
 AvgSchedulerOverhead = float(AvgSchedulerOverhead)/row_count
 
+# accum results
+sys.stdout = open(result_accum_2, 'a')
+print(str(avgReleaseLambda)+', '+str(avgJobs)+', '+str(avgJobsAccepted)+', '+str(avgJobPercentage)+', '
+      + str(avgProc)+', '+str(avgExec)+', ' +
+      str(avgResponseTime)+', '+str(avgResponseFactor)+', '
+      + str(GPUUsagePercentage)+', '+str(totalGPUUsage)+', '
+      + str(GPUScheduleOverhead)+','+str(AvgSchedulerOverhead)+','+str(row_count))
+sys.stdout = open(html_output_file, 'a')
+
 print"\t\t\t<tr>"
 print"\t\t\t\t<td><center>Mode 2</center></td>"
 print'\t\t\t\t<td><center>'+str(avgJobs)+'</center></td>'
@@ -404,6 +485,15 @@ GPUUsagePercentage = float(GPUUsagePercentage)/row_count
 avgJobPercentage = float(avgJobPercentage)/row_count
 GPUScheduleOverhead = float(GPUScheduleOverhead)/row_count
 AvgSchedulerOverhead = float(AvgSchedulerOverhead)/row_count
+
+# accum results
+sys.stdout = open(result_accum_3, 'a')
+print(str(avgReleaseLambda)+', '+str(avgJobs)+', '+str(avgJobsAccepted)+', '+str(avgJobPercentage)+', '
+      + str(avgProc)+', '+str(avgExec)+', ' +
+      str(avgResponseTime)+', '+str(avgResponseFactor)+', '
+      + str(GPUUsagePercentage)+', '+str(totalGPUUsage)+', '
+      + str(GPUScheduleOverhead)+','+str(AvgSchedulerOverhead)+','+str(row_count))
+sys.stdout = open(html_output_file, 'a')
 
 print"\t\t\t<tr>"
 print"\t\t\t\t<td><center>Mode 3</center></td>"
@@ -457,6 +547,15 @@ avgJobPercentage = float(avgJobPercentage)/row_count
 GPUScheduleOverhead = float(GPUScheduleOverhead)/row_count
 AvgSchedulerOverhead = float(AvgSchedulerOverhead)/row_count
 
+# accum results
+sys.stdout = open(result_accum_4, 'a')
+print(str(avgReleaseLambda)+', '+str(avgJobs)+', '+str(avgJobsAccepted)+', '+str(avgJobPercentage)+', '
+      + str(avgProc)+', '+str(avgExec)+', ' +
+      str(avgResponseTime)+', '+str(avgResponseFactor)+', '
+      + str(GPUUsagePercentage)+', '+str(totalGPUUsage)+', '
+      + str(GPUScheduleOverhead)+','+str(AvgSchedulerOverhead)+','+str(row_count))
+sys.stdout = open(html_output_file, 'a')
+
 print"\t\t\t<tr>"
 print"\t\t\t\t<td><center>Mode 4</center></td>"
 print'\t\t\t\t<td><center>'+str(avgJobs)+'</center></td>'
@@ -483,11 +582,9 @@ GPUUsagePercentage = 0
 avgJobPercentage = 0
 GPUScheduleOverhead = 0
 AvgSchedulerOverhead = 0
-avgReleaseLambda = 0
 
 for x in range(row_count):
     avgJobs = avgJobs + int(data_5[x][0])
-    avgReleaseLambda = avgReleaseLambda + float(data_5[x][1])
     avgJobsAccepted = avgJobsAccepted + float(data_5[x][2])
     avgJobPercentage = avgJobPercentage + float(data_5[x][3])
     avgProc = avgProc + float(data_5[x][4])
@@ -511,7 +608,14 @@ avgJobPercentage = float(avgJobPercentage)/row_count
 GPUScheduleOverhead = float(GPUScheduleOverhead)/row_count
 AvgSchedulerOverhead = float(AvgSchedulerOverhead)/row_count
 
-avgReleaseLambda = float(avgReleaseLambda)/row_count
+# accum results
+sys.stdout = open(result_accum_5, 'a')
+print(str(avgReleaseLambda)+', '+str(avgJobs)+', '+str(avgJobsAccepted)+', '+str(avgJobPercentage)+', '
+      + str(avgProc)+', '+str(avgExec)+', ' +
+      str(avgResponseTime)+', '+str(avgResponseFactor)+', '
+      + str(GPUUsagePercentage)+', '+str(totalGPUUsage)+', '
+      + str(GPUScheduleOverhead)+','+str(AvgSchedulerOverhead)+','+str(row_count))
+sys.stdout = open(html_output_file, 'a')
 
 print"\t\t\t<tr>"
 print"\t\t\t\t<td><center>Mode 5</center></td>"
