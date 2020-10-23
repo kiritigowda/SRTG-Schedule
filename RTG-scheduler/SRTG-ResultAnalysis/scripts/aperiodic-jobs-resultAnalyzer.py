@@ -308,6 +308,7 @@ print"\t</head>"
 print"\t<body>"
 # Summary of results
 print'\t\t<br><br><h1><center>SRTG-ResultAnalysis: A-Periodic Job Schedule Summary</center></h2><br>'
+print'\t\t<br><br><h3><center>Created on: '+dateCreated+'</center></h3><br>'
 print"\t\t<table align=\"center\" style=\"width: 95%\">"
 print"\t\t\t<tr>"
 print"\t\t\t\t<td><center></center></td>"
