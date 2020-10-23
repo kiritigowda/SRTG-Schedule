@@ -63,7 +63,13 @@ We have developed a comprehensive job set creator tool, SRTG-JobCreator, that ge
 
 ## SRTG-ResultAnalysis
 
-Once the jobs are scheduled and the schedule data is obtained from SRTG-Scheduler, we use a result analysis tool, SRTG-ResultAnalysis to generate relevant data plots and provide insights into the results.
+Once the jobs are scheduled and the schedule data is obtained from SRTG-Scheduler, we use a result analysis tool, [SRTG-ResultAnalysis](SRTG-ResultAnalysis) to generate relevant data plots and provide insights into the results.
+
+<p align="center"><img width="80%" src="SRTG-ResultAnalysis/srtg-results-images/srtg-result-1.png" /></p>
+
+<p align="center"><img width="80%" src="SRTG-ResultAnalysis/srtg-results-images/srtg-result-3.png" /></p>
+
+<p align="center"><img width="80%" src="SRTG-ResultAnalysis/srtg-results-images/srtg-result-4.png" /></p>
 
 ## RTG-Scheduler Usage
 
