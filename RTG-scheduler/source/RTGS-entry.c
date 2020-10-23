@@ -187,8 +187,8 @@ int main(int argc, char *argv[])
 		{
 			if ((arg + 1) == argc)
 			{
-				printf("\n\nMissing Max Processors Value on command-line. Default Max Processors will be used\n");
-				printf("Default Max Processors: %d\n", MAX_GPU_PROCESSOR);
+				printf("\n\nMissing Max GCUs Value on command-line. Default Max GCUs will be used\n");
+				printf("Default Max GCUs: %d\n", MAX_GPU_PROCESSOR);
 				GLOBAL_MAX_PROCESSORS = MAX_GPU_PROCESSOR;
 			}
 			else
@@ -205,9 +205,13 @@ int main(int argc, char *argv[])
 				printf("Default Delay Schedule Processor limit percentage: %d %%\n", PROCESSOR_LIMIT);
 				int maxProcessorsLocal = 0;
 				if (GLOBAL_MAX_PROCESSORS != -1)
+				{
 					maxProcessorsLocal = GLOBAL_MAX_PROCESSORS;
+				}
 				else
+				{
 					maxProcessorsLocal = MAX_GPU_PROCESSOR;
+				}
 				GLOBAL_DELAY_SCHEDULE_PROCESSOR_LIMIT = (int)floor((maxProcessorsLocal * PROCESSOR_LIMIT) / 100);
 			}
 			else
@@ -267,9 +271,8 @@ int main(int argc, char *argv[])
 	// profiler  - output name initialize, profiler initialize and shutdown
 	if (schedulerMode == 0)
 	{
-		schedulerMode = 5;
+		GLOBAL_RTGS_MODE = 5;
 	}
-	GLOBAL_RTGS_MODE = schedulerMode;
 	GLOBAL_KERNEL_FILE_NAME = jobsListFileName;
 	if (GLOBAL_MAX_PROCESSORS == -1)
 	{

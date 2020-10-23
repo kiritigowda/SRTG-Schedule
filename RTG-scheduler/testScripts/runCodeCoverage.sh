@@ -42,6 +42,7 @@ RTGS_DEBUG_MSG=3 ./bin/RTG-scheduler --j bin/testData/set1-jobs.txt --r bin/test
 RTGS_DEBUG_MSG=3 ./bin/RTG-scheduler --j bin/testData/set1-jobs.txt --r bin/testData/set1-jobReleaseTimes.txt --g AMD --s 0
 RTGS_DEBUG_MSG=3 ./bin/RTG-scheduler --j bin/testData/set1-jobs.txt --r bin/testData/set1-jobReleaseTimes.txt --g NVIDIA --s 0
 #Aperiodic Set
+RTGS_DEBUG_MSG=3 ./bin/RTG-scheduler --j bin/testData/aperiodic-set-0-syntheticJobs.csv --r bin/testData/aperiodic-set-0-syntheticJobReleaseTimes.csv
 RTGS_DEBUG_MSG=3 ./bin/RTG-scheduler --j bin/testData/aperiodic-set-0-syntheticJobs.csv --r bin/testData/aperiodic-set-0-syntheticJobReleaseTimes.csv --m
 RTGS_DEBUG_MSG=3 ./bin/RTG-scheduler --j bin/testData/aperiodic-set-0-syntheticJobs.csv --r bin/testData/aperiodic-set-0-syntheticJobReleaseTimes.csv --m 1
 RTGS_DEBUG_MSG=3 ./bin/RTG-scheduler --j bin/testData/aperiodic-set-0-syntheticJobs.csv --r bin/testData/aperiodic-set-0-syntheticJobReleaseTimes.csv --m 2
@@ -49,6 +50,10 @@ RTGS_DEBUG_MSG=3 ./bin/RTG-scheduler --j bin/testData/aperiodic-set-0-syntheticJ
 RTGS_DEBUG_MSG=3 ./bin/RTG-scheduler --j bin/testData/aperiodic-set-0-syntheticJobs.csv --r bin/testData/aperiodic-set-0-syntheticJobReleaseTimes.csv --m 4
 RTGS_DEBUG_MSG=3 ./bin/RTG-scheduler --j bin/testData/aperiodic-set-0-syntheticJobs.csv --r bin/testData/aperiodic-set-0-syntheticJobReleaseTimes.csv --m 5
 RTGS_DEBUG_MSG=3 ./bin/RTG-scheduler --j bin/testData/aperiodic-set-0-syntheticJobs.csv --r bin/testData/aperiodic-set-0-syntheticJobReleaseTimes.csv --m 99
+RTGS_DEBUG_MSG=3 ./bin/RTG-scheduler --j bin/testData/aperiodic-set-0-syntheticJobs.csv --r bin/testData/aperiodic-set-0-syntheticJobReleaseTimes.csv --m 99 --d
+RTGS_DEBUG_MSG=3 ./bin/RTG-scheduler --j bin/testData/aperiodic-set-0-syntheticJobs.csv --r bin/testData/aperiodic-set-0-syntheticJobReleaseTimes.csv --m 99 --d 80
+RTGS_DEBUG_MSG=3 ./bin/RTG-scheduler --j bin/testData/aperiodic-set-0-syntheticJobs.csv --r bin/testData/aperiodic-set-0-syntheticJobReleaseTimes.csv --m 99 --p 
+RTGS_DEBUG_MSG=3 ./bin/RTG-scheduler --j bin/testData/aperiodic-set-0-syntheticJobs.csv --r bin/testData/aperiodic-set-0-syntheticJobReleaseTimes.csv --m 99 --p 24
 #Job Set 1
 RTGS_DEBUG_MSG=3 ./bin/RTG-scheduler --j bin/testData/set1-jobs.txt --r bin/testData/set1-jobReleaseTimes.txt --m
 RTGS_DEBUG_MSG=3 ./bin/RTG-scheduler --j bin/testData/set1-jobs.txt --r bin/testData/set1-jobReleaseTimes.txt --m 1
