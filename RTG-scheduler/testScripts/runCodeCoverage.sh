@@ -52,6 +52,7 @@ RTGS_DEBUG_MSG=3 ./bin/RTG-scheduler --j bin/testData/aperiodic-set-0-syntheticJ
 ./bin/RTG-scheduler --j bin/testData/aperiodic-set-0-syntheticJobs.csv --r bin/testData/aperiodic-set-0-syntheticJobReleaseTimes.csv --m 99
 ./bin/RTG-scheduler --j bin/testData/aperiodic-set-0-syntheticJobs.csv --r bin/testData/aperiodic-set-0-syntheticJobReleaseTimes.csv --m 99 --d
 ./bin/RTG-scheduler --j bin/testData/aperiodic-set-0-syntheticJobs.csv --r bin/testData/aperiodic-set-0-syntheticJobReleaseTimes.csv --m 99 --d 80
+./bin/RTG-scheduler --j bin/testData/aperiodic-set-0-syntheticJobs.csv --r bin/testData/aperiodic-set-0-syntheticJobReleaseTimes.csv --p 16 --d
 ./bin/RTG-scheduler --j bin/testData/aperiodic-set-0-syntheticJobs.csv --r bin/testData/aperiodic-set-0-syntheticJobReleaseTimes.csv --m 99 --p 
 ./bin/RTG-scheduler --j bin/testData/aperiodic-set-0-syntheticJobs.csv --r bin/testData/aperiodic-set-0-syntheticJobReleaseTimes.csv --m 99 --p 24
 #Job Set 1
