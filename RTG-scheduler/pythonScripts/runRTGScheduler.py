@@ -70,5 +70,5 @@ if not os.path.exists(output_dir):
 
 # num job sets required to be created
 for s in range(numJobSet):
-    os.system('./'+exe_dir+'RTG-scheduler --j '+jobs_dir+'/'+jobSetName+'-'+str(s)+'-syntheticJobs.csv --r '+jobs_dir +
+    os.system('./'+exe_dir+'RTG-scheduler --j '+jobs_dir+'/'+jobSetName+'-'+str(s)+'-syntheticJobs.csv --r '+jobs_dir +'/'+
               jobSetName+'-'+str(s)+'-syntheticJobReleaseTimes.csv --m 99 >> '+output_dir+'/outputSummary-'+str(s)+'.txt')
