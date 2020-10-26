@@ -6,11 +6,11 @@
 
 # Dynamic Schedule Management Framework For GPUs
 
-## Soft Real-Time GPU Scheduler
+## Soft-Real-Time GP-GPU Scheduler
 
-A schedule management framework for soft-real-time jobs that may be used by a CPU - GPU system designer/integrator to select, configure, and deploy a suitable architectural platform and to perform concurrent scheduling of these jobs. 
+A schedule management framework for aperiodic soft-real-time jobs that may be used by a CPU - GPU system designer/integrator to select, configure and deploy a suitable architectural platform and to perform concurrent scheduling of these jobs
 
-[Real-Time GPU Scheduler](RTG-scheduler) (RTG-Scheduler) is a dynamic scheduler for aperiodic soft-real-time jobs on GPU based architectures, with a simple, easy-to-use command-line interface (CLI). The SRTG-Scheduler is provided under the [MIT license](https://opensource.org/licenses/MIT). It is currently supported on Windows, Linux, and macOS platforms.
+[Soft-Real-Time GP-GPU Scheduler](RTG-scheduler) (SRTG-Scheduler) is a dynamic scheduler for aperiodic soft-real-time jobs on GPU based architectures, with a simple, easy-to-use command-line interface (CLI). The SRTG-Scheduler is provided under the [MIT license](https://opensource.org/licenses/MIT). It is currently supported on Windows, Linux, and macOS platforms.
 
 ## Dynamic schedule management framework for soft-real-time jobs on GPU based architectures
 
