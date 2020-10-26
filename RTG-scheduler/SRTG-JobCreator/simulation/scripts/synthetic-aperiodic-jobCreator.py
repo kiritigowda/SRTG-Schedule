@@ -64,7 +64,8 @@ lambdaVar = args.job_lambda
 scheduleBias = args.schedule_bias
 jobBias = args.job_bias
 releaseBias = args.release_bias
-scheduleBiasVar = int((scheduleBias/100) * maxGCUs)
+# scheduler bias - GCU Limit
+scheduleBiasVar = int((float(scheduleBias)/100) * maxGCUs)
 
 # validate arguments
 if lambdaVar <= 0 or lambdaVar > 5:
@@ -159,3 +160,6 @@ for s in range(numJobSet):
         f.write('Job Release Time,Num Jobs Released\n')
         for releaseTime, numJobsReleased in sorted(counter.items()):
             f.write(str(releaseTime)+','+str(numJobsReleased)+'\n')
+
+print("Job Sets Created:"+str(numJobSet)+" Jobs/Set:" +
+      str(numJobsPerSet)+" Schedule Bias:"+str(scheduleBias)+"\n")

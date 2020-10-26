@@ -78,9 +78,10 @@ else:
 
 # num job sets required to be created
 for s in range(numJobSet):
-    fileName_Jobs = outputDirectory+'/'+jobSetName+'-'+str(s)+'-jobs.txt'
+    fileName_Jobs = outputDirectory+'/' + \
+        jobSetName+'-'+str(s)+'-syntheticJobs.csv'
     fileName_Releases = outputDirectory+'/' + \
-        jobSetName+'-'+str(s)+'-releaseTimes.txt'
+        jobSetName+'-'+str(s)+'-syntheticJobReleaseTimes.csv'
 
     # array to hold all releases
     releaseTimeArray = []
@@ -91,7 +92,8 @@ for s in range(numJobSet):
     releaseTime = 0
     releaseDistribution = 0
     with open(fileName_Jobs, 'w') as f:
-
+        f.write(
+            'Job ID,GCUs Required,Execution Time,DeadLine,lastest Time Schedulable\n')
         for x in range(numJobsPerSet):
             jobNumber = x
             numProcessors = random.randrange(2, maxProcessors, 2)
@@ -116,6 +118,6 @@ for s in range(numJobSet):
     from collections import Counter
     counter = Counter(releaseTimeArray)
     with open(fileName_Releases, 'w') as f:
-
+        f.write('Job Release Time,Num Jobs Released\n')
         for T, N in sorted(counter.items()):
             f.write(str(T)+','+str(N)+'\n')
