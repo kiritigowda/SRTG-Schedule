@@ -13,7 +13,7 @@ A schedule management framework for aperiodic soft-real-time jobs that may be us
 [Soft-Real-Time GP-GPU Scheduler](RTG-scheduler) (SRTG-Scheduler) is a dynamic scheduler for aperiodic soft-real-time jobs on GPU based architectures, with a simple, easy-to-use command-line interface (CLI). The SRTG-Scheduler is provided under the [MIT license](https://opensource.org/licenses/MIT). It is currently supported on Windows, Linux, and macOS platforms.
 
 ### Latest SRTG-Scheduler
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/kiritigowda/SRTG-Schedule?style=for-the-badge)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/kiritigowda/SRTG-Schedule?style=for-the-badge)](https://github.com/kiritigowda/SRTG-Schedule/releases)
 
 ## Dynamic schedule management framework for soft-real-time jobs on GPU based architectures
 
