@@ -10,7 +10,7 @@
 
 A schedule management framework for aperiodic soft-real-time jobs that may be used by a CPU - GPU system designer/integrator to select, configure and deploy a suitable architectural platform and to perform concurrent scheduling of these jobs
 
-[Soft-Real-Time GP-GPU Scheduler](RTG-scheduler) (SRTG-Scheduler) is a dynamic scheduler for aperiodic soft-real-time jobs on GPU based architectures, with a simple, easy-to-use command-line interface (CLI). The SRTG-Scheduler is provided under the [MIT license](https://opensource.org/licenses/MIT). It is currently supported on Windows, Linux, and macOS platforms.
+[Soft-Real-Time GP-GPU Scheduler](SRTG-Scheduler) (SRTG-Scheduler) is a dynamic scheduler for aperiodic soft-real-time jobs on GPU based architectures, with a simple, easy-to-use command-line interface (CLI). The SRTG-Scheduler is provided under the [MIT license](https://opensource.org/licenses/MIT). It is currently supported on Windows, Linux, and macOS platforms.
 
 ### Latest SRTG-Scheduler
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/kiritigowda/SRTG-Schedule?style=for-the-badge)](https://github.com/kiritigowda/SRTG-Schedule/releases)
@@ -84,7 +84,7 @@ A dynamic schedule management framework that is responsible for
 * Determining which kernel(s) to dispatch to the GPU at a given time
 * Determining how many GCUs to assign for a given kernel.
 
-<p align="left"><a href="RTG-scheduler#real-time-gpu-scheduler"><img width="30%" src="documents/images/readme_images/header/summary.png" /></a></p>
+<p align="left"><a href="SRTG-Scheduler#real-time-gpu-scheduler"><img width="30%" src="documents/images/readme_images/header/summary.png" /></a></p>
 
 #### Advantages
 
@@ -94,8 +94,8 @@ A dynamic schedule management framework that is responsible for
 
 #### Results
 
-* Dynamic schedule management [framework](RTG-scheduler#real-time-gpu-scheduler) for soft-real-time jobs
-* Support for [a-periodic](RTG-scheduler#real-time-gpu-scheduler) and recurring (periodic) soft-real-time tasks.
+* Dynamic schedule management [framework](SRTG-Scheduler#real-time-gpu-scheduler) for soft-real-time jobs
+* Support for [a-periodic](SRTG-Scheduler#real-time-gpu-scheduler) and recurring (periodic) soft-real-time tasks.
 * Smart GPU Memory Management
 
 **note:**

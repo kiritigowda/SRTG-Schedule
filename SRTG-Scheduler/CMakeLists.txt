@@ -2,20 +2,20 @@
 cmake_minimum_required(VERSION 3.0)
 
 # project definition
-project(RTG-scheduler)
-set(VERSION "1.0.1")
+project(SRTG-Scheduler)
+set(VERSION "1.1.0")
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
-set(SRTG_PATH /opt/srtg CACHE PATH "RTG-scheduler default installation path")
+set(SRTG_PATH /opt/srtg CACHE PATH "SRTG-Scheduler default installation path")
 # need to do this to avoid setting the default path to /usr/local
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-  set(CMAKE_INSTALL_PREFIX ${SRTG_PATH}/RTG-scheduler CACHE PATH "RTG-scheduler default installation path" FORCE)
+  set(CMAKE_INSTALL_PREFIX ${SRTG_PATH}/SRTG-Scheduler CACHE PATH "SRTG-Scheduler default installation path" FORCE)
 endif(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 
-SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY  ${CMAKE_BINARY_DIR}/bin CACHE PATH "Directory where RTG-scheduler executable is generated" FORCE)
+SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY  ${CMAKE_BINARY_DIR}/bin CACHE PATH "Directory where SRTG-Scheduler executable is generated" FORCE)
 
 if(NOT WIN32)
   string(ASCII 27 Esc)
@@ -56,7 +56,7 @@ set(SOURCES
     )
 
 # executable target and the source files
-add_executable(RTG-scheduler ${SOURCES})
+add_executable(SRTG-Scheduler ${SOURCES})
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
@@ -65,7 +65,9 @@ else()
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse4.2 -std=c++11")
 endif()
 
-install(TARGETS RTG-scheduler DESTINATION bin)
+install(TARGETS SRTG-Scheduler DESTINATION bin)
+install(DIRECTORY SRTG-JobCreator DESTINATION .)
+install(DIRECTORY SRTG-ResultAnalysis DESTINATION .)
 
 # Bring in default test data
 FILE(GLOB RTG_TEST_DATA_TXT "testData/*.txt")

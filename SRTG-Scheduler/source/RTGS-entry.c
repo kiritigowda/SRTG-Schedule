@@ -12,12 +12,12 @@ usage information
 static void show_usage()
 {
 	printf("\n**************************************************************************************************\n");
-	printf("\n                          Real Time GPU Scheduler -- RTGS - %s\n", RTGS_VERSION);
+	printf("\n                  Soft-Real-Time GPU Scheduler -- SRTG-Scheduler - %s\n", RTGS_VERSION);
 	printf("\n**************************************************************************************************\n");
 	printf("\n");
 	printf("Usage:\n\n");
 	printf("\tWindows:\n");
-	printf("\t\tRTG-scheduler.exe [options]\t--j <jobs_file.csv>\n");
+	printf("\t\tSRTG-Scheduler.exe [options]\t--j <jobs_file.csv>\n");
 	printf("\t\t\t\t\t\t--r <Release_Time_file.csv>\n");
 	printf("\t\t\t\t\t\t--m <option>\n");
 	printf("\t\t\t\t\t\t--p <option>\n");
@@ -25,7 +25,7 @@ static void show_usage()
 	printf("\t\t\t\t\t\t--simulation <option> \n");
 	printf("\t\t\t\t\t\t--gpu <AMD/NVIDIA> \n");
 	printf("\tLinux:\n");
-	printf("\t\t./RTG-scheduler [options]\t--j <jobs_file.csv>\n");
+	printf("\t\t./SRTG-Scheduler [options]\t--j <jobs_file.csv>\n");
 	printf("\t\t\t\t\t\t--r <Release_Time_file.csv>\n");
 	printf("\t\t\t\t\t\t--m <option>\n");
 	printf("\t\t\t\t\t\t--p <option>\n");
@@ -303,8 +303,8 @@ int main(int argc, char *argv[])
 		int64_t freq = RTGS_GetClockFrequency();
 		float factor = 1000.0f / (float)freq; // to convert clock counter to ms
 		float Scheduler_time = (float)((end_t - start_t) * factor);
-		printf("RTG-Scheduler Sucessful\n");
-		printf("Total Time Taken by RTG Scheduler  - %0.2f ms\n", Scheduler_time);
+		printf("SRTG-Scheduler Sucessful\n");
+		printf("Total Time Taken by SRTG Scheduler  - %0.2f ms\n", Scheduler_time);
 	}
 
 	return status;
