@@ -3,11 +3,11 @@
 
 # Dynamic Schedule Management Framework For GPUs
 
-## Real-Time GPU Scheduler
+## Soft-Real-Time GPU Scheduler
 
-RTG-Scheduler is a dynamic scheduler for aperiodic soft-real-time jobs on GPU based architectures, with a simple, easy-to-use command-line interface (CLI). The project is provided under the [MIT license](https://opensource.org/licenses/MIT). It is currently supported on Windows, Linux, and macOS platforms.
+SRTG-Scheduler is a dynamic scheduler for aperiodic soft-real-time jobs on GPU based architectures, with a simple, easy-to-use command-line interface (CLI). The project is provided under the [MIT license](https://opensource.org/licenses/MIT). It is currently supported on Windows, Linux, and macOS platforms.
 
-The RTG-scheduler itself resides on the CPU. When a GPU compatible job is released, it is sent to the SRTG-scheduler, which checks if this job can be executed on the GPU before its deadline. If yes, the job is offloaded to the GPU and any data that it needs is transferred to GPU memory. Otherwise, the job is rejected and sent back to the CPU scheduler immediately.
+The SRTG-Scheduler itself resides on the CPU. When a GPU compatible job is released, it is sent to the SRTG-scheduler, which checks if this job can be executed on the GPU before its deadline. If yes, the job is offloaded to the GPU and any data that it needs is transferred to GPU memory. Otherwise, the job is rejected and sent back to the CPU scheduler immediately.
 
 <p align="center"><img width="100%" src="../documents/images/RTG_Scheduler_block_diagram.png" /></p>
 
@@ -71,27 +71,27 @@ Once the jobs are scheduled and the schedule data is obtained from SRTG-Schedule
 
 <p align="center"><img width="80%" src="SRTG-ResultAnalysis/srtg-results-images/srtg-result-4.png" /></p>
 
-## RTG-Scheduler Usage
+## SRTG-Scheduler Usage
 
 ### Windows
 ```
-RTG-scheduler [options] --j <jobs_file.csv>
-                        --r <Release_Time_file.csv>
-                        --m <option> 
-                        --p <option> 
-                        --d <option> 
-                        --simulation <1/0>
-                        --gpu <AMD/NVIDIA>
+SRTG-Scheduler [options] --j <jobs_file.csv>
+                         --r <Release_Time_file.csv>
+                         --m <option> 
+                         --p <option> 
+                         --d <option> 
+                         --simulation <1/0>
+                         --gpu <AMD/NVIDIA>
 ```
-### Linux / MAC OS X
+### Linux / macOS
 ```
-./RTG-scheduler [options] --j <jobs_file.csv>
-                          --r <Release_Time_file.csv>
-                          --m <option> 
-                          --p <option> 
-                          --d <option>
-                          --simulation <1/0>
-                          --gpu <AMD/NVIDIA>
+./SRTG-Scheduler [options] --j <jobs_file.csv>
+                           --r <Release_Time_file.csv>
+                           --m <option> 
+                           --p <option> 
+                           --d <option>
+                           --simulation <1/0>
+                           --gpu <AMD/NVIDIA>
 ```
 
 ### Scheduler Options Supported

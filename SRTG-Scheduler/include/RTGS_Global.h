@@ -9,7 +9,7 @@
 #include <stdio.h>
 
 // version
-#define RTGS_VERSION "1.0.1"
+#define RTGS_VERSION "1.1.0"
 
 // global variables
 int GLOBAL_RTGS_MODE;

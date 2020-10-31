@@ -40,7 +40,7 @@ parser.add_argument('--jobset_name', type=str, default='',
 parser.add_argument('--num_jobset', type=int, default=-1,
                     help='Number of job [type:INT range:1 to N] - optional (default:1)')
 parser.add_argument('--scheduler_directory', type=str, default='',
-                    help='Scheduler Directory - directory with RTG-scheduler')
+                    help='Scheduler Directory - directory with SRTG-Scheduler')
 parser.add_argument('--output_directory', type=str, default='',
                     help='Output Directory - directory to save scheduler summary')
 args = parser.parse_args()
@@ -63,12 +63,12 @@ if not os.path.exists(jobs_dir):
     print("ERROR - No Job Directory")
     exit()
 if not os.path.exists(exe_dir):
-    print("ERROR - No RTG Scheduler Directory")
+    print("ERROR - No SRTG Scheduler Directory")
     exit()
 if not os.path.exists(output_dir):
     os.makedirs(output_dir)
 
 # num job sets required to be created
 for s in range(numJobSet):
-    os.system('./'+exe_dir+'RTG-scheduler --j '+jobs_dir+'/'+jobSetName+'-'+str(s)+'-syntheticJobs.csv --r '+jobs_dir +'/'+
+    os.system('./'+exe_dir+'SRTG-Scheduler --j '+jobs_dir+'/'+jobSetName+'-'+str(s)+'-syntheticJobs.csv --r '+jobs_dir +'/'+
               jobSetName+'-'+str(s)+'-syntheticJobReleaseTimes.csv --m 99 >> '+output_dir+'/outputSummary-'+str(s)+'.txt')
