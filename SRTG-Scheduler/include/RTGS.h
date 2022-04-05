@@ -1,7 +1,7 @@
 /*
-* RTGS.h
-*      Author: Kiriti Nagesh Gowda
-*/
+ * RTGS.h
+ *      Author: Kiriti Nagesh Gowda
+ */
 
 #ifndef RTGS_H
 #define RTGS_H
@@ -63,13 +63,13 @@ enum ProfilerEventEnum
 #endif
 
 /*! \brief A formal status type with known fixed size.
-* \see RTGS_status_e
-*/
+ * \see RTGS_status_e
+ */
 typedef int RTGS_Status;
 
 /*! \brief The enumeration of all status codes.
-* \see rtgs_status.
-*/
+ * \see rtgs_status.
+ */
 enum RTGS_status_e
 {
 	RTGS_ERROR_RECOMPILE = -10,			/*!< \brief Indicates that the compiler need to be recompiled with GPU Support Enabled. */
@@ -86,7 +86,7 @@ enum RTGS_status_e
 };
 
 /*! \brief The enumeration of all schedule methods.
-*/
+ */
 enum RTGS_schedule_method_e
 {
 	RTGS_SCHEDULE_METHOD_IMMEDIATE = 0,
@@ -101,7 +101,13 @@ enum RTGS_schedule_method_e
 struct jobInformation
 {
 	int processor_req;			 // processors needed
+	int processor_req_h;		 // processors needed high
+	int processor_req_m;		 // processors needed medium
+	int processor_req_l;		 // processors needed low
 	int execution_time;			 // execution time
+	int execution_time_h;		 // execution time high
+	int execution_time_m;		 // execution time medium
+	int execution_time_l;		 // execution time medium
 	int deadline;				 // deadline
 	int latest_schedulable_time; // latest schedule time
 	int release_time;			 // latest schedule time
@@ -111,6 +117,7 @@ struct jobInformation
 	int rescheduled_execution;	 // job rescheduled for gpu exe
 	int schedule_hardware;		 // job scheduled on 0: ERROR, 1: GPU, 2: CPU
 	float schedule_overhead;	 // scheduler Overhead
+	int deadline_flexibility;	 // deadline flexibilty percentage
 };
 //! \brief jobInformation structure
 typedef struct jobInformation jobAttributes;
