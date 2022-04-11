@@ -59,6 +59,7 @@ int get_job_information(jobAttributes *kernelInfoList, const char *jobsListFileN
 		if (ctr != 12)
 		{
 			printf("ERROR::get_job_information - Job Info File ERROR -- RTGS_ERROR_NOT_SUFFICIENT -- count: %d\n", ctr);
+			printf("ERROR::get_job_information - Job Variables Expected: 12 | Job Variables Recevived: %d\n", ctr);
 			return RTGS_ERROR_NOT_SUFFICIENT;
 		}
 
