@@ -292,7 +292,7 @@ int main(int argc, char *argv[])
 	}
 
 	// Schedule Method  - Verify
-	if (schedulerMethod < 0 && schedulerMethod > 2)
+	if (schedulerMethod < 0 || schedulerMethod > 2)
 	{
 		printf("SRTG-Scheduler Methods Supported -- 0/1/2 \n");
 		printf("Default Method Set: %d\n", RTGS_METHOD_BASE);
