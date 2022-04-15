@@ -9,10 +9,6 @@
 #include <stdio.h>
 
 // version
-#define RTGS_VERSION "1.1.0"
-
-// global variables
-int GLOBAL_RTGS_MODE;
-char *GLOBAL_KERNEL_FILE_NAME;
+#define RTGS_VERSION "1.2.0"
 
 #endif /* RTGS_GLOBAL_H */

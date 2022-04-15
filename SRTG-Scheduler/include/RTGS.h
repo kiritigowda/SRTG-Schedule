@@ -85,7 +85,7 @@ enum RTGS_status_e
 	RTGS_SUCCESS = 0,					/*!< \brief No error. */
 };
 
-/*! \brief The enumeration of all schedule methods.
+/*! \brief The enumeration of all scheduler methods.
  */
 enum RTGS_schedule_method_e
 {
@@ -95,6 +95,33 @@ enum RTGS_schedule_method_e
 	RTGS_SCHEDULE_METHOD_AEAP_ADVANCED = 3,
 	RTGS_SCHEDULE_METHOD_ALAP_ADVANCED = 4,
 	RTGS_SCHEDULE_METHOD_NOT_DEFINED = 99,
+};
+
+/*! \brief The enumeration of all Top Level Methods.
+ */
+enum RTGS_METHOD_E
+{
+	RTGS_METHOD_BASE = 0,
+	RTGS_METHOD_ENHANCED = 1,
+	RTGS_METHOD_ENHANCED_VQS = 2,
+};
+
+/*! \brief The enumeration of all Method GCU Level.
+ */
+enum RTGS_LEVEL_E
+{
+	RTGS_LEVEL_HIGH = 0,
+	RTGS_LEVEL_MEDIUM = 1,
+	RTGS_LEVEL_LOW = 2,
+};
+
+/*! \brief The enumeration of all Schedulable Hardware.
+ */
+enum RTGS_HARDWARE_E
+{
+	RTGS_HARDWARE_UNKNOWN = 0,
+	RTGS_HARDWARE_GPU = 1,
+	RTGS_HARDWARE_CPU = 2,
 };
 
 /* Job Information Structure */
@@ -115,9 +142,11 @@ struct jobInformation
 	int scheduled_execution;	 // scheduled for GPU exec
 	int completion_time;		 // job completion time
 	int rescheduled_execution;	 // job rescheduled for gpu exe
-	int schedule_hardware;		 // job scheduled on 0: ERROR, 1: GPU, 2: CPU
-	float schedule_overhead;	 // scheduler Overhead
+	int schedule_hardware;		 // job scheduled on -- 0: ERROR, 1: GPU, 2: CPU
+	int rtgs_method;			 // rtgs method -- 0: Base, 1: Enhanced, 2: Enhanced with varying quality of services
+	int rtgs_level;				 // rtgs GCU level -- 0: high, 1: medium, 2: low
 	int deadline_flexibility;	 // deadline flexibilty percentage
+	float schedule_overhead;	 // scheduler Overhead
 };
 //! \brief jobInformation structure
 typedef struct jobInformation jobAttributes;
@@ -160,6 +189,7 @@ struct jobBackupList
 typedef struct jobBackupList genericBackupNode;
 
 // global variables
+int GLOBAL_RTGS_METHOD;
 int GLOBAL_GPU_JOBS;
 int GLOBAL_CPU_JOBS;
 int GLOBAL_RELEASE_TIME[MAX_RUN_TIME];

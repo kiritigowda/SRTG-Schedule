@@ -24,6 +24,7 @@ static void show_usage()
 	printf("\t\t\t\t\t\t--d <option>\n");
 	printf("\t\t\t\t\t\t--simulation <option> \n");
 	printf("\t\t\t\t\t\t--gpu <AMD/NVIDIA> \n");
+	printf("\t\t\t\t\t\t--method <option> \n");
 	printf("\tLinux:\n");
 	printf("\t\t./SRTG-Scheduler [options]\t--j <jobs_file.csv>\n");
 	printf("\t\t\t\t\t\t--r <Release_Time_file.csv>\n");
@@ -32,6 +33,7 @@ static void show_usage()
 	printf("\t\t\t\t\t\t--d <option>\n");
 	printf("\t\t\t\t\t\t--simulation <option> \n");
 	printf("\t\t\t\t\t\t--gpu <AMD/NVIDIA> \n");
+	printf("\t\t\t\t\t\t--method <option> \n");
 	printf("\n");
 	printf("\nScheduler Options Supported\n\n");
 	printf("\t--h/--help\t-- Show full help\n");
@@ -44,6 +46,7 @@ static void show_usage()
 	printf("\t--d/--delayLimitPercentage \t -- Scheduler bias value in percentage [optional - default:60]\n");
 	printf("\t--s/--simulation \t\t -- Simulation mode turn ON/OFF (1/0) [optional - default:1]\n");
 	printf("\t--g/--gpu \t\t\t -- Jobs Scheduled on Graphics Hardware <AMD/NVIDIA> - [optional - default:OFF]\n");
+	printf("\t--method \t\t\t -- Scheduler Methods [optional - default:0]\n");
 	printf("\n");
 	printf("The Jobs File format - Jobs to be scheduled: <jobs_file.csv>\n");
 	printf("\tThe arguments:\n");
@@ -68,6 +71,12 @@ static void show_usage()
 	printf("			4 - Event Aware Scheduler with Bias and Bias Prediction\n");
 	printf("			5 - Event Aware Scheduler with Bias and Improved Bias Prediction\n");
 	printf("\n");
+	printf("The Methods Supported: <options>\n");
+	printf("\tThe arguments:\n");
+	printf("			0 - Base Scheduler Method\n");
+	printf("			1 - Enhanced Scheduler Method\n");
+	printf("			2 - Enhanced with varying quality of services Scheduler Method\n");
+	printf("\n");
 }
 
 /**********************************************************************************************************
@@ -81,10 +90,10 @@ int main(int argc, char *argv[])
 	char *jobsListFileName = NULL, *releaseTimeFilename = NULL;
 	int schedulerMode = 0;
 	int error = 0;
+	int schedulerMethod = -1;
 
 	// global vaiable intitialize
-	GLOBAL_RTGS_MODE = -1;
-	GLOBAL_KERNEL_FILE_NAME = NULL;
+	GLOBAL_RTGS_METHOD = -1;
 	GLOBAL_MAX_PROCESSORS = -1;
 	GLOBAL_DELAY_SCHEDULE_PROCESSOR_LIMIT = -1;
 
@@ -183,6 +192,20 @@ int main(int argc, char *argv[])
 				schedulerMode = atoi(argv[arg]);
 			}
 		}
+		else if (!strcasecmp(argv[arg], "--method"))
+		{
+			if ((arg + 1) == argc)
+			{
+				printf("\n\nMissing Scheduler Method Value on command-line. Default Method will be Executed\n");
+				printf("Method 0 -- Base Scheduler Method\n");
+				schedulerMethod = 0;
+			}
+			else
+			{
+				arg++;
+				schedulerMethod = atoi(argv[arg]);
+			}
+		}
 		else if (!strcasecmp(argv[arg], "--maxProcessors") || !strcasecmp(argv[arg], "--P") || !strcasecmp(argv[arg], "--p"))
 		{
 			if ((arg + 1) == argc)
@@ -268,12 +291,17 @@ int main(int argc, char *argv[])
 		printf("\nSRTG-Scheduler Simulation\n");
 	}
 
-	// profiler  - output name initialize, profiler initialize and shutdown
-	if (schedulerMode == 0)
+	// Schedule Method  - Verify
+	if (schedulerMethod < 0 && schedulerMethod > 2)
 	{
-		GLOBAL_RTGS_MODE = 5;
+		printf("SRTG-Scheduler Methods Supported -- 0/1/2 \n");
+		printf("Default Method Set: %d\n", RTGS_METHOD_BASE);
+		GLOBAL_RTGS_METHOD = RTGS_METHOD_BASE;
 	}
-	GLOBAL_KERNEL_FILE_NAME = jobsListFileName;
+	else{
+		GLOBAL_RTGS_METHOD = schedulerMethod;
+	}
+
 	if (GLOBAL_MAX_PROCESSORS == -1)
 	{
 		GLOBAL_MAX_PROCESSORS = MAX_GPU_PROCESSOR;

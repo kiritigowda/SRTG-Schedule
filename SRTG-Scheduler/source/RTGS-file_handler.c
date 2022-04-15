@@ -80,7 +80,9 @@ int get_job_information(jobAttributes *kernelInfoList, const char *jobsListFileN
 		kernelInfoList[kernel_ID].execution_time_m = atoi(jobAttributes[9]);
 		kernelInfoList[kernel_ID].execution_time_l = atoi(jobAttributes[10]);
 		kernelInfoList[kernel_ID].deadline_flexibility = atoi(jobAttributes[11]);
-
+		kernelInfoList[kernel_ID].schedule_hardware = RTGS_HARDWARE_UNKNOWN; // scheduled hardware default
+		kernelInfoList[kernel_ID].rtgs_method = RTGS_METHOD_BASE; // set to base method by default
+		kernelInfoList[kernel_ID].rtgs_level = RTGS_LEVEL_HIGH; // set to high processor level by default
 		if ((kernelInfoList[kernel_ID].processor_req != kernelInfoList[kernel_ID].processor_req_h) || (kernelInfoList[kernel_ID].execution_time != kernelInfoList[kernel_ID].execution_time_h))
 		{
 			printf("ERROR::get_job_information - Job Info File ERROR -- RTGS_ERROR_INVALID_PARAMETERS -- Kernel ID: %d\n", kernel_ID);
