@@ -74,16 +74,16 @@ RTGS_DEBUG_MSG=0 ./bin/SRTG-Scheduler --j bin/testData/set1-jobs.txt --r bin/tes
 RTGS_DEBUG_MSG=0 ./bin/SRTG-Scheduler --j bin/testData/set1-jobs.txt --r bin/testData/set11-jobReleaseTimes.txt --m 99 --method 2
 RTGS_DEBUG_MSG=-1 ./bin/SRTG-Scheduler --j bin/testData/set1-jobs.txt --r bin/testData/set12-jobReleaseTimes.txt --m 99 --method 2
 #Job Set 2
-RTGS_DEBUG_MSG=3 ./bin/SRTG-Scheduler --j bin/testData/set2-jobs.txt --r bin/testData/set1-jobReleaseTimes.txt --m 99 --method 2
-RTGS_DEBUG_MSG=3 ./bin/SRTG-Scheduler --j bin/testData/set2-jobs.txt --r bin/testData/set2-jobReleaseTimes.txt --m 99 --method 2
-RTGS_DEBUG_MSG=3 ./bin/SRTG-Scheduler --j bin/testData/set2-jobs.txt --r bin/testData/set3-jobReleaseTimes.txt --m 99 --method 2
-RTGS_DEBUG_MSG=3 ./bin/SRTG-Scheduler --j bin/testData/set2-jobs.txt --r bin/testData/set4-jobReleaseTimes.txt --m 99 --method 2
-RTGS_DEBUG_MSG=3 ./bin/SRTG-Scheduler --j bin/testData/set2-jobs.txt --r bin/testData/set5-jobReleaseTimes.txt --m 99 --method 2
-RTGS_DEBUG_MSG=3 ./bin/SRTG-Scheduler --j bin/testData/set2-jobs.txt --r bin/testData/set6-jobReleaseTimes.txt --m 99 --method 2
-RTGS_DEBUG_MSG=3 ./bin/SRTG-Scheduler --j bin/testData/set2-jobs.txt --r bin/testData/set7-jobReleaseTimes.txt --m 99 --method 2
-RTGS_DEBUG_MSG=3 ./bin/SRTG-Scheduler --j bin/testData/set2-jobs.txt --r bin/testData/set8-jobReleaseTimes.txt --m 99 --method 2
-RTGS_DEBUG_MSG=3 ./bin/SRTG-Scheduler --j bin/testData/set2-jobs.txt --r bin/testData/set9-jobReleaseTimes.txt --m 99 --method 2
-RTGS_DEBUG_MSG=3 ./bin/SRTG-Scheduler --j bin/testData/set2-jobs.txt --r bin/testData/set10-jobReleaseTimes.txt --m 99 --method 2
+RTGS_DEBUG_MSG=0 ./bin/SRTG-Scheduler --j bin/testData/set2-jobs.txt --r bin/testData/set1-jobReleaseTimes.txt --m 99 --method 2
+RTGS_DEBUG_MSG=0 ./bin/SRTG-Scheduler --j bin/testData/set2-jobs.txt --r bin/testData/set2-jobReleaseTimes.txt --m 99 --method 2
+RTGS_DEBUG_MSG=0 ./bin/SRTG-Scheduler --j bin/testData/set2-jobs.txt --r bin/testData/set3-jobReleaseTimes.txt --m 99 --method 2
+RTGS_DEBUG_MSG=0 ./bin/SRTG-Scheduler --j bin/testData/set2-jobs.txt --r bin/testData/set4-jobReleaseTimes.txt --m 99 --method 2
+RTGS_DEBUG_MSG=0 ./bin/SRTG-Scheduler --j bin/testData/set2-jobs.txt --r bin/testData/set5-jobReleaseTimes.txt --m 99 --method 2
+RTGS_DEBUG_MSG=0 ./bin/SRTG-Scheduler --j bin/testData/set2-jobs.txt --r bin/testData/set6-jobReleaseTimes.txt --m 99 --method 2
+RTGS_DEBUG_MSG=0 ./bin/SRTG-Scheduler --j bin/testData/set2-jobs.txt --r bin/testData/set7-jobReleaseTimes.txt --m 99 --method 2
+RTGS_DEBUG_MSG=0 ./bin/SRTG-Scheduler --j bin/testData/set2-jobs.txt --r bin/testData/set8-jobReleaseTimes.txt --m 99 --method 2
+RTGS_DEBUG_MSG=0 ./bin/SRTG-Scheduler --j bin/testData/set2-jobs.txt --r bin/testData/set9-jobReleaseTimes.txt --m 99 --method 2
+RTGS_DEBUG_MSG=0 ./bin/SRTG-Scheduler --j bin/testData/set2-jobs.txt --r bin/testData/set10-jobReleaseTimes.txt --m 99 --method 2
 RTGS_DEBUG_MSG=3 ./bin/SRTG-Scheduler --j bin/testData/set2-jobs.txt --r bin/testData/set11-jobReleaseTimes.txt --m 99 --method 2
 RTGS_DEBUG_MSG=3 ./bin/SRTG-Scheduler --j bin/testData/set2-jobs.txt --r bin/testData/set12-jobReleaseTimes.txt --m 99 --method 2
 #Job Set 3
