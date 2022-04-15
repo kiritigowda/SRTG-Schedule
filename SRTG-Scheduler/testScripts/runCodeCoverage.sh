@@ -10,6 +10,9 @@ export RGTS_DEBUG_MSG=4
 ./bin/SRTG-Scheduler --v
 ./bin/SRTG-Scheduler --s
 ./bin/SRTG-Scheduler --g
+./bin/SRTG-Scheduler --method
+./bin/SRTG-Scheduler --method -1
+./bin/SRTG-Scheduler --method 3
 ./bin/SRTG-Scheduler --h example.txt
 ./bin/SRTG-Scheduler --j example.txt
 ./bin/SRTG-Scheduler --r example.txt
@@ -32,7 +35,9 @@ export RGTS_DEBUG_MSG=4
 ./bin/SRTG-Scheduler --r bin/testData/set1-jobs.txt --j bin/testData/set1-jobReleaseTimes.txt
 ./bin/SRTG-Scheduler --r bin/testData/set1-jobs.txt --j bin/testData/set1-jobs.txt
 ./bin/SRTG-Scheduler --r bin/testData/set1-jobReleaseTimes.txt --j bin/testData/set1-jobReleaseTimes.txt
-RTGS_DEBUG_MSG=3 ./bin/SRTG-Scheduler --j bin/testData/set12-jobs.txt --r bin/testData/set12-jobReleaseTimes.txt --m 99
+./bin/SRTG-Scheduler --r bin/testData/set1-jobReleaseTimes.txt --j bin/testData/set1-jobReleaseTimes.txt --method 1
+./bin/SRTG-Scheduler --r bin/testData/set1-jobReleaseTimes.txt --j bin/testData/set1-jobReleaseTimes.txt --method 2
+RTGS_DEBUG_MSG=3 ./bin/SRTG-Scheduler --j bin/testData/set12-jobs.txt --r bin/testData/set12-jobReleaseTimes.txt --m 99 --method 2
 #Simulation VS Hardaware
 RTGS_DEBUG_MSG=3 ./bin/SRTG-Scheduler --j bin/testData/aperiodic-set-0-syntheticJobs.csv --r bin/testData/aperiodic-set-0-syntheticJobReleaseTimes.csv --s 0
 RTGS_DEBUG_MSG=1 ./bin/SRTG-Scheduler --j bin/testData/set1-jobs.txt --r bin/testData/set1-jobReleaseTimes.txt --s 1
