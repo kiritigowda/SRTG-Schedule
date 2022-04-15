@@ -124,8 +124,10 @@ static int mode_1_enhanced_method(
 	{
 		if (jobAttributesList[jobNumber].deadline_flexibility != 0)
 		{
-			float deadline_flexibility = jobAttributesList[jobNumber].deadline_flexibility / 100;
-			jobAttributesList[jobNumber].deadline += ceil((jobAttributesList[jobNumber].deadline - presentTime) * deadline_flexibility);
+			float deadlineFlexibility = (float)(jobAttributesList[jobNumber].deadline_flexibility);
+			deadlineFlexibility = deadlineFlexibility/100; // percentage value
+			int deadlineExtended = ceil((float)((jobAttributesList[jobNumber].deadline - presentTime) * deadlineFlexibility));
+			jobAttributesList[jobNumber].deadline = jobAttributesList[jobNumber].deadline + deadlineExtended;
 			// schedule with high processor option with deadline flexibilty
 			GLOBAL_CPU_JOBS--;
 			jobAttributesList[jobNumber].processor_req = jobAttributesList[jobNumber].processor_req_h;
@@ -386,7 +388,8 @@ int RTGS_mode_1(char *jobsListFileName, char *releaseTimeFilename)
 
 		if (GLOBAL_RTGS_DEBUG_MSG)
 		{
-			printf("\n******* Scheduler Mode 1 *******\n");
+			printf("******* Scheduler Results *******\n");
+			printf("RTGS Method:%d RTGS Mode:1\n", GLOBAL_RTGS_METHOD);
 			printf("GCUs Available -- %d\n", processorsAvailable);
 			printf("Total Jobs Scheduled -- %d\n", kernelMax);
 			printf("	GPU Scheduled Jobs    -- %d\n", GLOBAL_GPU_JOBS);
