@@ -52,8 +52,8 @@ parser.add_argument('--job_bias',   	type=str, 	default='even',
                     help='Job GCU request bias [even, odd, or mixed] - optional (default:even)')
 parser.add_argument('--release_bias',   type=str, 	default='single',
                     help='Job Release bias [single, or multiple] - optional (default:single)')
-parser.add_argument('--mode',           type=int, 	default=0,
-                    help='Scheduler Mode [0:Base, 1:Enhanced, or 2:Enhanced with varying quality of services] - optional (default:0)')
+parser.add_argument('--method',           type=int, 	default=0,
+                    help='Scheduler Method [0:Base, 1:Enhanced, or 2:Enhanced with varying quality of services] - optional (default:0)')
 args = parser.parse_args()
 
 # get arguments
@@ -66,7 +66,7 @@ lambdaVar = args.job_lambda
 scheduleBias = args.schedule_bias
 jobBias = args.job_bias
 releaseBias = args.release_bias
-mode = args.mode
+method = args.method
 # scheduler bias - GCU Limit
 scheduleBiasVar = int((float(scheduleBias)/100) * maxGCUs)
 
@@ -88,9 +88,9 @@ if releaseBias not in ('single', 'multiple'):
     print("ERROR: Job Release bias [options: single, or multiple]")
     exit()
 
-if mode < 0 or mode > 2:
+if method < 0 or method > 2:
     print(
-        "ERROR: Scheduler Mode [options: 0:Base, 1:Enhanced, or 2:Enhanced with varying quality of services]")
+        "ERROR: Scheduler method [options: 0:Base, 1:Enhanced, or 2:Enhanced with varying quality of services]")
     exit()
 
 # help print
@@ -152,7 +152,7 @@ for s in range(numJobSet):
             lastestTimeSchedulable = deadLine - executionTime
 
             Deadline_Flexibility = 0
-            if mode == 0:
+            if method == 0:
                 GCUs_Req_High = numGCUs
                 GCUs_Req_Medium = 0
                 GCUs_Req_Low = 0
@@ -201,7 +201,7 @@ for s in range(numJobSet):
                         else:
                             GCUs_Req_Low = int(GCUs_Req_Medium * 0.5)
                             ET_Low = int(ET_Medium * 1.5)
-            if mode == 2:
+            if method == 2:
                 Deadline_Flexibility = random.choice([0,5,10])
 
             # Write Job Info
