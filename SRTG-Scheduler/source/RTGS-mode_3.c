@@ -801,7 +801,7 @@ static int mode_3_enhanced_method(
 {
 	if (GLOBAL_RTGS_DEBUG_MSG > 2)
 	{
-		printf("Mode-2 Enhanced Method\n");
+		printf("Mode-3 Enhanced Method\n");
 	}
 
 	if (GLOBAL_RTGS_METHOD >= RTGS_METHOD_ENHANCED && jobAttributesList[jobNumber].processor_req_m > 0)
@@ -889,7 +889,7 @@ static int mode_3_enhanced_method(
 		{
 			if (GLOBAL_RTGS_DEBUG_MSG > 1)
 			{
-				printf("Jod:%d -- Schedule Method:2 Can not be used as deadline is not flexible\n", jobNumber);
+				printf("Jod:%d -- Schedule Method:3 Can not be used as deadline is not flexible\n", jobNumber);
 			}
 		}
 	}
@@ -1107,8 +1107,8 @@ int RTGS_mode_3(char *jobsListFileName, char *releaseTimeFilename)
 
 		if (GLOBAL_RTGS_DEBUG_MSG)
 		{
-			printf("\n******* Scheduler Mode 3 *******\n");
-			printf("GCUs Available -- %d\n", processorsAvailable);
+			printf("******* Scheduler Results *******\n");
+			printf("RTGS Method:%d RTGS Mode:3\n", GLOBAL_RTGS_METHOD);
 			printf("Total Jobs Scheduled -- %d\n", kernelMax);
 			printf("	GPU Scheduled Jobs    -- %d\n", GLOBAL_GPU_JOBS);
 			printf("	Jobs Sent Back To CPU -- %d\n", GLOBAL_CPU_JOBS);
