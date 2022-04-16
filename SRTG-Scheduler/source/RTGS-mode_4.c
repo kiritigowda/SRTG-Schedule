@@ -556,7 +556,7 @@ static int Mode_4_AEAP(
 						}
 						// TBD:: Schedule after AEAP Advanced NEEDED
 						processorsAvailable = AEAP_advanced(jobAttributesList, jobNumber, presentTime,
-															 processorsAvailable, processorsAllocatedList, jobScheduledQueueList);
+															processorsAvailable, processorsAllocatedList, jobScheduledQueueList);
 						break;
 					}
 				}
@@ -587,7 +587,7 @@ static int Mode_4_Processors_unavailable(
 			printf("Mode 4 GCUs unavailable:: Job:%d sent for AEAP execution\n", jobNumber);
 		}
 		processorsAvailable = Mode_4_AEAP(jobAttributesList, jobNumber, presentTime,
-										   processorsAvailable, processorsAllocatedList, jobScheduledQueueList);
+										  processorsAvailable, processorsAllocatedList, jobScheduledQueueList);
 	}
 	else if (jobAttributesList[jobNumber].processor_req >= GLOBAL_DELAY_SCHEDULE_PROCESSOR_LIMIT && GLOBAL_preScheduleList == NULL)
 	{
@@ -596,7 +596,7 @@ static int Mode_4_Processors_unavailable(
 			printf("Mode 4 GCUs unavailable:: Job:%d sent for ALAP execution\n", jobNumber);
 		}
 		processorsAvailable = Mode_4_ALAP(jobAttributesList, jobNumber, presentTime,
-										   processorsAvailable, processorsAllocatedList, jobScheduledQueueList);
+										  processorsAvailable, processorsAllocatedList, jobScheduledQueueList);
 	}
 	else
 	{
@@ -605,7 +605,7 @@ static int Mode_4_Processors_unavailable(
 			printf("Mode 4 GCUs unavailable:: Job:%d sent for ALAP Advanced execution\n", jobNumber);
 		}
 		processorsAvailable = Mode_4_ALAP_advanced(jobAttributesList, jobNumber, presentTime,
-													processorsAvailable, processorsAllocatedList, jobScheduledQueueList);
+												   processorsAvailable, processorsAllocatedList, jobScheduledQueueList);
 	}
 
 	return processorsAvailable;
@@ -680,7 +680,7 @@ static int Mode_4_book_keeper(
 					printf("Mode 4 Book Keeper:: Job:%d is compute intensive, sent for ALAP execution\n", jobNumber);
 				}
 				processorsAvailable = Mode_4_ALAP(jobAttributesList, jobNumber, presentTime,
-												   processorsAvailable, processorsAllocatedList, jobScheduledQueueList);
+												  processorsAvailable, processorsAllocatedList, jobScheduledQueueList);
 			}
 		}
 		else
@@ -781,13 +781,13 @@ static int Mode_4_book_keeper(
 				else
 				{
 					processorsAvailable = AEAP_advanced(jobAttributesList, jobNumber, presentTime,
-														 processorsAvailable, processorsAllocatedList, jobScheduledQueueList);
+														processorsAvailable, processorsAllocatedList, jobScheduledQueueList);
 				}
 			}
 			else
 			{
 				processorsAvailable = Mode_4_ALAP_advanced(jobAttributesList, jobNumber, presentTime,
-															processorsAvailable, processorsAllocatedList, jobScheduledQueueList);
+														   processorsAvailable, processorsAllocatedList, jobScheduledQueueList);
 			}
 		}
 	}
@@ -795,7 +795,7 @@ static int Mode_4_book_keeper(
 	{
 		// Schedule the jobAttributesList to be released in a future time
 		processorsAvailable = Mode_4_Processors_unavailable(jobAttributesList, jobNumber, presentTime,
-															 processorsAvailable, processorsAllocatedList, jobScheduledQueueList);
+															processorsAvailable, processorsAllocatedList, jobScheduledQueueList);
 	}
 
 	return processorsAvailable;
@@ -1119,7 +1119,8 @@ int RTGS_mode_4(char *jobsListFileName, char *releaseTimeFilename)
 	{
 		if (GLOBAL_RTGS_DEBUG_MSG)
 		{
-			printf("\n******* Scheduler Mode 4 *******\n");
+			printf("******* Scheduler Results *******\n");
+			printf("RTGS Method:%d RTGS Mode:4\n", GLOBAL_RTGS_METHOD);
 			printf("GCUs Available -- %d\n", processorsAvailable);
 			printf("Total Jobs Scheduled -- %d\n", kernelMax);
 			printf("	GPU Scheduled Jobs    -- %d\n", GLOBAL_GPU_JOBS);
