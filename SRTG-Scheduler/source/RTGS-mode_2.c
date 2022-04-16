@@ -174,7 +174,7 @@ static int Mode_2_book_keeper(
 }
 
 /***********************************************************************************************************
-MODE 1 Enhanced Method FUNCTIONS
+MODE 2 Enhanced Method FUNCTIONS
 **********************************************************************************************************/
 static int mode_2_enhanced_method(
 	jobAttributes *jobAttributesList,
