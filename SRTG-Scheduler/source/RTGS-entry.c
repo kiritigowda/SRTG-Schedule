@@ -1,7 +1,7 @@
 /*
-* RTGS-entry.c
-*      Author: Kiriti Nagesh Gowda
-*/
+ * RTGS-entry.c
+ *      Author: Kiriti Nagesh Gowda
+ */
 
 #include "RTGS.h"
 #include "RTGS_Global.h"
@@ -25,7 +25,7 @@ static void show_usage()
 	printf("\t\t\t\t\t\t--simulation <option> \n");
 	printf("\t\t\t\t\t\t--gpu <AMD/NVIDIA> \n");
 	printf("\t\t\t\t\t\t--method <option> \n");
-	printf("\tLinux:\n");
+	printf("\tLinux/macOS:\n");
 	printf("\t\t./SRTG-Scheduler [options]\t--j <jobs_file.csv>\n");
 	printf("\t\t\t\t\t\t--r <Release_Time_file.csv>\n");
 	printf("\t\t\t\t\t\t--m <option>\n");
@@ -54,13 +54,20 @@ static void show_usage()
 	printf("			GCUs\t- Job GCU Requirement\n");
 	printf("			Texe\t- Execution Time\n");
 	printf("			Td\t- Deadline\n");
-	printf("			Tlts\t- Lastest Time Schedulable on the GPU\n\n");
-	printf("			\"Jid, GCUs, Texe, Td, Tlts\"\n\n");
+	printf("			Tlts\t- Lastest Time Schedulable on the GPU\n");
+	printf("			Ph\t- Processors Needed High\n");
+	printf("			Pm\t- Processors Needed Medium\n");
+	printf("			Pl\t- Processors Needed Low\n");
+	printf("			Th\t- Execution Time High\n");
+	printf("			Tm\t- Execution Time Medium\n");
+	printf("			Tl\t- Execution Time Low\n");
+	printf("			DF\t- Deadline Flexibilty\n\n");
+	printf("			\"Jid, Pn, Texe, Td, Tlts, Ph, Pm, Pl, Th, Tm, Tl, DF\"\n\n");
 	printf("\n");
 	printf("The Release Time File Format - Release times of jobs: <Release_Time_file.csv>\n");
 	printf("\tThe arguments:\n");
-	printf("			Tr - Job Release Time\n");
-	printf("			Jr - Number of jobs released\n\n");
+	printf("			Tr\t- Job Release Time\n");
+	printf("			Jr\t- Number of jobs released\n\n");
 	printf("			\"Tr, Jr\"\n");
 	printf("\n");
 	printf("The Modes Supported: <options>\n");
@@ -298,7 +305,8 @@ int main(int argc, char *argv[])
 		printf("Default Method Set: %d\n", RTGS_METHOD_BASE);
 		GLOBAL_RTGS_METHOD = RTGS_METHOD_BASE;
 	}
-	else{
+	else
+	{
 		GLOBAL_RTGS_METHOD = schedulerMethod;
 	}
 

@@ -19,6 +19,12 @@ The scheduler supports multiple policies for scheduling aperiodic soft-real-time
 * **Mode 4** - Event Aware Schedule with Bias and Bias Prediction
 * **Mode 5** - Event Aware Schedule with Bias and Improved Bias Prediction
 
+The scheduler also supports multiple methods to enhance the modes.
+
+* **Method 0** - Base Scheduler Method
+* **Method 1** - Enhanced Scheduler Method
+* **Method 2** - Enhanced with varying quality of services Scheduler Method
+
 **Input:** **Aperiodic Soft-Real-Time** jobs compatible with GPU execution
 
 ### Mode 1 - Greedy Schedule
@@ -82,6 +88,7 @@ SRTG-Scheduler [options] --j <jobs_file.csv>
                          --d <option> 
                          --simulation <1/0>
                          --gpu <AMD/NVIDIA>
+                         --method <0/1/2>
 ```
 ### Linux / macOS
 ```
@@ -92,6 +99,7 @@ SRTG-Scheduler [options] --j <jobs_file.csv>
                            --d <option>
                            --simulation <1/0>
                            --gpu <AMD/NVIDIA>
+                           --method <0/1/2>
 ```
 
 ### Scheduler Options Supported
@@ -109,26 +117,8 @@ SRTG-Scheduler [options] --j <jobs_file.csv>
         --d/--delayLimitPercentage -- Delay Schedule processor limit in percentage [optional - default:60]
         --s/--simulation 	   -- simulation mode turn ON/OFF [optional - default:ON]
         --g/--gpu 	           -- Jobs Scheduled on hardware <AMD/NVIDIA> - [optional - default:OFF]
+        --method                   -- Scheduler Methods [optional - default:0]
 ````
-
-#### A-periodic Jobs -- The Jobs File is the list of Jobs to be scheduled: <jobs_file.csv>
-```
-        Jid     - Job ID
-        Pn      - Processors Needed
-        Texe    - Execution Time
-        Td      - Deadline
-        Tlts    - Lastest Time Schedulable on the GPU
-
-        "Jid, Pn, Texe, Td, Tlts"
-```
-
-#### A-periodic Job Release Times -- The Release Time File has the list of release times of the kernels: <Release_Time_file.csv>
-```
-        Tr      - Release Time
-        Jr      - Number of jobs released
-
-        "Tr, Jr"
-```
 
 #### Scheduler Policies -- The Modes Supported: <mode option>
 ```
@@ -137,4 +127,37 @@ SRTG-Scheduler [options] --j <jobs_file.csv>
         3 - Event Aware Scheduler with Bias
         4 - Event Aware Scheduler with Bias and Bias Prediction
         5 - Event Aware Scheduler with Bias and Improved Bias Prediction
+```
+
+#### Scheduler Methods -- The Methods Supported: <method option>
+```
+        0 - Base Scheduler Method
+        1 - Enhanced Scheduler Method
+        2 - Enhanced with varying quality of services Scheduler Method
+```
+
+#### A-periodic Jobs -- The Jobs File is the list of Jobs to be scheduled: <jobs_file.csv>
+```
+        Jid     - Job ID
+        Pn      - Processors Needed
+        Texe    - Execution Time
+        Td      - Deadline
+        Tlts    - Lastest Time Schedulable on the GPU
+        Ph      - Processors Needed High
+        Pm      - Processors Needed Medium
+        Pl      - Processors Needed Low
+        Th      - Execution Time High
+        Tm      - Execution Time Medium
+        Tl      - Execution Time Low
+        DF      - Deadline Flexibilty
+
+        "Jid, Pn, Texe, Td, Tlts, Ph, Pm, Pl, Th, Tm, Tl, DF"
+```
+
+#### A-periodic Job Release Times -- The Release Time File has the list of release times of the kernels: <Release_Time_file.csv>
+```
+        Tr      - Release Time
+        Jr      - Number of jobs released
+
+        "Tr, Jr"
 ```
