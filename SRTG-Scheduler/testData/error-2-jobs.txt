@@ -1,0 +1,3 @@
+Job ID,GCUs Required,Execution Time,DeadLine,Lastest Time Schedulable,GCUs Req High,GCUs Req Medium,GCUs Req Low,ET High,ET Medium,ET Low,Deadline Flexibility
+0,12,12,31,19,12,0,0,12,0,0
+1,12,12,31,19,12,0,0,12,0,0
