@@ -41,6 +41,7 @@ RTGS_DEBUG_MSG=3 ./bin/SRTG-Scheduler --j bin/testData/set12-jobs.txt --r bin/te
 ./bin/SRTG-Scheduler --r bin/testData/error-1-jobReleaseTimes.txt --j bin/testData/error-3-jobs.txt
 ./bin/SRTG-Scheduler --r bin/testData/error-1-jobReleaseTimes.txt --j bin/testData/error-4-jobs.txt
 ./bin/SRTG-Scheduler --r bin/testData/error-2-jobReleaseTimes.txt --j bin/testData/set1-jobs.txt
+./bin/SRTG-Scheduler --r bin/testData/error-3-jobReleaseTimes.txt --j bin/testData/set1-jobs.txt
 #Simulation VS Hardaware
 RTGS_DEBUG_MSG=3 ./bin/SRTG-Scheduler --j bin/testData/aperiodic-set-0-syntheticJobs.csv --r bin/testData/aperiodic-set-0-syntheticJobReleaseTimes.csv --s 0
 RTGS_DEBUG_MSG=1 ./bin/SRTG-Scheduler --j bin/testData/set1-jobs.txt --r bin/testData/set1-jobReleaseTimes.txt --s 1
