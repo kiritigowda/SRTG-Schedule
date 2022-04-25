@@ -108,10 +108,10 @@ extern "C" void dump_profile_log()
 	if (stat("SRTG-Visual-Profile", &st) == -1) { mkdir("SRTG-Visual-Profile", 0700); }
 #endif
 	char profiler[1024] = "SRTG-Visual-Profile/SRTG_PROFILE";
-	char textBuffer[1024];
+	char textBuffer[512];
 	if (getEnvironmentVariable("VISUAL_PROFILER_LOCATION", textBuffer, sizeof(textBuffer))) { sprintf(profiler, "%s/SRTG_PROFILE", textBuffer); }
-	char plogfile[1024]; sprintf(plogfile, "%s-Mode-%d-data.log", profiler, GLOBAL_SRTG_MODE);
-	char phtmfile[1024]; sprintf(phtmfile, "%s-Mode-%d-visual.html", profiler, GLOBAL_SRTG_MODE);
+	char plogfile[2048]; sprintf(plogfile, "%s-Mode-%d-data.log", profiler, GLOBAL_SRTG_MODE);
+	char phtmfile[2048]; sprintf(phtmfile, "%s-Mode-%d-visual.html", profiler, GLOBAL_SRTG_MODE);
 	FILE * fp = fopen(plogfile, "w"); if (!fp) { printf("ERROR: unable to create '%s'\n", plogfile); return; }
 	FILE * fh = fopen(phtmfile, "w"); if (!fh) { printf("ERROR: unable to create '%s'\n", phtmfile); return; }
 

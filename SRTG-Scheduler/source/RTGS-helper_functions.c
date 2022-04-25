@@ -280,13 +280,13 @@ int RTGS_PrintScheduleSummary(int mode, int maxKernels, jobAttributes *kernelInf
 {
 	char profiler[1024] = "RTGS-Summary/RTGS";
 
-	char pCSVfile[1024];
+	char pCSVfile[2048];
 	sprintf(pCSVfile, "%s-Mode-%d-Job-Summary.csv", profiler, mode);
-	char pHTMLfile[1024];
+	char pHTMLfile[2048];
 	sprintf(pHTMLfile, "%s-Mode-%d-Job-Summary.html", profiler, mode);
-	char pSummaryfile[1024];
+	char pSummaryfile[2048];
 	sprintf(pSummaryfile, "%s-Mode-%d-Summary.html", profiler, mode);
-	char pModeSummaryFile[1024];
+	char pModeSummaryFile[2048];
 	sprintf(pModeSummaryFile, "%s-Mode-%d-Summary.csv", profiler, mode);
 
 #if _WIN32
