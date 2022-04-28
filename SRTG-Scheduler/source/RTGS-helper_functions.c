@@ -544,7 +544,8 @@ int RTGS_PrintScheduleSummary(int mode, int maxKernels, jobAttributes *kernelInf
 			else if(kernelInfoList[i].rtgs_level == 1){level1++;}
 			else if(kernelInfoList[i].rtgs_level == 2){level2++;}
 		}
-		totalGPUUsageRequested += ((processors / maxProcessors) * kernelInfoList[i].execution_time);
+		float processorsRequested_L0 = (float)kernelInfoList[i].processor_req_h;
+		totalGPUUsageRequested += ((processorsRequested_L0 / maxProcessors) * kernelInfoList[i].execution_time_h);
 		avgSchedulerOverHead += kernelInfoList[i].schedule_overhead;
 	}
 	// summary items

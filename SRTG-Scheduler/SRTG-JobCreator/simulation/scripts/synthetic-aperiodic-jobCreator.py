@@ -1,4 +1,4 @@
-# Copyright (c) 2017 - 2020 Kiriti Nagesh Gowda, Inc. All rights reserved.
+# Copyright (c) 2017 - 2022 Kiriti Nagesh Gowda, Inc. All rights reserved.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,7 @@ import random
 import sys
 
 __author__ = "Kiriti Nagesh Gowda"
-__copyright__ = "Copyright 2018 - 2020, Kiriti Nagesh Gowda - SRTG-Scheduler"
+__copyright__ = "Copyright 2018 - 2022, Kiriti Nagesh Gowda - SRTG-Scheduler"
 __license__ = "MIT"
 __version__ = "1.2.0"
 __maintainer__ = "Kiriti Nagesh Gowda"
