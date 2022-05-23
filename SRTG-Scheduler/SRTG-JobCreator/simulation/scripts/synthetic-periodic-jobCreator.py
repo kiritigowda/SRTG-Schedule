@@ -18,15 +18,16 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-import collections
-import random
-import os
-import sys
 import argparse
+import collections
+import os
+import random
+import sys
+
 __author__ = "Kiriti Nagesh Gowda"
 __copyright__ = "Copyright 2018 - 2022, Kiriti Nagesh Gowda - SRTG-Scheduler"
 __license__ = "MIT"
-__version__ = "1.0.1"
+__version__ = "1.2.0"
 __maintainer__ = "Kiriti Nagesh Gowda"
 __email__ = "Kiritigowda@gmail.com"
 __status__ = "Shipping"
@@ -51,6 +52,8 @@ parser.add_argument('--job_bias',   	type=str, 	default='even',
                     help='Job GCU request bias [even, odd, or mixed] - optional (default:even)')
 parser.add_argument('--release_bias',   type=str, 	default='single',
                     help='Job Release bias [single, or multiple] - optional (default:single)')
+parser.add_argument('--method',           type=int, 	default=0,
+                    help='Scheduler Method [0:Base, 1:Enhanced, or 2:Enhanced with varying quality of services] - optional (default:0)')
 args = parser.parse_args()
 
 # get arguments
@@ -63,11 +66,13 @@ lambdaVar = args.job_lambda
 scheduleBias = args.schedule_bias
 jobBias = args.job_bias
 releaseBias = args.release_bias
-scheduleBiasVar = int((scheduleBias/100) * maxGCUs)
+method = args.method
+# scheduler bias - GCU Limit
+scheduleBiasVar = int((float(scheduleBias)/100) * maxGCUs)
 
 # validate arguments
 if lambdaVar <= 0 or lambdaVar > 5:
-    print("ERROR: Job arrival rate - lambda [type:FLOAT range:0.001 to 1.0]")
+    print("ERROR: Job arrival rate - lambda [type:FLOAT range:0.001 to 5.0]")
     exit()
 
 if scheduleBias <= 0 or scheduleBias > 100:
@@ -82,6 +87,14 @@ if jobBias not in ('even', 'odd', 'mixed'):
 if releaseBias not in ('single', 'multiple'):
     print("ERROR: Job Release bias [options: single, or multiple]")
     exit()
+
+if method < 0 or method > 2:
+    print(
+        "ERROR: Scheduler method [options: 0:Base, 1:Enhanced, or 2:Enhanced with varying quality of services]")
+    exit()
+
+# help print
+print("\nSRTG-JobCreator - Synthetic Aperiodic Job Creator V-"+__version__+"\n")
 
 # setup output directory
 jobCreatorDir = os.path.expanduser(outputDirectory)
@@ -106,7 +119,7 @@ for s in range(numJobSet):
     releaseDistribution = 0
     with open(fileName_Jobs, 'w+') as f:
         f.write(
-            'Job ID,GCUs Required,Execution Time,DeadLine,lastest Time Schedulable\n')
+            'Job ID,GCUs Required,Execution Time,DeadLine,Lastest Time Schedulable,GCUs Req High,GCUs Req Medium,GCUs Req Low,ET High,ET Medium,ET Low,Deadline Flexibility\n')
         for x in range(numJobsPerSet):
             # Job Number
             jobNumber = x
@@ -137,9 +150,66 @@ for s in range(numJobSet):
             deadLine = best_QOS_Time + int(random.expovariate(deadlineVar))
             # Job latest time schedulable on the GPU
             lastestTimeSchedulable = deadLine - executionTime
+
+            Deadline_Flexibility = 0
+            if method == 0:
+                GCUs_Req_High = numGCUs
+                GCUs_Req_Medium = 0
+                GCUs_Req_Low = 0
+                ET_High = executionTime
+                ET_Medium = 0
+                ET_Low = 0
+            else:
+                GCUs_Req_High = numGCUs
+                ET_High = executionTime
+                if jobBias == 'even':
+                    if GCUs_Req_High == 2:
+                        GCUs_Req_Medium = 0
+                        ET_Medium = 0
+                        GCUs_Req_Low = 0
+                        ET_Low = 0
+                    else:
+                        GCUs_Req_Medium = int(GCUs_Req_High * 0.5)
+                        ET_Medium = int(ET_High * 1.5)
+
+                        if (GCUs_Req_Medium % 2) != 0:
+                            GCUs_Req_Medium = GCUs_Req_Medium - 1
+                            ET_Medium = int(ET_High * (1 + float(1 - float(GCUs_Req_Medium/GCUs_Req_High))))
+
+                        if GCUs_Req_Medium == 2:
+                            GCUs_Req_Low = 0
+                            ET_Low = 0
+                        else:
+                            GCUs_Req_Low = int(GCUs_Req_Medium * 0.5)
+                            ET_Low = int(ET_Medium * 1.5)
+
+                            if (GCUs_Req_Low % 2) != 0:
+                                GCUs_Req_Low = GCUs_Req_Low - 1
+                                ET_Low = int(ET_Medium * (1 + float(1 - float(GCUs_Req_Low/GCUs_Req_Medium))))
+                else:
+                    if GCUs_Req_High == 1:
+                        GCUs_Req_Medium = 0
+                        ET_Medium = 0
+                        GCUs_Req_Low = 0
+                        ET_Low = 0
+                    else:
+                        GCUs_Req_Medium = int(GCUs_Req_High * 0.5)
+                        ET_Medium = int(ET_High * 1.5)
+                        if GCUs_Req_Medium == 1:
+                            GCUs_Req_Low = 0
+                            ET_Low = 0
+                        else:
+                            GCUs_Req_Low = int(GCUs_Req_Medium * 0.5)
+                            ET_Low = int(ET_Medium * 1.5)
+            if method == 2:
+                Deadline_Flexibility = random.choice([0,5,10])
+
             # Write Job Info
             f.write(str(jobNumber)+','+str(numGCUs)+','+str(executionTime) +
-                    ','+str(deadLine)+','+str(lastestTimeSchedulable)+'\n')
+                    ','+str(deadLine)+','+str(lastestTimeSchedulable)+','+str(GCUs_Req_High) +
+                    ','+str(GCUs_Req_Medium)+','+str(GCUs_Req_Low)+','+str(ET_High) +
+                    ','+str(ET_Medium)+','+str(ET_Low)+','+str(Deadline_Flexibility) +
+                    '\n')
             # max of 2 jobs released at any given release time - Scheduler Support for N releases TBD
             if releaseBias == 'single':
                 releaseTime = releaseTime + 1
@@ -155,3 +225,6 @@ for s in range(numJobSet):
         f.write('Job Release Time,Num Jobs Released\n')
         for releaseTime, numJobsReleased in sorted(counter.items()):
             f.write(str(releaseTime)+','+str(numJobsReleased)+'\n')
+
+print("Job Sets Created:"+str(numJobSet)+" Jobs/Set:" +
+      str(numJobsPerSet)+" Schedule Bias:"+str(scheduleBias)+"\n")
