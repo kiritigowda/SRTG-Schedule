@@ -38,8 +38,8 @@ parser.add_argument('--directory',  	type=str, 	default='~/SRTG_jobCreator',
                     help='Output Directory - optional (default:~/SRTG_jobCreator)')
 parser.add_argument('--jobset_name',	type=str, 	default='aperiodic-set',
                     help='Job set prefix name - optional (default:aperiodic-set)')
-parser.add_argument('--num_jobset', 	type=int, 	default=1,
-                    help='Number of job sets to be created [type:INT range:1 to N] - optional (default:1)')
+parser.add_argument('--num_jobset', 	type=int, 	default=100,
+                    help='Number of job sets to be created [type:INT range:1 to N] - optional (default:100)')
 parser.add_argument('--num_jobs',   	type=int, 	default=100,
                     help='Number of jobs in each job sets [type:INT range:1 to N] - optional (default:100)')
 parser.add_argument('--max_gcu',    	type=int, 	default=16,
@@ -52,8 +52,8 @@ parser.add_argument('--job_bias',   	type=str, 	default='even',
                     help='Job GCU request bias [even, odd, or mixed] - optional (default:even)')
 parser.add_argument('--release_bias',   type=str, 	default='single',
                     help='Job Release bias [single, or multiple] - optional (default:single)')
-parser.add_argument('--method',           type=int, 	default=0,
-                    help='Scheduler Method [0:Base, 1:Enhanced, or 2:Enhanced with varying quality of services] - optional (default:0)')
+parser.add_argument('--method',           type=int, 	default=2,
+                    help='Scheduler Method [0:Base, 1:Enhanced, or 2:Enhanced with varying quality of services] - optional (default:2)')
 args = parser.parse_args()
 
 # get arguments
