@@ -284,13 +284,13 @@ int RTGS_PrintScheduleSummary(int mode, int maxKernels, jobAttributes *kernelInf
 	char profiler[1024] = "RTGS-Summary/RTGS";
 
 	char pCSVfile[2048];
-	sprintf(pCSVfile, "%s-Method-%d-Mode-%d-Job-Summary.csv", profiler, GLOBAL_RTGS_METHOD, mode);
+	snprintf(pCSVfile, sizeof(pCSVfile), "%s-Method-%d-Mode-%d-Job-Summary.csv", profiler, GLOBAL_RTGS_METHOD, mode);
 	char pHTMLfile[2048];
-	sprintf(pHTMLfile, "%s-Method-%d-Mode-%d-Job-Summary.html", profiler, GLOBAL_RTGS_METHOD, mode);
+	snprintf(pHTMLfile, sizeof(pHTMLfile), "%s-Method-%d-Mode-%d-Job-Summary.html", profiler, GLOBAL_RTGS_METHOD, mode);
 	char pSummaryfile[2048];
-	sprintf(pSummaryfile, "%s-Method-%d-Mode-%d-Summary.html", profiler, GLOBAL_RTGS_METHOD, mode);
+	snprintf(pSummaryfile, sizeof(pSummaryfile), "%s-Method-%d-Mode-%d-Summary.html", profiler, GLOBAL_RTGS_METHOD, mode);
 	char pModeSummaryFile[2048];
-	sprintf(pModeSummaryFile, "%s-Method-%d-Mode-%d-Summary.csv", profiler, GLOBAL_RTGS_METHOD, mode);
+	snprintf(pModeSummaryFile, sizeof(pModeSummaryFile), "%s-Method-%d-Mode-%d-Summary.csv", profiler, GLOBAL_RTGS_METHOD, mode);
 
 #if _WIN32
 	CreateDirectory("RTGS-Summary", NULL);
