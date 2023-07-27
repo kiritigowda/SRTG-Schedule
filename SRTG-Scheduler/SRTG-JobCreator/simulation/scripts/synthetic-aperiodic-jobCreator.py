@@ -27,7 +27,7 @@ import sys
 __author__ = "Kiriti Nagesh Gowda"
 __copyright__ = "Copyright 2018 - 2022, Kiriti Nagesh Gowda - SRTG-Scheduler"
 __license__ = "MIT"
-__version__ = "1.2.0"
+__version__ = "1.2.1"
 __maintainer__ = "Kiriti Nagesh Gowda"
 __email__ = "Kiritigowda@gmail.com"
 __status__ = "Shipping"
@@ -169,8 +169,8 @@ for s in range(numJobSet):
                         GCUs_Req_Low = 0
                         ET_Low = 0
                     else:
-                        GCUs_Req_Medium = int(GCUs_Req_High * 0.5)
-                        ET_Medium = int(ET_High * 1.5)
+                        GCUs_Req_Medium = int(GCUs_Req_High * 0.75)
+                        ET_Medium = int(ET_High * 1.25)
 
                         if (GCUs_Req_Medium % 2) != 0:
                             GCUs_Req_Medium = GCUs_Req_Medium - 1
@@ -180,8 +180,8 @@ for s in range(numJobSet):
                             GCUs_Req_Low = 0
                             ET_Low = 0
                         else:
-                            GCUs_Req_Low = int(GCUs_Req_Medium * 0.5)
-                            ET_Low = int(ET_Medium * 1.5)
+                            GCUs_Req_Low = int(GCUs_Req_Medium * 0.75)
+                            ET_Low = int(ET_Medium * 1.25)
 
                             if (GCUs_Req_Low % 2) != 0:
                                 GCUs_Req_Low = GCUs_Req_Low - 1
@@ -193,16 +193,16 @@ for s in range(numJobSet):
                         GCUs_Req_Low = 0
                         ET_Low = 0
                     else:
-                        GCUs_Req_Medium = int(GCUs_Req_High * 0.5)
-                        ET_Medium = int(ET_High * 1.5)
+                        GCUs_Req_Medium = int(GCUs_Req_High * 0.75)
+                        ET_Medium = int(ET_High * 1.25)
                         if GCUs_Req_Medium == 1:
                             GCUs_Req_Low = 0
                             ET_Low = 0
                         else:
-                            GCUs_Req_Low = int(GCUs_Req_Medium * 0.5)
-                            ET_Low = int(ET_Medium * 1.5)
+                            GCUs_Req_Low = int(GCUs_Req_Medium * 0.75)
+                            ET_Low = int(ET_Medium * 1.25)
             if method == 2:
-                Deadline_Flexibility = random.choice([0,5,10])
+                Deadline_Flexibility = random.choice([0,5,10,15,20])
 
             # Write Job Info
             f.write(str(jobNumber)+','+str(numGCUs)+','+str(executionTime) +

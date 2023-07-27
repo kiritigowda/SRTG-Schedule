@@ -1,5 +1,5 @@
 # minimum version of CMake expected
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.5)
 
 # project definition
 project(SRTG-Scheduler)

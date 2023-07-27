@@ -17,20 +17,20 @@ static void show_usage()
 	printf("\n");
 	printf("Usage:\n\n");
 	printf("\tWindows:\n");
-	printf("\t\tSRTG-Scheduler.exe [options]\t--j <jobs_file.csv>\n");
-	printf("\t\t\t\t\t\t--r <Release_Time_file.csv>\n");
-	printf("\t\t\t\t\t\t--m <option>\n");
-	printf("\t\t\t\t\t\t--p <option>\n");
-	printf("\t\t\t\t\t\t--d <option>\n");
+	printf("\t\tSRTG-Scheduler.exe [options]\t--jobs <jobs_file.csv>\n");
+	printf("\t\t\t\t\t\t--releaseTimes <Release_Time_file.csv>\n");
+	printf("\t\t\t\t\t\t--mode <option>\n");
+	printf("\t\t\t\t\t\t--maxProcessors <option>\n");
+	printf("\t\t\t\t\t\t--delayLimitPercentage <option>\n");
 	printf("\t\t\t\t\t\t--simulation <option> \n");
 	printf("\t\t\t\t\t\t--gpu <AMD/NVIDIA> \n");
 	printf("\t\t\t\t\t\t--method <option> \n");
 	printf("\tLinux/macOS:\n");
-	printf("\t\t./SRTG-Scheduler [options]\t--j <jobs_file.csv>\n");
-	printf("\t\t\t\t\t\t--r <Release_Time_file.csv>\n");
-	printf("\t\t\t\t\t\t--m <option>\n");
-	printf("\t\t\t\t\t\t--p <option>\n");
-	printf("\t\t\t\t\t\t--d <option>\n");
+	printf("\t\t./SRTG-Scheduler [options]\t--jobs <jobs_file.csv>\n");
+	printf("\t\t\t\t\t\t--releaseTimes <Release_Time_file.csv>\n");
+	printf("\t\t\t\t\t\t--mode <option>\n");
+	printf("\t\t\t\t\t\t--maxProcessors <option>\n");
+	printf("\t\t\t\t\t\t--delayLimitPercentage <option>\n");
 	printf("\t\t\t\t\t\t--simulation <option> \n");
 	printf("\t\t\t\t\t\t--gpu <AMD/NVIDIA> \n");
 	printf("\t\t\t\t\t\t--method <option> \n");
@@ -82,7 +82,7 @@ static void show_usage()
 	printf("\tThe arguments:\n");
 	printf("			0 - Base Scheduler Method\n");
 	printf("			1 - Enhanced Scheduler Method\n");
-	printf("			2 - Enhanced with varying quality of services Scheduler Method\n");
+	printf("			2 - Enhanced With Varying Quality Of Service Scheduler Method\n");
 	printf("\n");
 }
 

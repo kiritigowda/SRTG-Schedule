@@ -365,9 +365,9 @@ print("\t\t\t\t<td><center><font color = \"RoyalBlue\"><b>Avg Scheduler OverHead
 print("\t\t\t\t<td><center><font color = \"RoyalBlue\"><b>Avg Method 0 Schedules</b></font></center></td>")
 print("\t\t\t\t<td><center><font color = \"RoyalBlue\"><b>Avg Method 1 Schedules</b></font></center></td>")
 print("\t\t\t\t<td><center><font color = \"RoyalBlue\"><b>Avg Method 2 Schedules</b></font></center></td>")
-print("\t\t\t\t<td><center><font color = \"RoyalBlue\"><b>Avg Level 0 Schedules</b></font></center></td>")
-print("\t\t\t\t<td><center><font color = \"RoyalBlue\"><b>Avg Level 1 Schedules</b></font></center></td>")
-print("\t\t\t\t<td><center><font color = \"RoyalBlue\"><b>Avg Level 2 Schedules</b></font></center></td>")
+print("\t\t\t\t<td><center><font color = \"RoyalBlue\"><b>Avg High GCU Schedules</b></font></center></td>")
+print("\t\t\t\t<td><center><font color = \"RoyalBlue\"><b>Avg Medium GCU Schedules</b></font></center></td>")
+print("\t\t\t\t<td><center><font color = \"RoyalBlue\"><b>Avg Low GCU Schedules</b></font></center></td>")
 print("\t\t\t</tr>")
 
 # Mode 1
@@ -534,7 +534,7 @@ print(str(round(avgReleaseLambda, 4))+', '+str(round(avgJobs, 2))+', '+str(round
 sys.stdout = open(html_output_file, 'a')
 
 print("\t\t\t<tr>")
-print("\t\t\t\t<td><center><font color = \"maroon\"><b>1</b></font></center></td>")
+print("\t\t\t\t<td><center><font color = \"maroon\"><b>2</b></font></center></td>")
 print("\t\t\t\t<td><center>"+str(round(avgJobs, 2))+"</center></td>")
 print("\t\t\t\t<td><center>"+str(round(avgJobsAccepted, 2))+"</center></td>")
 print("\t\t\t\t<td><center>"+str(round(avgJobPercentage, 2))+"</center></td>")
@@ -626,7 +626,7 @@ print(str(round(avgReleaseLambda, 4))+', '+str(round(avgJobs, 2))+', '+str(round
 sys.stdout = open(html_output_file, 'a')
 
 print("\t\t\t<tr>")
-print("\t\t\t\t<td><center><font color = \"maroon\"><b>1</b></font></center></td>")
+print("\t\t\t\t<td><center><font color = \"maroon\"><b>3</b></font></center></td>")
 print("\t\t\t\t<td><center>"+str(round(avgJobs, 2))+"</center></td>")
 print("\t\t\t\t<td><center>"+str(round(avgJobsAccepted, 2))+"</center></td>")
 print("\t\t\t\t<td><center>"+str(round(avgJobPercentage, 2))+"</center></td>")
@@ -718,7 +718,7 @@ print(str(round(avgReleaseLambda, 4))+', '+str(round(avgJobs, 2))+', '+str(round
 sys.stdout = open(html_output_file, 'a')
 
 print("\t\t\t<tr>")
-print("\t\t\t\t<td><center><font color = \"maroon\"><b>1</b></font></center></td>")
+print("\t\t\t\t<td><center><font color = \"maroon\"><b>4</b></font></center></td>")
 print("\t\t\t\t<td><center>"+str(round(avgJobs, 2))+"</center></td>")
 print("\t\t\t\t<td><center>"+str(round(avgJobsAccepted, 2))+"</center></td>")
 print("\t\t\t\t<td><center>"+str(round(avgJobPercentage, 2))+"</center></td>")
@@ -810,7 +810,7 @@ print(str(round(avgReleaseLambda, 4))+', '+str(round(avgJobs, 2))+', '+str(round
 sys.stdout = open(html_output_file, 'a')
 
 print("\t\t\t<tr>")
-print("\t\t\t\t<td><center><font color = \"maroon\"><b>1</b></font></center></td>")
+print("\t\t\t\t<td><center><font color = \"maroon\"><b>5</b></font></center></td>")
 print("\t\t\t\t<td><center>"+str(round(avgJobs, 2))+"</center></td>")
 print("\t\t\t\t<td><center>"+str(round(avgJobsAccepted, 2))+"</center></td>")
 print("\t\t\t\t<td><center>"+str(round(avgJobPercentage, 2))+"</center></td>")
