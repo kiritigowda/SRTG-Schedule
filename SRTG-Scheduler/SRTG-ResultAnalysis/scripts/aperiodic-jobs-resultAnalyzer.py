@@ -27,7 +27,7 @@ from datetime import date
 __author__ = "Kiriti Nagesh Gowda"
 __copyright__ = "Copyright 2018 - 2022, Kiriti Nagesh Gowda - SRTG-Scheduler"
 __license__ = "MIT"
-__version__ = "1.2.0"
+__version__ = "1.2.1"
 __maintainer__ = "Kiriti Nagesh Gowda"
 __email__ = "Kiritigowda@gmail.com"
 __status__ = "Shipping"

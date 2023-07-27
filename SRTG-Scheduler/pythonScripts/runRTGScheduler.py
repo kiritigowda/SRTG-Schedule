@@ -26,7 +26,7 @@ import argparse
 __author__ = "Kiriti Nagesh Gowda"
 __copyright__ = "Copyright 2018 - 2022, Kiriti Nagesh Gowda - SRTG-Scheduler"
 __license__ = "MIT"
-__version__ = "1.2.0"
+__version__ = "1.2.1"
 __maintainer__ = "Kiriti Nagesh Gowda"
 __email__ = "Kiritigowda@gmail.com"
 __status__ = "Shipping"
@@ -37,14 +37,14 @@ parser.add_argument('--jobs_directory', type=str, default='',
                     help='Jobs Directory - jobs file directory')
 parser.add_argument('--jobset_name', type=str, default='',
                     help='Job set prefix name')
-parser.add_argument('--num_jobset', type=int, default=-1,
-                    help='Number of job [type:INT range:1 to N] - optional (default:1)')
+parser.add_argument('--num_jobset', type=int, default=100,
+                    help='Number of job [type:INT range:1 to N] - optional (default:100)')
 parser.add_argument('--method', type=int, default='2',
                     help='Scheduler Method [type:INT options:0/1/2] - optional (default:2)')
 parser.add_argument('--scheduler_directory', type=str, default='',
                     help='Scheduler Directory - directory with SRTG-Scheduler')
 parser.add_argument('--output_directory', type=str, default='',
-                    help='Output Directory - directory to save scheduler summary')
+                    help='Output Directory - directory to save scheduler summary & logs')
 args = parser.parse_args()
 
 JobSetDirectory = args.jobs_directory
@@ -71,7 +71,38 @@ if not os.path.exists(exe_dir):
 if not os.path.exists(output_dir):
     os.makedirs(output_dir)
 
+# logs folder
+logs_dir = OutputDirectory+'/logs'
+logsDir = os.path.expanduser(logs_dir)
+logsDir = os.path.abspath(logsDir)
+if not os.path.exists(logsDir):
+    os.makedirs(logsDir)
+
+# summary folder
+summary_dir = OutputDirectory+'/summary'
+summaryDir = os.path.expanduser(summary_dir)
+summaryDir = os.path.abspath(summaryDir)
+if not os.path.exists(summaryDir):
+    os.makedirs(summaryDir)
+
+# save log files
+logFileFolder = logsDir+'/'+jobSetName
+if not os.path.exists(logFileFolder):
+    os.makedirs(logFileFolder)
+
+# current working folder
+current_working_directory = os.getcwd()
+
 # num job sets required to be created
 for s in range(numJobSet):
-    os.system('./'+exe_dir+'SRTG-Scheduler --j '+jobs_dir+'/'+jobSetName+'-'+str(s)+'-syntheticJobs.csv --r '+jobs_dir +'/'+
-              jobSetName+'-'+str(s)+'-syntheticJobReleaseTimes.csv --m 99 --method '+str(Method)+' >> '+output_dir+'/outputSummary-'+str(s)+'.txt')
+    os.system('./'+exe_dir+'/SRTG-Scheduler --j '+jobs_dir+'/'+jobSetName+'-'+str(s)+'-syntheticJobs.csv --r '+jobs_dir +'/'+
+              jobSetName+'-'+str(s)+'-syntheticJobReleaseTimes.csv --m 99 --method '+str(Method)+' >> '+logFileFolder+'/outputSummary-'+str(s)+'.txt')
+    
+summaryFolder = current_working_directory+'/RTGS-Summary'
+if os.path.exists(summaryFolder):
+    os.system('mv '+summaryFolder+' '+summaryDir+'/RTGS-Summary-'+jobSetName)
+else:
+    print("ERROR - No RTGS-Summary Directory")
+    exit(-1)
+
+print("\nrunRTGScheduler.py ran jobs successfully with Version-"+__version__+"\n")
