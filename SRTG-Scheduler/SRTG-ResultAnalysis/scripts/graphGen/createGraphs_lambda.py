@@ -29,7 +29,7 @@ from datetime import date
 __author__ = "Kiriti Nagesh Gowda"
 __copyright__ = "Copyright 2018 - 2022, Kiriti Nagesh Gowda - SRTG-Scheduler"
 __license__ = "MIT"
-__version__ = "1.2.0"
+__version__ = "1.2.1"
 __maintainer__ = "Kiriti Nagesh Gowda"
 __email__ = "Kiritigowda@gmail.com"
 __status__ = "Shipping"
@@ -135,8 +135,8 @@ print("\n")
 # Jobs Accepted for GPU Schedule
 print(
     "\t\t\tgoogle.charts.load('current', {packages: ['corechart', 'line']});")
-print("\t\t\tgoogle.charts.setOnLoadCallback(jobScheduledGraph);")
-print("\t\t\tfunction jobScheduledGraph() {")
+print("\t\t\tgoogle.charts.setOnLoadCallback(jobScheduledNumberGraph);")
+print("\t\t\tfunction jobScheduledNumberGraph() {")
 print("\t\t\tvar data = new google.visualization.DataTable();")
 print("\t\t\tdata.addColumn('number', 'X');")
 print("\t\t\tdata.addColumn('number', 'Mode 1');")
@@ -155,8 +155,8 @@ for x in range(row_count):
 print("\t\t\t]);")
 print("\t\t\tvar options = { title:'Average Jobs Accepted with Lambda Variation', \
     titleTextStyle: { fontSize: 28, bold: true}, \
-    hAxis:{ title: 'Release Time Lambda Value', titleTextStyle: { fontSize: 24, bold: true}, marginTop: '5'}, \
-    vAxis:{ title: 'Number of Jobs Scheduled', titleTextStyle:{ fontSize: 24, bold: true} }, \
+    hAxis:{ title: 'Release Time Lambda Value', titleTextStyle: { fontSize: 24, bold: true}, marginTop: '5', minValue: 0}, \
+    vAxis:{ title: 'Number of Jobs Scheduled', titleTextStyle:{ fontSize: 24, bold: true}, minValue: 0 }, \
     series:{ 0:{lineDashStyle: [1, 1]}, 1:{lineDashStyle: [2, 2]}, 2:{lineDashStyle: [4, 4]}, 3:{lineDashStyle: [5, 1, 3] }, 4:{ lineDashStyle: [5, 5]}}, \
     legend:{ position: 'top', alignment: 'center', textStyle:{ fontSize: 26}}, \
     width:1600, height:1000 };")
@@ -175,7 +175,7 @@ print("\t\t\tdata.addColumn('number', 'Mode 2');")
 print("\t\t\tdata.addColumn('number', 'Mode 3');")
 print("\t\t\tdata.addColumn('number', 'Mode 4');")
 print("\t\t\tdata.addColumn('number', 'Mode 5');")
-print("\t\t\tdata.addRows([[0,0,0,0,0,0],")
+print("\t\t\tdata.addRows([")
 for x in range(row_count):
     if(x < row_count-1):
         print('\t\t\t\t['+str(data_1[x][0])+','+str(data_1[x][3])+','+str(data_2[x]
@@ -186,7 +186,7 @@ for x in range(row_count):
 print("\t\t\t]);")
 print("\t\t\tvar options = { title:'Average Jobs Accepted Percentage with Lambda Variation', \
     titleTextStyle: { fontSize: 28, bold: true}, \
-    hAxis:{ title: 'Release Time Lambda Value', titleTextStyle: { fontSize: 24, bold: true}, marginTop: '5'}, \
+    hAxis:{ title: 'Release Time Lambda Value', titleTextStyle: { fontSize: 24, bold: true}, marginTop: '5', minValue: 0 }, \
     vAxis:{ title: 'Avg Jobs Scheduled %', titleTextStyle:{ fontSize: 24, bold: true}, minValue: 0, maxValue: 100 }, \
     series:{ 0:{lineDashStyle: [1, 1]}, 1:{lineDashStyle: [2, 2]}, 2:{lineDashStyle: [4, 4]}, 3:{lineDashStyle: [5, 1, 3] }, 4:{ lineDashStyle: [5, 5]}}, \
     legend:{ position: 'top', alignment: 'center', textStyle:{ fontSize: 26}}, \
@@ -206,7 +206,7 @@ print("\t\t\tdata.addColumn('number', 'Mode 2');")
 print("\t\t\tdata.addColumn('number', 'Mode 3');")
 print("\t\t\tdata.addColumn('number', 'Mode 4');")
 print("\t\t\tdata.addColumn('number', 'Mode 5');")
-print("\t\t\tdata.addRows([[0,0,0,0,0,0],")
+print("\t\t\tdata.addRows([")
 for x in range(row_count):
     if(x < row_count-1):
         print('\t\t\t\t['+str(data_1[x][0])+','+str(data_1[x][8])+','+str(data_2[x]
@@ -217,7 +217,7 @@ for x in range(row_count):
 print("\t\t\t]);")
 print("\t\t\tvar options = { title:'AVG Total GPU Usage Time for Accepted Jobs with Lambda Variation', \
     titleTextStyle: { fontSize: 28, bold: true}, \
-    hAxis:{ title: 'Release Time Lambda Value', titleTextStyle: { fontSize: 24, bold: true}, marginTop: '5'}, \
+    hAxis:{ title: 'Release Time Lambda Value', titleTextStyle: { fontSize: 24, bold: true}, marginTop: '5', minValue: 0 }, \
     vAxis:{ title: 'AVG Total GPU Usage Time - Accepted Jobs', titleTextStyle:{ fontSize: 24, bold: true} }, \
     series:{ 0:{lineDashStyle: [1, 1]}, 1:{lineDashStyle: [2, 2]}, 2:{lineDashStyle: [4, 4]}, 3:{lineDashStyle: [5, 1, 3] }, 4:{ lineDashStyle: [5, 5]}}, \
     legend:{ position: 'top', alignment: 'center', textStyle:{ fontSize: 26}}, \
@@ -237,7 +237,7 @@ print("\t\t\tdata.addColumn('number', 'Mode 2');")
 print("\t\t\tdata.addColumn('number', 'Mode 3');")
 print("\t\t\tdata.addColumn('number', 'Mode 4');")
 print("\t\t\tdata.addColumn('number', 'Mode 5');")
-print("\t\t\tdata.addRows([[0,0,0,0,0,0],")
+print("\t\t\tdata.addRows([")
 for x in range(row_count):
     if(x < row_count-1):
         print('\t\t\t\t['+str(data_1[x][0])+','+str(data_1[x][6])+','+str(data_2[x]
@@ -248,7 +248,7 @@ for x in range(row_count):
 print("\t\t\t]);")
 print("\t\t\tvar options = { title:'Avg Response by Execution Time for Accepted Jobs with Lambda Variation', \
     titleTextStyle: { fontSize: 28, bold: true}, \
-    hAxis:{ title: 'Release Time Lambda Value', titleTextStyle: { fontSize: 24, bold: true}, marginTop: '5'}, \
+    hAxis:{ title: 'Release Time Lambda Value', titleTextStyle: { fontSize: 24, bold: true}, marginTop: '5', minValue: 0 }, \
     vAxis:{ title: 'Avg Response by Execution Time - Accepted Jobs', titleTextStyle:{ fontSize: 24, bold: true} }, \
     series:{ 0:{lineDashStyle: [1, 1]}, 1:{lineDashStyle: [2, 2]}, 2:{lineDashStyle: [4, 4]}, 3:{lineDashStyle: [5, 1, 3] }, 4:{ lineDashStyle: [5, 5]}}, \
     legend:{ position: 'top', alignment: 'center', textStyle:{ fontSize: 26}}, \
@@ -268,7 +268,7 @@ print("\t\t\tdata.addColumn('number', 'Mode 2');")
 print("\t\t\tdata.addColumn('number', 'Mode 3');")
 print("\t\t\tdata.addColumn('number', 'Mode 4');")
 print("\t\t\tdata.addColumn('number', 'Mode 5');")
-print("\t\t\tdata.addRows([[0,0,0,0,0,0],")
+print("\t\t\tdata.addRows([")
 for x in range(row_count):
     if(x < row_count-1):
         print('\t\t\t\t['+str(data_1[x][0])+','+str(data_1[x][7])+','+str(data_2[x]
@@ -279,7 +279,7 @@ for x in range(row_count):
 print("\t\t\t]);")
 print("\t\t\tvar options = { title:'Avg Response by Relative Deadline for Accepted Jobs with Lambda Variation', \
     titleTextStyle: { fontSize: 28, bold: true}, \
-    hAxis:{ title: 'Release Time Lambda Value', titleTextStyle: { fontSize: 24, bold: true}, marginTop: '5'}, \
+    hAxis:{ title: 'Release Time Lambda Value', titleTextStyle: { fontSize: 24, bold: true}, marginTop: '5', minValue: 0 }, \
     vAxis:{ title: 'Avg Response by Relative Deadline - Accepted Jobs', titleTextStyle:{ fontSize: 24, bold: true} }, \
     series:{ 0:{lineDashStyle: [1, 1]}, 1:{lineDashStyle: [2, 2]}, 2:{lineDashStyle: [4, 4]}, 3:{lineDashStyle: [5, 1, 3] }, 4:{ lineDashStyle: [5, 5]}}, \
     legend:{ position: 'top', alignment: 'center', textStyle:{ fontSize: 26}}, \
@@ -299,7 +299,7 @@ print("\t\t\tdata.addColumn('number', 'Mode 2');")
 print("\t\t\tdata.addColumn('number', 'Mode 3');")
 print("\t\t\tdata.addColumn('number', 'Mode 4');")
 print("\t\t\tdata.addColumn('number', 'Mode 5');")
-print("\t\t\tdata.addRows([[0,0,0,0,0,0],")
+print("\t\t\tdata.addRows([")
 for x in range(row_count):
     if(x < row_count-1):
         print('\t\t\t\t['+str(data_1[x][0])+','+str(data_1[x][10])+','+str(data_2[x][10]) +
@@ -310,7 +310,7 @@ for x in range(row_count):
 print("\t\t\t]);")
 print("\t\t\tvar options = { title:'Avg Schedule Overhead for Accepted Jobs with Lambda Variation', \
     titleTextStyle: { fontSize: 28, bold: true}, \
-    hAxis:{ title: 'Release Time Lambda Value', titleTextStyle: { fontSize: 24, bold: true}, marginTop: '5'}, \
+    hAxis:{ title: 'Release Time Lambda Value', titleTextStyle: { fontSize: 24, bold: true}, marginTop: '5', minValue: 0 }, \
     vAxis:{ title: 'Avg Scheduler Overhead - Accepted Jobs', titleTextStyle:{ fontSize: 24, bold: true} }, \
     series:{ 0:{lineDashStyle: [1, 1]}, 1:{lineDashStyle: [2, 2]}, 2:{lineDashStyle: [4, 4]}, 3:{lineDashStyle: [5, 1, 3] }, 4:{ lineDashStyle: [5, 5]}}, \
     legend:{ position: 'top', alignment: 'center', textStyle:{ fontSize: 26}}, \
