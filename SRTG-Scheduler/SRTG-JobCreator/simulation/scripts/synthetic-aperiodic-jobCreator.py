@@ -44,8 +44,8 @@ parser.add_argument('--num_jobs',   	type=int, 	default=100,
                     help='Number of jobs in each job sets [type:INT range:1 to N] - optional (default:100)')
 parser.add_argument('--max_gcu',    	type=int, 	default=16,
                     help='Maximum GCUs available on the system [type:INT range:1 to N] - optional (default:16)')
-parser.add_argument('--job_lambda',     type=float, default=0.5,
-                    help='Job arrival rate: lambda [type:FLOAT range:0.001 to 5.0] - optional (default:0.5)')
+parser.add_argument('--job_lambda',     type=float, default=0.67,
+                    help='Job arrival rate: lambda [type:FLOAT range:0.001 to 5.0] - optional (default Lambda:0.5)')
 parser.add_argument('--schedule_bias',	type=int, 	default=60,
                     help='Delay schedule GCU limit percentage [type:INT range:1 to 100] - optional (default:60)')
 parser.add_argument('--job_bias',   	type=str, 	default='even',
