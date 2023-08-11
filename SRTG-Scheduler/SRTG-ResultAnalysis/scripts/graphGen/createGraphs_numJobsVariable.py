@@ -29,7 +29,7 @@ from datetime import date
 __author__ = "Kiriti Nagesh Gowda"
 __copyright__ = "Copyright 2018 - 2022, Kiriti Nagesh Gowda - SRTG-Scheduler"
 __license__ = "MIT"
-__version__ = "1.2.0"
+__version__ = "1.2.1"
 __maintainer__ = "Kiriti Nagesh Gowda"
 __email__ = "Kiritigowda@gmail.com"
 __status__ = "Shipping"
@@ -211,7 +211,11 @@ for x in range(row_count):
     else:
         print( '\t\t\t\t['+str(numJobs)+','+str(data_1[x][10])+','+str(data_2[x][10])+','+str(data_3[x][10])+','+str(data_4[x][10])+','+str(data_5[x][10])+']')
 print("\t\t\t]);")
-print("\t\t\tvar options = {  title:'GPU Schedule Overhead Per Job (ms)', hAxis: { title: 'Num Jobs in Test Set'}, vAxis: {title: 'GPU Schedule Overhead'}, series: { 0.01: {curveType: 'function'} }, width:900, height:600 };")
+print("\t\t\tvar options = {  title:'GPU Schedule Overhead Per Job (ms)', \
+       hAxis: { title: 'Num Jobs in Test Set', minValue: 0}, \
+       vAxis: {title: 'GPU Schedule Overhead', minValue: 0}, \
+       series: { 0.01: {curveType: 'function'} }, \
+       width:900, height:600 };")
 print("\t\t\tvar chart = new google.visualization.LineChart(document.getElementById('GPUScheduleOverhead_chart'));")
 print("\t\t\tchart.draw(data, options);}")
 print("\n\n\n")
