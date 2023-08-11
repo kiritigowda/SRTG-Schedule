@@ -111,7 +111,7 @@ else:
     row_count = row_count_1
 
 # help print
-print("\nSRTG-ResultAnalysis - Aperiodic Job Release Lambda Analyzer V-"+__version__+"\n")
+print("\nSRTG-ResultAnalysis - Aperiodic Job Release Number of Jobs Analyzer V-"+__version__+"\n")
 
 # date
 today = date.today()
