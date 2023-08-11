@@ -27,7 +27,7 @@ import sys
 __author__ = "Kiriti Nagesh Gowda"
 __copyright__ = "Copyright 2018 - 2022, Kiriti Nagesh Gowda - SRTG-Scheduler"
 __license__ = "MIT"
-__version__ = "1.2.1"
+__version__ = "1.2.2"
 __maintainer__ = "Kiriti Nagesh Gowda"
 __email__ = "Kiritigowda@gmail.com"
 __status__ = "Shipping"
@@ -126,7 +126,10 @@ for s in range(numJobSet):
             # Job GCUs Requested - with Job GCU Bias
             numGCUs = 0
             if jobBias == 'even':
-                numGCUs = random.randrange(2, maxGCUs, 2)
+                if maxGCUs == 2:
+                    numGCUs = maxGCUs
+                else:
+                    numGCUs = random.randrange(2, maxGCUs, 2)
             elif jobBias == 'odd':
                 numGCUs = random.randrange(1, maxGCUs)
                 if (numGCUs % 2) == 0:

@@ -45,6 +45,10 @@ parser.add_argument('--scheduler_directory', type=str, default='',
                     help='Scheduler Directory - directory with SRTG-Scheduler')
 parser.add_argument('--output_directory', type=str, default='',
                     help='Output Directory - directory to save scheduler summary & logs')
+parser.add_argument('--max_gcus', type=int, default=16,
+                    help='Max GCUs available [type:INT range:2 to N] - optional (default:16)')
+parser.add_argument('--delay_schedule_limit', type=int, default=60,
+                    help='Scheduler bias value in percentage [type:INT range:1 to 100] - optional (default:60)')
 args = parser.parse_args()
 
 JobSetDirectory = args.jobs_directory
@@ -53,6 +57,8 @@ numJobSet = args.num_jobset
 Method = args.method
 RTGSDirectory = args.scheduler_directory
 OutputDirectory = args.output_directory
+maxGUCs = args.max_gcus
+dealyScheduleLimit = args.delay_schedule_limit
 
 if JobSetDirectory == '' or jobSetName == '' or numJobSet == -1 or RTGSDirectory == '' or OutputDirectory == '':
     print("ERROR - NO Arguments Passed, use --h option")
@@ -96,7 +102,9 @@ current_working_directory = os.getcwd()
 # num job sets required to be created
 for s in range(numJobSet):
     os.system('./'+exe_dir+'/SRTG-Scheduler --j '+jobs_dir+'/'+jobSetName+'-'+str(s)+'-syntheticJobs.csv --r '+jobs_dir +'/'+
-              jobSetName+'-'+str(s)+'-syntheticJobReleaseTimes.csv --m 99 --method '+str(Method)+' >> '+logFileFolder+'/outputSummary-'+str(s)+'.txt')
+              jobSetName+'-'+str(s)+'-syntheticJobReleaseTimes.csv --m 99 --method '+
+              str(Method)+' --maxProcessors '+str(maxGUCs)+' --delayLimitPercentage '+
+              str(dealyScheduleLimit)+' >> '+logFileFolder+'/outputSummary-'+str(s)+'.txt')
     
 summaryFolder = current_working_directory+'/RTGS-Summary'
 if os.path.exists(summaryFolder):
