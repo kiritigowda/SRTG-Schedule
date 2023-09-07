@@ -121,7 +121,7 @@ dateCreated = today.strftime("%b-%d-%Y")
 orig_stdout = sys.stdout
 
 # HTML File
-html_output_file = outputDirectory+'/'+fileName+'-numGCUsVaraitionSummary.html'
+html_output_file = outputDirectory+'/'+fileName+'-Method-'+method+'-numGCUsVaraitionSummary.html'
 sys.stdout = open(html_output_file, 'w+')
 
 print("<html>")
