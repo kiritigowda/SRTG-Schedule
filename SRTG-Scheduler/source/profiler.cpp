@@ -108,10 +108,10 @@ extern "C" void dump_profile_log()
 	if (stat("SRTG-Visual-Profile", &st) == -1) { mkdir("SRTG-Visual-Profile", 0700); }
 #endif
 	char profiler[1024] = "SRTG-Visual-Profile/SRTG_PROFILE";
-	char textBuffer[1024];
-	if (getEnvironmentVariable("VISUAL_PROFILER_LOCATION", textBuffer, sizeof(textBuffer))) { sprintf(profiler, "%s/SRTG_PROFILE", textBuffer); }
-	char plogfile[1024]; sprintf(plogfile, "%s-Mode-%d-data.log", profiler, GLOBAL_SRTG_MODE);
-	char phtmfile[1024]; sprintf(phtmfile, "%s-Mode-%d-visual.html", profiler, GLOBAL_SRTG_MODE);
+	char textBuffer[512];
+	if (getEnvironmentVariable("VISUAL_PROFILER_LOCATION", textBuffer, sizeof(textBuffer))) { snprintf(profiler, sizeof(profiler), "%s/SRTG_PROFILE", textBuffer); }
+	char plogfile[2048]; snprintf(plogfile, sizeof(plogfile), "%s-Mode-%d-data.log", profiler, GLOBAL_SRTG_MODE);
+	char phtmfile[2048]; snprintf(phtmfile, sizeof(phtmfile), "%s-Mode-%d-visual.html", profiler, GLOBAL_SRTG_MODE);
 	FILE * fp = fopen(plogfile, "w"); if (!fp) { printf("ERROR: unable to create '%s'\n", plogfile); return; }
 	FILE * fh = fopen(phtmfile, "w"); if (!fh) { printf("ERROR: unable to create '%s'\n", phtmfile); return; }
 
@@ -179,7 +179,7 @@ extern "C" void dump_profile_log()
 			for (int j = k + 1; j < profiler_count; j++) {
 				if ((profiler_data[k] ^ profiler_data[j]) == 2) {
 					union { __int64 a; int b[2]; } u; u.a = profiler_clock[j];
-					sprintf(data, " DATA[%d,%d]", u.b[0], u.b[1]);
+					snprintf(data, sizeof(data), " DATA[%d,%d]", u.b[0], u.b[1]);
 				}
 				if ((profiler_data[k] ^ profiler_data[j]) == 1) {
 					float fclockj = (float)(profiler_clock[j] - profiler_clock[0])*1000000.0f / freq;

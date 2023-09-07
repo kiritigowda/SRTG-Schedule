@@ -1,7 +1,7 @@
 /*
-* RTGS.h
-*      Author: Kiriti Nagesh Gowda
-*/
+ * RTGS.h
+ *      Author: Kiriti Nagesh Gowda
+ */
 
 #ifndef RTGS_H
 #define RTGS_H
@@ -63,13 +63,13 @@ enum ProfilerEventEnum
 #endif
 
 /*! \brief A formal status type with known fixed size.
-* \see RTGS_status_e
-*/
+ * \see RTGS_status_e
+ */
 typedef int RTGS_Status;
 
 /*! \brief The enumeration of all status codes.
-* \see rtgs_status.
-*/
+ * \see rtgs_status.
+ */
 enum RTGS_status_e
 {
 	RTGS_ERROR_RECOMPILE = -10,			/*!< \brief Indicates that the compiler need to be recompiled with GPU Support Enabled. */
@@ -85,8 +85,8 @@ enum RTGS_status_e
 	RTGS_SUCCESS = 0,					/*!< \brief No error. */
 };
 
-/*! \brief The enumeration of all schedule methods.
-*/
+/*! \brief The enumeration of all scheduler methods.
+ */
 enum RTGS_schedule_method_e
 {
 	RTGS_SCHEDULE_METHOD_IMMEDIATE = 0,
@@ -97,11 +97,44 @@ enum RTGS_schedule_method_e
 	RTGS_SCHEDULE_METHOD_NOT_DEFINED = 99,
 };
 
+/*! \brief The enumeration of all Top Level Methods.
+ */
+enum RTGS_METHOD_E
+{
+	RTGS_METHOD_BASE = 0,
+	RTGS_METHOD_ENHANCED = 1,
+	RTGS_METHOD_ENHANCED_VQS = 2,
+};
+
+/*! \brief The enumeration of all Method GCU Level.
+ */
+enum RTGS_LEVEL_E
+{
+	RTGS_LEVEL_HIGH = 0,
+	RTGS_LEVEL_MEDIUM = 1,
+	RTGS_LEVEL_LOW = 2,
+};
+
+/*! \brief The enumeration of all Schedulable Hardware.
+ */
+enum RTGS_HARDWARE_E
+{
+	RTGS_HARDWARE_UNKNOWN = 0,
+	RTGS_HARDWARE_GPU = 1,
+	RTGS_HARDWARE_CPU = 2,
+};
+
 /* Job Information Structure */
 struct jobInformation
 {
 	int processor_req;			 // processors needed
+	int processor_req_h;		 // processors needed high
+	int processor_req_m;		 // processors needed medium
+	int processor_req_l;		 // processors needed low
 	int execution_time;			 // execution time
+	int execution_time_h;		 // execution time high
+	int execution_time_m;		 // execution time medium
+	int execution_time_l;		 // execution time medium
 	int deadline;				 // deadline
 	int latest_schedulable_time; // latest schedule time
 	int release_time;			 // latest schedule time
@@ -109,7 +142,10 @@ struct jobInformation
 	int scheduled_execution;	 // scheduled for GPU exec
 	int completion_time;		 // job completion time
 	int rescheduled_execution;	 // job rescheduled for gpu exe
-	int schedule_hardware;		 // job scheduled on 0: ERROR, 1: GPU, 2: CPU
+	int schedule_hardware;		 // job scheduled on -- 0: ERROR, 1: GPU, 2: CPU
+	int rtgs_method;			 // rtgs method -- 0: Base, 1: Enhanced, 2: Enhanced with varying quality of services
+	int rtgs_level;				 // rtgs GCU level -- 0: high, 1: medium, 2: low
+	int deadline_flexibility;	 // deadline flexibilty percentage
 	float schedule_overhead;	 // scheduler Overhead
 };
 //! \brief jobInformation structure
@@ -153,6 +189,7 @@ struct jobBackupList
 typedef struct jobBackupList genericBackupNode;
 
 // global variables
+int GLOBAL_RTGS_METHOD;
 int GLOBAL_GPU_JOBS;
 int GLOBAL_CPU_JOBS;
 int GLOBAL_RELEASE_TIME[MAX_RUN_TIME];

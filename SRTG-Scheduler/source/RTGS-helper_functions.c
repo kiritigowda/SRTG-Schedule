@@ -255,7 +255,7 @@ const char *summaryHTMLbody =
 	"<table id=\"resultsTable\" class=\"sortable\" align=\"center\" cellspacing=\"2\" border=\"0\" style=\"width: 70%\">\n"
 	"<tr>\n"
 	"<td align = \"center\"><font color = \"Maroon\"><p onclick = \"sortTable(0,0)\"><b>Job</b></p></font></td>\n"
-	"<td align = \"center\"><font color = \"Maroon\"><p onclick = \"sortTable(1,0)\"><b>Processors</b></p></font></td>\n"
+	"<td align = \"center\"><font color = \"Maroon\"><p onclick = \"sortTable(1,0)\"><b>GCUs</b></p></font></td>\n"
 	"<td align = \"center\"><font color = \"Maroon\"><p onclick = \"sortTable(2,0)\"><b>Execution Time</b></p></font></td>\n"
 	"<td align = \"center\"><font color = \"Maroon\"><p onclick = \"sortTable(3,0)\"><b>Deadline</b></p></font></td>\n"
 	"<td align = \"center\"><font color = \"Maroon\"><p onclick = \"sortTable(4,0)\"><b>Release Time</b></p></font></td>\n"
@@ -264,6 +264,9 @@ const char *summaryHTMLbody =
 	"<td align = \"center\"><font color = \"Maroon\"><p onclick = \"sortTable(7,0)\"><b>Rescheduled to</b></p></font></td>\n"
 	"<td align = \"center\"><font color = \"Maroon\"><p onclick = \"sortTable(8,0)\"><b>Completion Time</b></p></font></td>\n"
 	"<td align = \"center\"><font color = \"Maroon\"><b>Scheduled Hardware</b></font></td>\n"
+	"<td align = \"center\"><font color = \"Maroon\"><b>Method</b></font></td>\n"
+	"<td align = \"center\"><font color = \"Maroon\"><b>GCU Request Level</b></font></td>\n"
+	"<td align = \"center\"><font color = \"Maroon\"><b>Deadline Flexibilty</b></font></td>\n"
 	"</tr>\n";
 
 const char *summaryHTMLFooter =
@@ -280,14 +283,14 @@ int RTGS_PrintScheduleSummary(int mode, int maxKernels, jobAttributes *kernelInf
 {
 	char profiler[1024] = "RTGS-Summary/RTGS";
 
-	char pCSVfile[1024];
-	sprintf(pCSVfile, "%s-Mode-%d-Job-Summary.csv", profiler, mode);
-	char pHTMLfile[1024];
-	sprintf(pHTMLfile, "%s-Mode-%d-Job-Summary.html", profiler, mode);
-	char pSummaryfile[1024];
-	sprintf(pSummaryfile, "%s-Mode-%d-Summary.html", profiler, mode);
-	char pModeSummaryFile[1024];
-	sprintf(pModeSummaryFile, "%s-Mode-%d-Summary.csv", profiler, mode);
+	char pCSVfile[2048];
+	snprintf(pCSVfile, sizeof(pCSVfile), "%s-Method-%d-Mode-%d-Job-Summary.csv", profiler, GLOBAL_RTGS_METHOD, mode);
+	char pHTMLfile[2048];
+	snprintf(pHTMLfile, sizeof(pHTMLfile), "%s-Method-%d-Mode-%d-Job-Summary.html", profiler, GLOBAL_RTGS_METHOD, mode);
+	char pSummaryfile[2048];
+	snprintf(pSummaryfile, sizeof(pSummaryfile), "%s-Method-%d-Mode-%d-Summary.html", profiler, GLOBAL_RTGS_METHOD, mode);
+	char pModeSummaryFile[2048];
+	snprintf(pModeSummaryFile, sizeof(pModeSummaryFile), "%s-Method-%d-Mode-%d-Summary.csv", profiler, GLOBAL_RTGS_METHOD, mode);
 
 #if _WIN32
 	CreateDirectory("RTGS-Summary", NULL);
@@ -306,7 +309,7 @@ int RTGS_PrintScheduleSummary(int mode, int maxKernels, jobAttributes *kernelInf
 			printf("ERROR: unable to create '%s'\n", pModeSummaryFile);
 			return RTGS_ERROR_NO_RESOURCES;
 		}
-		fprintf(fms, "Total Jobs, Job Arrival Rate - Lambda, Jobs Scheduled on GPUs, Job Scheduled Percentage, Avg GCUs Requested - Accepted Jobs, Avg Exec Time - Accepted Jobs, Response by Execution Time Avg, Response time by Relative deadline Avg, GPU Usage Time - Accepted Jobs, GPU Time Requested - All Jobs, Avg Scheduler OverHead - Accepted Jobs, Avg Scheduler OverHead - All Jobs\n");
+		fprintf(fms, "Total Jobs, Job Arrival Rate - Lambda, Jobs Scheduled on GPUs, Job Scheduled Percentage, Avg GCUs Requested - Accepted Jobs, Avg Exec Time - Accepted Jobs, Response by Execution Time Avg, Response time by Relative deadline Avg, GPU Usage Time - Accepted Jobs, GPU Time Requested - All Jobs, Avg Scheduler OverHead - Accepted Jobs, Avg Scheduler OverHead - All Jobs, Method 0, Method 1, Method 2, Level 0, Level 1, Level 2\n");
 		fclose(fms);
 	}
 #endif
@@ -319,10 +322,10 @@ int RTGS_PrintScheduleSummary(int mode, int maxKernels, jobAttributes *kernelInf
 			printf("ERROR: unable to create '%s'\n", pCSVfile);
 			return RTGS_ERROR_NO_RESOURCES;
 		}
-		fprintf(fp, "Job,Processors,Execution Time,Deadline,Release Time,Scheduler Overhead (microSec),Scheduled At,Rescheduled to,Completion Time,Scheduled Hardware\n");
+		fprintf(fp, "Job,Processors,Execution Time,Deadline,Release Time,Scheduler Overhead (microSec),Scheduled At,Rescheduled to,Completion Time,Scheduled Hardware, Method, GCU Request Level, Deadline Flexibility\n");
 		for (int i = 0; i < maxKernels; i++)
 		{
-			fprintf(fp, "%d,%d,%d,%d,%d,%.2f,%d,%d,%d,%d\n", i,
+			fprintf(fp, "%d,%d,%d,%d,%d,%.2f,%d,%d,%d,%d,%d,%d,%d\n", i,
 					kernelInfoList[i].processor_req,
 					kernelInfoList[i].execution_time,
 					kernelInfoList[i].deadline,
@@ -331,7 +334,10 @@ int RTGS_PrintScheduleSummary(int mode, int maxKernels, jobAttributes *kernelInf
 					kernelInfoList[i].scheduled_execution,
 					kernelInfoList[i].rescheduled_execution,
 					kernelInfoList[i].completion_time,
-					kernelInfoList[i].schedule_hardware);
+					kernelInfoList[i].schedule_hardware,
+					kernelInfoList[i].rtgs_method,
+					kernelInfoList[i].rtgs_level,
+					kernelInfoList[i].deadline_flexibility);
 		}
 		fclose(fp);
 
@@ -473,12 +479,32 @@ int RTGS_PrintScheduleSummary(int mode, int maxKernels, jobAttributes *kernelInf
 			fprintf(fs, "<td align = \"center\"><font color = \"black\"><b>%d</b></font></td>\n", kernelInfoList[i].scheduled_execution);
 			fprintf(fs, "<td align = \"center\"><font color = \"black\"><b>%d</b></font></td>\n", kernelInfoList[i].rescheduled_execution);
 			fprintf(fs, "<td align = \"center\"><font color = \"black\"><b>%d</b></font></td>\n", kernelInfoList[i].completion_time);
+			// Hardware -- CPU/GPU
 			if (kernelInfoList[i].schedule_hardware == 1)
 				fprintf(fs, "<td align = \"center\"><font color = \"green\"><b>GPU</b></font></td>\n");
 			else if (kernelInfoList[i].schedule_hardware == 2)
 				fprintf(fs, "<td align = \"center\"><font color = \"red\"><b>CPU</b></font></td>\n");
 			else
 				fprintf(fs, "<td align = \"center\"><font color = \"blue\"><b>MISSING</b></font></td>\n");
+			// Method -- 0/1/2
+			if (kernelInfoList[i].rtgs_method == 0 && kernelInfoList[i].schedule_hardware == 1)
+				fprintf(fs, "<td align = \"center\"><font color = \"LightSkyBlue\"><b>RTGS_METHOD_BASE</b></font></td>\n");
+			else if (kernelInfoList[i].rtgs_method == 1 && kernelInfoList[i].schedule_hardware == 1)
+				fprintf(fs, "<td align = \"center\"><font color = \"RoyalBlue\"><b>RTGS_METHOD_ENHANCED</b></font></td>\n");
+			else if (kernelInfoList[i].rtgs_method == 2 && kernelInfoList[i].schedule_hardware == 1)
+				fprintf(fs, "<td align = \"center\"><font color = \"Navy\"><b>RTGS_METHOD_ENHANCED_VQS</b></font></td>\n");
+			else
+				fprintf(fs, "<td align = \"center\"><font color = \"red\"><b>RTGS_METHOD_NULL</b></font></td>\n");
+			// Level -- 0/1/2
+			if (kernelInfoList[i].rtgs_level == 0 && kernelInfoList[i].schedule_hardware == 1)
+				fprintf(fs, "<td align = \"center\"><font color = \"Aqua\"><b>RTGS_LEVEL_HIGH</b></font></td>\n");
+			else if (kernelInfoList[i].rtgs_level == 1 && kernelInfoList[i].schedule_hardware == 1)
+				fprintf(fs, "<td align = \"center\"><font color = \"Aquamarine\"><b>RTGS_LEVEL_MEDIUM</b></font></td>\n");
+			else if (kernelInfoList[i].rtgs_level == 2 && kernelInfoList[i].schedule_hardware == 1)
+				fprintf(fs, "<td align = \"center\"><font color = \"DarkTurquoise\"><b>RTGS_LEVEL_LOW</b></font></td>\n");
+			else
+				fprintf(fs, "<td align = \"center\"><font color = \"red\"><b>RTGS_LEVEL_NULL</b></font></td>\n");
+			fprintf(fs, "<td align = \"center\"><font color = \"black\"><b>%d</b></font></td>\n", kernelInfoList[i].deadline_flexibility);			
 			fprintf(fs, "</tr>\n");
 		}
 		fprintf(fs, "%s", summaryHTMLFooter);
@@ -489,6 +515,9 @@ int RTGS_PrintScheduleSummary(int mode, int maxKernels, jobAttributes *kernelInf
 	float GPU_usageTime = 0, responseByExecutionTimeAvg = 0, responseByRelativeDeadlineAvg = 0;
 	float totalGPUUsageRequested = 0, maxReleaseTime = 0;
 	float GPUJobsSchedulerOverHead = 0, avgSchedulerOverHead = 0;
+	int method0 = 0, method1 = 0, method2 = 0;
+	int level0 =0, level1 = 0, level2 = 0;
+
 	// review all jobs
 	for (int i = 0; i < maxKernels; i++)
 	{
@@ -508,15 +537,22 @@ int RTGS_PrintScheduleSummary(int mode, int maxKernels, jobAttributes *kernelInf
 			responseByRelativeDeadlineAvg += (response / relativeDeadline);
 			GPU_usageTime += ((processors / maxProcessors) * kernelInfoList[i].execution_time);
 			GPUJobsSchedulerOverHead += kernelInfoList[i].schedule_overhead;
+			if(kernelInfoList[i].rtgs_method == 0){method0++;}
+			else if(kernelInfoList[i].rtgs_method == 1){method1++;}
+			else if(kernelInfoList[i].rtgs_method == 2){method2++;}
+			if(kernelInfoList[i].rtgs_level == 0){level0++;}
+			else if(kernelInfoList[i].rtgs_level == 1){level1++;}
+			else if(kernelInfoList[i].rtgs_level == 2){level2++;}
 		}
-		totalGPUUsageRequested += ((processors / maxProcessors) * kernelInfoList[i].execution_time);
+		float processorsRequested_L0 = (float)kernelInfoList[i].processor_req_h;
+		totalGPUUsageRequested += ((processorsRequested_L0 / maxProcessors) * kernelInfoList[i].execution_time_h);
 		avgSchedulerOverHead += kernelInfoList[i].schedule_overhead;
 	}
 	// summary items
 	int totalJobsReviewed = maxKernels;
 	float totalJobs = (float)totalJobsReviewed;
 	float gpuJobs = (float)GLOBAL_GPU_JOBS;
-	float jobArrivalRateLambda = totalJobs / maxReleaseTime;
+	float jobArrivalRateLambda = totalJobs / maxReleaseTime; 
 	float jobScheduledPercentage = (gpuJobs / totalJobs) * 100;
 	float avgGCUsRequested = avgProcessorReq / gpuJobs;
 	avgExecTime = avgExecTime / gpuJobs;
@@ -531,10 +567,10 @@ int RTGS_PrintScheduleSummary(int mode, int maxKernels, jobAttributes *kernelInf
 		printf("ERROR: unable to create '%s'\n", pModeSummaryFile);
 		return RTGS_ERROR_NO_RESOURCES;
 	}
-	fprintf(fms, "%d, %.4f, %d, %.4f, %.4f, %.4f, %.4f, %.4f, %.4f, %.4f, %.6f, %.6f\n", totalJobsReviewed, 
+	fprintf(fms, "%d, %.4f, %d, %.4f, %.4f, %.4f, %.4f, %.4f, %.4f, %.4f, %.6f, %.6f, %d, %d, %d , %d, %d, %d\n", totalJobsReviewed, 
 			jobArrivalRateLambda, GLOBAL_GPU_JOBS, jobScheduledPercentage, avgGCUsRequested, avgExecTime, 
 			responseByExecutionTimeAvg, responseByRelativeDeadlineAvg, GPU_usageTime, totalGPUUsageRequested,
-			GPUJobsSchedulerOverHead, avgSchedulerOverHead);
+			GPUJobsSchedulerOverHead, avgSchedulerOverHead, method0, method1, method2,level0, level1, level2);
 	fclose(fms);
 	return RTGS_SUCCESS;
 }
